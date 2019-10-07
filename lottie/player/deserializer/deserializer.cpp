@@ -221,7 +221,7 @@ int checkCharacter(char& currentChar) {
 				}
 			} else {
 				addState(ScopeOpen);
-				prepare_container(true);
+				prepare_container(false);
 			}
 			break;
 		case '}':
