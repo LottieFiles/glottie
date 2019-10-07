@@ -216,13 +216,17 @@ int checkCharacter(char& currentChar) {
 			readingArray = false;
 			if (theState->prev->stateNow == ArrayOpen) {
 				addState(ScopeOpenInArray);
+				if (theState->prev->stateNow != ScopeOpenInArray) {
+					prepare_container(true);
+				}
 			} else {
 				addState(ScopeOpen);
+				prepare_container(true);
 			}
 			break;
 		case '}':
 			kvState = Value;
-			object_associate();
+			associate_object();
 			removeState();
 			break;
 		case '[':
@@ -244,14 +248,16 @@ int checkCharacter(char& currentChar) {
 			break;
 		case ':':
 			kvState = Key;
-			addState(KVSwitch);
+			//addState(KVSwitch);
 			break;
 		case '\'':
 			if (theState->prev->stateNow == KVReading || theState->prev->stateNow == KVReadOpen) {
-				if (theState->prev->stateNow == KVReading) {
+				/*if (theState->prev->stateNow == KVReading) {
 					removeReadStates();
 				}
 				removeState();
+				*/
+				removeReadStates();
 			} else {
 				addState(KVReadOpen);
 			}
@@ -278,12 +284,14 @@ int checkCharacter(char& currentChar) {
 	if (theState->stateNow == KVReading) {
 		//currentValue = currentValue + currentChar;
 		//currentValue.append((char *)currentChar);
+		////////////// DEBUG stuff
 		if (theState->prev->stateNow != KVReading) {
 			currentValue.clear();
 			EM_ASM_({
 				console.log('start reading');
 			});
 		}
+		//////////////////////// DEND
 		currentValue.append(1, currentChar);
 	}
 
@@ -293,19 +301,24 @@ int checkCharacter(char& currentChar) {
 		}, (int)currentChar);
 	}
 
+
 	if (theState->prev->stateNow == KVReading && theState->stateNow != KVReading) {
 		lastRead.clear();
 		lastRead = currentValue;
+		////////////// DEBUG stuff
 		EM_ASM_({
 			console.log('done reading');
 		});
+		//////////////////////// DEND
 	}
 
+	////////////// DEBUG stuff
 	if (lastRead == "assets") {
 		EM_ASM_({
 			console.log('found some assets');
 		});
 	}
+	//////////////////////// DEND
 
 	switch (theScope->scope) {
 		case noscope:
