@@ -64,7 +64,7 @@ struct Chars {
 
 
 
-//enum Scopes {NoScope = 0, Animation = 1, Layers = 2, Assets = 3, Chars = 4, Players = 5, Fonts = 6, ks = 7, ao = 8, bm = 9, ddd = 10, maskProperties = 11, ef = 12, shapes = 13, it = 14, t = 15, a = 16, m = 17, r = 18, p = 19, s = 20, sk = 21, sa = 22, o = 23, sw =  24, sc = 25, fc = 26, fh = 27, fs = 28, fb = 29, maxa = 31, mine = 32, maxe = 33, bo = 34, start  = 35, end = 36, Offset = 37, g = 38};
+//enum States {NoState = 0, Animation = 1, Layers = 2, Assets = 3, Chars = 4, Players = 5, Fonts = 6, ks = 7, ao = 8, bm = 9, ddd = 10, maskProperties = 11, ef = 12, shapes = 13, it = 14, t = 15, a = 16, m = 17, r = 18, p = 19, s = 20, sk = 21, sa = 22, o = 23, sw =  24, sc = 25, fc = 26, fh = 27, fs = 28, fb = 29, maxa = 31, mine = 32, maxe = 33, bo = 34, start  = 35, end = 36, Offset = 37, g = 38};
 
 enum Scopes {
 	noscope = 0,
@@ -78,13 +78,14 @@ enum Scopes {
 	assets_layers_shapes_ks_k_s = 8
 };
 
-enum States {NoState, Start, ScopeOpen, ScopeClose, ArrayOpen, ArrayClose, KVSwitch, KVReadOpen, KVReading, KVReadClose, NewElement};
+enum States {NoState, Start, ScopeOpen, ScopeClose, ScopeOpenInArray, ScopeCloseInArray, ArrayOpen, ArrayClose, KVSwitch, KVReadOpen, KVReading, KVReadClose, NewElement};
 enum KeyValueState {Key, Value};
 
 enum KeyValueState kvState = Key;
 
 struct StateTrail {
-	enum States statePrevious;
+	struct StateTrail* prev;
+	struct StateTrail* next;
 	enum States stateNow;
 } *theState;
 
@@ -94,7 +95,8 @@ struct ScopeTrail {
 	struct ScopeTrail* next;
 
 	struct KeyValue* currentKeyValue;
-	enum Scopes scope;
+	struct StateTrail* currentState;
+	struct Scopes* scope;
 } *theScope;
 
 string lastValue;
@@ -123,9 +125,33 @@ int determineCurrentScope() {
 				console.log('scope open');
 			);
 
-			theScope->scope = assets;
+			theState->scope = assets;
 		}
 	}
+	return 1;
+}
+/////////////////////////////////////////////////////////////////////////////
+
+int addState(enum States statePassed) {
+	struct StateTrail* tempState;
+	tempState = new StateTrail;
+	theState->next = tempState;
+	theState = theState->next;
+	theState->stateNow = statePassed;
+	theState->next = NULL;
+
+	return 1;
+}
+
+int removeState() {
+	struct StateTrail* tempState;
+	tempState = new StateTrail;
+	tempState = theState;
+	tempState->prev = NULL;
+	theState = theState->prev;
+	theState->next = NULL;
+	delete tempState;
+
 	return 1;
 }
 
@@ -135,6 +161,7 @@ int addScope() {
 	theScope->next = tempScope;
 	theScope = theScope->next;
 	theScope->next = NULL;
+	theScope->scope = theState->stateNow;
 
 	return 1;
 }
@@ -174,18 +201,21 @@ int removeArray() {
 }
 
 int checkCharacter(char& currentChar) {
-	theState->statePrevious = theState->stateNow;
+	addState();
 	switch (currentChar) {
 		case '{':
 			kvState = Key;
 			readingArray = false;
-			theState->stateNow = ScopeOpen;
+			if (theState->prev->stateNow == ArrayOpen) {
+				addState(ScopeOpenInArray);
+			} else {
+				addState(ScopeOpen);
+			}
 			break;
 		case '}':
 			kvState = Value;
-			theState->stateNow = ScopeClose;
 			object_associate();
-			
+			removeState();
 			break;
 		case '[':
 			kvState = Key;
@@ -197,38 +227,47 @@ int checkCharacter(char& currentChar) {
 				wasReadingArray = true;
 			}
 			readingArray = true;
-			theState->stateNow = ArrayOpen;
+			&addState(ArrayOpen);
 			break;
 		case ']':
 			kvState = Value;
 			readingArray = false;
-			theState->stateNow = ArrayClose;
+			removeState();
 			break;
 		case ':':
 			kvState = Key;
-			theState->stateNow = KVSwitch;
+			addState(KVSwitch);
 			break;
 		case '\'':
-			if (theState->statePrevious == KVReading || theState->statePrevious == KVReadOpen) {
-				theState->stateNow = KVReadClose;
+			if (theState->prev->stateNow == KVReading || theState->prev->stateNow == KVReadOpen) {
+				if (theState->prev->stateNow == KVReading) {
+					removeState();
+					removeState();
+				}
+				addState(KVReadClose);
 			} else {
-				theState->stateNow = KVReadOpen;
+				addState(KVReadOpen);
 			}
 			break;
 		case ',':
-			theState->stateNow = NewElement;
+			//addState(NewElement);
 			kvState = Value;
 			break;
 		default:
-			theState->stateNow = KVReading;
+			if (	currentChar != ' ' &&
+				currentChar != '\f' &&
+				currentChar != '\n' &&
+				currentChar != '\r' &&
+				currentChar != '\t' &&
+				currentChar != '\v') {
+				theState->stateNow = KVReading;
+			} else {
+				if (theState->prev->stateNow == KVReading) {
+					theState->stateNow = KVReading;
+				}
+			}
+	}
 
-	}
-	/*if (theState->statePrevious == KVReadOpen || theState->statePrevious == KVReading) {
-		theState->stateNow = KVReading;
-	}
-	if (theState->statePrevious == NewElement || theState->statePrevious == KVSwitch) {
-		theState->stateNow = KVReading;
-	}*/
 	if (theState->stateNow == KVReading) {
 		//currentValue = currentValue + currentChar;
 		//currentValue.append((char *)currentChar);
@@ -247,7 +286,7 @@ int checkCharacter(char& currentChar) {
 		}, (int)currentChar);
 	}
 
-	if (theState->statePrevious == KVReading && theState->stateNow != KVReading) {
+	if (theState->prev->stateNow == KVReading && theState->stateNow != KVReading) {
 		lastRead.clear();
 		lastRead = currentValue;
 		EM_ASM_({
@@ -308,7 +347,7 @@ int checkCharacter(char& currentChar) {
 			}
 			break;
 		default:
-			if (theState->stateNow != KVReading && theState->statePrevious == KVReading) {
+			if (theState->stateNow != KVReading && theState->prev->stateNow == KVReading) {
 				if (readingArray) {
 					currentArrayOfString->value.push_back(currentValue);
 				} else {
@@ -343,7 +382,6 @@ int deserialize() {
 	theScope->prev = 0;
 	theScope->next = 0;
 	theScope->scope = noscope;
-	theState->statePrevious = NoState;
 	theState->stateNow = Start;
 	kvState = Key;
 
