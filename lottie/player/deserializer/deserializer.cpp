@@ -96,7 +96,7 @@ struct ScopeTrail {
 
 	struct KeyValue* currentKeyValue;
 	struct StateTrail* currentState;
-	struct Scopes* scope;
+	enum Scopes scope;
 } *theScope;
 
 string lastValue;
@@ -125,7 +125,7 @@ int determineCurrentScope() {
 				console.log('scope open');
 			);
 
-			theState->scope = assets;
+			theScope->scope = assets;
 		}
 	}
 	return 1;
@@ -155,13 +155,20 @@ int removeState() {
 	return 1;
 }
 
+int removeReadStates() {
+	while (theState->stateNow == KVReading) {
+		removeState();
+	}
+	return 1;
+}
+
 int addScope() {
 	struct ScopeTrail* tempScope;
 	tempScope = new ScopeTrail;
 	theScope->next = tempScope;
 	theScope = theScope->next;
 	theScope->next = NULL;
-	theScope->scope = theState->stateNow;
+	theScope->currentState = theState;
 
 	return 1;
 }
@@ -200,8 +207,9 @@ int removeArray() {
 	return 1;
 }
 
+#include "object_associate.cpp"
+
 int checkCharacter(char& currentChar) {
-	addState();
 	switch (currentChar) {
 		case '{':
 			kvState = Key;
@@ -227,7 +235,7 @@ int checkCharacter(char& currentChar) {
 				wasReadingArray = true;
 			}
 			readingArray = true;
-			&addState(ArrayOpen);
+			addState(ArrayOpen);
 			break;
 		case ']':
 			kvState = Value;
@@ -241,10 +249,9 @@ int checkCharacter(char& currentChar) {
 		case '\'':
 			if (theState->prev->stateNow == KVReading || theState->prev->stateNow == KVReadOpen) {
 				if (theState->prev->stateNow == KVReading) {
-					removeState();
-					removeState();
+					removeReadStates();
 				}
-				addState(KVReadClose);
+				removeState();
 			} else {
 				addState(KVReadOpen);
 			}
@@ -260,10 +267,10 @@ int checkCharacter(char& currentChar) {
 				currentChar != '\r' &&
 				currentChar != '\t' &&
 				currentChar != '\v') {
-				theState->stateNow = KVReading;
+				addState(KVReading);
 			} else {
-				if (theState->prev->stateNow == KVReading) {
-					theState->stateNow = KVReading;
+				if (theState->stateNow == KVReading) {
+					addState(KVReading);
 				}
 			}
 	}
@@ -271,7 +278,7 @@ int checkCharacter(char& currentChar) {
 	if (theState->stateNow == KVReading) {
 		//currentValue = currentValue + currentChar;
 		//currentValue.append((char *)currentChar);
-		if (theState->statePrevious != KVReading) {
+		if (theState->prev->stateNow != KVReading) {
 			currentValue.clear();
 			EM_ASM_({
 				console.log('start reading');

@@ -18,7 +18,6 @@ void main_loop() { loop(); }
 #include "misc.cpp"
 #include "emscripten/emscripten.cpp"
 #include "deserializer/deserializer.cpp"
-#include "deserializer/object_associate.cpp"
 #include "gl/gl.cpp"
 
 
