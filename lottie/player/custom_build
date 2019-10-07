@@ -1,0 +1,4 @@
+#!/bin/bash
+
+/Users/shaafiee/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -o player.js
+
