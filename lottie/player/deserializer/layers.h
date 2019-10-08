@@ -1,7 +1,9 @@
 //// layers
 
 struct LayersShapes {
+	bool created; // internal flag to indicate this object has already been created
         struct ShapesItem* shapesItem;
+	int shapesItemCount = 0; // internal use - amount of shapesItems in this object
         int ind; // index
         string cl; //class
         string ln; //layer html id
@@ -20,7 +22,7 @@ struct LayersShapes {
         struct Mask* maskProperties;
         struct Index* ef; // effects
 
-} currentLayersShape;
+} *currentLayersShapes;
 
 struct LayersSolid {
 };
@@ -48,7 +50,7 @@ struct Asset {
         bool isPrecomp;
         struct ImageSource* images;
         struct PrecompSource* precomps;
-};
+} *currentAssets;
 
 struct Layers {
         struct Layers* start;

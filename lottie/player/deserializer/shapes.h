@@ -21,7 +21,7 @@ struct ShapesItem {
 	struct ShapesRoundedCorners* rd;
 	struct ShapesRepeater* rp;
 	struct ShapesTransform* tr;
-};
+} *currentShapesItem;
 
 struct ShapesGroup {
 	string mn; // match name
@@ -29,7 +29,7 @@ struct ShapesGroup {
 	string np; // number of properties
 
 	struct ShapesItem* it; // item
-};
+} *currentShapesGroup;
 
 struct ShapesShape {
 	string mn; // match name
@@ -38,6 +38,6 @@ struct ShapesShape {
 	
 	struct PropertiesShape* ks;
 	struct PropertiesShapeKeyframed* ksKeyframed;
-};
+} *currentShapesShape;
 
 
