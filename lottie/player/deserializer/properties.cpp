@@ -24,3 +24,5 @@ struct PropertiesShapePropKeyframe* newPropertiesShapePropKeyframe() {
 	return tempPropertiesShapePropKeyframe;
 }
 
+//////////////////// assign values
+

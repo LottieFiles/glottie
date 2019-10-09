@@ -45,3 +45,5 @@ struct Layers* newLayers() {
 	return currentLayers;
 }
 
+///////////////// assign values
+
