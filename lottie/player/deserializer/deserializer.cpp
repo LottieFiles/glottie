@@ -70,16 +70,39 @@ enum Scopes {
 	noscope = 0,
 	animation = 1,
 	assets = 2,
-	assets_layers = 3,
-	assets_layers_shapes = 4,
+	assets_layers = 403,
+	assets_layers_shapes = 404,
 	assets_layers_shapes_ty = 401,
-	assets_layers_shapes_ks = 5,
-	assets_layers_shapes_ks_k = 6,
-	assets_layers_shapes_ks_k_e = 7,
-	assets_layers_shapes_ks_k_s = 8
-};
+	assets_layers_shapes_ks = 405,
+	assets_layers_shapes_ks_k = 406,
+	assets_layers_shapes_ks_k_e = 407,
+	assets_layers_shapes_ks_k_s = 408,
+	// 
+	layers = 503,
+	layers_shapes = 504,
+	layers_shapes_ty = 501,
+	layers_shapes_ks = 505,
+	layers_shapes_ks_k = 506,
+	layers_shapes_ks_k_e = 507,
+	layers_shapes_ks_k_s = 508
+	};
 
-enum States {NoState, Start, ScopeOpen, ScopeClose, ScopeOpenInArray, ScopeCloseInArray, ArrayOpen, ArrayClose, KVSwitch, KVReadOpen, KVReading, KVReadClose, NewElement};
+enum States {
+	NoState,
+	Start,
+	ScopeOpen,
+	ScopeClose,
+	ScopeOpenInArray,
+	ScopeCloseInArray,
+	ArrayOpen,
+	ArrayClose,
+	KVSwitch,
+	KVReadOpen,
+	KVReading,
+	KVReadClose,
+	NewElement
+	};
+
 enum KeyValueState {Key, Value};
 
 enum KeyValueState kvState = Key;
@@ -209,6 +232,7 @@ int removeArray() {
 	return 1;
 }
 
+#include "properties.cpp"
 #include "layers.cpp"
 #include "shapes.cpp"
 #include "object_associate.cpp"
@@ -245,6 +269,8 @@ int checkScope() {
 		case animation:
 			if (currentReadKey == "assets") {
 				addScope(assets);
+			} else if (currentReadKey == "layers") {
+				addScope(layers);
 			}
 			break;
 		case assets:
@@ -280,6 +306,35 @@ int checkScope() {
 				addScope(assets_layers_shapes_ks_k_s);
 			}
 			break;
+		//
+		case layers:
+			if (currentReadKey == "shapes") {
+				addScope(layers_shapes);
+			}
+			break;
+		case layers_shapes_ty: //LayersShapes shape item's type found
+			
+			break;
+		case layers_shapes:
+			if (currentReadKey == "ks") {
+				addScope(layers_shapes_ks);
+			} else if (currentReadKey == "ty") {
+				addScope(layers_shapes_ty);
+			}
+			break;
+		case layers_shapes_ks:
+			if (currentReadKey == "k") {
+				addScope(layers_shapes_ks_k);
+			}
+			break;
+		case layers_shapes_ks_k:
+			if (currentReadKey == "e") {
+				addScope(layers_shapes_ks_k_e);
+			}
+			if (currentReadKey == "s") {
+				addScope(layers_shapes_ks_k_s);
+			}
+			break;
 		default:
 			break;
 	}
@@ -295,7 +350,7 @@ int checkCharacter(char& currentChar) {
 			if (theState->prev->stateNow == ArrayOpen) {
 				addState(ScopeOpenInArray);
 				if (theState->prev->stateNow != ScopeOpenInArray) {
-					prepare_container(true);
+					prepareContainer(true);
 				}
 			} else {
 				addState(ScopeOpen);

@@ -7,20 +7,20 @@ struct ShapesItem {
 	struct ShapesItem* prev;
 
 	string ty;
-	struct ShapesShape* shape;
-	struct ShapesEllipse* ellipse;
-	struct ShapesRect* rect;
-	struct ShapesStar* star;
-	struct ShapesFill* fill;
-	struct ShapesGFill* gFill;
-	struct ShapesGStroke* gStroke;
-	struct ShapesStroke* stroke;
-	struct ShapesMerge* merge;
-	struct ShapesTrim* trim;
-	struct ShapesGroup* group;
-	struct ShapesRoundedCorners* rd;
-	struct ShapesRepeater* rp;
-	struct ShapesTransform* tr;
+	struct ShapesShape* shape; // sh
+	struct ShapesEllipse* ellipse; // el
+	struct ShapesRect* rect; // rc
+	struct ShapesStar* star; // sr
+	struct ShapesFill* fill; // fl
+	struct ShapesGFill* gFill; // gf
+	struct ShapesGStroke* gStroke; // gs
+	struct ShapesStroke* stroke; // st
+	struct ShapesMerge* merge; // mm
+	struct ShapesTrim* trim; // tm
+	struct ShapesGroup* group; // gr
+	struct ShapesRoundedCorners* roundedCorners; // rd
+	struct ShapesRepeater* repeater; // rp
+	struct ShapesTransform* transform; // tr
 } *currentShapesItem;
 
 struct ShapesGroup {

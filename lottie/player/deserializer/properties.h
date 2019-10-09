@@ -6,7 +6,7 @@ struct PropertiesValueKeyframe {
 	int t; //time
 
 	struct XY* i; // bezier curve interpolation in value
-};
+} *currentPropertiesValueKeyframe;
 
 struct PropertiesValue {
 	float k;
@@ -15,7 +15,7 @@ struct PropertiesValue {
 	string x; //expression
 
 	struct PropertiesValueKeyframe* keyframe;
-};
+} *currentPropertiesValue;
 
 struct PropertiesMultiDimensionalKeyframe {
 	vector<float> s; //start
@@ -24,7 +24,7 @@ struct PropertiesMultiDimensionalKeyframe {
 	
 	struct XY* i; // bezier curve interpolation in value
 	struct XY* o; // bezier curve interpolation out value
-};
+} *currentPropertiesMultiDimensionalKeyframe;
 
 struct PropertiesMultiDimensional {
 	vector<float> k;
@@ -34,7 +34,7 @@ struct PropertiesMultiDimensional {
 	vector<float> to; // out tangent
 
 	struct PropertiesMultiDimensionalKeyframe* keyframe;
-};
+} *currentPropertiesMultiDimensional;
 
 struct PropertiesShapeKeyframed {
 	string x;
@@ -45,19 +45,24 @@ struct PropertiesShapeKeyframed {
 
 	//keyframed
 	struct PropertiesShapePropKeyframe* k;	
-};
+} *currentPropertiesShapeKeyframed;
 
 struct PropertiesShapeProp {
+	struct PropertiesShapeProp* start;
+	struct PropertiesShapeProp* next;
+	struct PropertiesShapeProp* prev;
+	struct PropertiesShapeProp* end;
+
 	bool c; //closed
 	vector<float> i; // in point - array of 2 elements
 	vector<float> o; // out point
 	vector<float> v; // vertices
-};
+} *currentPropertiesShapeProp;
 
 struct PropertiesShapePropKeyframe {
 	struct PropertiesShapeProp* e;
 	struct PropertiesShapeProp* s;
-};
+} *currentPropertiesShapePropKeyframe;
 
 struct PropertiesShape {
 	string x;
@@ -65,7 +70,10 @@ struct PropertiesShape {
 	int a; //animated
 
 	struct PropertiesShapeProp* k;
-};
+	struct PropertiesShapePropKeyframe* keyframe;
+	bool isKeyframe = false;
+	int PropertiesShapePropCount = 0;
+} *currentPropertiesShape;
 
 
 

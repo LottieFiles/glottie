@@ -1,11 +1,9 @@
 // functions
 
-struct LayersShape* newLayersShapes() {
-	if (currentLayersShapes == NULL || currentLayersShapes->shapesItemCount == 0) {
-		struct LayersShapes* tempLayersShapes;
-		tempLayersShapes = new LayersShapes;
-		currentLayersShapes = tempLayersShapes;
-	}
+struct LayersShapes* newLayersShapes() {
+	struct LayersShapes* tempLayersShapes;
+	tempLayersShapes = new LayersShapes;
+	currentLayersShapes = tempLayersShapes;
 
 	struct ShapesItem* tempShapesItem;
 	tempShapesItem = new ShapesItem;
@@ -19,6 +17,7 @@ struct LayersShape* newLayersShapes() {
 		tempShapesItem->prev = currentShapesItem;
 		currentShapesItem->next = tempShapesItem;
 		currentShapesItem = tempShapesItem;
+		currentShapesItem->start = currentShapesItem->prev->start;
 	}
 	currentShapesItem->next = NULL;
 	currentShapesItem->end = tempShapesItem;
@@ -38,6 +37,7 @@ struct Layers* newLayers() {
 		tempLayers->prev = currentLayers;
 		currentLayers->next = tempLayers;
 		currentLayers = tempLayers;
+		currentLayers->start = currentLayers->prev->start;
 	}
 	currentLayers->next = NULL;
 	currentLayers->end = tempLayers;
