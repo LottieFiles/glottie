@@ -20,7 +20,6 @@ struct LayersShapes* newLayersShapes() {
 		currentShapesItem->start = currentShapesItem->prev->start;
 	}
 	currentShapesItem->next = NULL;
-	currentShapesItem->end = tempShapesItem;
 	currentLayersShapes->shapesItemCount++;
 
         return currentLayersShapes;
@@ -40,7 +39,6 @@ struct Layers* newLayers() {
 		currentLayers->start = currentLayers->prev->start;
 	}
 	currentLayers->next = NULL;
-	currentLayers->end = tempLayers;
 	
 	return currentLayers;
 }

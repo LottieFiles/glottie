@@ -26,3 +26,7 @@ struct PropertiesShapePropKeyframe* newPropertiesShapePropKeyframe() {
 
 //////////////////// assign values
 
+int fillPropertiesShapeProp() {
+
+}
+

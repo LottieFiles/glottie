@@ -114,7 +114,7 @@ struct StateTrail {
 } *theState;
 
 struct ScopeTrail {
-	struct scopeTrail* root;
+	struct scopeTrail* start;
 	struct ScopeTrail* prev;
 	struct ScopeTrail* next;
 
@@ -235,29 +235,8 @@ int removeArray() {
 #include "properties.cpp"
 #include "layers.cpp"
 #include "shapes.cpp"
-#include "object_associate.cpp"
+#include "associate.cpp"
 
-/*
-int readingDone() {
-				if (readingArray) {
-					currentArrayOfString->value.push_back(currentValue);
-				} else {
-					if (kvState == Key) {
-						//currentReadKey = currentValue;
-						theScope->currentKeyValue->key = currentValue;
-					}
-					if (kvState == Value) {
-						if (currentArrayOfString->value.size() > 0) {
-							theScope->currentKeyValue->arrayValue = currentArrayOfString;
-						} else {
-							theScope->currentKeyValue->value = currentValue;
-							//currentReadValue = currentValue;
-						}
-						// Associate the key-value with the object (struct)
-					}
-				}
-}
-*/
 
 int checkScope() {
 	switch (theScope->scope) {
@@ -342,6 +321,26 @@ int checkScope() {
 	return 1;
 }
 
+int readingDone() {
+	if (readingArray && theState->stateNow == ArrayOpen) {
+		addKeyValue(currentKeyValue, currentReadKey, currentReadValue, true);
+	} else {
+		/*
+		if (kvState == Key) {
+			theScope->currentKeyValue->key = currentValue;
+		}
+		if (kvState == Value) {
+			if (currentArrayOfString->value.size() > 0) {
+				theScope->currentKeyValue->arrayValue = currentArrayOfString;
+			} else {
+				theScope->currentKeyValue->value = currentValue;
+			}
+		}
+		*/
+		addKeyValue(currentKeyValue, currentReadKey, currentReadValue, false);
+	}
+}
+
 int checkCharacter(char& currentChar) {
 	switch (currentChar) {
 		case '{':
@@ -358,12 +357,11 @@ int checkCharacter(char& currentChar) {
 			}
 			break;
 		case '}':
-			associateObject();
+			associateKeyValues();
 			removeScope();
 			removeState();
 			break;
 		case '[':
-			kvState = Key;
 			if (readingArray && ! wasReadingArray) {
 				struct ArrayOfString* tempArrayOfString;
 				tempArrayOfString = new ArrayOfString;
@@ -383,12 +381,7 @@ int checkCharacter(char& currentChar) {
 			//addState(KVSwitch);
 			break;
 		case '\'':
-			if (theState->prev->stateNow == KVReading || theState->prev->stateNow == KVReadOpen) {
-				/*if (theState->prev->stateNow == KVReading) {
-					removeReadStates();
-				}
-				removeState();
-				*/
+			if (theState->stateNow == KVReading || theState->stateNow == KVReadOpen) {
 				if (kvState == Value) {
 					currentReadValue = currentValue;
 					readingDone();
@@ -402,7 +395,7 @@ int checkCharacter(char& currentChar) {
 					EM_ASM_({
 						console.log('done reading');
 					});
-				//////////////////////// DEND
+				//////////////////////// DEND */
 			} else {
 				addState(KVReadOpen);
 				////////////// DEBUG stuff
@@ -412,7 +405,7 @@ int checkCharacter(char& currentChar) {
 							console.log('start reading');
 						});
 					}
-				//////////////////////// DEND
+				//////////////////////// DEND */
 			}
 			break;
 		case ',':
@@ -426,7 +419,9 @@ int checkCharacter(char& currentChar) {
 				currentChar != '\r' &&
 				currentChar != '\t' &&
 				currentChar != '\v') {
-				addState(KVReading);
+				if (theState->stateNow == KVOpen) {
+					addState(KVReading);
+				}
 			} else {
 				if (theState->stateNow == KVReading) {
 					addState(KVReading);
@@ -446,7 +441,7 @@ int checkCharacter(char& currentChar) {
 			console.log(String.fromCharCode($0));
 		}, (int)currentChar);
 	}
-	//////////////////////// DEND
+	//////////////////////// DEND */
 
 	////////////// DEBUG stuff
 	if (currentReadKey == "assets") {
@@ -454,7 +449,7 @@ int checkCharacter(char& currentChar) {
 			console.log('found some assets');
 		});
 	}
-	//////////////////////// DEND
+	//////////////////////// DEND */
 }
 
 

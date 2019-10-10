@@ -45,7 +45,7 @@ int prepareContainer(bool arrayOfObjects) {
 	return 1;
 }
 
-int associateObject() {
+int associateKeyValues() {
 	switch (theScope->scope) {
 		case animation:
 			break;
@@ -61,6 +61,15 @@ int associateObject() {
 		case assets_layers_shapes_ks:
 			currentPropertiesShape = NULL;
 			break;
+		case assets_layers_shapes_ks_k:
+			fillPropertiesShapeProp();
+			break;
+		case assets_layers_shapes_ks_k_e:
+			fillPropertiesShapeProp();
+			break;
+		case assets_layers_shapes_ks_k_s:
+			fillPropertiesShapeProp();
+			break;
 		//
 		case layers_shapes:
 			currentLayerShapes = NULL;
@@ -70,9 +79,19 @@ int associateObject() {
 		case layers_shapes_ks:
 			currentPropertiesShape = NULL;
 			break;
+		case layers_shapes_ks_k:
+			fillPropertiesShapeProp();
+			break;
+		case layers_shapes_ks_k_e:
+			fillPropertiesShapeProp();
+			break;
+		case layers_shapes_ks_k_s:
+			fillPropertiesShapeProp();
+			break;
 		default:
 			break;
 	}
+	currentKeyValue = NULL;
 
 	return 1;
 }
