@@ -322,9 +322,11 @@ int checkScope() {
 }
 
 int readingDone() {
-	if (readingArray && theState->stateNow == ArrayOpen) {
-		addKeyValue(currentKeyValue, currentReadKey, currentReadValue, true);
-	} else {
+		if (theState->stateNow == ArrayOpen) {
+			addKeyValue(currentKeyValue, currentReadKey, currentReadValue, true);
+		} else {
+			addKeyValue(currentKeyValue, currentReadKey, currentReadValue, false);
+		}
 		/*
 		if (kvState == Key) {
 			theScope->currentKeyValue->key = currentValue;
@@ -337,14 +339,13 @@ int readingDone() {
 			}
 		}
 		*/
-		addKeyValue(currentKeyValue, currentReadKey, currentReadValue, false);
-	}
 }
 
 int checkCharacter(char& currentChar) {
 	switch (currentChar) {
 		case '{':
 			kvState = Key;
+			newKeyValueTrail();
 			readingArray = false;
 			if (theState->prev->stateNow == ArrayOpen) {
 				addState(ScopeOpenInArray);
@@ -358,27 +359,24 @@ int checkCharacter(char& currentChar) {
 			break;
 		case '}':
 			associateKeyValues();
+			removeKeyValueTrail();
 			removeScope();
 			removeState();
 			break;
 		case '[':
-			if (readingArray && ! wasReadingArray) {
-				struct ArrayOfString* tempArrayOfString;
-				tempArrayOfString = new ArrayOfString;
-				currentArrayOfString->subArray = tempArrayOfString;
-				currentArrayOfString = tempArrayOfString;
-				wasReadingArray = true;
-			}
 			readingArray = true;
 			addState(ArrayOpen);
+			if (theState->prev->stateNow == ArrayOpen) {
+				addChildArray(currentKeyValue);
+			}
 			break;
 		case ']':
 			readingArray = false;
+			gotoParentArray(currentKeyValue);
 			removeState();
 			break;
 		case ':':
 			kvState = Value;
-			//addState(KVSwitch);
 			break;
 		case '\'':
 			if (theState->stateNow == KVReading || theState->stateNow == KVReadOpen) {
