@@ -324,7 +324,7 @@ int checkScope() {
 }
 
 int readingDone() {
-		if (theState->stateNow == ArrayOpen) {
+		if (readingArray == true) {
 			addKeyValue(currentKeyValue, currentReadKey, currentReadValue, true);
 		} else {
 			addKeyValue(currentKeyValue, currentReadKey, currentReadValue, false);
@@ -349,24 +349,24 @@ int readingDone() {
 	return 1;
 }
 
-int isReadingDone() {
+bool isReadingDone() {
 			if (theState->stateNow == KVReading || theState->stateNow == KVReadOpen) {
 				if (kvState == Value) {
 					currentReadValue = currentValue;
-					readingDone();
-					kvState = Key;
+					//readingDone();
+					return true;
 				} else {
 					currentReadKey = currentValue;
 				}
 				checkScope();
-				removeReadStates();
+				//removeReadStates();
 				/*///////////// DEBUG stuff
 					EM_ASM_({
 						console.log('done reading');
 					});
 				//////////////////////// DEND */
 			} else {
-				addState(KVReadOpen);
+				//addState(KVReadOpen);
 				/*///////////// DEBUG stuff
 					if (theState->prev->stateNow != KVReading) {
 						currentValue.clear();
@@ -376,7 +376,16 @@ int isReadingDone() {
 					}
 				//////////////////////// DEND */
 			}
-	return 1;
+	return false;
+}
+
+enum States lastStateBeforeReading() {
+	struct StateTrail* tempState;
+	tempState = theState;
+	while (tempState->stateNow == KVReadOpen || tempState->stateNow == KVReading) {
+		tempState = tempState->prev;
+	}
+	return tempState->stateNow;
 }
 
 int checkCharacter(char& currentChar) {
@@ -396,6 +405,11 @@ int checkCharacter(char& currentChar) {
 			}
 			break;
 		case '}':
+			if (isReadingDone()) {
+				//readingDone();
+				readingDone();
+				removeReadStates();
+			}
 			associateKeyValues();
 			removeKeyValueTrail();
 			removeScope();
@@ -409,6 +423,11 @@ int checkCharacter(char& currentChar) {
 			}
 			break;
 		case ']':
+			if (isReadingDone()) {
+				//readingDone();
+				readingDone();
+				removeReadStates();
+			}
 			readingArray = false;
 			gotoParentArray(currentKeyValue);
 			removeState();
@@ -417,11 +436,27 @@ int checkCharacter(char& currentChar) {
 			kvState = Value;
 			break;
 		case '\'':
-			isReadingDone();
+			if (isReadingDone()) {
+				//readingDone();
+				readingDone();
+				removeReadStates();
+				kvState = Key;
+			} else {
+				addState(KVReadOpen);
+			}
 			break;
 		case ',':
 			//addState(NewElement);
-			kvState = Key;
+			if (isReadingDone()) {
+				//readingDone();
+				readingDone();
+				removeReadStates();
+			}
+			if (lastStateBeforeReading() == ArrayOpen) {
+				kvState = Value;
+			} else {
+				kvState = Key;
+			}
 			break;
 		default:
 			if (	currentChar != ' ' &&
