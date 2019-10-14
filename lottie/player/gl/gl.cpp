@@ -31,11 +31,11 @@ int glInit()
     GLuint vbo, indexbuffer;
     glGenBuffers(1, &vbo);
 
-	struct Vertex {
+	/*struct Vertex {
 		GLfloat position[4];
-	};
+	};*/
 
-    Vertex vertices[] = {{-0.5f, 0.0f, 0.0f, 1.0f}, {0.0f, 0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.0f, 0.0f, 1.0f}, {0.0f, -0.5f, 0.0f, 1.0f}};
+    struct Vertex vertices[] = {{-0.5f, 0.0f, 0.0f, 1.0f}, {0.0f, 0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.0f, 0.0f, 1.0f}, {0.0f, -0.5f, 0.0f, 1.0f}};
 	GLubyte indices[] = {0, 2, 1, 2, 3, 4};
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);

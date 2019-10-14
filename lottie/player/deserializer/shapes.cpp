@@ -1,22 +1,22 @@
 // functions
 
 int newShapesShape() {
-	if (currentShapesItem == "sh") {
+	if (currentShapesItem->ty == "sh") {
 		currentShapesItem->shape = new ShapesShape;
 		currentShapesShape = currentShapesItem->shape;
-	} else if (currentShapesItem == "el") {
-	} else if (currentShapesItem == "rc") {
-	} else if (currentShapesItem == "sr") {
-	} else if (currentShapesItem == "fl") {
-	} else if (currentShapesItem == "gf") {
-	} else if (currentShapesItem == "gs") {
-	} else if (currentShapesItem == "st") {
-	} else if (currentShapesItem == "mm") {
-	} else if (currentShapesItem == "tm") {
-	} else if (currentShapesItem == "gr") {
-	} else if (currentShapesItem == "rd") {
-	} else if (currentShapesItem == "rp") {
-	} else if (currentShapesItem == "tr") {
+	} else if (currentShapesItem->ty == "el") {
+	} else if (currentShapesItem->ty == "rc") {
+	} else if (currentShapesItem->ty == "sr") {
+	} else if (currentShapesItem->ty == "fl") {
+	} else if (currentShapesItem->ty == "gf") {
+	} else if (currentShapesItem->ty == "gs") {
+	} else if (currentShapesItem->ty == "st") {
+	} else if (currentShapesItem->ty == "mm") {
+	} else if (currentShapesItem->ty == "tm") {
+	} else if (currentShapesItem->ty == "gr") {
+	} else if (currentShapesItem->ty == "rd") {
+	} else if (currentShapesItem->ty == "rp") {
+	} else if (currentShapesItem->ty == "tr") {
 	} 
         return 1;
 }

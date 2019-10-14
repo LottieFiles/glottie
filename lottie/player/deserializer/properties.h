@@ -54,9 +54,14 @@ struct PropertiesShapeProp {
 	struct PropertiesShapeProp* end;
 
 	bool c; //closed
+	struct ArrayOfVertex* i;
+	struct ArrayOfVertex* o;
+	struct ArrayOfVertex* v;
+	/*
 	vector<float> i; // in point - array of 2 elements
 	vector<float> o; // out point
 	vector<float> v; // vertices
+	*/
 } *currentPropertiesShapeProp;
 
 struct PropertiesShapePropKeyframe {

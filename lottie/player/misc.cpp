@@ -1,41 +1,4 @@
 
-struct XY {
-	int x;
-	int y;
-};
-
-struct ArrayOfFloat {
-	struct ArrayOfFloat* parent = NULL; // only one
-	struct ArrayOfFloat* child = NULL; // only one
-	float isSubArray = false;
-	vector<float> value;
-} *currentArrayOfFloat;
-
-struct ArrayOfString {
-	struct ArrayOfString* parent = NULL; // only one
-	struct ArrayOfString* child = NULL; // only one
-	float isSubArray = false;
-	vector<string> value;
-} *currentArrayOfString;
-
-struct KeyValue {
-	struct KeyValue* start = NULL;
-	struct KeyValue* next = NULL;
-	struct KeyValue* prev = NULL;
-
-	string key;
-	string value = NULL;
-	struct ArrayOfString* arrayValue;
-} *currentKeyValue;
-
-struct KeyValueTrail {
-	struct KeyValueTrail* start = NULL;
-	struct KeyValueTrail* next = NULL;
-	struct KeyValueTrail* prev = NULL;
-
-	struct KeyValue* keyValue = NULL;
-} *currentKeyValueTrail;
-
 // functions
 
 int stringToInt(string inputString) {
@@ -92,7 +55,7 @@ int newKeyValueTrail() {
 		tempKeyValueTrail = new KeyValueTrail;
 		currentKeyValueTrail->next = tempKeyValueTrail;
 		tempKeyValueTrail->prev = currentKeyValueTrail;
-		currentValueTrail = tempKeyValueTrail;
+		currentKeyValueTrail = tempKeyValueTrail;
 		
 		struct KeyValue* tempKeyValue;
 		tempKeyValue = new KeyValue;
@@ -109,6 +72,8 @@ int removeKeyValueTrail() { // to be called from within associateKeyValue()
 	currentKeyValueTrail = currentKeyValueTrail->prev;
 	currentKeyValueTrail->next = NULL;
 	delete tempKeyValueTrail;
+
+	return 1;
 }
 
 int removeKeyValue() {
@@ -120,37 +85,42 @@ int removeKeyValue() {
 	tempKeyValue = currentKeyValue->prev;
 	delete currentKeyValue;
 	currentKeyValue = tempKeyValue;
+
+	return 1;
 }
 
 int addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool isArray) {
 	bool exhausted = false;
 	struct KeyValue* keyNode = NULL;
+	keyNode = new KeyValue;
 	struct KeyValue* endNode = NULL;
+	endNode = new KeyValue;
 	if (traceKeyValue != NULL) {
 		struct KeyValue* tempKeyValue = traceKeyValue;
 		if (keyFound(traceKeyValue, key)) {
 			keyNode = traceKeyValue;
-		}
-		while (! exhausted) {
-			if (keyFound(tempKeyValue, key)) {
-				keyNode = tempKeyValue;
+		} else {
+			while (! exhausted) {
+				if (keyFound(tempKeyValue, key)) {
+					keyNode = tempKeyValue;
+				}
+				if (tempKeyValue->next == NULL) {
+					endNode = tempKeyValue;
+					exhausted = true;
+				}
+				tempKeyValue = tempKeyValue->next;
 			}
-			if (tempKeyValue->next == NULL) {
-				endNode = tempKeyValue;
-				exhausted = true;
-			}
-			tempKeyValue = tempKeyValue->next;
 		}
 	} else {
 		traceKeyValue = new KeyValue;
 		traceKeyValue->start = traceKeyValue;
 		traceKeyValue->prev = NULL;
 		traceKeyValue->next = NULL;
+		keyNode = traceKeyValue;
 	}
 	if (keyNode == NULL) {
-		keyNode = new KeyValue;
-		traceKeyValue->endNode->next = keyNode;
-		keyNode->prev = traceKeyValue->end;
+		endNode->next = keyNode;
+		keyNode->prev = endNode;
 		keyNode->start = traceKeyValue->start;
 		keyNode->arrayValue = new ArrayOfString;
 	}
@@ -167,6 +137,43 @@ int addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool i
 	} else {
 		keyNode->value = value;
 	}
+	                                EM_ASM_({
+                                        console.log("keyvalue_done");
+                                });
 	return 1;
 }
+
+int pushVertex(struct ArrayOfVertex* passedVertex, float vertex[4]) {
+	struct ArrayOfVertex* tempAOV;
+	tempAOV = new ArrayOfVertex;
+	if (passedVertex == NULL) {
+		passedVertex = tempAOV;
+		passedVertex->start = tempAOV;
+		passedVertex->prev = NULL;
+		passedVertex->next = NULL;
+	} else {
+		bool exhausted = false;
+		while (! exhausted) {
+			if (passedVertex->next == NULL) {
+				exhausted = true;
+			} else {
+				passedVertex = passedVertex->next;
+			}
+		}
+		tempAOV->prev = passedVertex;
+		passedVertex->next = tempAOV;
+		tempAOV->start = passedVertex->start;
+		passedVertex = tempAOV;
+	}
+
+	passedVertex->vertex->position[0] = vertex[0];
+	passedVertex->vertex->position[1] = vertex[1];
+	passedVertex->vertex->position[2] = vertex[2];
+	passedVertex->vertex->position[3] = vertex[3];
+
+	return 1;
+}
+
+//////////// type converters
+
 
