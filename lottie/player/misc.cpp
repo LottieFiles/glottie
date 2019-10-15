@@ -181,7 +181,7 @@ int addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool i
 		traceKeyValue->next = NULL;
 		keyNode = traceKeyValue;
 	}
-EM_ASM_({console.log('trace 31');});
+EM_ASM({console.log('trace 31');});
 	if (keyNode == NULL) {
 		endNode->next = keyNode;
 		keyNode->prev = endNode;
@@ -198,14 +198,14 @@ EM_ASM_({console.log('trace 31');});
 			keyNode->arrayValue = tempArrayOfString;
 		*/
 		//keyNode->arrayValue->value.push_back(value);
-EM_ASM_({console.log('trace 31.1');});
+EM_ASM({console.log('trace 31.1');});
 		pushValuesVector(keyNode->arrayValue->vector, value);
-EM_ASM_({console.log('trace 31.2');});
+EM_ASM({console.log('trace 31.2');});
 	} else {
 		keyNode->value = value;
 	}
 	traceKeyValue = keyNode;
-	                                EM_ASM_({
+	                                EM_ASM({
                                         console.log("keyvalue_done");
                                 });
 	return 1;

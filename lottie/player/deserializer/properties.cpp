@@ -27,7 +27,7 @@ struct PropertiesShapePropKeyframe* newPropertiesShapePropKeyframe() {
 //////////////////// assign values
 
 int fillPropertiesShapeProp() {
-				EM_ASM_({
+				EM_ASM({
 					console.log("entered");
 				});
 	bool exhausted = false;
