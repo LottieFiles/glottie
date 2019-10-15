@@ -41,8 +41,8 @@ int fillPropertiesShapeProp() {
 					currentPropertiesShapeProp->c = false;
 				}
 		} else if (tempKeyValue->key == "i") {
-				float xval = stof(tempKeyValue->arrayValue->child->value[0]);
-				float yval = stof(tempKeyValue->arrayValue->child->value[1]);
+				float xval = stof(tempKeyValue->arrayValue->child->vector->start->value);
+				float yval = stof(tempKeyValue->arrayValue->child->vector->start->next->value);
 				float vertex[4] = {xval, yval, 0.0f, 1.0f};
 				//currentPropertiesShapeProp->i.emplace_back({xval, yval, 0.0f, 1.0f});
 				//currentPropertiesShapeProp->i.push_back(Vertex());
@@ -56,14 +56,18 @@ int fillPropertiesShapeProp() {
 				pushVertex(currentPropertiesShapeProp->i, vertex);
 				break;
 		} else if (tempKeyValue->key == "o") {
-				float xval = stof(tempKeyValue->arrayValue->child->value[0]);
-				float yval = stof(tempKeyValue->arrayValue->child->value[1]);
+				float xval = stof(tempKeyValue->arrayValue->child->vector->start->value);
+				float yval = stof(tempKeyValue->arrayValue->child->vector->start->next->value);
+				//float xval = stof(tempKeyValue->arrayValue->child->value[0]);
+				//float yval = stof(tempKeyValue->arrayValue->child->value[1]);
 				float vertex[4] = {xval, yval, 0.0f, 1.0f};
 				//currentPropertiesShapeProp->o.emplace_back({xval, yval, 0.0f, 1.0f});
 				pushVertex(currentPropertiesShapeProp->o, vertex);
 		} else if (tempKeyValue->key == "v") {
-				float xval = stof(tempKeyValue->arrayValue->child->value[0]);
-				float yval = stof(tempKeyValue->arrayValue->child->value[1]);
+				float xval = stof(tempKeyValue->arrayValue->child->vector->start->value);
+				float yval = stof(tempKeyValue->arrayValue->child->vector->start->next->value);
+				//float xval = stof(tempKeyValue->arrayValue->child->value[0]);
+				//float yval = stof(tempKeyValue->arrayValue->child->value[1]);
 				float vertex[4] = {xval, yval, 0.0f, 1.0f};
 				//currentPropertiesShapeProp->v.emplace_back({xval, yval, 0.0f, 1.0f});
 				pushVertex(currentPropertiesShapeProp->v, vertex);

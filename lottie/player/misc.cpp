@@ -35,7 +35,26 @@ int addChildArray(struct KeyValue* traceKeyValue) {
 
 int gotoParentArray(struct KeyValue* traceKeyValue) {
 	if (traceKeyValue->arrayValue->parent != NULL) {
-		traceKeyValue->arrayValue = traceKeyValue->arrayValue->parent;
+		//traceKeyValue->arrayValue = traceKeyValue->arrayValue->parent;
+	}
+	return 1;
+}
+
+int popKeyValueTrail() {
+	if (currentKeyValueTrail->prev == NULL) {
+		if (currentKeyValueTrail != NULL) {
+			delete currentKeyValueTrail;
+			currentKeyValue = NULL;
+			currentKeyValueTrail = NULL;
+		}
+		return 1;
+	}
+	currentKeyValueTrail = currentKeyValueTrail->prev;
+	delete currentKeyValueTrail->next;
+	currentKeyValueTrail->next = NULL;
+	currentKeyValue = currentKeyValueTrail->keyValue;
+	while (currentKeyValue->next != NULL) {
+		currentKeyValue = currentKeyValue->next;
 	}
 	return 1;
 }
@@ -44,12 +63,16 @@ int newKeyValueTrail() {
 	if (currentKeyValueTrail == NULL) {
 		currentKeyValueTrail = new KeyValueTrail;
 		currentKeyValueTrail->start = currentKeyValueTrail;
-
+		currentKeyValueTrail->next = NULL;
+		currentKeyValueTrail->prev = NULL;
+		
+		/* // since keyvalues are added on the fly
 		struct KeyValue* tempKeyValue;
 		tempKeyValue = new KeyValue;
 		tempKeyValue->start = tempKeyValue;
 		currentKeyValueTrail->keyValue = tempKeyValue;
 		currentKeyValue = tempKeyValue;
+		*/
 	} else {
 		struct KeyValueTrail* tempKeyValueTrail;
 		tempKeyValueTrail = new KeyValueTrail;
@@ -57,11 +80,13 @@ int newKeyValueTrail() {
 		tempKeyValueTrail->prev = currentKeyValueTrail;
 		currentKeyValueTrail = tempKeyValueTrail;
 		
+		/* // since keyvalues are added on the fly
 		struct KeyValue* tempKeyValue;
 		tempKeyValue = new KeyValue;
 		tempKeyValue->start = tempKeyValue;
 		currentKeyValueTrail->keyValue = tempKeyValue;
 		currentKeyValue = tempKeyValue;
+		*/
 	}
 	return 1;
 }
@@ -87,6 +112,44 @@ int removeKeyValue() {
 	currentKeyValue = tempKeyValue;
 
 	return 1;
+}
+
+int pushValuesVector(struct ValuesVector* traceVector, string tempString) {
+	struct ValuesVector* tempVector;
+	tempVector = new ValuesVector;
+	if (traceVector == NULL) {
+		traceVector = new ValuesVector;
+		traceVector->start = traceVector;
+		traceVector->next = NULL;
+		traceVector->prev = NULL;
+		traceVector->value.reserve(30);
+		traceVector->value = tempString;
+	} else {
+		traceVector->value.reserve(30);
+		tempVector->value = tempString;
+		traceVector->next = tempVector;
+		tempVector->prev = traceVector;
+		tempVector->start = traceVector->start;
+		traceVector = tempVector;
+	}
+	return 1;
+}
+
+string popValuesVector(struct ValuesVector* traceVector) {
+	if (traceVector != NULL) {
+		struct ValuesVector* tempVector;
+		tempVector = traceVector;
+		string tempString = tempVector->value;
+		if (traceVector->prev != NULL) {
+			traceVector = traceVector->prev;
+			traceVector->next = NULL;
+			return tempString;
+		} else {
+			return tempString;
+		}
+		delete tempVector;
+	}
+	return NULL;
 }
 
 int addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool isArray) {
@@ -118,6 +181,7 @@ int addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool i
 		traceKeyValue->next = NULL;
 		keyNode = traceKeyValue;
 	}
+EM_ASM_({console.log('trace 31');});
 	if (keyNode == NULL) {
 		endNode->next = keyNode;
 		keyNode->prev = endNode;
@@ -125,18 +189,22 @@ int addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool i
 		keyNode->arrayValue = new ArrayOfString;
 	}
 	if (isArray) {
-		/*if (isArray) {
+		/*
 			struct ArrayOfString* tempArrayOfString;
 			tempArrayOfString = new ArrayOfString;
 			currentArrayOfString = tempArrayOfString;
 			keyNode->arrayValue->child = tempArrayOfString;
 			tempArrayOfString->parent = keyNode->arrayValue;
 			keyNode->arrayValue = tempArrayOfString;
-		}*/
-		keyNode->arrayValue->value.push_back(value);
+		*/
+		//keyNode->arrayValue->value.push_back(value);
+EM_ASM_({console.log('trace 31.1');});
+		pushValuesVector(keyNode->arrayValue->vector, value);
+EM_ASM_({console.log('trace 31.2');});
 	} else {
 		keyNode->value = value;
 	}
+	traceKeyValue = keyNode;
 	                                EM_ASM_({
                                         console.log("keyvalue_done");
                                 });

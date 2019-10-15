@@ -23,11 +23,18 @@ struct ArrayOfFloat {
 	vector<float> value;
 } *currentArrayOfFloat;
 
+struct ValuesVector {
+	struct ValuesVector* start = NULL;
+	struct ValuesVector* prev = NULL;
+	struct ValuesVector* next = NULL;
+	string value;
+};
+
 struct ArrayOfString {
 	struct ArrayOfString* parent = NULL; // only one
 	struct ArrayOfString* child = NULL; // only one
 	float isSubArray = false;
-	vector<string> value;
+	struct ValuesVector* vector;
 } *currentArrayOfString;
 
 struct KeyValue {
@@ -37,7 +44,7 @@ struct KeyValue {
 
 	string key;
 	string value = NULL;
-	struct ArrayOfString* arrayValue;
+	struct ArrayOfString* arrayValue = NULL;
 } *currentKeyValue;
 
 struct KeyValueTrail {

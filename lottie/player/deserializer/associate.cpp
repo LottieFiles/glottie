@@ -51,7 +51,7 @@ int associateKeyValues() {
 		default:
 			break;
 	}
-	currentKeyValue = NULL;
+	popKeyValueTrail();
 
 	return 1;
 }

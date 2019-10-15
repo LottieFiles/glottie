@@ -3,5 +3,5 @@
 #EMCC_DEBUG=1 /Users/shaafiee/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -o player.js 
 #/Users/shaafiee/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=512MB -s ASSERTIONS=1 -s SAFE_HEAP=1 -o player.js 
 
-/Users/shaafiee/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -o player.js 
+/Users/shaafiee/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -o player.js 
 

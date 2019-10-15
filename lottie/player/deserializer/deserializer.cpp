@@ -107,15 +107,16 @@ enum KeyValueState {Key, Value};
 enum KeyValueState kvState = Key;
 
 struct StateTrail {
-	struct StateTrail* prev;
-	struct StateTrail* next;
+	struct StateTrail* start = NULL;
+	struct StateTrail* prev = NULL;
+	struct StateTrail* next = NULL;
 	enum States stateNow;
 } *theState;
 
 struct ScopeTrail {
-	struct scopeTrail* start;
-	struct ScopeTrail* prev;
-	struct ScopeTrail* next;
+	struct scopeTrail* start = NULL;
+	struct ScopeTrail* prev = NULL;
+	struct ScopeTrail* next = NULL;
 
 	struct KeyValue* currentKeyValue;
 	struct StateTrail* currentState;
@@ -133,8 +134,9 @@ bool readingArray = false;
 bool wasReadingArray = false;
 
 struct ArrayTrail {
-	struct ArrayTrail* prev;
-	struct ArrayTrail* next;
+	struct ArrayTrail* start = NULL;
+	struct ArrayTrail* prev = NULL;
+	struct ArrayTrail* next = NULL;
 	bool isRoot;
 	struct ScopeTrail scopeHere;
 } *arrayNow; 
@@ -159,7 +161,9 @@ int addState(enum States statePassed) {
 	struct StateTrail* tempState;
 	tempState = new StateTrail;
 	theState->next = tempState;
+	tempState->prev = theState;
 	theState = theState->next;
+	theState->start = theState->prev->start;
 	theState->stateNow = statePassed;
 	theState->next = NULL;
 
@@ -189,9 +193,11 @@ int addScope(enum Scopes scopePassed) {
 	struct ScopeTrail* tempScope;
 	tempScope = new ScopeTrail;
 	theScope->next = tempScope;
+	tempScope->prev = theScope;
 	theScope = theScope->next;
 	theScope->next = NULL;
 	theScope->currentState = theState;
+	theScope->start = theScope->prev->start;
 	theScope->scope = scopePassed;
 
 	return 1;
@@ -213,7 +219,9 @@ int addArray() {
 	struct ArrayTrail* tempArray;
 	tempArray = new ArrayTrail;
 	arrayNow->next = tempArray;
+	tempArray->prev = arrayNow;
 	arrayNow = arrayNow->next;
+	arrayNow->start = arrayNow->prev->start;
 	arrayNow->next = NULL;
 
 	return 1;
@@ -346,6 +354,7 @@ int readingDone() {
 			}
 		}
 		*/
+			checkScope();
 	return 1;
 }
 
@@ -354,17 +363,16 @@ bool isReadingDone() {
 				if (kvState == Value) {
 					currentReadValue = currentValue;
 					//readingDone();
-					return true;
 				} else {
 					currentReadKey = currentValue;
 				}
-				checkScope();
 				//removeReadStates();
 				/*///////////// DEBUG stuff
 					EM_ASM_({
 						console.log('done reading');
 					});
 				//////////////////////// DEND */
+				return true;
 			} else {
 				//addState(KVReadOpen);
 				/*///////////// DEBUG stuff
@@ -382,9 +390,19 @@ bool isReadingDone() {
 enum States lastStateBeforeReading() {
 	struct StateTrail* tempState;
 	tempState = theState;
-	while (tempState->stateNow == KVReadOpen || tempState->stateNow == KVReading) {
+	if (tempState == NULL) {
+		EM_ASM_({console.log('trace 12.1');});
+		return NoState;
+	}
+
+	if (tempState->stateNow != KVReadOpen && tempState->stateNow != KVReading) {
+		return tempState->stateNow;
+	}
+	EM_ASM_({console.log('trace 12.2');});
+	while (tempState->prev != NULL && (tempState->stateNow == KVReadOpen || tempState->stateNow == KVReading)) {
 		tempState = tempState->prev;
 	}
+	EM_ASM_({console.log('trace 12.3');});
 	return tempState->stateNow;
 }
 
@@ -403,6 +421,7 @@ int checkCharacter(char& currentChar) {
 				addState(ScopeOpen);
 				prepareContainer(false);
 			}
+	EM_ASM_({console.log('trace 2');});
 			break;
 		case '}':
 			if (isReadingDone()) {
@@ -417,41 +436,60 @@ int checkCharacter(char& currentChar) {
 			break;
 		case '[':
 			readingArray = true;
-			addState(ArrayOpen);
 			if (theState->prev->stateNow == ArrayOpen) {
 				addChildArray(currentKeyValue);
 			}
+			addState(ArrayOpen);
+	EM_ASM_({console.log('trace 1');});
 			break;
 		case ']':
+	EM_ASM_({console.log('trace 41');});
 			if (isReadingDone()) {
 				//readingDone();
 				readingDone();
+	EM_ASM_({console.log('trace 41.1');});
 				removeReadStates();
 			}
 			readingArray = false;
+	EM_ASM_({console.log('trace 41.2');});
 			gotoParentArray(currentKeyValue);
+	EM_ASM_({console.log('trace 41.3');});
 			removeState();
+	EM_ASM_({console.log('trace 42');});
 			break;
 		case ':':
 			kvState = Value;
+	EM_ASM_({console.log('trace 4:');});
 			break;
 		case '\'':
 			if (isReadingDone()) {
 				//readingDone();
 				readingDone();
 				removeReadStates();
-				kvState = Key;
 			} else {
 				addState(KVReadOpen);
+				EM_ASM_({console.log('trace 11');});
 			}
+			EM_ASM_({console.log('trace 12');});
+			if (lastStateBeforeReading() == ArrayOpen) {
+				kvState = Value;
+			} else {
+				kvState = Key;
+			}
+			EM_ASM_({console.log('trace 13');});
+	EM_ASM_({console.log('trace 3');});
 			break;
 		case ',':
 			//addState(NewElement);
+	EM_ASM_({console.log('trace 21.1');});
 			if (isReadingDone()) {
+	EM_ASM_({console.log('trace 21.2');});
 				//readingDone();
 				readingDone();
+	EM_ASM_({console.log('trace 21.3');});
 				removeReadStates();
 			}
+	EM_ASM_({console.log('trace 21');});
 			if (lastStateBeforeReading() == ArrayOpen) {
 				kvState = Value;
 			} else {
