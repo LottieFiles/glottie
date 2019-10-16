@@ -6,6 +6,6 @@
 if [ "$(uname)" == "Linux" ]; then
     emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -o player.js 
 else
-    /Users/shaafiee/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -o player.js 
+    ~/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -o player.js 
 fi
 

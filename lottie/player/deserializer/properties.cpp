@@ -61,6 +61,7 @@ int fillPropertiesShapeProp() {
 				//float xval = stof(tempKeyValue->arrayValue->child->value[0]);
 				//float yval = stof(tempKeyValue->arrayValue->child->value[1]);
 				float vertex[4] = {xval, yval, 0.0f, 1.0f};
+				EM_ASM_({console.log('traced '.$0);},xval);
 				//currentPropertiesShapeProp->o.emplace_back({xval, yval, 0.0f, 1.0f});
 				pushVertex(currentPropertiesShapeProp->o, vertex);
 		} else if (tempKeyValue->key == "v") {

@@ -23,19 +23,25 @@ bool keyFound(struct KeyValue* tempKeyValue, string key) {
 }
 
 int addChildArray(struct KeyValue* traceKeyValue) {
+
 	struct ArrayOfString* tempArrayOfString;
 	tempArrayOfString = new ArrayOfString;
+	if (traceKeyValue->arrayValue == NULL) {
+		traceKeyValue->arrayValue = tempArrayOfString;
+		return 1;
+	}
 	currentArrayOfString = tempArrayOfString;
 	tempArrayOfString->parent = traceKeyValue->arrayValue;
 	traceKeyValue->arrayValue->child = tempArrayOfString;
 	traceKeyValue->arrayValue = tempArrayOfString;
-
 	return 1;
 }
 
 int gotoParentArray(struct KeyValue* traceKeyValue) {
-	if (traceKeyValue->arrayValue->parent != NULL) {
-		//traceKeyValue->arrayValue = traceKeyValue->arrayValue->parent;
+	if (traceKeyValue->arrayValue != NULL) {
+		if (traceKeyValue->arrayValue->parent != NULL) {
+			traceKeyValue->arrayValue = traceKeyValue->arrayValue->parent;
+		}
 	}
 	return 1;
 }
@@ -181,7 +187,6 @@ int addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool i
 		traceKeyValue->next = NULL;
 		keyNode = traceKeyValue;
 	}
-EM_ASM({console.log('trace 31');});
 	if (keyNode == NULL) {
 		endNode->next = keyNode;
 		keyNode->prev = endNode;
@@ -198,16 +203,11 @@ EM_ASM({console.log('trace 31');});
 			keyNode->arrayValue = tempArrayOfString;
 		*/
 		//keyNode->arrayValue->value.push_back(value);
-EM_ASM({console.log('trace 31.1');});
 		pushValuesVector(keyNode->arrayValue->vector, value);
-EM_ASM({console.log('trace 31.2');});
 	} else {
 		keyNode->value = value;
 	}
 	traceKeyValue = keyNode;
-	                                EM_ASM({
-                                        console.log("keyvalue_done");
-                                });
 	return 1;
 }
 

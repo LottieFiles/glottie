@@ -16,9 +16,7 @@ int associateKeyValues() {
 			currentPropertiesShape = NULL;
 			break;
 		case assets_layers_shapes_ks_k:
-			EM_ASM({
-                                        console.log("ks_k");
-                                });
+			EM_ASM({console.log("ks_k");});
 			fillPropertiesShapeProp();
 			break;
 		case assets_layers_shapes_ks_k_e:

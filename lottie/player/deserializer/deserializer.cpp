@@ -67,6 +67,7 @@ struct Chars {
 
 enum Scopes {
 	noscope = 0,
+	object=100,
 	animation = 1,
 	assets = 2,
 	assets_layers = 403,
@@ -146,9 +147,6 @@ int determineCurrentScope() {
 	if (theState->stateNow == ScopeOpen || theState->stateNow == ArrayOpen) {
 
 		if (currentValue == "assets") {
-			EM_ASM(
-				console.log('scope open');
-			);
 
 			theScope->scope = assets;
 		}
@@ -244,9 +242,17 @@ int removeArray() {
 #include "shapes.cpp"
 #include "associate.cpp"
 
+enum Scopes lastScopeBeforeObject() {
+	struct ScopeTrail* tempScopeTrail;
+	tempScopeTrail = theScope;
+	while (tempScopeTrail->scope == object) {
+		tempScopeTrail = tempScopeTrail->prev;
+	}
+	return tempScopeTrail->scope;
+}
 
 int checkScope() {
-	switch (theScope->scope) {
+	switch (lastScopeBeforeObject()) {
 		case noscope:
 			theScope->scope = animation;
 
@@ -254,6 +260,7 @@ int checkScope() {
 			break;
 		case animation:
 			if (currentReadKey == "assets") {
+				EM_ASM({console.log('found assets');});
 				addScope(assets);
 			} else if (currentReadKey == "layers") {
 				addScope(layers);
@@ -261,11 +268,13 @@ int checkScope() {
 			break;
 		case assets:
 			if (currentReadKey == "layers") {
+				EM_ASM({console.log('found layers');});
 				addScope(assets_layers);
 			}
 			break;
 		case assets_layers:
 			if (currentReadKey == "shapes") {
+				EM_ASM({console.log('found shapes');});
 				addScope(assets_layers_shapes);
 			}
 			break;
@@ -274,6 +283,7 @@ int checkScope() {
 			break;
 		case assets_layers_shapes:
 			if (currentReadKey == "ks") {
+				EM_ASM({console.log('found ks');});
 				addScope(assets_layers_shapes_ks);
 			} else if (currentReadKey == "ty") {
 				addScope(assets_layers_shapes_ty);
@@ -281,9 +291,6 @@ int checkScope() {
 			break;
 		case assets_layers_shapes_ks:
 			if (currentReadKey == "k") {
-				EM_ASM({
-                                        console.log("ks_k_discovered");
-                                });
 				addScope(assets_layers_shapes_ks_k);
 			}
 			break;
@@ -325,6 +332,7 @@ int checkScope() {
 			}
 			break;
 		default:
+			addScope(object);
 			break;
 	}
 
@@ -337,11 +345,6 @@ int readingDone() {
 		} else {
 			addKeyValue(currentKeyValue, currentReadKey, currentReadValue, false);
 		}
-				////////////// DEBUG stuff
-					EM_ASM({
-						console.log('done reading');
-					});
-				//////////////////////// DEND */
 		/*
 		if (kvState == Key) {
 			theScope->currentKeyValue->key = currentValue;
@@ -354,7 +357,6 @@ int readingDone() {
 			}
 		}
 		*/
-			checkScope();
 	return 1;
 }
 
@@ -362,9 +364,20 @@ bool isReadingDone() {
 			if (theState->stateNow == KVReading || theState->stateNow == KVReadOpen) {
 				if (kvState == Value) {
 					currentReadValue = currentValue;
+					/*if (currentReadValue == "ks") {
+						EM_ASM({console.log('key ks read');});
+					}*/
+					//EM_ASM({console.log('as a value');});
+					currentValue.clear();
 					//readingDone();
 				} else {
 					currentReadKey = currentValue;
+					checkScope();
+					/*if (currentReadKey == "ks") {
+						EM_ASM({console.log('key ks read');});
+					}*/
+					//EM_ASM({console.log('as a key');});
+					currentValue.clear();
 				}
 				//removeReadStates();
 				/*///////////// DEBUG stuff
@@ -384,6 +397,7 @@ bool isReadingDone() {
 					}
 				//////////////////////// DEND */
 			}
+//EM_ASM({console.log('traced '.$0);});
 	return false;
 }
 
@@ -391,18 +405,15 @@ enum States lastStateBeforeReading() {
 	struct StateTrail* tempState;
 	tempState = theState;
 	if (tempState == NULL) {
-		EM_ASM({console.log('trace 12.1');});
 		return NoState;
 	}
 
 	if (tempState->stateNow != KVReadOpen && tempState->stateNow != KVReading) {
 		return tempState->stateNow;
 	}
-	EM_ASM({console.log('trace 12.2');});
 	while (tempState->prev != NULL && (tempState->stateNow == KVReadOpen || tempState->stateNow == KVReading)) {
 		tempState = tempState->prev;
 	}
-	EM_ASM({console.log('trace 12.3');});
 	return tempState->stateNow;
 }
 
@@ -421,13 +432,15 @@ int checkCharacter(char& currentChar) {
 				addState(ScopeOpen);
 				prepareContainer(false);
 			}
-	EM_ASM({console.log('trace 2');});
 			break;
 		case '}':
 			if (isReadingDone()) {
 				//readingDone();
 				readingDone();
 				removeReadStates();
+			}
+			if (theState->stateNow == ArrayOpen) {
+				readingArray = true;
 			}
 			associateKeyValues();
 			removeKeyValueTrail();
@@ -436,30 +449,25 @@ int checkCharacter(char& currentChar) {
 			break;
 		case '[':
 			readingArray = true;
-			if (theState->prev->stateNow == ArrayOpen) {
+			//removeReadStates();
+			//if (theState->stateNow == ArrayOpen) {
 				addChildArray(currentKeyValue);
-			}
+			//}
 			addState(ArrayOpen);
-	EM_ASM({console.log('trace 1');});
 			break;
 		case ']':
-	EM_ASM({console.log('trace 41');});
 			if (isReadingDone()) {
 				//readingDone();
 				readingDone();
-	EM_ASM({console.log('trace 41.1');});
 				removeReadStates();
 			}
+			kvState = Key;
 			readingArray = false;
-	EM_ASM({console.log('trace 41.2');});
 			gotoParentArray(currentKeyValue);
-	EM_ASM({console.log('trace 41.3');});
 			removeState();
-	EM_ASM({console.log('trace 42');});
 			break;
 		case ':':
 			kvState = Value;
-	EM_ASM({console.log('trace 4:');});
 			break;
 		case '\'':
 			if (isReadingDone()) {
@@ -467,29 +475,23 @@ int checkCharacter(char& currentChar) {
 				readingDone();
 				removeReadStates();
 			} else {
+				//EM_ASM({console.log('read open');});
 				addState(KVReadOpen);
-				EM_ASM({console.log('trace 11');});
 			}
-			EM_ASM({console.log('trace 12');});
 			if (lastStateBeforeReading() == ArrayOpen) {
 				kvState = Value;
 			} else {
-				kvState = Key;
 			}
-			EM_ASM({console.log('trace 13');});
-	EM_ASM({console.log('trace 3');});
 			break;
 		case ',':
 			//addState(NewElement);
-	EM_ASM({console.log('trace 21.1');});
-			if (isReadingDone()) {
-	EM_ASM({console.log('trace 21.2');});
-				//readingDone();
-				readingDone();
-	EM_ASM({console.log('trace 21.3');});
-				removeReadStates();
+			if (readingArray) {
+				if (isReadingDone()) {
+					//readingDone();
+					readingDone();
+					removeReadStates();
+				}
 			}
-	EM_ASM({console.log('trace 21');});
 			if (lastStateBeforeReading() == ArrayOpen) {
 				kvState = Value;
 			} else {
@@ -517,9 +519,10 @@ int checkCharacter(char& currentChar) {
 		//currentValue = currentValue + currentChar;
 		//currentValue.append((char *)currentChar);
 		currentValue.append(1, currentChar);
+		//EM_ASM_({console.log(String.fromCharCode($0));}, currentChar);
 	}
 
-	////////////// DEBUG stuff
+	/*///////////// DEBUG stuff
 	if (theState->stateNow == KVReading) {
 		EM_ASM_({
 			console.log(String.fromCharCode($0));
