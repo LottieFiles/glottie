@@ -233,8 +233,13 @@ int removeScope() {
 	//EM_ASM_({console.log($0);}, (int)theScope->scope);
 
 	struct ScopeTrail* tempScope;
-	theScope = removeObjectsFromScope(tempScope);
-	tempScope = theScope;
+	//theScope = removeObjectsFromScope(tempScope);
+	while (theScope->prev != NULL && theScope->scope == object) {
+		tempScope = theScope;
+		theScope = theScope->prev;
+		theScope->next = NULL;
+		delete tempScope;
+	}
 
 	if (theScope->prev != NULL) {
 		tempScope->prev = NULL;
