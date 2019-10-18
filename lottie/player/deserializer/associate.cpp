@@ -61,7 +61,7 @@ int associateBack(void* object) {
 		case assets_layers:
 			if (theScope->scope == assets_layers_shapes) {
 				currentLayers->shapes = (struct LayersShapes*) object;
-
+				EM_ASM({console.log("-----------------> encountered assets_layers");});
 			}
 			break;
 		case assets_layers_shapes:
