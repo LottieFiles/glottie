@@ -73,9 +73,11 @@ int fillPropertiesShapeProp() {
 				//currentPropertiesShapeProp->v.emplace_back({xval, yval, 0.0f, 1.0f});
 				pushVertex(currentPropertiesShapeProp->v, vertex);
 				//////////////// DEBUG stuff
+				EM_ASM({console.log("/////// v ");});
 				EM_ASM_({
-					console.log(String.$0);
+					console.log($0);
 				}, xval);
+				EM_ASM({console.log("///////");});
 				//////////////////////// DEND */
 		}
 
