@@ -27,9 +27,7 @@ struct PropertiesShapePropKeyframe* newPropertiesShapePropKeyframe() {
 //////////////////// assign values
 
 int fillPropertiesShapeProp() {
-				EM_ASM({
-					console.log("entered");
-				});
+	EM_ASM({console.log("========================> entered");});
 	bool exhausted = false;
 	struct KeyValue* tempKeyValue;
 	tempKeyValue = currentKeyValueTrail->keyValue->start;
@@ -40,6 +38,7 @@ int fillPropertiesShapeProp() {
 				} else {
 					currentPropertiesShapeProp->c = false;
 				}
+				EM_ASM({console.log("========================> fill 80.1");});
 		} else if (tempKeyValue->key == "i") {
 				float xval = stof(tempKeyValue->arrayValue->child->vector->start->value);
 				float yval = stof(tempKeyValue->arrayValue->child->vector->start->next->value);
@@ -54,16 +53,17 @@ int fillPropertiesShapeProp() {
 				*/
 				//currentPropertiesShapeProp->i.at(currentPropertiesShapeProp->i.back()).position = {xval, yval, 0.0f, 1.0f};
 				pushVertex(currentPropertiesShapeProp->i, vertex);
-				break;
+				EM_ASM({console.log("========================> fill 80.2");});
 		} else if (tempKeyValue->key == "o") {
 				float xval = stof(tempKeyValue->arrayValue->child->vector->start->value);
 				float yval = stof(tempKeyValue->arrayValue->child->vector->start->next->value);
 				//float xval = stof(tempKeyValue->arrayValue->child->value[0]);
 				//float yval = stof(tempKeyValue->arrayValue->child->value[1]);
 				float vertex[4] = {xval, yval, 0.0f, 1.0f};
-				EM_ASM_({console.log('traced '.$0);},xval);
+				//EM_ASM_({console.log('traced '.$0);},xval);
 				//currentPropertiesShapeProp->o.emplace_back({xval, yval, 0.0f, 1.0f});
 				pushVertex(currentPropertiesShapeProp->o, vertex);
+				EM_ASM({console.log("========================> fill 80.3");});
 		} else if (tempKeyValue->key == "v") {
 				float xval = stof(tempKeyValue->arrayValue->child->vector->start->value);
 				float yval = stof(tempKeyValue->arrayValue->child->vector->start->next->value);
@@ -73,11 +73,10 @@ int fillPropertiesShapeProp() {
 				//currentPropertiesShapeProp->v.emplace_back({xval, yval, 0.0f, 1.0f});
 				pushVertex(currentPropertiesShapeProp->v, vertex);
 				//////////////// DEBUG stuff
-				EM_ASM({console.log("/////// v ");});
 				EM_ASM_({
 					console.log($0);
 				}, xval);
-				EM_ASM({console.log("///////");});
+				EM_ASM({console.log("========================> fill 80.4");});
 				//////////////////////// DEND */
 		}
 
@@ -88,6 +87,7 @@ int fillPropertiesShapeProp() {
 		} else {
 			tempKeyValue = tempKeyValue->next;
 		}
+		exhausted = true;
 	}
 
 	return 1;

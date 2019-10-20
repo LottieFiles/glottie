@@ -17,13 +17,13 @@ int associateKeyValues() {
 			break;
 		case assets_layers_shapes_ks_k:
 			EM_ASM({console.log("ks_k");});
-			//fillPropertiesShapeProp();
+			fillPropertiesShapeProp();
 			break;
 		case assets_layers_shapes_ks_k_e:
-			//fillPropertiesShapeProp();
+			fillPropertiesShapeProp();
 			break;
 		case assets_layers_shapes_ks_k_s:
-			//fillPropertiesShapeProp();
+			fillPropertiesShapeProp();
 			break;
 		//
 		case layers_shapes:
