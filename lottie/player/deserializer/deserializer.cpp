@@ -395,6 +395,7 @@ bool isReadingDone() {
 			if (theState->stateNow == KVReading || theState->stateNow == KVReadOpen) {
 				if (kvState == Value) {
 					currentReadValue = currentValue;
+					readingDone();
 					currentValue.clear();
 				} else {
 					currentReadKey = currentValue;
@@ -438,12 +439,13 @@ int checkCharacter(char& currentChar) {
 			EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			if (isReadingDone()) {
-				readingDone();
+				//readingDone();
 				removeReadStates();
 			}
 			kvState = Key;
 			newKeyValueTrail();
 			readingArray = false;
+			checkScope();
 			if (theState->stateNow == ArrayOpen || theState->stateNow == ScopeOpenInArray || readingArray || theState->stateNow == ScopeToBeRemoved) {
 				EM_ASM({console.log("opening object in array");});
 				if (theState->keyEncountered) {
@@ -455,13 +457,12 @@ int checkCharacter(char& currentChar) {
 				addState(ScopeOpen); //// ADD STATE
 			}
 
-			checkScope();
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			EM_ASM_({console.log("OPENED object " + $0);}, theState->stateNow);
 			break;
 		case '}':
 			if (isReadingDone()) {
-				readingDone();
+				//readingDone();
 				removeReadStates();
 			}
 			EM_ASM_({console.log("CLOSING object " + $0);}, theState->stateNow);
@@ -492,7 +493,7 @@ int checkCharacter(char& currentChar) {
 		case '[':
 			EM_ASM_({console.log("[OPENING array " + $0);}, theState->stateNow);
 			if (isReadingDone()) {
-				readingDone();
+				//readingDone();
 				removeReadStates();
 			}
 			readingArray = true;
@@ -509,7 +510,7 @@ int checkCharacter(char& currentChar) {
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			if (isReadingDone()) {
 				//readingDone();
-				readingDone();
+				//readingDone();
 			}
 			kvState = Key;
 			readingArray = false;
@@ -530,7 +531,7 @@ int checkCharacter(char& currentChar) {
 		case '\'':
 			if (isReadingDone()) {
 				//readingDone();
-				readingDone();
+				//readingDone();
 				removeReadStates();
 			} else {
 				//EM_ASM({console.log('read open');});
@@ -544,7 +545,7 @@ int checkCharacter(char& currentChar) {
 			if (readingArray) {
 				if (isReadingDone()) {
 					//readingDone();
-					readingDone();
+					//readingDone();
 				}
 			}
 			removeReadStates();

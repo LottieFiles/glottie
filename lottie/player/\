@@ -103,22 +103,8 @@ int newKeyValueTrail() {
 int removeKeyValueTrail() { // to be called from within associateKeyValue()
 	struct KeyValueTrail* tempKeyValueTrail;
 	tempKeyValueTrail = currentKeyValueTrail;
-	if (currentKeyValueTrail->prev != NULL) {
-		currentKeyValueTrail = currentKeyValueTrail->prev;
-		currentKeyValue = currentKeyValueTrail->keyValue;
-		currentKeyValue->next = NULL;
-		currentArrayOfString = currentKeyValueTrail->keyValue->arrayValue;
-	} else {
-		currentKeyValueTrail = new KeyValueTrail;
-		currentKeyValueTrail->start = currentKeyValueTrail;
-		currentKeyValueTrail->keyValue = new KeyValue;
-		currentKeyValueTrail->keyValue->start = currentKeyValueTrail->keyValue;
-		currentKeyValueTrail->keyValue->arrayValue = new ArrayOfString;
-	}
-
+	currentKeyValueTrail = currentKeyValueTrail->prev;
 	currentKeyValueTrail->next = NULL;
-	delete tempKeyValueTrail->keyValue->arrayValue;
-	delete tempKeyValueTrail->keyValue;
 	delete tempKeyValueTrail;
 
 	return 1;
@@ -203,15 +189,12 @@ int addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool i
 		traceKeyValue->prev = NULL;
 		traceKeyValue->next = NULL;
 		keyNode = traceKeyValue;
-		keyNode->arrayValue = new ArrayOfString;
-		keyNode->key = key;
 	}
 	if (keyNode == NULL) {
 		endNode->next = keyNode;
 		keyNode->prev = endNode;
 		keyNode->start = traceKeyValue->start;
 		keyNode->arrayValue = new ArrayOfString;
-		keyNode->key = key;
 	}
 	if (isArray) {
 		/*
@@ -227,10 +210,8 @@ int addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool i
 	} else {
 		keyNode->value = value;
 	}
-	EM_ASM_({console.log(">>>>>>>>>>>>>>>>>>>> key added " + String.fromCharCode($0));}, keyNode->key.at(0));
-	if (!value.empty()) {
-		EM_ASM_({console.log(">>>>>>>>>>>>>>>>>>>> with value " + String.fromCharCode($0));}, value.at(0));
-	}
+	EM_ASM_({console.log(">>>>>>>>>>>>>>>>>>>> key added " + String.fromCharCode($0)));}, key.at(0));
+	EM_ASM_({console.log(">>>>>>>>>>>>>>>>>>>> with value " + String.fromCharCode($0)));}, value.at(0));
 	traceKeyValue = keyNode;
 	return 1;
 }

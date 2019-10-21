@@ -72,6 +72,17 @@ int associateBack(void* object) {
 		case assets_layers_shapes_ks:
 			if (theScope->scope == assets_layers_shapes_ks_k) {
 				currentPropertiesShape->k = (struct PropertiesShapeProp*) object;
+				EM_ASM({console.log("-----------------> associated back: assets ks");});
+			}
+			break;
+		case assets_layers_shapes_ks_k:
+			if (theScope->scope == layers_shapes_ks_k_e) {
+				currentPropertiesShape->keyframe->e = (struct PropertiesShapeProp*) object;
+				currentPropertiesShape->isKeyframe = true;
+				EM_ASM({console.log("-----------------> associated back: assets ks_k");});
+			} else if (theScope->scope == layers_shapes_ks_k_s) {
+				currentPropertiesShape->keyframe->s = (struct PropertiesShapeProp*) object;
+				currentPropertiesShape->isKeyframe = true;
 			}
 			break;
 		//
@@ -153,9 +164,11 @@ int prepareContainer(bool arrayOfObjects) {
 			break;
 		case assets_layers_shapes_ks: 
 			associateBack(newPropertiesShape());
+				EM_ASM({console.log("-----------------> container prepped: assets ks");});
 			break;
 		case assets_layers_shapes_ks_k: 
 			associateBack(newPropertiesShapeProp());
+				EM_ASM({console.log("-----------------> container prepped: assets ks_k");});
 			break;
 		case assets_layers_shapes_ks_k_e: 
 			associateBack(newPropertiesShapeProp());
@@ -174,6 +187,7 @@ int prepareContainer(bool arrayOfObjects) {
 			break;
 		case layers_shapes_ks_k: 
 			associateBack(newPropertiesShapeProp());
+				EM_ASM({console.log("-----------------> container prepped: ks_k");});
 			break;
 		case layers_shapes_ks_k_e: 
 			associateBack(newPropertiesShapeProp());

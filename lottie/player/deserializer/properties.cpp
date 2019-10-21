@@ -11,6 +11,7 @@ struct PropertiesShape* newPropertiesShape() {
 struct PropertiesShapeProp* newPropertiesShapeProp() {
 	struct PropertiesShapeProp* tempPropertiesShapeProp;
 	tempPropertiesShapeProp = new PropertiesShapeProp;
+	tempPropertiesShapeProp = tempPropertiesShapeProp->start;
 	currentPropertiesShapeProp = tempPropertiesShapeProp;
 	
 	return tempPropertiesShapeProp;
@@ -30,16 +31,23 @@ int fillPropertiesShapeProp() {
 	EM_ASM({console.log("========================> entered");});
 	bool exhausted = false;
 	struct KeyValue* tempKeyValue;
-	tempKeyValue = currentKeyValueTrail->keyValue->start;
+	tempKeyValue = currentKeyValue->start;
 	while (! exhausted) {
-		if (tempKeyValue->key == "c") {
+		if (tempKeyValue) {
+			EM_ASM({console.log("========================> iteration");});
+		}
+		if (tempKeyValue->key.empty()) {
+			continue;
+		}
+		if (!tempKeyValue->key.empty() && tempKeyValue->key == "c") {
+			EM_ASM({console.log("========================> fill 80.1");});
 				if (tempKeyValue->value == "true") {
 					currentPropertiesShapeProp->c = true;
 				} else {
 					currentPropertiesShapeProp->c = false;
 				}
-				EM_ASM({console.log("========================> fill 80.1");});
-		} else if (tempKeyValue->key == "i") {
+				EM_ASM({console.log("========================> fill 80.1.1");});
+		} else if (!tempKeyValue->key.empty() && tempKeyValue->key == "i") {
 				float xval = stof(tempKeyValue->arrayValue->child->vector->start->value);
 				float yval = stof(tempKeyValue->arrayValue->child->vector->start->next->value);
 				float vertex[4] = {xval, yval, 0.0f, 1.0f};
@@ -54,7 +62,7 @@ int fillPropertiesShapeProp() {
 				//currentPropertiesShapeProp->i.at(currentPropertiesShapeProp->i.back()).position = {xval, yval, 0.0f, 1.0f};
 				pushVertex(currentPropertiesShapeProp->i, vertex);
 				EM_ASM({console.log("========================> fill 80.2");});
-		} else if (tempKeyValue->key == "o") {
+		} else if (!tempKeyValue->key.empty() && tempKeyValue->key == "o") {
 				float xval = stof(tempKeyValue->arrayValue->child->vector->start->value);
 				float yval = stof(tempKeyValue->arrayValue->child->vector->start->next->value);
 				//float xval = stof(tempKeyValue->arrayValue->child->value[0]);
@@ -64,7 +72,7 @@ int fillPropertiesShapeProp() {
 				//currentPropertiesShapeProp->o.emplace_back({xval, yval, 0.0f, 1.0f});
 				pushVertex(currentPropertiesShapeProp->o, vertex);
 				EM_ASM({console.log("========================> fill 80.3");});
-		} else if (tempKeyValue->key == "v") {
+		} else if (!tempKeyValue->key.empty() && tempKeyValue->key == "v") {
 				float xval = stof(tempKeyValue->arrayValue->child->vector->start->value);
 				float yval = stof(tempKeyValue->arrayValue->child->vector->start->next->value);
 				//float xval = stof(tempKeyValue->arrayValue->child->value[0]);

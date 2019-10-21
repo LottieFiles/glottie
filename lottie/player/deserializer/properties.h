@@ -33,7 +33,7 @@ struct PropertiesMultiDimensional {
 	vector<float> ti; // in tangent
 	vector<float> to; // out tangent
 
-	struct PropertiesMultiDimensionalKeyframe* keyframe;
+	struct PropertiesMultiDimensionalKeyframe* keyframe=NULL;
 } *currentPropertiesMultiDimensional;
 
 struct PropertiesShapeKeyframed {
@@ -48,10 +48,10 @@ struct PropertiesShapeKeyframed {
 } *currentPropertiesShapeKeyframed;
 
 struct PropertiesShapeProp {
-	struct PropertiesShapeProp* start;
-	struct PropertiesShapeProp* next;
-	struct PropertiesShapeProp* prev;
-	struct PropertiesShapeProp* end;
+	struct PropertiesShapeProp* start=NULL;
+	struct PropertiesShapeProp* next=NULL;
+	struct PropertiesShapeProp* prev=NULL;
+	struct PropertiesShapeProp* end=NULL;
 
 	bool c; //closed
 	struct ArrayOfVertex* i;
@@ -65,8 +65,8 @@ struct PropertiesShapeProp {
 } *currentPropertiesShapeProp;
 
 struct PropertiesShapePropKeyframe {
-	struct PropertiesShapeProp* e;
-	struct PropertiesShapeProp* s;
+	struct PropertiesShapeProp* e=NULL;
+	struct PropertiesShapeProp* s=NULL;
 } *currentPropertiesShapePropKeyframe;
 
 struct PropertiesShape {
@@ -75,7 +75,7 @@ struct PropertiesShape {
 	int a; //animated
 
 	struct PropertiesShapeProp* k;
-	struct PropertiesShapePropKeyframe* keyframe;
+	struct PropertiesShapePropKeyframe* keyframe=NULL;
 	bool isKeyframe = false;
 	int PropertiesShapePropCount = 0;
 } *currentPropertiesShape;
