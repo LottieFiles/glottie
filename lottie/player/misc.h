@@ -43,7 +43,7 @@ struct KeyValue {
 	struct KeyValue* prev = NULL;
 
 	string key;
-	string value = NULL;
+	wstring value = NULL;
 	struct ArrayOfString* arrayValue = NULL;
 } *currentKeyValue;
 

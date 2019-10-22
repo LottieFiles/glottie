@@ -31,12 +31,13 @@ int fillPropertiesShapeProp() {
 	EM_ASM({console.log("========================> entered");});
 	bool exhausted = false;
 	struct KeyValue* tempKeyValue;
-	tempKeyValue = currentKeyValue->start;
+	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
 	while (! exhausted) {
 		if (tempKeyValue) {
 			EM_ASM({console.log("========================> iteration");});
 		}
 		if (tempKeyValue->key.empty()) {
+			EM_ASM({console.log("========================> empty");});
 			continue;
 		}
 		if (!tempKeyValue->key.empty() && tempKeyValue->key == "c") {
@@ -97,6 +98,7 @@ int fillPropertiesShapeProp() {
 		}
 		exhausted = true;
 	}
+	deleteKeyValues(theScope->currentKeyValueTrail);
 
 	return 1;
 }

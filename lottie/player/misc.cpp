@@ -73,13 +73,6 @@ int newKeyValueTrail() {
 		currentKeyValueTrail->prev = NULL;
 		EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> key trail created");});
 		
-		/* // since keyvalues are added on the fly
-		struct KeyValue* tempKeyValue;
-		tempKeyValue = new KeyValue;
-		tempKeyValue->start = tempKeyValue;
-		currentKeyValueTrail->keyValue = tempKeyValue;
-		currentKeyValue = tempKeyValue;
-		*/
 	} else {
 		struct KeyValueTrail* tempKeyValueTrail;
 		tempKeyValueTrail = new KeyValueTrail;
@@ -89,14 +82,61 @@ int newKeyValueTrail() {
 		currentKeyValueTrail = tempKeyValueTrail;
 		EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> key trail extended");});
 		
-		/* // since keyvalues are added on the fly
-		struct KeyValue* tempKeyValue;
-		tempKeyValue = new KeyValue;
-		tempKeyValue->start = tempKeyValue;
-		currentKeyValueTrail->keyValue = tempKeyValue;
-		currentKeyValue = tempKeyValue;
-		*/
 	}
+	return 1;
+}
+
+int deleteArrayValue(struct ArrayOfString* passedArrayValue) {
+	if (passedArrayValue->child != NULL) {
+		deleteArrayValue(passedArrayValue->child);
+		delete passedArrayValue;
+	} else {
+		delete passedArrayValue;
+	}
+	EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> deleted arrayofstring");});
+	return 1;
+}
+
+int deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail) {
+	EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> deleting kv");});
+	if (passedKeyValueTrail == NULL) {
+		return 0;
+	}
+	struct KeyValue* tempKeyValue;
+	struct KeyValue* temptempKeyValue;
+	tempKeyValue = passedKeyValueTrail->keyValue;
+	tempKeyValue = tempKeyValue->start;
+	EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> deleting kv 0.1");});
+	int counter = 0;
+	while (tempKeyValue->next != NULL) {
+		counter++;
+		EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> deleting kv 0.0.1 " + $0);}, counter);
+		temptempKeyValue = tempKeyValue;
+		tempKeyValue = tempKeyValue->next;
+		//deleteArrayValue(temptempKeyValue->arrayValue);
+		delete temptempKeyValue;
+	}
+	EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> deleting kv 0.2");});
+	delete temptempKeyValue->arrayValue;
+	delete temptempKeyValue;
+	EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> deleting kv 0.3");});
+	if (passedKeyValueTrail->prev != NULL) {
+		if (passedKeyValueTrail->next != NULL) {
+			passedKeyValueTrail->next->prev = passedKeyValueTrail->prev;
+		} else {
+			passedKeyValueTrail->next->prev = NULL;
+		}
+	}
+	EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> deleting kv 0.4");});
+	if (passedKeyValueTrail->next != NULL) {
+		if (passedKeyValueTrail->prev != NULL) {
+			passedKeyValueTrail->prev->next = passedKeyValueTrail->next;
+		} else {
+			passedKeyValueTrail->prev->next = NULL;
+		}
+	}
+		
+	delete passedKeyValueTrail;
 	return 1;
 }
 
@@ -106,20 +146,13 @@ int removeKeyValueTrail() { // to be called from within associateKeyValue()
 	if (currentKeyValueTrail->prev != NULL) {
 		currentKeyValueTrail = currentKeyValueTrail->prev;
 		currentKeyValue = currentKeyValueTrail->keyValue;
-		currentKeyValue->next = NULL;
+		//currentKeyValue->next = NULL;
 		currentArrayOfString = currentKeyValueTrail->keyValue->arrayValue;
-	} else {
-		currentKeyValueTrail = new KeyValueTrail;
-		currentKeyValueTrail->start = currentKeyValueTrail;
-		currentKeyValueTrail->keyValue = new KeyValue;
-		currentKeyValueTrail->keyValue->start = currentKeyValueTrail->keyValue;
-		currentKeyValueTrail->keyValue->arrayValue = new ArrayOfString;
-	}
+		currentKeyValueTrail->next = NULL;
 
-	currentKeyValueTrail->next = NULL;
-	delete tempKeyValueTrail->keyValue->arrayValue;
-	delete tempKeyValueTrail->keyValue;
-	delete tempKeyValueTrail;
+		//deleteKeyValues(tempKeyValueTrail);
+		delete tempKeyValueTrail;
+	}
 
 	return 1;
 }
@@ -175,12 +208,10 @@ string popValuesVector(struct ValuesVector* traceVector) {
 	return NULL;
 }
 
-int addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool isArray) {
+struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool isArray) {
 	bool exhausted = false;
 	struct KeyValue* keyNode = NULL;
-	keyNode = new KeyValue;
 	struct KeyValue* endNode = NULL;
-	endNode = new KeyValue;
 	if (traceKeyValue != NULL) {
 		struct KeyValue* tempKeyValue = traceKeyValue;
 		if (keyFound(traceKeyValue, key)) {
@@ -205,6 +236,7 @@ int addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool i
 		keyNode = traceKeyValue;
 		keyNode->arrayValue = new ArrayOfString;
 		keyNode->key = key;
+		EM_ASM_({console.log(">>>>>>>>>>>>>>>>>>>> first key added " + String.fromCharCode($0));}, keyNode->key.at(0));
 	}
 	if (keyNode == NULL) {
 		endNode->next = keyNode;
@@ -212,6 +244,7 @@ int addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool i
 		keyNode->start = traceKeyValue->start;
 		keyNode->arrayValue = new ArrayOfString;
 		keyNode->key = key;
+		EM_ASM_({console.log(">>>>>>>>>>>>>>>>>>>> new key added " + String.fromCharCode($0));}, keyNode->key.at(0));
 	}
 	if (isArray) {
 		/*
@@ -227,12 +260,11 @@ int addKeyValue(struct KeyValue* traceKeyValue, string key, string value, bool i
 	} else {
 		keyNode->value = value;
 	}
-	EM_ASM_({console.log(">>>>>>>>>>>>>>>>>>>> key added " + String.fromCharCode($0));}, keyNode->key.at(0));
 	if (!value.empty()) {
 		EM_ASM_({console.log(">>>>>>>>>>>>>>>>>>>> with value " + String.fromCharCode($0));}, value.at(0));
 	}
-	traceKeyValue = keyNode;
-	return 1;
+	//traceKeyValue = keyNode;
+	return keyNode;
 }
 
 int pushVertex(struct ArrayOfVertex* passedVertex, float vertex[4]) {
