@@ -31,6 +31,7 @@ struct ValuesVector {
 };
 
 struct ArrayOfString {
+	struct ArrayOfString* root = NULL;
 	struct ArrayOfString* parent = NULL; // only one
 	struct ArrayOfString* child = NULL; // only one
 	float isSubArray = false;
@@ -43,7 +44,7 @@ struct KeyValue {
 	struct KeyValue* prev = NULL;
 
 	string key;
-	wstring value = NULL;
+	string value = NULL;
 	struct ArrayOfString* arrayValue = NULL;
 } *currentKeyValue;
 
