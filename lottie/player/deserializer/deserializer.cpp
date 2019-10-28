@@ -268,9 +268,9 @@ int removeScope() {
 	struct ScopeTrail* tempScope;
 	//theScope = removeObjectsFromScope(tempScope);
 	while (theScope->prev != NULL && theScope->scope == object) {
-		if (theScope->currentKeyValueTrail != NULL) {
+		/*if (theScope->currentKeyValueTrail != NULL) {
 			deleteKeyValues(theScope->currentKeyValueTrail);
-		}
+		}*/
 		tempScope = theScope;
 		theScope = theScope->prev;
 		theScope->next = NULL;
