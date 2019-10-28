@@ -173,19 +173,22 @@ int deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail) {
 	struct KeyValue* temptempKeyValue;
 	tempKeyValue = passedKeyValueTrail->keyValue;
 	tempKeyValue = tempKeyValue->start;
-	EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> deleting kv 0.1");});
+	EM_ASM_({console.log(">>>>>>>>>>>>>>>>>>>> deleting kv 0.1 " + $0);}, passedKeyValueTrail->keyValue);
 	int counter = 0;
 	while (tempKeyValue->next != NULL) {
+		EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> deleting kv 0.1.1");});
 		if (!tempKeyValue->key.empty()) {
 			todisplay = tempKeyValue->key.at(0);
 		} else {
 			todisplay = ' ';
 		}
+		EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> deleting kv 0.1.2");});
 		if (!tempKeyValue->value.empty()) {
 			valdisplay = tempKeyValue->value.at(0);
 		} else {
 			valdisplay = ' ';
 		}
+		EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> deleting kv 0.1.3");});
 		counter++;
 		EM_ASM({console.log(">>>>>>>>>>>>>>>>>>>> deleting kv 0.0.1 " + $0);}, counter);
 		temptempKeyValue = tempKeyValue;
