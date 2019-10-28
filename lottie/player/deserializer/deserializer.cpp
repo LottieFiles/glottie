@@ -159,9 +159,11 @@ int determineCurrentScope() {
 /////////////////////////////////////////////////////////////////////////////
 
 int addState(enum States statePassed) {
+	EM_ASM_({console.log("adding tempState->prev 1.0 " + $0);}, theState);
 	struct StateTrail* tempState;
-	tempState = new StateTrail;
 	EM_ASM_({console.log("adding tempState->prev 1.1 " + $0);}, theState);
+	tempState = new StateTrail;
+	EM_ASM_({console.log("adding tempState->prev 1.2 " + $0);}, theState);
 	tempState->prev = theState;
 
 	EM_ASM_({console.log("adding theState->next 1.1 " + $0);}, tempState);
@@ -195,6 +197,14 @@ int removeState() {
 int removeReadStates() {
 	EM_ASM_({console.log("remove read state 1.0 " + $0);}, theState->stateNow);
 	struct StateTrail* tempState;
+	if (theState == NULL) {
+		EM_ASM_({console.log("remove read state 1.3 " + $0);}, theState->stateNow);
+		delete theState;
+		theState = new StateTrail;
+		theState->start = theState;
+		theState->stateNow = NoState;
+		return 1;
+	}
 	while (theState->prev != NULL && (theState->stateNow == KVReading || theState->stateNow == KVReadOpen)) {
 		EM_ASM_({console.log("remove read state 1.0.1 " + $0);}, theState->prev);
 		tempState = theState;
@@ -590,18 +600,23 @@ int checkCharacter(char& currentChar) {
 			previousScopeClosure = false;
 			break;
 		case '\'':
+			EM_ASM({console.log("handling apostrophe 1");});
 			if (isReadingDone()) {
 				//readingDone();
 				//readingDone();
+				EM_ASM({console.log("handling apostrophe 1.0");});
 				removeReadStates();
+				EM_ASM({console.log("handling apostrophe 1.1");});
 			} else {
 				//EM_ASM({console.log('read open');});
+				EM_ASM({console.log("handling apostrophe 1.2");});
 				addState(KVReadOpen); //// ADD STATE
 				EM_ASM({console.log("kvreadopen ");});
 				currentValue.clear();
 			}
 
 			previousScopeClosure = false;
+			EM_ASM({console.log("done handling apostrophe ");});
 			break;
 		case ',':
 			EM_ASM({console.log("handling comma ");});
