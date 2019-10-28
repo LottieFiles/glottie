@@ -183,6 +183,10 @@ int removeState() {
 		EM_ASM_({console.log("removed state 700 " + $0);}, theState);
 		delete tempState;
 	} else {
+		delete theState;
+		theState = new StateTrail;
+		theState->start = theState;
+		theState->stateNow = NoState;
 	}
 
 	return 1;
