@@ -23,14 +23,8 @@ void main_loop() { loop(); }
 #include "deserializer/deserializer.cpp"
 #include "gl/gl.cpp"
 
-
-
-
-
-
 int main()
 {
-
 	deserialize();
 	//glInit();
 

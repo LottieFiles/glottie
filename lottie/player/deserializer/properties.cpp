@@ -98,7 +98,7 @@ int fillPropertiesShapeProp() {
 		}
 		exhausted = true;
 	}
-	deleteKeyValues(theScope->currentKeyValueTrail);
+	//deleteKeyValues(theScope->currentKeyValueTrail);
 
 	return 1;
 }

@@ -3,5 +3,5 @@
 cp ../player.js ./
 cp ../player.wasm ./
 
-python -m SimpleHTTPServer 8080
+python3.5 -m http.server 8081
 
