@@ -8,9 +8,9 @@ if [ "$(uname)" == "Linux" ]; then
     #emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -s SAFE_HEAP=1 -o player.js 
 else
     #~/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=768MB -o player.js 
-    #~/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -s SAFE_HEAP=1 -fsanitize=address -s TOTAL_MEMORY=750MB -o player.js 
+    ~/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -s SAFE_HEAP=1 -fsanitize=undefined -s TOTAL_MEMORY=750MB -o player.js 
     #~/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -s SAFE_HEAP=1 -s TOTAL_MEMORY=750MB -o player.js 
     #~/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -s SAFE_HEAP=1 -o player.js 
-    ~/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -fsanitize=address -s TOTAL_MEMORY=750MB -o player.js 
+    #~/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -o player.js 
 fi
 

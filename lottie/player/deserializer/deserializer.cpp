@@ -515,8 +515,8 @@ int checkCharacter(char& currentChar) {
 			}
 			kvState = Key;
 			readingArray = false;
-			currentKeyValueTrail = theScope->currentKeyValueTrail;
 			checkScope();
+			currentKeyValueTrail = theScope->currentKeyValueTrail;
 			EM_ASM({console.log("adding new key value trail");});
 			newKeyValueTrail();
 			EM_ASM({console.log("DONE adding new key value trail");});

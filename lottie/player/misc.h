@@ -35,8 +35,8 @@ struct ArrayOfString {
 	struct ArrayOfString* root = NULL;
 	struct ArrayOfString* parent = NULL; // only one
 	struct ArrayOfString* child = NULL; // only one
-	float isSubArray = false;
-	struct ValuesVector* vector;
+	//float isSubArray = false;
+	struct ValuesVector* vector = NULL;
 } *currentArrayOfString;
 
 struct KeyValue {

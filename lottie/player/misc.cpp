@@ -27,16 +27,20 @@ bool keyFound(struct KeyValue* tempKeyValue, string key) {
 }
 
 struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
+	EM_ASM({console.log("addingchildarray 901.1");});
 	struct ArrayOfString* tempArrayOfString;
 	tempArrayOfString = new ArrayOfString;
+	EM_ASM({console.log("addingchildarray 901.5");});
 	if (traceKeyValue->arrayValue == NULL) {
 		traceKeyValue = new KeyValue;
 		traceKeyValue->arrayValue = tempArrayOfString;
 		traceKeyValue->arrayValue->root = tempArrayOfString;
 		return traceKeyValue;
 	}
+	EM_ASM({console.log("addingchildarray 901.10");});
 	tempArrayOfString->root = traceKeyValue->arrayValue->root;
 	currentArrayOfString = tempArrayOfString;
+	EM_ASM({console.log("addingchildarray 901.15");});
 	tempArrayOfString->parent = traceKeyValue->arrayValue;
 	traceKeyValue->arrayValue->child = tempArrayOfString;
 	traceKeyValue->arrayValue = tempArrayOfString;
