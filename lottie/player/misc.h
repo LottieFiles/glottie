@@ -27,7 +27,8 @@ struct ValuesVector {
 	struct ValuesVector* start = NULL;
 	struct ValuesVector* prev = NULL;
 	struct ValuesVector* next = NULL;
-	string value;
+	//string value;
+	char value[30];
 };
 
 struct ArrayOfString {
@@ -43,8 +44,10 @@ struct KeyValue {
 	struct KeyValue* next = NULL;
 	struct KeyValue* prev = NULL;
 
-	string key;
-	string value = NULL;
+	//string key;
+	char key[30];
+	//string value = NULL;
+	char value[30];
 	struct ArrayOfString* arrayValue = NULL;
 } *currentKeyValue;
 
