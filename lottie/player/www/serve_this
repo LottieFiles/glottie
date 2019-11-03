@@ -3,5 +3,5 @@
 cp ../player.js ./
 cp ../player.wasm ./
 
-python3.5 -m http.server 8081
+python3.6 -m http.server 8081
 

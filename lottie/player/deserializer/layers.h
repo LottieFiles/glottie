@@ -52,7 +52,8 @@ struct Asset {
         struct PrecompSource* precomps;
 } *currentAssets;
 
-struct Layers {
+struct alignas(128) Layers {
+//struct Layers {
         struct Layers* start;
         struct Layers* end;
         struct Layers* prev;
@@ -60,7 +61,7 @@ struct Layers {
 
 	int ty;
         int id;
-        string itemType; // any of 'shape', 'solid', 'precomp', 'image', 'null', 'text'
+        //string itemType; // any of 'shape', 'solid', 'precomp', 'image', 'null', 'text'
         struct LayersShapes* shapes;
         struct LayersSolid* solid;
         struct LayersPrecomp* precomp;

@@ -108,7 +108,8 @@ enum KeyValueState {Key, Value};
 
 enum KeyValueState kvState = Key;
 
-struct StateTrail {
+struct alignas(32) StateTrail {
+//struct StateTrail {
 	struct StateTrail* start = NULL;
 	struct StateTrail* prev = NULL;
 	struct StateTrail* next = NULL;
@@ -116,7 +117,8 @@ struct StateTrail {
 	bool keyEncountered = false;
 } *theState;
 
-struct ScopeTrail {
+struct alignas(64) ScopeTrail {
+//struct ScopeTrail {
 	struct scopeTrail* start = NULL;
 	struct ScopeTrail* prev = NULL;
 	struct ScopeTrail* next = NULL;
@@ -164,6 +166,12 @@ int addState(enum States statePassed) {
 	EM_ASM_({console.log("adding tempState->prev 1.1 " + $0);}, theState);
 	tempState = new StateTrail;
 	EM_ASM_({console.log("adding tempState->prev 1.2 " + $0);}, theState);
+	if (theState == NULL) {
+		theState = tempState;
+		theState->start = theState;
+		theState->stateNow = NoState;
+		return 1;
+	}
 	tempState->prev = theState;
 
 	EM_ASM_({console.log("adding theState->next 1.1 " + $0);}, tempState);
@@ -199,17 +207,25 @@ int removeState() {
 
 int removeReadStates() {
 	struct StateTrail* tempState;
-	while (theState->prev != NULL && (theState->stateNow == KVReading || theState->stateNow == KVReadOpen)) {
+	while (theState->stateNow == KVReading || theState->stateNow == KVReadOpen) {
+		//EM_ASM_({console.log("looping " + $0);}, theState->stateNow);
+		
 		tempState = theState;
-		theState = theState->prev;
-		theState->next = NULL;
-		delete tempState;
+		if (theState->prev != NULL) {
+			theState = theState->prev;
+			theState->next = NULL;
+			delete tempState;
+		} else {
+			delete tempState;
+			addState(NoState);
+			break;
+		}
 	}
-	if (theState->prev == NULL && (theState->stateNow == KVReading || theState->stateNow == KVReadOpen)) {
+	/*if (theState->prev == NULL && (theState->stateNow == KVReading || theState->stateNow == KVReadOpen)) {
 		delete theState;
 		theState = new StateTrail;
 		theState->start = theState;
-	}
+	}*/
 	
 	EM_ASM_({console.log("remove read states done 1.5 " + $0);}, theState->stateNow);
 
@@ -302,10 +318,11 @@ int removeScope() {
 		deleteKeyValues(theScope->currentKeyValueTrail);
 	}
 	EM_ASM({console.log("deleted kvtrail");});
+	tempScope = theScope;
 
 	if (theScope->prev != NULL) {
-		tempScope->prev = NULL;
 		theScope = theScope->prev;
+		tempScope->prev = NULL;
 		theScope->next = NULL;
 		delete tempScope;
 	} else {
