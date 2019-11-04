@@ -166,12 +166,12 @@ int addState(enum States statePassed) {
 	EM_ASM_({console.log("adding tempState->prev 1.1 " + $0);}, theState);
 	tempState = new StateTrail;
 	EM_ASM_({console.log("adding tempState->prev 1.2 " + $0);}, theState);
-	if (theState == NULL) {
+	/*if (theState == NULL) {
 		theState = tempState;
 		theState->start = theState;
 		theState->stateNow = NoState;
 		return 1;
-	}
+	}*/
 	tempState->prev = theState;
 
 	EM_ASM_({console.log("adding theState->next 1.1 " + $0);}, tempState);
@@ -209,17 +209,17 @@ int removeReadStates() {
 	struct StateTrail* tempState;
 	while (theState->stateNow == KVReading || theState->stateNow == KVReadOpen) {
 		//EM_ASM_({console.log("looping " + $0);}, theState->stateNow);
-		
-		tempState = theState;
-		if (theState->prev != NULL) {
-			theState = theState->prev;
+	
+		if (theState->prev == NULL) {
 			theState->next = NULL;
-			delete tempState;
-		} else {
-			delete tempState;
-			addState(NoState);
+			theState->stateNow = NoState;
 			break;
 		}
+
+		tempState = theState;
+		theState = theState->prev;
+		theState->next = NULL;
+		delete tempState;
 	}
 	/*if (theState->prev == NULL && (theState->stateNow == KVReading || theState->stateNow == KVReadOpen)) {
 		delete theState;
@@ -308,19 +308,23 @@ int removeScope() {
 		/*if (theScope->currentKeyValueTrail != NULL) {
 			deleteKeyValues(theScope->currentKeyValueTrail);
 		}*/
+		if (theScope->currentKeyValueTrail != NULL) {
+			deleteKeyValues(theScope->currentKeyValueTrail);
+		}
 		tempScope = theScope;
 		theScope = theScope->prev;
 		theScope->next = NULL;
 		delete tempScope;
 	}
 	EM_ASM_({console.log("deleting " + $0);}, theScope->scope);
-	if (theScope->currentKeyValueTrail != NULL) {
-		deleteKeyValues(theScope->currentKeyValueTrail);
-	}
+
 	EM_ASM({console.log("deleted kvtrail");});
 	tempScope = theScope;
 
 	if (theScope->prev != NULL) {
+		if (theScope->currentKeyValueTrail != NULL) {
+			deleteKeyValues(theScope->currentKeyValueTrail);
+		}
 		theScope = theScope->prev;
 		tempScope->prev = NULL;
 		theScope->next = NULL;

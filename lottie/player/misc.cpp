@@ -245,8 +245,8 @@ int deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail) {
 			deleteArrayValue(tempKeyValue->arrayValue->root);
 		}
 		
-		EM_ASM({console.log("deleting key values 803.3");});
-		delete tempKeyValue->arrayValue;
+		EM_ASM_({console.log("deleting key values 803.3 " + $0);}, tempKeyValue);
+		//delete tempKeyValue->arrayValue;
 		delete tempKeyValue;
 	}
 	
