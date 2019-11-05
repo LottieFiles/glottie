@@ -1,5 +1,6 @@
 
 int associateKeyValues() {
+	//EM_ASM({console.log("associating");});
 	switch (theScope->scope) {
 		case animation:
 			break;
