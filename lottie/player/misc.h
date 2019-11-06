@@ -23,7 +23,8 @@ struct ArrayOfFloat {
 	vector<float> value;
 } *currentArrayOfFloat;
 
-struct alignas(128) ValuesVector {
+//struct alignas(alignof(struct ValuesVector*)) ValuesVector {
+struct alignas(64) ValuesVector {
 //struct ValuesVector {
 	struct ValuesVector* start = NULL;
 	struct ValuesVector* prev = NULL;
@@ -32,7 +33,8 @@ struct alignas(128) ValuesVector {
 	char value[20];
 };
 
-struct alignas(64) ArrayOfString {
+//struct alignas(alignof(struct ArrayOfString*)) ArrayOfString {
+struct alignas(128) ArrayOfString {
 //struct ArrayOfString {
 	struct ArrayOfString* root = NULL;
 	struct ArrayOfString* parent = NULL; // only one
@@ -41,6 +43,7 @@ struct alignas(64) ArrayOfString {
 	struct ValuesVector* vector = NULL;
 } *currentArrayOfString;
 
+//struct alignas(alignof(struct KeyValue*)) KeyValue {
 struct alignas(256) KeyValue {
 //struct KeyValue {
 	struct KeyValue* start = NULL;
@@ -54,7 +57,8 @@ struct alignas(256) KeyValue {
 	struct ArrayOfString* arrayValue = NULL;
 } *currentKeyValue;
 
-struct alignas(64) KeyValueTrail {
+//struct alignas(alignof(struct KeyValueTrail*)) KeyValueTrail {
+struct alignas(512) KeyValueTrail {
 //struct KeyValueTrail {
 	struct KeyValueTrail* start = NULL;
 	struct KeyValueTrail* next = NULL;

@@ -147,6 +147,13 @@ struct ArrayTrail {
 	struct ScopeTrail scopeHere;
 } *arrayNow; 
 
+struct scopeBefore {
+	enum Scopes scopeNow;
+	long objectCount = 0;
+};
+
+/////////////////////////////////////////////////////////////////////////////
+
 // currently unused function, referred from checkCharacter (commented out over there)
 int determineCurrentScope() {
 	if (theState->stateNow == ScopeOpen || theState->stateNow == ArrayOpen) {
@@ -158,7 +165,6 @@ int determineCurrentScope() {
 	}
 	return 1;
 }
-/////////////////////////////////////////////////////////////////////////////
 
 int addState(enum States statePassed) {
 	EM_ASM_({console.log("adding tempState->prev 1.0 " + $0);}, theState);
@@ -191,8 +197,9 @@ int removeState() {
 		tempState = theState;
 		theState = theState->prev;
 		theState->next = NULL;
-		EM_ASM_({console.log("removed state 700 " + $0);}, theState);
+		EM_ASM_({console.log("removed state 700.1 " + $0);}, theState);
 		delete tempState;
+		EM_ASM_({console.log("removed state 700.2 " + $0);}, theState);
 	} else {
 		if (theState != NULL) {
 			delete theState;
@@ -303,11 +310,10 @@ int removeScope() {
 	//EM_ASM_({console.log($0);}, (int)theScope->scope);
 
 	struct ScopeTrail* tempScope;
+
 	//theScope = removeObjectsFromScope(tempScope);
+	/*
 	while (theScope->prev != NULL && theScope->scope == object) {
-		/*if (theScope->currentKeyValueTrail != NULL) {
-			deleteKeyValues(theScope->currentKeyValueTrail);
-		}*/
 		if (theScope->currentKeyValueTrail != NULL) {
 			deleteKeyValues(theScope->currentKeyValueTrail);
 		}
@@ -317,8 +323,9 @@ int removeScope() {
 		delete tempScope;
 	}
 	EM_ASM_({console.log("deleting " + $0);}, theScope->scope);
-
 	EM_ASM({console.log("deleted kvtrail");});
+	*/
+
 	tempScope = theScope;
 
 	if (theScope->prev != NULL) {
@@ -365,18 +372,25 @@ int removeArray() {
 #include "shapes.cpp"
 #include "associate.cpp"
 
-enum Scopes lastScopeBeforeObject() {
+struct scopeBefore lastScopeBeforeObject() {
+	struct scopeBefore result;
 	struct ScopeTrail* tempScopeTrail;
 	tempScopeTrail = theScope;
+	long counter = 0;
 	while (tempScopeTrail->prev != NULL && tempScopeTrail->scope == object) {
+		counter = counter + 1;
 		tempScopeTrail = tempScopeTrail->prev;
 	}
-	return tempScopeTrail->scope;
+	result.scopeNow = tempScopeTrail->scope;
+	result.objectCount = counter;
+	return result;
 }
 
 int checkScope() {
-	EM_ASM_({console.log("-->found this " + $0);}, (int)lastScopeBeforeObject());
-	switch (lastScopeBeforeObject()) {
+	bool scopeChanged = false;
+	struct scopeBefore previousScope = lastScopeBeforeObject();
+	if (previousScope.objectCount == 0) {
+	switch (previousScope.scopeNow) {
 		case noscope:
 			theScope->scope = animation;
 
@@ -385,21 +399,25 @@ int checkScope() {
 		case animation:
 			if (currentReadKey == "assets") {
 				EM_ASM({console.log('found assets');});
-				addScope(assets); 
+				addScope(assets);
+				scopeChanged = true;
 			} else if (currentReadKey == "layers") {
 				addScope(layers);
+				scopeChanged = true;
 			}
 			break;
 		case assets:
 			if (currentReadKey == "layers") {
 				EM_ASM({console.log('found layers');});
 				addScope(assets_layers);
+				scopeChanged = true;
 			}
 			break;
 		case assets_layers:
 			if (currentReadKey == "shapes") {
 				EM_ASM({console.log('found shapes');});
 				addScope(assets_layers_shapes);
+				scopeChanged = true;
 			}
 			break;
 		case assets_layers_shapes_ty: //LayersShapes shape item's type found
@@ -409,27 +427,33 @@ int checkScope() {
 			if (currentReadKey == "ks") {
 				EM_ASM({console.log('found ks');});
 				addScope(assets_layers_shapes_ks);
+				scopeChanged = true;
 			} else if (currentReadKey == "ty") {
 				addScope(assets_layers_shapes_ty);
+				scopeChanged = true;
 			}
 			break;
 		case assets_layers_shapes_ks:
 			if (currentReadKey == "k") {
 				addScope(assets_layers_shapes_ks_k);
+				scopeChanged = true;
 			}
 			break;
 		case assets_layers_shapes_ks_k:
 			if (currentReadKey == "e") {
 				addScope(assets_layers_shapes_ks_k_e);
+				scopeChanged = true;
 			}
 			if (currentReadKey == "s") {
 				addScope(assets_layers_shapes_ks_k_s);
+				scopeChanged = true;
 			}
 			break;
 		//
 		case layers:
 			if (currentReadKey == "shapes") {
 				addScope(layers_shapes);
+				scopeChanged = true;
 			}
 			break;
 		case layers_shapes_ty: //LayersShapes shape item's type found
@@ -438,28 +462,36 @@ int checkScope() {
 		case layers_shapes:
 			if (currentReadKey == "ks") {
 				addScope(layers_shapes_ks);
+				scopeChanged = true;
 			} else if (currentReadKey == "ty") {
 				addScope(layers_shapes_ty);
+				scopeChanged = true;
 			}
 			break;
 		case layers_shapes_ks:
 			if (currentReadKey == "k") {
 				addScope(layers_shapes_ks_k);
+				scopeChanged = true;
 			}
 			break;
 		case layers_shapes_ks_k:
 			if (currentReadKey == "e") {
 				addScope(layers_shapes_ks_k_e);
+				scopeChanged = true;
 			}
 			if (currentReadKey == "s") {
 				addScope(layers_shapes_ks_k_s);
+				scopeChanged = true;
 			}
 			break;
 		default:
-			addScope(object);
 			break;
 	}
-	EM_ASM_({console.log("-->added this " + $0);}, (int)lastScopeBeforeObject());
+	}
+	if (!scopeChanged) {
+		addScope(object);
+	}
+	EM_ASM_({console.log("-->found this " + $0 + " : " + $1 + " : " + $2);}, (int)previousScope.scopeNow, previousScope.objectCount, theScope->scope);
 
 	return 1;
 }
@@ -576,7 +608,7 @@ int checkCharacter(char& currentChar) {
 			//removeKeyValueTrail();
 
 			//if (theState->stateNow != ScopeOpenInArray && theState->stateNow != ScopeToBeRemoved) {
-				//associateKeyValues();
+				associateKeyValues();
 				EM_ASM_({console.log("CLOSING associated " + $0);}, theState->stateNow);
 				removeScope();
 				EM_ASM_({console.log("CLOSING removed scope " + $0);}, theState->stateNow);
@@ -740,9 +772,7 @@ int deserialize() {
 	kvState = Key;
 	EM_ASM_({console.log("start state " + $0);}, theState);
 
-		EM_ASM({
-			console.log('deserializing');
-		});
+		EM_ASM({console.log('deserializing');});
 
 	for(char& currentChar : jsonString) {
 

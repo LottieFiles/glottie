@@ -3,5 +3,8 @@
 cp ../player.js ./
 cp ../player.wasm ./
 
-python3.6 -m http.server 8081
-
+if [ "$(uname)" == "Linux" ]; then
+	python3.6 -m http.server 8081
+else
+	python3.5 -m http.server 8081
+fi
