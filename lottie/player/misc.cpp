@@ -85,8 +85,8 @@ int popKeyValueTrail() {
 	return 1;
 }
 
-int newKeyValueTrail() {
-	if (currentKeyValueTrail == NULL) {
+struct KeyValueTrail* newKeyValueTrail(struct KeyValueTrail* traceKeyValueTrail) {
+	if (traceKeyValueTrail == NULL) {
 		//EM_ASM({console.log("newkvtrail 401.1");});
 		currentKeyValueTrail = new KeyValueTrail;
 		//EM_ASM({console.log("newkvtrail 401.2");});
@@ -113,7 +113,7 @@ int newKeyValueTrail() {
 		
 		
 	}
-	return 1;
+	return currentKeyValueTrail;
 }
 
 int deleteArrayValuesVector(struct ValuesVector* passedValuesVector) {

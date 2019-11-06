@@ -32,7 +32,7 @@ struct alignas(128) ValuesVector {
 	char value[20];
 };
 
-struct alignas(64) ArrayOfString {
+struct alignas(256) ArrayOfString {
 //struct ArrayOfString {
 	struct ArrayOfString* root = NULL;
 	struct ArrayOfString* parent = NULL; // only one
@@ -41,7 +41,7 @@ struct alignas(64) ArrayOfString {
 	struct ValuesVector* vector = NULL;
 } *currentArrayOfString;
 
-struct alignas(256) KeyValue {
+struct alignas(512) KeyValue {
 //struct KeyValue {
 	struct KeyValue* start = NULL;
 	struct KeyValue* next = NULL;
@@ -54,7 +54,7 @@ struct alignas(256) KeyValue {
 	struct ArrayOfString* arrayValue = NULL;
 } *currentKeyValue;
 
-struct alignas(64) KeyValueTrail {
+struct alignas(1024) KeyValueTrail {
 //struct KeyValueTrail {
 	struct KeyValueTrail* start = NULL;
 	struct KeyValueTrail* next = NULL;
