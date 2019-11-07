@@ -44,9 +44,11 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 		return traceKeyValue;
 	}
 	EM_ASM({console.log("addingchildarray 901.10");});
+
 	tempArrayOfString->root = traceKeyValue->arrayValue->root;
 	currentArrayOfString = tempArrayOfString;
 	EM_ASM({console.log("addingchildarray 901.15");});
+
 	tempArrayOfString->parent = traceKeyValue->arrayValue;
 
 	traceKeyValue->arrayValue->child = tempArrayOfString;
@@ -167,6 +169,7 @@ int deleteArrayValue(struct ArrayOfString* passedArrayValue) {
 		
 		return 0;
 	}
+	EM_ASM({console.log("pre deleteArrayValues 1104");});
 	while (passedArrayValue != NULL && passedArrayValue->child != NULL) {
 		
 		tempArrayValue = passedArrayValue;
@@ -179,6 +182,7 @@ int deleteArrayValue(struct ArrayOfString* passedArrayValue) {
 		
 		delete tempArrayValue;
 	}
+	EM_ASM({console.log("pre deleteArrayValues 1105");});
 	if (passedArrayValue != NULL) {
 		
 		if (passedArrayValue->vector != NULL) {
@@ -410,7 +414,6 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 		EM_ASM({console.log("adding key value 302.1");});	
 		
 		createdKeyValue = new KeyValue;
-		EM_ASM({console.log("adding key value 302.2");});	
 		
 		createdKeyValue->start = createdKeyValue;
 		createdKeyValue->prev = NULL;
@@ -418,8 +421,11 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 		keyNode = createdKeyValue;
 		//keyNode->arrayValue = new ArrayOfString;
 		//addChildArray(keyNode);
-		keyNode->arrayValue = new ArrayOfString;
-		keyNode->arrayValue->root = keyNode->arrayValue;
+		if (keyNode->arrayValue == NULL) {
+			keyNode->arrayValue = new ArrayOfString;
+			keyNode->arrayValue->root = keyNode->arrayValue;
+		}
+		
 		if (key.length() > 30) {
 			strcpy(keyNode->key, key.substr(0,20).c_str());
 		} else {
@@ -430,25 +436,38 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 	EM_ASM({console.log("adding key value 303.1");});	
 	
 	if (keyNode == NULL) {
+		EM_ASM({console.log("adding key value 303.2");});	
 		keyNode = new KeyValue;
 		
-		endNode->next = keyNode;
-		
-		keyNode->prev = endNode;
+		EM_ASM({console.log("adding key value 303.3");});	
+		if (endNode != NULL) {
+			endNode->next = keyNode;
+			EM_ASM({console.log("adding key value 303.4");});	
+			keyNode->prev = endNode;
+			EM_ASM({console.log("adding key value 303.5");});	
+			keyNode->start = endNode->start;
+		} else {
+			EM_ASM({console.log("adding key value 303.6");});	
+			keyNode->start = keyNode;
+		}
 
+		EM_ASM({console.log("adding key value 303.3");});	
 		keyNode->arrayValue = new ArrayOfString;
-		keyNode->arrayValue->root = endNode->arrayValue->root;
+		if (endNode != NULL) {
+			keyNode->arrayValue->root = endNode->arrayValue->root;
+		} else {
+			keyNode->arrayValue->root = keyNode->arrayValue;
+		}
 
 		if (traceKeyValue != NULL) {
-			
 			keyNode->start = traceKeyValue->start;
 		} else {
-			
 			keyNode->start = keyNode;
 		}
 		
 		//addChildArray(keyNode);
 		//keyNode->arrayValue = new ArrayOfString;
+		EM_ASM({console.log("adding key value 303.4");});	
 		
 		if (key.length() > 30) {
 			strcpy(keyNode->key, key.substr(0,20).c_str());
