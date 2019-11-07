@@ -326,12 +326,21 @@ int removeScope() {
 	EM_ASM({console.log("deleted kvtrail");});
 	*/
 
+	if (theScope == NULL) {
+		addScope(noscope);
+		return 1;
+	}
+
+	EM_ASM({console.log("removing scope 1.1 ");});
 	tempScope = theScope;
 
+	EM_ASM({console.log("removing scope 1.2 ");});
 	if (theScope->prev != NULL) {
+		EM_ASM({console.log("removing scope 1.1 ");});
 		if (theScope->currentKeyValueTrail != NULL) {
 			deleteKeyValues(theScope->currentKeyValueTrail);
 		}
+		EM_ASM({console.log("removing scope 1.3 ");});
 		theScope = theScope->prev;
 		tempScope->prev = NULL;
 		theScope->next = NULL;
