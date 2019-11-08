@@ -512,7 +512,7 @@ int readingDone() {
 		} else {
 			tempKeyValue = addKeyValue(theScope->currentKeyValueTrail->keyValue, currentReadKey, currentReadValue, false);
 		}
-		theScope->currentKeyValueTrail->keyValue = tempKeyValue->start;
+		theScope->currentKeyValueTrail->keyValue = tempKeyValue;
 	return 1;
 }
 
