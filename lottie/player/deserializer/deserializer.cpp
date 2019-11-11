@@ -215,7 +215,7 @@ int removeState() {
 int removeReadStates() {
 	struct StateTrail* tempState;
 	while (theState->stateNow == KVReading || theState->stateNow == KVReadOpen) {
-		//EM_ASM_({console.log("looping " + $0);}, theState->stateNow);
+		EM_ASM_({console.log("looping " + $0);}, theState->stateNow);
 	
 		if (theState->prev == NULL) {
 			theState->next = NULL;
@@ -307,7 +307,7 @@ struct ScopeTrail* removeObjectsFromScope(struct ScopeTrail* passedScope) {
 }
 
 int removeScope() {
-	//EM_ASM_({console.log($0);}, (int)theScope->scope);
+	EM_ASM_({console.log($0);}, (int)theScope->scope);
 
 	struct ScopeTrail* tempScope;
 
@@ -537,7 +537,7 @@ bool isReadingDone() {
 						EM_ASM({console.log('found shapes');});
 					}
 					*/
-					//EM_ASM_({console.log($0);}, (int)theScope->scope);
+					EM_ASM_({console.log($0);}, (int)theScope->scope);
 					currentValue.clear();
 				}
 				EM_ASM_({console.log("post-reading " + $0);}, theState->stateNow);
@@ -570,7 +570,7 @@ int checkCharacter(char& currentChar) {
 	switch (currentChar) {
 		case '{':
 			EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);
-			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
+			EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			if (isReadingDone()) {
 				//readingDone();
 				removeReadStates();
@@ -594,7 +594,7 @@ int checkCharacter(char& currentChar) {
 				addState(ScopeOpen); //// ADD STATE
 			}
 
-			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
+			EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			EM_ASM_({console.log("OPENED object " + $0);}, theState->stateNow);
 			previousScopeClosure = false;
 			break;
@@ -606,7 +606,7 @@ int checkCharacter(char& currentChar) {
 				removeReadStates();
 			}
 			EM_ASM_({console.log("CLOSING reading done " + $0);}, theState->stateNow);
-			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
+			EM_ASM_({console.log($0);}, (int)theState->stateNow);
 
 			/*
 			if (theState->prev->stateNow == ArrayOpen || theState->stateNow == ScopeOpenInArray || theState->stateNow == ScopeToBeRemoved) {
@@ -634,7 +634,7 @@ int checkCharacter(char& currentChar) {
 				}
 				addState(ScopeToBeRemoved);
 			}*/
-			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
+			EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			EM_ASM_({console.log("CLOSED object " + $0);}, theState->stateNow);
 			previousScopeClosure = true;
 			break;
@@ -655,7 +655,7 @@ int checkCharacter(char& currentChar) {
 			break;
 		case ']':
 			EM_ASM_({console.log("[CLOSING array " + $0);}, theState->stateNow);
-			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
+			EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			if (isReadingDone()) {
 				//readingDone();
 				//readingDone();
@@ -693,7 +693,7 @@ int checkCharacter(char& currentChar) {
 				removeReadStates();
 				EM_ASM({console.log("handling apostrophe 1.1");});
 			} else {
-				//EM_ASM({console.log('read open');});
+				EM_ASM({console.log('read open');});
 				EM_ASM({console.log("handling apostrophe 1.2");});
 				addState(KVReadOpen); //// ADD STATE
 				EM_ASM({console.log("kvreadopen ");});
@@ -713,7 +713,7 @@ int checkCharacter(char& currentChar) {
 			removeReadStates();
 			EM_ASM_({console.log("handling comma 1 " + $0);}, theState->stateNow);
 			if (lastStateBeforeReading() == ArrayOpen) {
-						//EM_ASM({console.log("reading values into an array ");});
+						EM_ASM({console.log("reading values into an array ");});
 				kvState = Value;
 			} else {
 				kvState = Key;
