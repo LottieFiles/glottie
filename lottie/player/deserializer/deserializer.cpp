@@ -338,7 +338,14 @@ int removeScope() {
 	if (theScope->prev != NULL) {
 		EM_ASM({console.log("removing scope 1.1 ");});
 		if (theScope->currentKeyValueTrail != NULL) {
-			deleteKeyValues(theScope->currentKeyValueTrail);
+			theScope->currentKeyValueTrail = deleteKeyValues(theScope->currentKeyValueTrail);
+			currentKeyValueTrail = theScope->currentKeyValueTrail;
+			if (currentKeyValueTrail != NULL) {
+				currentKeyValue = theScope->currentKeyValueTrail->keyValue;
+				if (currentKeyValue != NULL) {
+					currentArrayOfString = theScope->currentKeyValueTrail->keyValue->arrayValue;
+				}
+			}
 		}
 		EM_ASM({console.log("removing scope 1.3 ");});
 		theScope = theScope->prev;
@@ -621,6 +628,9 @@ int checkCharacter(char& currentChar) {
 				EM_ASM_({console.log("CLOSING associated " + $0);}, theState->stateNow);
 				removeScope();
 				EM_ASM_({console.log("CLOSING removed scope " + $0);}, theState->stateNow);
+				if (theState->stateNow == ScopeOpenInArray) {
+					readingArray = true;
+				}
 				//if (! previousScopeClosure) {
 					removeState();
 					EM_ASM_({console.log("CLOSING removed state " + $0);}, theState->stateNow);

@@ -177,7 +177,7 @@ int deleteArrayValue(struct ArrayOfString* passedArrayValue) {
 	return 1;
 }
 
-int deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail) {
+struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail) {
 	EM_ASM({console.log("deleting key values 801");});
 	char todisplay;
 	char valdisplay;
@@ -246,6 +246,7 @@ int deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail) {
 	if (passedKeyValueTrail->prev != NULL) {
 		if (passedKeyValueTrail->next != NULL) {
 			passedKeyValueTrail->next->prev = passedKeyValueTrail->prev;
+			passedKeyValueTrail->prev->next = passedKeyValueTrail->next;
 		} else {
 			//passedKeyValueTrail->next->prev = NULL;
 		}
@@ -255,13 +256,13 @@ int deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail) {
 	if (passedKeyValueTrail->next != NULL) {
 		if (passedKeyValueTrail->prev != NULL) {
 			passedKeyValueTrail->prev->next = passedKeyValueTrail->next;
+			passedKeyValueTrail->next->prev = passedKeyValueTrail->prev;
 		} else {
 			//passedKeyValueTrail->prev->next = NULL;
 		}
 	}
-		
 	delete passedKeyValueTrail;
-	return 1;
+	return passedKeyValueTrail->prev;
 }
 
 int removeKeyValueTrail() { // to be called from within associateKeyValue()
