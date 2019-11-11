@@ -580,9 +580,9 @@ int checkCharacter(char& currentChar) {
 			checkScope();
 			currentKeyValueTrail = theScope->currentKeyValueTrail;
 			EM_ASM({console.log("adding new key value trail");});
-			newKeyValueTrail();
+			theScope->currentKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
 			EM_ASM({console.log("DONE adding new key value trail");});
-			theScope->currentKeyValueTrail = currentKeyValueTrail;
+			//theScope->currentKeyValueTrail = currentKeyValueTrail;
 			if (theState->stateNow == ArrayOpen || theState->stateNow == ScopeOpenInArray || readingArray || theState->stateNow == ScopeToBeRemoved) {
 				EM_ASM({console.log("opening object in array");});
 				if (theState->keyEncountered) {

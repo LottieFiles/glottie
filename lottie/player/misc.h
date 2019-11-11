@@ -24,13 +24,13 @@ struct ArrayOfFloat {
 } *currentArrayOfFloat;
 
 //struct alignas(alignof(struct ValuesVector*)) ValuesVector {
-struct alignas(128) ValuesVector {
+struct alignas(256) ValuesVector {
 //struct ValuesVector {
 	struct ValuesVector* start = NULL;
 	struct ValuesVector* prev = NULL;
 	struct ValuesVector* next = NULL;
 	//string value;
-	char value[20];
+	char value[21];
 };
 
 //struct alignas(alignof(struct ArrayOfString*)) ArrayOfString {
@@ -51,9 +51,9 @@ struct alignas(1024) KeyValue {
 	struct KeyValue* prev = NULL;
 
 	//string key;
-	char key[20];
+	char key[21];
 	//string value = NULL;
-	char value[20];
+	char value[21];
 	struct ArrayOfString* arrayValue = NULL;
 } *currentKeyValue;
 

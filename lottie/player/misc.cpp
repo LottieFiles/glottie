@@ -33,6 +33,7 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 	EM_ASM({console.log("addingchildarray 901.5");});
 	if (traceKeyValue == NULL) {
 		traceKeyValue = new KeyValue;
+		traceKeyValue->start = traceKeyValue;
 		traceKeyValue->arrayValue = tempArrayOfString;
 		traceKeyValue->arrayValue->root = tempArrayOfString;
 		return traceKeyValue;
@@ -63,6 +64,7 @@ int gotoParentArray(struct KeyValue* traceKeyValue) {
 	if (traceKeyValue->arrayValue != NULL) {
 		if (traceKeyValue->arrayValue->parent != NULL) {
 			traceKeyValue->arrayValue = traceKeyValue->arrayValue->parent;
+			currentArrayOfString = traceKeyValue->arrayValue;
 		}
 	}
 	return 1;
@@ -87,17 +89,16 @@ int popKeyValueTrail() {
 	return 1;
 }
 
-int newKeyValueTrail() {
+struct KeyValueTrail* newKeyValueTrail(struct KeyValueTrail* traceKeyValueTrail) {
 	if (currentKeyValueTrail == NULL) {
 		EM_ASM({console.log("newkvtrail 401.1");});
-		currentKeyValueTrail = new KeyValueTrail;
+		traceKeyValueTrail = new KeyValueTrail;
 		EM_ASM({console.log("newkvtrail 401.2");});
-		currentKeyValueTrail->start = currentKeyValueTrail;
+		traceKeyValueTrail->start = traceKeyValueTrail;
 		EM_ASM({console.log("newkvtrail 401.3");});
-		currentKeyValueTrail->next = NULL;
+		traceKeyValueTrail->next = NULL;
 		EM_ASM({console.log("newkvtrail 401.4");});
-		currentKeyValueTrail->prev = NULL;
-		//
+		traceKeyValueTrail->prev = NULL;
 		
 	} else {
 		EM_ASM({console.log("newkvtrail 402.1");});
@@ -105,17 +106,17 @@ int newKeyValueTrail() {
 		EM_ASM({console.log("newkvtrail 402.2");});
 		tempKeyValueTrail = new KeyValueTrail;
 		EM_ASM({console.log("newkvtrail 402.3");});
-		currentKeyValueTrail->next = tempKeyValueTrail;
+		traceKeyValueTrail->next = tempKeyValueTrail;
 		EM_ASM({console.log("newkvtrail 402.4");});
-		tempKeyValueTrail->prev = currentKeyValueTrail;
+		tempKeyValueTrail->prev = traceKeyValueTrail;
 		EM_ASM({console.log("newkvtrail 402.5");});
-		tempKeyValueTrail->start = currentKeyValueTrail->start;
+		tempKeyValueTrail->start = traceKeyValueTrail->start;
 		EM_ASM({console.log("newkvtrail 402.6");});
-		currentKeyValueTrail = tempKeyValueTrail;
-		
+		traceKeyValueTrail = tempKeyValueTrail;
 		
 	}
-	return 1;
+	currentKeyValueTrail = traceKeyValueTrail;
+	return traceKeyValueTrail;
 }
 
 int deleteArrayValuesVector(struct ValuesVector* passedValuesVector) {
@@ -310,7 +311,7 @@ int pushValuesVector(struct ArrayOfString* traceArrayOfString, string tempString
 		traceVector->start = traceVector;
 		traceVector->next = NULL;
 		traceVector->prev = NULL;
-		if (tempString.length() > 30) {
+		if (tempString.length() > 20) {
 			strcpy(tempVector->value, tempString.substr(0,20).c_str());
 		} else {
 			strcpy(tempVector->value, tempString.c_str());
@@ -323,7 +324,7 @@ int pushValuesVector(struct ArrayOfString* traceArrayOfString, string tempString
 		
 		//tempVector->value = tempString;
 		
-		if (tempString.length() > 30) {
+		if (tempString.length() > 20) {
 			strcpy(tempVector->value, tempString.substr(0,20).c_str());
 		} else {
 			strcpy(tempVector->value, tempString.c_str());
@@ -411,7 +412,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 		}
 		*/
 		
-		if (key.length() > 30) {
+		if (key.length() > 20) {
 			strcpy(keyNode->key, key.substr(0,20).c_str());
 		} else {
 			strcpy(keyNode->key, key.c_str());
@@ -460,7 +461,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 		//addChildArray(keyNode);
 		//keyNode->arrayValue = new ArrayOfString;
 		EM_ASM({console.log("adding key value 303.8");});	
-		if (key.length() > 30) {
+		if (key.length() > 20) {
 			strcpy(keyNode->key, key.substr(0,20).c_str());
 		} else {
 			strcpy(keyNode->key, key.c_str());
@@ -484,7 +485,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 		pushValuesVector(keyNode->arrayValue, value);
 		
 	} else {
-		if (key.length() > 30) {
+		if (key.length() > 20) {
 			strcpy(keyNode->value, value.substr(0,20).c_str());
 		} else {
 			strcpy(keyNode->value, value.c_str());
