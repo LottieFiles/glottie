@@ -108,7 +108,8 @@ enum KeyValueState {Key, Value};
 
 enum KeyValueState kvState = Key;
 
-struct alignas(32) StateTrail {
+struct alignas(alignof(struct StateTrail*)) StateTrail {
+//struct alignas(65536) StateTrail {
 //struct StateTrail {
 	struct StateTrail* start = NULL;
 	struct StateTrail* prev = NULL;
@@ -117,7 +118,8 @@ struct alignas(32) StateTrail {
 	bool keyEncountered = false;
 } *theState;
 
-struct alignas(64) ScopeTrail {
+struct alignas(alignof(struct ScopeTrail*)) ScopeTrail {
+//struct alignas(65536) ScopeTrail {
 //struct ScopeTrail {
 	struct scopeTrail* start = NULL;
 	struct ScopeTrail* prev = NULL;
@@ -584,10 +586,14 @@ int checkCharacter(char& currentChar) {
 			}
 			kvState = Key;
 			readingArray = false;
+
+			struct KeyValueTrail* tempKeyValueTrail;
+			tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
 			checkScope();
 			currentKeyValueTrail = theScope->currentKeyValueTrail;
 			EM_ASM({console.log("adding new key value trail");});
-			theScope->currentKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
+			theScope->currentKeyValueTrail = tempKeyValueTrail;
+				 //newKeyValueTrail(theScope->currentKeyValueTrail);
 			EM_ASM({console.log("DONE adding new key value trail");});
 			//theScope->currentKeyValueTrail = currentKeyValueTrail;
 			if (theState->stateNow == ArrayOpen || theState->stateNow == ScopeOpenInArray || readingArray || theState->stateNow == ScopeToBeRemoved) {

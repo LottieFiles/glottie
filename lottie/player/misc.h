@@ -59,7 +59,7 @@ struct alignas(512) KeyValue {
 
 //struct alignas(alignof(struct KeyValueTrail*)) KeyValueTrail {
 //struct alignas(16777216) KeyValueTrail {
-struct alignas(2048) KeyValueTrail {
+struct alignas(1024) KeyValueTrail {
 //struct KeyValueTrail {
 	struct KeyValueTrail* start = NULL;
 	struct KeyValueTrail* next = NULL;

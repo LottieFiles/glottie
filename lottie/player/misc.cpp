@@ -93,25 +93,17 @@ struct KeyValueTrail* newKeyValueTrail(struct KeyValueTrail* traceKeyValueTrail)
 	if (currentKeyValueTrail == NULL) {
 		EM_ASM({console.log("newkvtrail 401.1");});
 		traceKeyValueTrail = new KeyValueTrail;
-		EM_ASM({console.log("newkvtrail 401.2");});
 		traceKeyValueTrail->start = traceKeyValueTrail;
-		EM_ASM({console.log("newkvtrail 401.3");});
 		traceKeyValueTrail->next = NULL;
-		EM_ASM({console.log("newkvtrail 401.4");});
 		traceKeyValueTrail->prev = NULL;
 		
 	} else {
 		EM_ASM({console.log("newkvtrail 402.1");});
 		struct KeyValueTrail* tempKeyValueTrail;
-		EM_ASM({console.log("newkvtrail 402.2");});
 		tempKeyValueTrail = new KeyValueTrail;
-		EM_ASM({console.log("newkvtrail 402.3");});
 		traceKeyValueTrail->next = tempKeyValueTrail;
-		EM_ASM({console.log("newkvtrail 402.4");});
 		tempKeyValueTrail->prev = traceKeyValueTrail;
-		EM_ASM({console.log("newkvtrail 402.5");});
 		tempKeyValueTrail->start = traceKeyValueTrail->start;
-		EM_ASM({console.log("newkvtrail 402.6");});
 		traceKeyValueTrail = tempKeyValueTrail;
 		
 	}
@@ -261,8 +253,10 @@ struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail)
 			//passedKeyValueTrail->prev->next = NULL;
 		}
 	}
+	struct KeyValueTrail* temptempKeyValueTrail;
+	temptempKeyValueTrail = passedKeyValueTrail->prev;
 	delete passedKeyValueTrail;
-	return passedKeyValueTrail->prev;
+	return temptempKeyValueTrail;
 }
 
 int removeKeyValueTrail() { // to be called from within associateKeyValue()
