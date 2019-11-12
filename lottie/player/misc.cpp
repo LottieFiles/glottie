@@ -48,8 +48,14 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 
 	tempArrayOfString->root = traceKeyValue->arrayValue->root;
 	//EM_ASM({console.log("addingchildarray 901.15");});
-	tempArrayOfString->parent = traceKeyValue->arrayValue;
-	traceKeyValue->arrayValue->child = tempArrayOfString;
+	if (traceKeyValue->arrayValue->vector == NULL) {
+		traceKeyValue->arrayValue->vector = new ValuesVector;
+		traceKeyValue->arrayValue->vector->start = traceKeyValue->arrayValue->vector;
+	}
+	traceKeyValue->arrayValue->vector->root = tempArrayOfString->root;
+	traceKeyValue->arrayValue->vector->child = tempArrayOfString;
+	traceKeyValue->arrayValue->vector->parent = traceKeyValue->arrayValue;
+	tempArrayOfString->parent = traceKeyValue->arrayValue->vector;
 
 	traceKeyValue->arrayValue = tempArrayOfString;
 
@@ -57,17 +63,19 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 	return traceKeyValue;
 }
 
-int gotoParentArray(struct KeyValue* traceKeyValue) {
+struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
 	if (traceKeyValue == NULL) {
-		return 1;
+		return NULL;
 	}
 	if (traceKeyValue->arrayValue != NULL) {
 		if (traceKeyValue->arrayValue->parent != NULL) {
-			traceKeyValue->arrayValue = traceKeyValue->arrayValue->parent;
-			currentArrayOfString = traceKeyValue->arrayValue;
+			if (traceKeyValue->arrayValue->parent->parent != NULL) {
+				traceKeyValue->arrayValue = traceKeyValue->arrayValue->parent->parent;
+				currentArrayOfString = traceKeyValue->arrayValue;
+			}
 		}
 	}
-	return 1;
+	return traceKeyValue->arrayValue;
 }
 
 int popKeyValueTrail() {
@@ -111,12 +119,17 @@ struct KeyValueTrail* newKeyValueTrail(struct KeyValueTrail* traceKeyValueTrail)
 	return traceKeyValueTrail;
 }
 
+int deleteArrayValue(struct ArrayOfString* passedArrayValue);
+
 int deleteArrayValuesVector(struct ValuesVector* passedValuesVector) {
 	//EM_ASM({console.log("deleteArrayValues 1101");});
 	//struct ValuesVector* tempValuesVector;
 	passedValuesVector = passedValuesVector->start;
 
 	while (passedValuesVector != NULL && passedValuesVector->next != NULL) {
+		if (passedValuesVector->child != NULL) {
+			deleteArrayValue(passedValuesVector->child);
+		}
 		
 		//tempValuesVector = passedValuesVector;
 		
@@ -127,7 +140,8 @@ int deleteArrayValuesVector(struct ValuesVector* passedValuesVector) {
 		
 	}
 	//EM_ASM({console.log("deleteArrayValues 1102");});
-	
+
+
 	if (passedValuesVector != NULL) {
 		delete passedValuesVector;
 	}
@@ -135,8 +149,17 @@ int deleteArrayValuesVector(struct ValuesVector* passedValuesVector) {
 }
 
 int deleteArrayValue(struct ArrayOfString* passedArrayValue) {
+
+	if (passedArrayValue != NULL) {
+		if (passedArrayValue->vector != NULL) {	
+			deleteArrayValuesVector(passedArrayValue->vector->start);
+		}
+		delete passedArrayValue;
+	}
+
 	
-	struct ArrayOfString* tempArrayValue;
+	/*
+struct ArrayOfString* tempArrayValue;
 	if (passedArrayValue == NULL) {
 		
 		return 0;
@@ -146,9 +169,7 @@ int deleteArrayValue(struct ArrayOfString* passedArrayValue) {
 		
 		tempArrayValue = passedArrayValue;
 	
-		if (passedArrayValue->vector != NULL) {	
-			deleteArrayValuesVector(passedArrayValue->vector->start);
-		}
+
 		
 		//EM_ASM_({console.log("deleteArrayValues 1105 " + $0 + " : " + $1);}, passedArrayValue, passedArrayValue->child);
 		passedArrayValue = passedArrayValue->child;
@@ -158,13 +179,13 @@ int deleteArrayValue(struct ArrayOfString* passedArrayValue) {
 		//EM_ASM_({console.log("deleteArrayValues 1106 " + $0 + " : " + $1);}, passedArrayValue, passedArrayValue->child);
 	}
 	//EM_ASM({console.log("pre deleteArrayValues 1105");});
-	if (passedArrayValue != NULL) {
 		
 		if (passedArrayValue->vector != NULL) {
 			deleteArrayValuesVector(passedArrayValue->vector->start);
 		}
 		delete passedArrayValue;
 	}
+	*/
 	
 	return 1;
 }
@@ -294,48 +315,29 @@ int pushValuesVector(struct ArrayOfString* traceArrayOfString, string tempString
 	struct ValuesVector* traceVector;
 
 	if (traceArrayOfString->vector != NULL) {
-		traceVector = traceArrayOfString->vector;
+		traceVector = new ValuesVector;
+		if (tempString.length() > 20) {
+			strcpy(traceVector->value, tempString.substr(0,20).c_str());
+		} else {
+			strcpy(traceVector->value, tempString.c_str());
+		}
+		traceVector->start = traceArrayOfString->vector->start;
+		traceArrayOfString->vector->next = traceVector;
+		traceVector->prev = traceArrayOfString->vector;
+
+		traceArrayOfString->vector = traceVector;
+		//EM_ASM_({console.log("pushValuesVector 1.0 " + String.fromCharCode($0));}, traceArrayOfString->vector->value[0]);	
 	} else {
 		traceArrayOfString->vector = new ValuesVector;
 		traceArrayOfString->vector->start = traceArrayOfString->vector;
-	}
-	//
-	if (traceVector == NULL) {
-		
-		traceVector = new ValuesVector;
-		traceVector->start = traceVector;
-		traceVector->next = NULL;
-		traceVector->prev = NULL;
+	
 		if (tempString.length() > 20) {
-			strcpy(tempVector->value, tempString.substr(0,20).c_str());
+			strcpy(traceArrayOfString->vector->value, tempString.substr(0,20).c_str());
 		} else {
-			strcpy(tempVector->value, tempString.c_str());
+			strcpy(traceArrayOfString->vector->value, tempString.c_str());
 		}
-		traceArrayOfString->vector = traceVector;
-		
-	} else {
-		
-		tempVector = new ValuesVector;
-		
-		//tempVector->value = tempString;
-		
-		if (tempString.length() > 20) {
-			strcpy(tempVector->value, tempString.substr(0,20).c_str());
-		} else {
-			strcpy(tempVector->value, tempString.c_str());
-		}
-		
-		traceVector->next = tempVector;
-		
-		tempVector->prev = traceVector;
-		
-		tempVector->start = traceVector->start;
-		
-		traceVector = tempVector;
-		
-		traceArrayOfString->vector = traceVector;
-		
 	}
+		//EM_ASM_({console.log("pushValuesVector 2.0 " + String.fromCharCode($0));}, traceArrayOfString->vector->value[0]);	
 	return 1;
 }
 
@@ -498,12 +500,12 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 int pushVertex(struct ArrayOfVertex* passedVertex, float vertex[4]) {
 	struct ArrayOfVertex* tempAOV;
 	tempAOV = new ArrayOfVertex;
-	if (passedVertex == NULL) {
+	/*if (passedVertex == NULL) {
 		passedVertex = tempAOV;
 		passedVertex->start = tempAOV;
 		passedVertex->prev = NULL;
 		passedVertex->next = NULL;
-	} else {
+	} else {*/
 		bool exhausted = false;
 		while (! exhausted) {
 			if (passedVertex->next == NULL) {
@@ -516,6 +518,10 @@ int pushVertex(struct ArrayOfVertex* passedVertex, float vertex[4]) {
 		passedVertex->next = tempAOV;
 		tempAOV->start = passedVertex->start;
 		passedVertex = tempAOV;
+	//}
+
+	if (passedVertex->vertex == NULL) {
+		passedVertex->vertex = new Vertex;
 	}
 
 	passedVertex->vertex->position[0] = vertex[0];

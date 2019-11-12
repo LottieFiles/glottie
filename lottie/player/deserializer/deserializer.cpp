@@ -407,7 +407,8 @@ struct scopeBefore lastScopeBeforeObject() {
 int checkScope() {
 	bool scopeChanged = false;
 	struct scopeBefore previousScope = lastScopeBeforeObject();
-	if (previousScope.objectCount == 0) {
+	if (previousScope.objectCount <= 1) {
+				EM_ASM({console.log('scope hit');});
 	switch (previousScope.scopeNow) {
 		case noscope:
 			theScope->scope = animation;
@@ -681,7 +682,7 @@ int checkCharacter(char& currentChar) {
 			kvState = Key;
 			readingArray = false;
 			//EM_ASM({console.log("[CLOSING reading states removed");});
-			gotoParentArray(currentKeyValue);
+			theScope->currentKeyValueTrail->keyValue->arrayValue = gotoParentArray(currentKeyValue);
 			//EM_ASM({console.log("[CLOSING gone to parent array");});
 			/*if (theState->stateNow == ScopeToBeRemoved) {
 				//EM_ASM({console.log("scope to be removed");});

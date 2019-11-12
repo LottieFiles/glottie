@@ -47,7 +47,7 @@ struct PropertiesShapeKeyframed {
 	struct PropertiesShapePropKeyframe* k;	
 } *currentPropertiesShapeKeyframed;
 
-struct PropertiesShapeProp {
+struct alignas(1024) PropertiesShapeProp {
 	struct PropertiesShapeProp* start=NULL;
 	struct PropertiesShapeProp* next=NULL;
 	struct PropertiesShapeProp* prev=NULL;
@@ -69,7 +69,7 @@ struct PropertiesShapePropKeyframe {
 	struct PropertiesShapeProp* s=NULL;
 } *currentPropertiesShapePropKeyframe;
 
-struct PropertiesShape {
+struct alignas(4096) PropertiesShape {
 	string x;
 	string ix;
 	int a; //animated

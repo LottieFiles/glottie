@@ -4,11 +4,11 @@ struct XY {
 	int y;
 };
 
-struct Vertex {
+struct alignas(64) Vertex {
 	GLfloat position[4];
 };
 
-struct ArrayOfVertex {
+struct alignas(128) ArrayOfVertex {
 	struct ArrayOfVertex* start;
 	struct ArrayOfVertex* next;
 	struct ArrayOfVertex* prev;
@@ -24,27 +24,32 @@ struct ArrayOfFloat {
 } *currentArrayOfFloat;
 
 //struct alignas(alignof(struct ValuesVector*)) ValuesVector {
-struct alignas(128) ValuesVector {
+struct alignas(256) ValuesVector {
 //struct ValuesVector {
 	struct ValuesVector* start = NULL;
 	struct ValuesVector* prev = NULL;
 	struct ValuesVector* next = NULL;
+
+	struct ArrayOfString* root = NULL;
+	struct ArrayOfString* parent = NULL; // only one
+	struct ArrayOfString* child = NULL; // only one
 	//string value;
 	char value[21];
 };
 
 //struct alignas(alignof(struct ArrayOfString*)) ArrayOfString {
-struct alignas(256) ArrayOfString {
+struct alignas(512) ArrayOfString {
 //struct ArrayOfString {
 	struct ArrayOfString* root = NULL;
-	struct ArrayOfString* parent = NULL; // only one
-	struct ArrayOfString* child = NULL; // only one
+	
 	//float isSubArray = false;
+	struct ValuesVector* parent = NULL;
+
 	struct ValuesVector* vector = NULL;
 } *currentArrayOfString;
 
 //struct alignas(alignof(struct KeyValue*)) KeyValue {
-struct alignas(512) KeyValue {
+struct alignas(1024) KeyValue {
 //struct KeyValue {
 	struct KeyValue* start = NULL;
 	struct KeyValue* next = NULL;
@@ -59,7 +64,7 @@ struct alignas(512) KeyValue {
 
 //struct alignas(alignof(struct KeyValueTrail*)) KeyValueTrail {
 //struct alignas(16777216) KeyValueTrail {
-struct alignas(1024) KeyValueTrail {
+struct alignas(2048) KeyValueTrail {
 //struct KeyValueTrail {
 	struct KeyValueTrail* start = NULL;
 	struct KeyValueTrail* next = NULL;
