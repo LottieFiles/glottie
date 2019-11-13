@@ -408,7 +408,7 @@ int checkScope() {
 	bool scopeChanged = false;
 	struct scopeBefore previousScope = lastScopeBeforeObject();
 	if (previousScope.objectCount <= 1) {
-				EM_ASM({console.log('scope hit');});
+				//EM_ASM({console.log('scope hit');});
 	switch (previousScope.scopeNow) {
 		case noscope:
 			theScope->scope = animation;
@@ -417,7 +417,7 @@ int checkScope() {
 			break;
 		case animation:
 			if (currentReadKey == "assets") {
-				EM_ASM({console.log('found assets');});
+				//EM_ASM({console.log('found assets');});
 				addScope(assets);
 				scopeChanged = true;
 			} else if (currentReadKey == "layers") {
@@ -427,14 +427,14 @@ int checkScope() {
 			break;
 		case assets:
 			if (currentReadKey == "layers") {
-				EM_ASM({console.log('found layers');});
+				//EM_ASM({console.log('found layers');});
 				addScope(assets_layers);
 				scopeChanged = true;
 			}
 			break;
 		case assets_layers:
 			if (currentReadKey == "shapes") {
-				EM_ASM({console.log('found shapes');});
+				//EM_ASM({console.log('found shapes');});
 				addScope(assets_layers_shapes);
 				scopeChanged = true;
 			}
@@ -682,7 +682,7 @@ int checkCharacter(char& currentChar) {
 			kvState = Key;
 			readingArray = false;
 			//EM_ASM({console.log("[CLOSING reading states removed");});
-			theScope->currentKeyValueTrail->keyValue->arrayValue = gotoParentArray(currentKeyValue);
+			theScope->currentKeyValueTrail->keyValue->arrayValue = gotoParentArray(theScope->currentKeyValueTrail->keyValue);
 			//EM_ASM({console.log("[CLOSING gone to parent array");});
 			/*if (theState->stateNow == ScopeToBeRemoved) {
 				//EM_ASM({console.log("scope to be removed");});

@@ -13,9 +13,9 @@ struct PropertiesShapeProp* newPropertiesShapeProp() {
 	tempPropertiesShapeProp = new PropertiesShapeProp;
 	tempPropertiesShapeProp->start = tempPropertiesShapeProp;
 	currentPropertiesShapeProp = tempPropertiesShapeProp;
-	currentPropertiesShapeProp->i = new ArrayOfVertex;
-	currentPropertiesShapeProp->o = new ArrayOfVertex;
-	currentPropertiesShapeProp->v = new ArrayOfVertex;
+	//currentPropertiesShapeProp->i = new ArrayOfVertex;
+	//currentPropertiesShapeProp->o = new ArrayOfVertex;
+	//currentPropertiesShapeProp->v = new ArrayOfVertex;
 	return currentPropertiesShapeProp;
 }
 
@@ -30,8 +30,33 @@ struct PropertiesShapePropKeyframe* newPropertiesShapePropKeyframe() {
 //////////////////// assign values
 
 
-int populateVertices(struct ArrayOfString* traceArrayValue, struct ArrayOfVertex* targetVertex) {
-	
+struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* traceArrayValue, struct ArrayOfVertex* targetVertex) {
+	struct ValuesVector* baseVector;
+	if (traceArrayValue == NULL) {
+		return 0;
+	}
+	/*if (targetVertex == NULL) {
+		targetVertex = new ArrayOfVertex;
+		targetVertex->start = targetVertex;
+	}*/
+	baseVector = traceArrayValue->root->vector;
+
+	bool exhausted = false;
+	while (! exhausted) {
+		string xvals(baseVector->child->vector->start->value);
+		string yvals(baseVector->child->vector->start->next->value);
+		float xval = stof(xvals);
+		float yval = stof(yvals);
+		float vertex[4] = {xval, yval, 0.0f, 1.0f};
+		targetVertex = pushVertex(targetVertex, vertex);
+
+		if (baseVector->next != NULL) {	
+			baseVector = baseVector->next;
+		} else {
+			exhausted = true;
+		}
+	}
+	return targetVertex->start;
 }
 
 int fillPropertiesShapeProp() {
@@ -62,7 +87,14 @@ int fillPropertiesShapeProp() {
 				}
 				EM_ASM({console.log("========================> fill 80.1.1");});
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "i") == 0) {
-			tempArrayValue = tempKeyValue->arrayValue->root;
+			currentPropertiesShapeProp->i = 
+				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, currentPropertiesShapeProp->i);
+
+			EM_ASM({console.log("========================> fill 80.2 " + $0 + " : " + $1);}, 
+				currentPropertiesShapeProp->i->start->vertex->position[0],
+				currentPropertiesShapeProp->i->start->vertex->position[1]);
+			//tempArrayValue = tempKeyValue->arrayValue->root;
+
 				/*
 				//string xvals(tempKeyValue->arrayValue->root->vector->start->value);
 				//string yvals(tempKeyValue->arrayValue->root->vector->start->next->value);
@@ -73,8 +105,11 @@ int fillPropertiesShapeProp() {
 				//currentPropertiesShapeProp->i.at(currentPropertiesShapeProp->i.back()).position = {xval, yval, 0.0f, 1.0f};
 				//pushVertex(currentPropertiesShapeProp->i, vertex);
 
-				EM_ASM({console.log("========================> fill 80.2");});
+				//EM_ASM({console.log("========================> fill 80.2");});
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "o") == 0) {
+			currentPropertiesShapeProp->o = 
+				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, currentPropertiesShapeProp->o);
+
 				/*
 				string xvals(tempKeyValue->arrayValue->root->vector->start->value);
 				string yvals(tempKeyValue->arrayValue->root->vector->start->next->value);
@@ -89,6 +124,9 @@ int fillPropertiesShapeProp() {
 				EM_ASM({console.log("========================> fill 80.3");});
 				*/
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "v") == 0) {
+			currentPropertiesShapeProp->v = 
+				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, currentPropertiesShapeProp->v);
+
 				/*
 				string xvals(tempKeyValue->arrayValue->root->vector->start->value);
 				string yvals(tempKeyValue->arrayValue->root->vector->start->next->value);

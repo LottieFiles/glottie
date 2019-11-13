@@ -497,39 +497,50 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 	return keyNode;
 }
 
-int pushVertex(struct ArrayOfVertex* passedVertex, float vertex[4]) {
+struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float vertex[4]) {
 	struct ArrayOfVertex* tempAOV;
-	tempAOV = new ArrayOfVertex;
 	/*if (passedVertex == NULL) {
 		passedVertex = tempAOV;
 		passedVertex->start = tempAOV;
 		passedVertex->prev = NULL;
 		passedVertex->next = NULL;
 	} else {*/
-		bool exhausted = false;
-		while (! exhausted) {
+	if (passedVertex == NULL) {
+		EM_ASM({console.log("found an empty vertex");};);
+		passedVertex = new ArrayOfVertex;
+		passedVertex->start = passedVertex;
+		passedVertex->end = passedVertex;
+	} else {
+		EM_ASM({console.log("found an non-empty vertex");};);
+		//bool exhausted = false;
+		/*while (! exhausted) {
 			if (passedVertex->next == NULL) {
 				exhausted = true;
 			} else {
 				passedVertex = passedVertex->next;
 			}
-		}
+		}*/
+		passedVertex = passedVertex->end;
 		tempAOV->prev = passedVertex;
 		passedVertex->next = tempAOV;
 		tempAOV->start = passedVertex->start;
+		tempAOV->end = tempAOV;
 		passedVertex = tempAOV;
-	//}
+	}
 
 	if (passedVertex->vertex == NULL) {
 		passedVertex->vertex = new Vertex;
 	}
+	//}
+
+
 
 	passedVertex->vertex->position[0] = vertex[0];
 	passedVertex->vertex->position[1] = vertex[1];
 	passedVertex->vertex->position[2] = vertex[2];
 	passedVertex->vertex->position[3] = vertex[3];
 
-	return 1;
+	return passedVertex;
 }
 
 //////////// type converters

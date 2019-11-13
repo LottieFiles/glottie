@@ -9,11 +9,12 @@ struct alignas(64) Vertex {
 };
 
 struct alignas(128) ArrayOfVertex {
-	struct ArrayOfVertex* start;
-	struct ArrayOfVertex* next;
-	struct ArrayOfVertex* prev;
+	struct ArrayOfVertex* start = NULL;
+	struct ArrayOfVertex* next = NULL;
+	struct ArrayOfVertex* prev = NULL;
+	struct ArrayOfVertex* end = NULL;
 
-	struct Vertex* vertex;
+	struct Vertex* vertex = NULL;
 };
 
 struct ArrayOfFloat {
