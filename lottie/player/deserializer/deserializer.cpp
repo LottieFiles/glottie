@@ -517,7 +517,7 @@ int checkScope() {
 
 int readingDone() {
 		struct KeyValue* tempKeyValue;
-		if (readingArray == true) {
+		if (readingArray) {
 			tempKeyValue = addKeyValue(theScope->currentKeyValueTrail->keyValue, currentReadKey, currentReadValue, true);
 		} else {
 			tempKeyValue = addKeyValue(theScope->currentKeyValueTrail->keyValue, currentReadKey, currentReadValue, false);
@@ -576,7 +576,7 @@ enum States lastStateBeforeReading() {
 }
 
 int checkCharacter(char& currentChar) {
-	//EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + String.fromCharCode($0));}, currentChar);
+	EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + String.fromCharCode($0));}, currentChar);
 	switch (currentChar) {
 		case '{':
 			//EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);

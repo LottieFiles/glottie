@@ -26,6 +26,10 @@ bool keyFound(struct KeyValue* tempKeyValue, string key) {
 	return false;
 }
 
+//struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
+	
+//}
+
 struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 	//EM_ASM({console.log("addingchildarray 901.1");});
 	struct ArrayOfString* tempArrayOfString;
@@ -37,8 +41,7 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 		traceKeyValue->arrayValue = tempArrayOfString;
 		traceKeyValue->arrayValue->root = tempArrayOfString;
 		return traceKeyValue;
-	}
-	if (traceKeyValue->arrayValue == NULL) {
+	} else if (traceKeyValue->arrayValue == NULL) {
 		//EM_ASM({console.log("addingchildarray 901.9");});
 		traceKeyValue->arrayValue = tempArrayOfString;
 		traceKeyValue->arrayValue->root = tempArrayOfString;
@@ -48,10 +51,13 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 
 	tempArrayOfString->root = traceKeyValue->arrayValue->root;
 	//EM_ASM({console.log("addingchildarray 901.15");});
-	if (traceKeyValue->arrayValue->vector == NULL) {
+	struct KeyValue* tempKeyValue;
+	tempKeyValue = traceKeyValue;
+
 		traceKeyValue->arrayValue->vector = new ValuesVector;
-		traceKeyValue->arrayValue->vector->start = traceKeyValue->arrayValue->vector;
-	}
+		traceKeyValue->arrayValue->vector->start = tempKeyValue->arrayValue->vector->start;
+		//traceKeyValue->arrayValue->vector->rootKey = tempKeyValue;
+
 	traceKeyValue->arrayValue->vector->root = tempArrayOfString->root;
 	traceKeyValue->arrayValue->vector->child = tempArrayOfString;
 	traceKeyValue->arrayValue->vector->parent = traceKeyValue->arrayValue;
@@ -60,6 +66,8 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 	traceKeyValue->arrayValue = tempArrayOfString;
 
 	currentArrayOfString = traceKeyValue->arrayValue;
+
+
 	return traceKeyValue;
 }
 
@@ -476,7 +484,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 		*/
 		//keyNode->arrayValue->value.push_back(value);
 		if (keyNode->arrayValue == NULL) {
-			addChildArray(keyNode);
+			keyNode = addChildArray(keyNode);
 			//keyNode->arrayValue->root = keyNode->arrayValue;
 		}
 		pushValuesVector(keyNode->arrayValue, value);

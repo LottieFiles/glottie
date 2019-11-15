@@ -31,6 +31,7 @@ struct alignas(256) ValuesVector {
 	struct ValuesVector* prev = NULL;
 	struct ValuesVector* next = NULL;
 
+	//struct ArrayOfString* rootKey = NULL;
 	struct ArrayOfString* root = NULL;
 	struct ArrayOfString* parent = NULL; // only one
 	struct ArrayOfString* child = NULL; // only one
