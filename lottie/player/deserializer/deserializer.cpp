@@ -636,6 +636,7 @@ int checkCharacter(char& currentChar) {
 				removeScope();
 				//EM_ASM_({console.log("CLOSING removed scope " + $0);}, theState->stateNow);
 				if (theState->stateNow == ScopeOpenInArray) {
+					//EM_ASM_({console.log("CLOSING reverting to array " + $0);}, theState->stateNow);
 					readingArray = true;
 				}
 				//if (! previousScopeClosure) {
