@@ -34,20 +34,27 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 	//EM_ASM({console.log("addingchildarray 901.1");});
 	struct ArrayOfString* tempArrayOfString;
 	tempArrayOfString = new ArrayOfString;
-	//EM_ASM({console.log("addingchildarray 901.5");});
 	if (traceKeyValue == NULL) {
 		traceKeyValue = new KeyValue;
 		traceKeyValue->start = traceKeyValue;
 		traceKeyValue->arrayValue = tempArrayOfString;
 		traceKeyValue->arrayValue->root = tempArrayOfString;
+		EM_ASM_({console.log("addingchildarray 901.91 " + $0);}, traceKeyValue->arrayValue);
 		return traceKeyValue;
 	} else if (traceKeyValue->arrayValue == NULL) {
-		//EM_ASM({console.log("addingchildarray 901.9");});
 		traceKeyValue->arrayValue = tempArrayOfString;
 		traceKeyValue->arrayValue->root = tempArrayOfString;
+		EM_ASM_({console.log("addingchildarray 901.92 " + $0);}, traceKeyValue->arrayValue);
 		return traceKeyValue;
 	}
-	//EM_ASM({console.log("addingchildarray 901.10");});
+	EM_ASM_({console.log("addingchildarray 901.10 " + $0 + " from " + $1);}, tempArrayOfString, traceKeyValue->arrayValue);
+
+	/*if (traceKeyValue->arrayValue->child != NULL) {
+		tempArrayOfString->root = traceKeyValue->arrayValue->root;
+		traceKeyValue->arrayValue = tempArrayOfString;
+		traceKeyValue->arrayValue->root = ;
+		tempArrayOfString = new ArrayOfString;
+	}*/
 
 	tempArrayOfString->root = traceKeyValue->arrayValue->root;
 	//EM_ASM({console.log("addingchildarray 901.15");});
@@ -57,6 +64,8 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 
 
 
+	// if an ArrayOfString already exists, then add a ValuesVector to it
+	// and add a fresh ArrayOfString to the latter.
 
 	struct ValuesVector* tempVectorValue;
 	tempVectorValue = new ValuesVector;
@@ -70,17 +79,17 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 	}
 		//traceKeyValue->arrayValue->vector->rootKey = tempKeyValue;
 
-	traceKeyValue->arrayValue->vector = tempVectorValue;
-
 	tempVectorValue->root = traceKeyValue->arrayValue->root;
 	tempVectorValue->parent = traceKeyValue->arrayValue;
 	tempVectorValue->child = tempArrayOfString;
-
 	tempArrayOfString->parent = tempVectorValue;
+
+	traceKeyValue->arrayValue->vector = tempVectorValue;
+
 
 	//tempArrayOfString->vector = new ValuesVector;
 	//tempArrayOfString->vector->start = tempArrayOfString->vector;
-	
+
 	traceKeyValue->arrayValue = tempArrayOfString;
 
 	currentArrayOfString = traceKeyValue->arrayValue;
@@ -95,7 +104,9 @@ struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
 	}
 	if (traceKeyValue->arrayValue != NULL) {
 		if (traceKeyValue->arrayValue->parent != NULL) {
-			if (traceKeyValue->arrayValue->parent->parent != NULL) {
+			EM_ASM_({console.log("toparent current " + $0 + " has parent " + $1);}, traceKeyValue->arrayValue, traceKeyValue->arrayValue->parent->start);
+			if (traceKeyValue->arrayValue->parent->start->parent != NULL) {
+				EM_ASM_({console.log("toparent done " + $0 + " from " + $1);}, traceKeyValue->arrayValue, traceKeyValue->arrayValue->parent->parent);
 				traceKeyValue->arrayValue = traceKeyValue->arrayValue->parent->parent;
 				currentArrayOfString = traceKeyValue->arrayValue;
 			}
@@ -346,8 +357,9 @@ int pushValuesVector(struct ArrayOfString* traceArrayOfString, string tempString
 		traceVector->start = traceArrayOfString->vector->start;
 		traceArrayOfString->vector->next = traceVector;
 		traceVector->prev = traceArrayOfString->vector;
-		EM_ASM_({console.log("pushValuesVector 1.0 " + String.fromCharCode($0) + " : " + $1);}, traceArrayOfString->vector->value[0], traceArrayOfString->vector->next);	
+		//EM_ASM_({console.log("pushValuesVector 1.0 " + String.fromCharCode($0) + " : " + $1);}, traceArrayOfString->vector->value[0], traceArrayOfString->vector->next);	
 	} else {
+		//EM_ASM({console.log("pushValuesVector 1.0 ");});
 		traceVector->start = traceVector;
 	}
 
@@ -488,19 +500,18 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 		
 	}
 	if (isArray) {
-		/*
+		if (keyNode->arrayValue == NULL) {
 			struct ArrayOfString* tempArrayOfString;
 			tempArrayOfString = new ArrayOfString;
+			tempArrayOfString->root = tempArrayOfString;
 			currentArrayOfString = tempArrayOfString;
-			keyNode->arrayValue->child = tempArrayOfString;
-			tempArrayOfString->parent = keyNode->arrayValue;
 			keyNode->arrayValue = tempArrayOfString;
-		*/
-		//keyNode->arrayValue->value.push_back(value);
-		if (keyNode->arrayValue == NULL) {
-			keyNode = addChildArray(keyNode);
-			//keyNode->arrayValue->root = keyNode->arrayValue;
 		}
+		//keyNode->arrayValue->value.push_back(value);
+		//if (keyNode->arrayValue == NULL) {
+			//keyNode = addChildArray(keyNode);
+			//keyNode->arrayValue->root = keyNode->arrayValue;
+		//}
 		pushValuesVector(keyNode->arrayValue, value);
 		//EM_ASM_({console.log("adding key value by array 303.6 " + String.fromCharCode($0));}, value[0]);
 	} else {

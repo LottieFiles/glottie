@@ -417,7 +417,7 @@ int checkScope() {
 			break;
 		case animation:
 			if (currentReadKey == "assets") {
-				//EM_ASM({console.log('found assets');});
+				EM_ASM({console.log('found assets');});
 				addScope(assets);
 				scopeChanged = true;
 			} else if (currentReadKey == "layers") {
@@ -427,14 +427,14 @@ int checkScope() {
 			break;
 		case assets:
 			if (currentReadKey == "layers") {
-				//EM_ASM({console.log('found layers');});
+				EM_ASM({console.log('found layers');});
 				addScope(assets_layers);
 				scopeChanged = true;
 			}
 			break;
 		case assets_layers:
 			if (currentReadKey == "shapes") {
-				//EM_ASM({console.log('found shapes');});
+				EM_ASM({console.log('found shapes');});
 				addScope(assets_layers_shapes);
 				scopeChanged = true;
 			}
@@ -444,7 +444,7 @@ int checkScope() {
 			break;
 		case assets_layers_shapes:
 			if (currentReadKey == "ks") {
-				//EM_ASM({console.log('found ks');});
+				EM_ASM({console.log('found ks');});
 				addScope(assets_layers_shapes_ks);
 				scopeChanged = true;
 			} else if (currentReadKey == "ty") {
@@ -724,18 +724,19 @@ int checkCharacter(char& currentChar) {
 		case ',':
 			//EM_ASM({console.log("handling comma ");});
 			//addState(NewElement);
-			if (isReadingDone()) {
-				//readingDone();
-				//readingDone();
-			}
-			removeReadStates();
+
 			//EM_ASM_({console.log("handling comma 1 " + $0);}, theState->stateNow);
-			if (lastStateBeforeReading() == ArrayOpen) {
+			if (lastStateBeforeReading() == ArrayOpen || readingArray) {
 						//EM_ASM({console.log("reading values into an array ");});
 				kvState = Value;
 			} else {
 				kvState = Key;
 			}
+			if (isReadingDone()) {
+				//readingDone();
+				//readingDone();
+			}
+			removeReadStates();
 			theState->keyEncountered = false;
 			//EM_ASM({console.log("done with comma ");});
 			previousScopeClosure = false;

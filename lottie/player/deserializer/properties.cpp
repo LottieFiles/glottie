@@ -39,7 +39,7 @@ struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* 
 		targetVertex = new ArrayOfVertex;
 		targetVertex->start = targetVertex;
 	}*/
-	baseVector = traceArrayValue->root->vector;
+	baseVector = traceArrayValue->vector->start;
 
 	bool exhausted = false;
 	while (! exhausted) {
