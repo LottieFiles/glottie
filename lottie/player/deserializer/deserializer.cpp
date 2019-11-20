@@ -140,6 +140,7 @@ string currentReadKey;
 bool readingArray = false;
 bool wasReadingArray = false;
 bool previousScopeClosure = false;
+bool quoteOpened = false;
 
 struct ArrayTrail {
 	struct ArrayTrail* start = NULL;
@@ -407,8 +408,9 @@ struct scopeBefore lastScopeBeforeObject() {
 int checkScope() {
 	bool scopeChanged = false;
 	struct scopeBefore previousScope = lastScopeBeforeObject();
+	EM_ASM_({console.log("TRYING SCOPE " + $0 + " : " + $1);}, previousScope.objectCount, previousScope.scopeNow);
 	if (previousScope.objectCount <= 1) {
-				//EM_ASM({console.log('scope hit');});
+				EM_ASM_({console.log("scope hit " + $0 + " : " + $1 + " / " + String.fromCharCode($2));}, previousScope.objectCount, previousScope.scopeNow, currentReadKey[0]);
 	switch (previousScope.scopeNow) {
 		case noscope:
 			theScope->scope = animation;
@@ -528,7 +530,7 @@ int readingDone() {
 
 bool isReadingDone() {
 			//EM_ASM({console.log("reading 100.1");});
-			if (theState->stateNow == KVReading || theState->stateNow == KVReadOpen) {
+			if ((theState->stateNow == KVReading || theState->stateNow == KVReadOpen) || currentValue.length() > 0) {
 				//EM_ASM({console.log("reading 100.2");});
 				if (kvState == Value) {
 					currentReadValue = currentValue;
@@ -553,7 +555,7 @@ bool isReadingDone() {
 				//EM_ASM_({console.log("post-reading " + $0);}, theState->stateNow);
 				return true;
 			} else {
-				currentValue.clear();
+				//currentValue.clear();
 			}
 			//EM_ASM({console.log("reading 100.9");});
 	return false;
@@ -576,7 +578,15 @@ enum States lastStateBeforeReading() {
 }
 
 int checkCharacter(char& currentChar) {
-	EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + String.fromCharCode($0));}, currentChar);
+	if (currentValue.length() > 0 && currentReadKey.length() > 0) {
+		EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $3 + " ] " + String.fromCharCode($0) + " : " + String.fromCharCode($1) + " : " + String.fromCharCode($2));}, currentChar, currentValue[0], currentReadKey[0], readingArray);
+	} else {
+		if (currentValue.length() > 0) {
+			EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $2 + " ] " + String.fromCharCode($0) + " : " + String.fromCharCode($1));}, currentChar, currentValue[0], readingArray);
+		} else {
+			EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $1 + " ] " + String.fromCharCode($0));}, currentChar, readingArray);
+		}
+	}
 	switch (currentChar) {
 		case '{':
 			//EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);
@@ -641,6 +651,9 @@ int checkCharacter(char& currentChar) {
 				}
 				//if (! previousScopeClosure) {
 					removeState();
+				if (lastStateBeforeReading() == ScopeOpenInArray) {
+					readingArray = false;
+				}
 					//EM_ASM_({console.log("CLOSING removed state " + $0);}, theState->stateNow);
 				//}
 				currentKeyValueTrail = theScope->currentKeyValueTrail;
@@ -697,14 +710,17 @@ int checkCharacter(char& currentChar) {
 			previousScopeClosure = false;
 			break;
 		case ':':
+			if (isReadingDone()) {
+			}
 			removeReadStates();
 			theState->keyEncountered = true;
 			kvState = Value;
 			previousScopeClosure = false;
 			break;
 		case '\'':
+
 			//EM_ASM({console.log("handling apostrophe 1");});
-			if (isReadingDone()) {
+			/*if (isReadingDone()) {
 				//readingDone();
 				//readingDone();
 				//EM_ASM({console.log("handling apostrophe 1.0");});
@@ -716,6 +732,13 @@ int checkCharacter(char& currentChar) {
 				addState(KVReadOpen); //// ADD STATE
 				//EM_ASM({console.log("kvreadopen ");});
 				currentValue.clear();
+			}*/
+			if (quoteOpened) {
+				quoteOpened = false;
+			} else {
+				quoteOpened = true;
+				addState(KVReadOpen); //// ADD STATE
+				currentValue.clear();
 			}
 
 			previousScopeClosure = false;
@@ -724,19 +747,21 @@ int checkCharacter(char& currentChar) {
 		case ',':
 			//EM_ASM({console.log("handling comma ");});
 			//addState(NewElement);
-
-			//EM_ASM_({console.log("handling comma 1 " + $0);}, theState->stateNow);
-			if (lastStateBeforeReading() == ArrayOpen || readingArray) {
-						//EM_ASM({console.log("reading values into an array ");});
-				kvState = Value;
-			} else {
-				kvState = Key;
-			}
 			if (isReadingDone()) {
 				//readingDone();
 				//readingDone();
 			}
 			removeReadStates();
+
+			//EM_ASM_({console.log("handling comma 1 " + $0);}, theState->stateNow);
+			//if (lastStateBeforeReading() == ArrayOpen || readingArray) {
+			if (readingArray == true) {
+						//EM_ASM({console.log("reading values into an array ");});
+				kvState = Value;
+			} else {
+				kvState = Key;
+			}
+
 			theState->keyEncountered = false;
 			//EM_ASM({console.log("done with comma ");});
 			previousScopeClosure = false;

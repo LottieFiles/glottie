@@ -261,9 +261,12 @@ struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail)
 		
 		temptempKeyValue = tempKeyValue;
 		tempKeyValue = tempKeyValue->next;
-		
-		//EM_ASM_({console.log("deleting key values 802.2 " + $0 + " : " + $1);}, temptempKeyValue, tempKeyValue);
-		if (temptempKeyValue->arrayValue != NULL) {
+		if (strlen(temptempKeyValue->key) > 0) {
+			EM_ASM_({console.log("deleting key values 802.2 " + $0 + " : " + $1 + " key: " + String.fromCharCode($2));}, temptempKeyValue, tempKeyValue, temptempKeyValue->key[0]);
+		} else {
+			EM_ASM_({console.log("deleting key values 802.2 " + $0 + " : " + $1);}, temptempKeyValue, tempKeyValue);
+		}
+		if (temptempKeyValue->arrayValue != NULL && strlen(temptempKeyValue->value) < 1) {
 			if (temptempKeyValue->arrayValue->root != NULL) {
 				deleteArrayValue(temptempKeyValue->arrayValue->root);
 				temptempKeyValue->arrayValue = NULL;
@@ -363,7 +366,7 @@ int pushValuesVector(struct ArrayOfString* traceArrayOfString, string tempString
 		traceVector->start = traceVector;
 	}
 
-	if (tempString.length() > 20) {
+	if (tempString.length() >= 20) {
 		strcpy(traceVector->value, tempString.substr(0,20).c_str());
 	} else {
 		strcpy(traceVector->value, tempString.c_str());
@@ -443,7 +446,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 		}
 		*/
 		
-		if (key.length() > 20) {
+		if (key.length() >= 20) {
 			strcpy(keyNode->key, key.substr(0,20).c_str());
 		} else {
 			strcpy(keyNode->key, key.c_str());
@@ -492,7 +495,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 		//addChildArray(keyNode);
 		//keyNode->arrayValue = new ArrayOfString;
 		//EM_ASM({console.log("adding key value 303.8");});	
-		if (key.length() > 20) {
+		if (key.length() >= 20) {
 			strcpy(keyNode->key, key.substr(0,20).c_str());
 		} else {
 			strcpy(keyNode->key, key.c_str());
@@ -515,7 +518,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 		pushValuesVector(keyNode->arrayValue, value);
 		//EM_ASM_({console.log("adding key value by array 303.6 " + String.fromCharCode($0));}, value[0]);
 	} else {
-		if (key.length() > 20) {
+		if (key.length() >= 20) {
 			strcpy(keyNode->value, value.substr(0,20).c_str());
 		} else {
 			strcpy(keyNode->value, value.c_str());

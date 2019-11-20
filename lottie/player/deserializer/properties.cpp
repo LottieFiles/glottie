@@ -48,7 +48,8 @@ struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* 
 			EM_ASM({console.log("========================> xval 1 " + String.fromCharCode($0));}, somechar);
 		}	
 		float xval = 0;
-		if (xvals[0] == '0' && xvals.length() <= sizeof(xvals[0])) {
+		if (xvals[0] == '0' || xvals.length() < 1) {
+			xval = 0;
 		} else {
 			if (! xvals.empty()) {
 				xval = stof(xvals);
@@ -60,7 +61,8 @@ struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* 
 		string yvals(baseVector->child->vector->start->next->value);
 		EM_ASM({console.log("========================> yval 1 " + $0);}, yvals[0]);
 		float yval = 0;
-		if (yvals[0] == '0' && yvals.length() <= sizeof(yvals[0])) {
+		if (yvals[0] == '0' || yvals.length() < 1) {
+			yval = 0;
 		} else {
 			if (! yvals.empty()) {
 				yval = stof(xvals);
