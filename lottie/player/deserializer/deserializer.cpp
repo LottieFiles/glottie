@@ -408,12 +408,14 @@ struct scopeBefore lastScopeBeforeObject() {
 int checkScope() {
 	bool scopeChanged = false;
 	struct scopeBefore previousScope = lastScopeBeforeObject();
-	EM_ASM_({console.log("TRYING SCOPE " + $0 + " : " + $1);}, previousScope.objectCount, previousScope.scopeNow);
+	EM_ASM_({console.log("TRYING SCOPE " + $0 + " : " + $1 + " - " + $2);}, previousScope.objectCount, previousScope.scopeNow, currentReadKey[0]);
 	if (previousScope.objectCount <= 1) {
 				EM_ASM_({console.log("scope hit " + $0 + " : " + $1 + " / " + String.fromCharCode($2));}, previousScope.objectCount, previousScope.scopeNow, currentReadKey[0]);
 	switch (previousScope.scopeNow) {
 		case noscope:
-			theScope->scope = animation;
+			//theScope->scope = animation;
+			addScope(animation);
+			scopeChanged = true;
 
 			//determineCurrentScope();
 			break;
@@ -735,6 +737,7 @@ int checkCharacter(char& currentChar) {
 			}*/
 			if (quoteOpened) {
 				quoteOpened = false;
+				removeReadStates();
 			} else {
 				quoteOpened = true;
 				addState(KVReadOpen); //// ADD STATE

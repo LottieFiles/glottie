@@ -47,7 +47,6 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 		EM_ASM_({console.log("addingchildarray 901.92 " + $0);}, traceKeyValue->arrayValue);
 		return traceKeyValue;
 	}
-	EM_ASM_({console.log("addingchildarray 901.10 " + $0 + " from " + $1);}, tempArrayOfString, traceKeyValue->arrayValue);
 
 	/*if (traceKeyValue->arrayValue->child != NULL) {
 		tempArrayOfString->root = traceKeyValue->arrayValue->root;
@@ -71,8 +70,10 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 	tempVectorValue = new ValuesVector;
 
 	if (traceKeyValue->arrayValue->vector == NULL) {
+		EM_ASM_({console.log("addingchildarray 901.10 " + $0 + " from " + $1);}, tempArrayOfString, traceKeyValue->arrayValue);
 		tempVectorValue->start = tempVectorValue;
 	} else {
+		EM_ASM_({console.log("addingchildarray 901.11 " + $0 + " from " + $1);}, tempArrayOfString, traceKeyValue->arrayValue);
 		tempVectorValue->start = traceKeyValue->arrayValue->vector->start;
 		tempVectorValue->prev = traceKeyValue->arrayValue->vector;
 		traceKeyValue->arrayValue->vector->next = tempVectorValue;
@@ -106,7 +107,7 @@ struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
 		if (traceKeyValue->arrayValue->parent != NULL) {
 			EM_ASM_({console.log("toparent current " + $0 + " has parent " + $1);}, traceKeyValue->arrayValue, traceKeyValue->arrayValue->parent->start);
 			if (traceKeyValue->arrayValue->parent->start->parent != NULL) {
-				EM_ASM_({console.log("toparent done " + $0 + " from " + $1);}, traceKeyValue->arrayValue, traceKeyValue->arrayValue->parent->parent);
+				EM_ASM_({console.log("toparent done " + $0 + " to " + $1);}, traceKeyValue->arrayValue, traceKeyValue->arrayValue->parent->parent);
 				traceKeyValue->arrayValue = traceKeyValue->arrayValue->parent->parent;
 				currentArrayOfString = traceKeyValue->arrayValue;
 			}
@@ -405,17 +406,18 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 	//EM_ASM({console.log("adding key value 300.1");});	
 	if (traceKeyValue != NULL) {
 		//EM_ASM({console.log("adding key value 301.1");});	
-		struct KeyValue* tempKeyValue = traceKeyValue;
+		struct KeyValue* tempKeyValue = traceKeyValue->start;
 		//EM_ASM({console.log("adding key value 301.2");});	
 		if (keyFound(traceKeyValue, key)) {
+			EM_ASM({console.log("adding key value 301.3");});	
 			
 			keyNode = traceKeyValue;
 		} else {
-			//EM_ASM({console.log("adding key value 301.3");});	
 			
 			while (! exhausted) {
 				
 				if (keyFound(tempKeyValue, key)) {
+				EM_ASM({console.log("adding key value 301.4");});	
 					keyNode = tempKeyValue;
 				}
 				
@@ -454,53 +456,62 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, string key, string 
 		
 	}
 	//EM_ASM({console.log("adding key value 303.1");});	
-	
+
 	if (keyNode == NULL) {
-		//EM_ASM({console.log("adding key value 303.2");});	
-		keyNode = new KeyValue;
-		
-		//EM_ASM({console.log("adding key value 303.3");});	
-		if (endNode != NULL) {
-			endNode->next = keyNode;
-			//EM_ASM({console.log("adding key value 303.4");});	
-			keyNode->prev = endNode;
-			//EM_ASM({console.log("adding key value 303.5");});	
-			keyNode->start = endNode->start;
+		if (traceKeyValue != NULL && strlen(traceKeyValue->key) < 1) {
+			keyNode = traceKeyValue;
+			if (key.length() >= 20) {
+				strcpy(keyNode->key, key.substr(0,20).c_str());
+			} else {
+				strcpy(keyNode->key, key.c_str());
+			}
 		} else {
-			//EM_ASM({console.log("adding key value 303.6");});	
-			keyNode->start = keyNode;
-		}
 
-		//EM_ASM({console.log("adding key value 303.7");});	
-		/*
-		keyNode->arrayValue = new ArrayOfString;
-		if (endNode != NULL) {
-			//EM_ASM({console.log("adding key value 303.7.1");});	
-			keyNode->arrayValue->root = endNode->arrayValue->root;
-		} else {
-			//EM_ASM({console.log("adding key value 303.7.2");});	
-			keyNode->arrayValue->root = keyNode->arrayValue;
+			//EM_ASM({console.log("adding key value 303.2");});	
+			keyNode = new KeyValue;
+			
+			//EM_ASM({console.log("adding key value 303.3");});	
+			if (endNode != NULL) {
+				endNode->next = keyNode;
+				//EM_ASM({console.log("adding key value 303.4");});	
+				keyNode->prev = endNode;
+				//EM_ASM({console.log("adding key value 303.5");});	
+				keyNode->start = endNode->start;
+			} else {
+				//EM_ASM({console.log("adding key value 303.6");});	
+				keyNode->start = keyNode;
+			}
+	
+			//EM_ASM({console.log("adding key value 303.7");});	
+			/*
+			keyNode->arrayValue = new ArrayOfString;
+			if (endNode != NULL) {
+				//EM_ASM({console.log("adding key value 303.7.1");});	
+				keyNode->arrayValue->root = endNode->arrayValue->root;
+			} else {
+				//EM_ASM({console.log("adding key value 303.7.2");});	
+				keyNode->arrayValue->root = keyNode->arrayValue;
+			}
+			*/
+	
+			if (traceKeyValue != NULL) {
+				//EM_ASM({console.log("adding key value 303.7.3");});	
+				keyNode->start = traceKeyValue->start;
+			} else {
+				//EM_ASM({console.log("adding key value 303.7.4");});	
+				keyNode->start = keyNode;
+			}
+			//EM_ASM({console.log("adding key value 303.7.5");});	
+			
+			//addChildArray(keyNode);
+			//keyNode->arrayValue = new ArrayOfString;
+			//EM_ASM({console.log("adding key value 303.8");});	
+			if (key.length() >= 20) {
+				strcpy(keyNode->key, key.substr(0,20).c_str());
+			} else {
+				strcpy(keyNode->key, key.c_str());
+			}
 		}
-		*/
-
-		if (traceKeyValue != NULL) {
-			//EM_ASM({console.log("adding key value 303.7.3");});	
-			keyNode->start = traceKeyValue->start;
-		} else {
-			//EM_ASM({console.log("adding key value 303.7.4");});	
-			keyNode->start = keyNode;
-		}
-		//EM_ASM({console.log("adding key value 303.7.5");});	
-		
-		//addChildArray(keyNode);
-		//keyNode->arrayValue = new ArrayOfString;
-		//EM_ASM({console.log("adding key value 303.8");});	
-		if (key.length() >= 20) {
-			strcpy(keyNode->key, key.substr(0,20).c_str());
-		} else {
-			strcpy(keyNode->key, key.c_str());
-		}
-		
 	}
 	if (isArray) {
 		if (keyNode->arrayValue == NULL) {
@@ -548,7 +559,7 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 		passedVertex->start = passedVertex;
 		passedVertex->end = passedVertex;
 	} else {
-		EM_ASM({console.log("found an non-empty vertex");};);
+		EM_ASM({console.log("found a non-empty vertex");};);
 		//bool exhausted = false;
 		/*while (! exhausted) {
 			if (passedVertex->next == NULL) {
@@ -557,6 +568,7 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 				passedVertex = passedVertex->next;
 			}
 		}*/
+		tempAOV = new ArrayOfVertex;
 		passedVertex = passedVertex->end;
 		tempAOV->prev = passedVertex;
 		passedVertex->next = tempAOV;

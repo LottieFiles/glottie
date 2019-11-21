@@ -43,7 +43,7 @@ struct alignas(256) ValuesVector {
 struct alignas(512) ArrayOfString {
 //struct ArrayOfString {
 	struct ArrayOfString* root = NULL;
-	
+
 	//float isSubArray = false;
 	struct ValuesVector* parent = NULL;
 
