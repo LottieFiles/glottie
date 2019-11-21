@@ -35,6 +35,8 @@ struct alignas(256) ValuesVector {
 	struct ArrayOfString* root = NULL;
 	struct ArrayOfString* parent = NULL; // only one
 	struct ArrayOfString* child = NULL; // only one
+
+
 	//string value;
 	char value[21];
 };
@@ -48,6 +50,8 @@ struct alignas(512) ArrayOfString {
 	struct ValuesVector* parent = NULL;
 
 	struct ValuesVector* vector = NULL;
+
+	bool closed = false;
 } *currentArrayOfString;
 
 //struct alignas(alignof(struct KeyValue*)) KeyValue {

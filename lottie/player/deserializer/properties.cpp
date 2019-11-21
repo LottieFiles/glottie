@@ -44,9 +44,9 @@ struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* 
 	bool exhausted = false;
 	while (! exhausted) {
 		string xvals(baseVector->child->vector->start->value);
-		for (char& somechar : xvals) {
-			EM_ASM({console.log("========================> xval 1 " + String.fromCharCode($0));}, somechar);
-		}	
+		//for (char& somechar : xvals) {
+		//	EM_ASM({console.log("========================> xval 1 " + String.fromCharCode($0));}, somechar);
+		//}	
 		float xval = 0;
 		if (xvals[0] == '0' || xvals.length() < 1) {
 			xval = 0;
@@ -57,15 +57,15 @@ struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* 
 				xval = 0;
 			}
 		}
-		EM_ASM({console.log("========================> xval " + $0);}, xval);
+		//EM_ASM({console.log("========================> xval " + $0);}, xval);
 		string yvals(baseVector->child->vector->start->next->value);
-		EM_ASM({console.log("========================> yval 1 " + $0);}, yvals[0]);
+		//EM_ASM({console.log("========================> yval 1 " + $0);}, yvals[0]);
 		float yval = 0;
 		if (yvals[0] == '0' || yvals.length() < 1) {
 			yval = 0;
 		} else {
 			if (! yvals.empty()) {
-				yval = stof(xvals);
+				yval = stof(yvals);
 			} else {
 				yval = 0;
 			}
@@ -132,7 +132,7 @@ int fillPropertiesShapeProp() {
 
 				//EM_ASM({console.log("========================> fill 80.2");});
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "o") == 0) {
-			EM_ASM({console.log("========================> fill 80.3 " + String.fromCharCode($0));}, tempKeyValue->key);
+			EM_ASM({console.log("========================> fill 80.3 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			currentPropertiesShapeProp->o = 
 				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, currentPropertiesShapeProp->o);
 
@@ -150,7 +150,7 @@ int fillPropertiesShapeProp() {
 				EM_ASM({console.log("========================> fill 80.3");});
 				*/
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "v") == 0) {
-			EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key);
+			EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			currentPropertiesShapeProp->v = 
 				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, currentPropertiesShapeProp->v);
 

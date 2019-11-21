@@ -41,11 +41,24 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 		traceKeyValue->arrayValue->root = tempArrayOfString;
 		EM_ASM_({console.log("addingchildarray 901.91 " + $0);}, traceKeyValue->arrayValue);
 		return traceKeyValue;
-	} else if (traceKeyValue->arrayValue == NULL) {
-		traceKeyValue->arrayValue = tempArrayOfString;
-		traceKeyValue->arrayValue->root = tempArrayOfString;
-		EM_ASM_({console.log("addingchildarray 901.92 " + $0);}, traceKeyValue->arrayValue);
-		return traceKeyValue;
+	} else {
+		if (traceKeyValue->arrayValue == NULL) {
+			traceKeyValue->arrayValue = tempArrayOfString;
+			traceKeyValue->arrayValue->root = tempArrayOfString;
+			EM_ASM_({console.log("addingchildarray 901.92 " + $0);}, traceKeyValue->arrayValue);
+			return traceKeyValue;
+		} else if (traceKeyValue->arrayValue->closed == true) {
+			struct KeyValue* tempKeyValue;
+			tempKeyValue = new KeyValue;
+			tempKeyValue->start = traceKeyValue->start;
+			traceKeyValue->next = tempKeyValue;
+			tempKeyValue->prev = traceKeyValue;
+			traceKeyValue = tempKeyValue;
+			traceKeyValue->arrayValue = tempArrayOfString;
+			traceKeyValue->arrayValue->root = tempArrayOfString;
+			EM_ASM_({console.log("addingchildarray 901.91 " + $0);}, traceKeyValue->arrayValue);
+			return traceKeyValue;
+		}
 	}
 
 	/*if (traceKeyValue->arrayValue->child != NULL) {
@@ -78,7 +91,7 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 		tempVectorValue->prev = traceKeyValue->arrayValue->vector;
 		traceKeyValue->arrayValue->vector->next = tempVectorValue;
 	}
-		//traceKeyValue->arrayValue->vector->rootKey = tempKeyValue;
+	//traceKeyValue->arrayValue->vector->rootKey = tempKeyValue;
 
 	tempVectorValue->root = traceKeyValue->arrayValue->root;
 	tempVectorValue->parent = traceKeyValue->arrayValue;
@@ -111,6 +124,9 @@ struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
 				traceKeyValue->arrayValue = traceKeyValue->arrayValue->parent->parent;
 				currentArrayOfString = traceKeyValue->arrayValue;
 			}
+		} else {
+			EM_ASM_({console.log("toparent closed " + $0);}, traceKeyValue->arrayValue);
+			traceKeyValue->arrayValue->closed = true;
 		}
 	}
 	return traceKeyValue->arrayValue;
@@ -375,7 +391,7 @@ int pushValuesVector(struct ArrayOfString* traceArrayOfString, string tempString
 
 	traceArrayOfString->vector = traceVector;
 
-		//EM_ASM_({console.log("pushValuesVector 2.0 " + String.fromCharCode($0));}, traceArrayOfString->vector->value[0]);	
+		EM_ASM_({console.log("pushValuesVector 2.0 " + String.fromCharCode($0));}, traceArrayOfString->vector->value[0]);	
 	return 1;
 }
 
