@@ -629,6 +629,7 @@ int checkCharacter(char& currentChar) {
 			//EM_ASM_({console.log("CLOSING object " + $0);}, theState->stateNow);
 			if (isReadingDone()) {
 				//readingDone();
+				EM_ASM_({console.log("CLOSING object reading " + $0);}, theState->stateNow);
 				removeReadStates();
 			}
 			//EM_ASM_({console.log("CLOSING reading done " + $0);}, theState->stateNow);
@@ -735,7 +736,7 @@ int checkCharacter(char& currentChar) {
 				//EM_ASM({console.log("kvreadopen ");});
 				currentValue.clear();
 			}*/
-			if (quoteOpened) {
+			if (quoteOpened && (theState->stateNow == KVReading || theState->stateNow == KVReadOpen)) {
 				quoteOpened = false;
 				removeReadStates();
 			} else {

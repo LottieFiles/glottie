@@ -52,8 +52,8 @@ struct Asset {
         struct PrecompSource* precomps;
 } *currentAssets;
 
-struct alignas(128) Layers {
-//struct Layers {
+//struct alignas(128) Layers {
+struct Layers {
         struct Layers* start;
         struct Layers* end;
         struct Layers* prev;
