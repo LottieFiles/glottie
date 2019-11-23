@@ -42,23 +42,25 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 		EM_ASM_({console.log("addingchildarray 901.91 " + $0);}, traceKeyValue->arrayValue);
 		return traceKeyValue;
 	} else {
-		/*if (traceKeyValue->arrayValue == NULL) {
+		if (traceKeyValue->arrayValue == NULL) {
 			traceKeyValue->arrayValue = tempArrayOfString;
 			traceKeyValue->arrayValue->root = tempArrayOfString;
 			EM_ASM_({console.log("addingchildarray 901.92 " + $0);}, traceKeyValue->arrayValue);
 			return traceKeyValue;
 		} else if (traceKeyValue->arrayValue->closed == true) {
-		*/
-		if (traceKeyValue->arrayValue == NULL || traceKeyValue->arrayValue->closed == true) {
 			struct KeyValue* tempKeyValue;
 			tempKeyValue = new KeyValue;
 			tempKeyValue->start = traceKeyValue->start;
 			traceKeyValue->next = tempKeyValue;
 			tempKeyValue->prev = traceKeyValue;
-			tempArrayOfString->root = tempArrayOfString;
+			if (traceKeyValue->arrayValue != NULL) {
+				tempArrayOfString->root = traceKeyValue->arrayValue->root;
+			} else {
+				tempArrayOfString->root = tempArrayOfString;
+			}
 			tempKeyValue->arrayValue = tempArrayOfString;
 			traceKeyValue = tempKeyValue;
-			EM_ASM_({console.log("addingchildarray 901.91 " + $0);}, traceKeyValue->arrayValue);
+			EM_ASM_({console.log("addingchildarray 901.93 " + $0);}, traceKeyValue->arrayValue);
 			return traceKeyValue;
 		}
 	}

@@ -341,6 +341,7 @@ int removeScope() {
 	if (theScope->prev != NULL) {
 		EM_ASM({console.log("removing scope 1.1 ");});
 		if (theScope->currentKeyValueTrail != NULL) {
+			EM_ASM({console.log("removing scope 1.1.0 ");});
 			theScope->currentKeyValueTrail = deleteKeyValues(theScope->currentKeyValueTrail);
 			EM_ASM({console.log("removing scope 1.1.1 ");});
 			currentKeyValueTrail = theScope->currentKeyValueTrail;
