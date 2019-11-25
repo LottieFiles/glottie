@@ -39,7 +39,7 @@ struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* 
 		targetVertex = new ArrayOfVertex;
 		targetVertex->start = targetVertex;
 	}*/
-	baseVector = traceArrayValue->root->vector->start;
+	baseVector = traceArrayValue->vector->start;
 
 	bool exhausted = false;
 	while (! exhausted) {
@@ -70,7 +70,11 @@ struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* 
 				yval = 0;
 			}
 		}
-		EM_ASM({console.log("========================> xval / yval " + $0 + " : " + $1);}, xval, yval);
+		/*if (targetVertex != NULL && targetVertex->vertex != NULL) {
+			EM_ASM({console.log("========================> xval / yval " + $0 + " : " + $1 + " --> " + $2);}, xval, yval, (int)targetVertex->vertex->position[0]);
+		} else {
+			EM_ASM({console.log("========================> xval / yval " + $0 + " : " + $1);}, xval, yval);
+		}*/
 		float vertex[4] = {xval, yval, 0.0f, 1.0f};
 		targetVertex = pushVertex(targetVertex, vertex);
 

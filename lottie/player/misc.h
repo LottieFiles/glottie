@@ -5,7 +5,7 @@ struct XY {
 };
 
 //struct alignas(alignof(struct Vertex*)) Vertex {
-struct alignas(64) Vertex {
+struct alignas(32) Vertex {
 //struct Vertex {
 	GLfloat position[4];
 };
@@ -59,7 +59,7 @@ struct alignas(32) ArrayOfString {
 } *currentArrayOfString;
 
 //struct alignas(alignof(struct KeyValue*)) KeyValue {
-struct alignas(256) KeyValue {
+struct alignas(512) KeyValue {
 //struct KeyValue {
 	struct KeyValue* start = NULL;
 	struct KeyValue* next = NULL;
