@@ -162,7 +162,6 @@ struct KeyValueTrail* newKeyValueTrail(struct KeyValueTrail* traceKeyValueTrail)
 		traceKeyValueTrail->start = traceKeyValueTrail;
 		traceKeyValueTrail->next = NULL;
 		traceKeyValueTrail->prev = NULL;
-		
 	} else {
 		//EM_ASM({console.log("newkvtrail 402.1");});
 		struct KeyValueTrail* tempKeyValueTrail;
@@ -171,7 +170,6 @@ struct KeyValueTrail* newKeyValueTrail(struct KeyValueTrail* traceKeyValueTrail)
 		tempKeyValueTrail->prev = traceKeyValueTrail;
 		tempKeyValueTrail->start = traceKeyValueTrail->start;
 		traceKeyValueTrail = tempKeyValueTrail;
-		
 	}
 	currentKeyValueTrail = traceKeyValueTrail;
 	return traceKeyValueTrail;
@@ -185,8 +183,12 @@ int deleteArrayValuesVector(struct ValuesVector* passedValuesVector) {
 	passedValuesVector = passedValuesVector->start;
 
 	while (passedValuesVector != NULL && passedValuesVector->next != NULL) {
+		EM_ASM({console.log("deletingArrayValuesVector");});
 		if (passedValuesVector->child != NULL) {
-			deleteArrayValue(passedValuesVector->child);
+			//if (passedValuesVector->child->closed) {
+			//} else {
+				deleteArrayValue(passedValuesVector->child);
+			//}
 		}
 		
 		//tempValuesVector = passedValuesVector;
@@ -283,12 +285,13 @@ struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail)
 		temptempKeyValue = tempKeyValue;
 		tempKeyValue = tempKeyValue->next;
 		if (strlen(temptempKeyValue->key) > 0) {
-			EM_ASM_({console.log("deleting key values 802.2 " + $0 + " : " + $1 + " key: " + String.fromCharCode($2));}, temptempKeyValue, tempKeyValue, temptempKeyValue->key[0]);
+			EM_ASM_({console.log("deleting key values 802.1 " + $0 + " : " + $1 + " key: " + String.fromCharCode($2));}, temptempKeyValue, tempKeyValue, temptempKeyValue->key[0]);
 		} else {
 			EM_ASM_({console.log("deleting key values 802.2 " + $0 + " : " + $1);}, temptempKeyValue, tempKeyValue);
 		}
 		if (temptempKeyValue->arrayValue != NULL) {
 			if (strlen(temptempKeyValue->value) < 1) {
+				EM_ASM({console.log("deleting key values 802.2.1");});
 				if (temptempKeyValue->arrayValue->root != NULL) {
 					deleteArrayValue(temptempKeyValue->arrayValue->root);
 					temptempKeyValue->arrayValue = NULL;
@@ -299,7 +302,7 @@ struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail)
 		}
 		delete temptempKeyValue;
 	}
-	//EM_ASM({console.log("deleting key values 803");});
+	EM_ASM({console.log("deleting key values 803");});
 	
 	if (tempKeyValue != NULL) {
 		//EM_ASM({console.log("deleting key values 803.1");});
@@ -314,7 +317,7 @@ struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail)
 			valdisplay = ' ';
 		}
 		
-		EM_ASM_({console.log("deleting key values 802.2 " + $0 + " : " + $1 + " key: " + String.fromCharCode($2));}, temptempKeyValue, tempKeyValue, temptempKeyValue->key[0]);
+		EM_ASM_({console.log("deleting key values 802.3 " + $0 + " : " + $1 + " key: " + String.fromCharCode($2));}, temptempKeyValue, tempKeyValue, temptempKeyValue->key[0]);
 		//EM_ASM({console.log("deleting key values 803.2");});
 		/*if (tempKeyValue->arrayValue != NULL && tempKeyValue->arrayValue->root != NULL) {
 			//EM_ASM({console.log("deleting key values 803.2.1");});

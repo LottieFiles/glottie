@@ -109,7 +109,7 @@ enum KeyValueState {Key, Value};
 enum KeyValueState kvState = Key;
 
 //struct alignas(alignof(struct StateTrail*)) StateTrail {
-struct alignas(2048) StateTrail {
+struct alignas(64) StateTrail {
 //struct StateTrail {
 	struct StateTrail* start = NULL;
 	struct StateTrail* prev = NULL;
@@ -119,7 +119,7 @@ struct alignas(2048) StateTrail {
 } *theState;
 
 //struct alignas(alignof(struct ScopeTrail*)) ScopeTrail {
-struct alignas(2048) ScopeTrail {
+struct alignas(64) ScopeTrail {
 //struct ScopeTrail {
 	struct scopeTrail* start = NULL;
 	struct ScopeTrail* prev = NULL;
