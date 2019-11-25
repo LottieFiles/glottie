@@ -54,12 +54,10 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 				tempKeyValue->start = traceKeyValue->start;
 				traceKeyValue->next = tempKeyValue;
 				tempKeyValue->prev = traceKeyValue;
-				if (traceKeyValue->arrayValue != NULL) {
-					tempArrayOfString->root = traceKeyValue->arrayValue->root;
-				} else {
-					tempArrayOfString->root = tempArrayOfString;
-				}
+				//tempArrayOfString->root = traceKeyValue->arrayValue->root;
+				tempArrayOfString->root = tempArrayOfString;
 				tempKeyValue->arrayValue = tempArrayOfString;
+				
 				traceKeyValue = tempKeyValue;
 			} else {
 				struct ValuesVector* tempValuesVector;
