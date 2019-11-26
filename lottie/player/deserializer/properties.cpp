@@ -119,9 +119,11 @@ int fillPropertiesShapeProp() {
 			currentPropertiesShapeProp->i = 
 				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, currentPropertiesShapeProp->i);
 
+			/*
 			EM_ASM({console.log("========================> fill 80.2 " + $0 + " : " + $1);}, 
 				currentPropertiesShapeProp->i->start->vertex->position[0],
 				currentPropertiesShapeProp->i->start->vertex->position[1]);
+			*/
 			//tempArrayValue = tempKeyValue->arrayValue->root;
 
 				/*
