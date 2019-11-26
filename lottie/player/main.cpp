@@ -1,3 +1,5 @@
+#define KVLEN 21
+
 #include <functional>
 
 #include <emscripten.h> // emscripten

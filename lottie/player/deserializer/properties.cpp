@@ -95,7 +95,7 @@ int fillPropertiesShapeProp() {
 	struct ArrayOfString* tempArrayValue; 
 	while (! exhausted) {
 		if (tempKeyValue) {
-			//EM_ASM({console.log("========================> iteration");});
+			EM_ASM({console.log("========================> iteration");});
 		}
 		if (strlen(tempKeyValue->key) == 0) {
 			//EM_ASM({console.log("========================> empty");});

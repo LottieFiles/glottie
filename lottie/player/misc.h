@@ -1,3 +1,4 @@
+#define KVLEN 21
 
 struct XY {
 	int x;
@@ -11,7 +12,7 @@ struct alignas(32) Vertex {
 };
 
 //struct alignas(alignof(struct ArrayOfVertex*)) ArrayOfVertex {
-struct alignas(64) ArrayOfVertex {
+struct alignas(32) ArrayOfVertex {
 //struct ArrayOfVertex {
 	struct ArrayOfVertex* start = NULL;
 	struct ArrayOfVertex* next = NULL;
@@ -42,7 +43,7 @@ struct alignas(256) ValuesVector {
 
 
 	//string value;
-	char value[21];
+	char value[KVLEN];
 };
 
 //struct alignas(alignof(struct ArrayOfString*)) ArrayOfString {
@@ -66,9 +67,9 @@ struct alignas(512) KeyValue {
 	struct KeyValue* prev = NULL;
 
 	//string key;
-	char key[21];
+	char key[KVLEN];
 	//string value = NULL;
-	char value[21];
+	char value[KVLEN];
 	struct ArrayOfString* arrayValue = NULL;
 } *currentKeyValue;
 

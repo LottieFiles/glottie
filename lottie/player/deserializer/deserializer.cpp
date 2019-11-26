@@ -1,4 +1,5 @@
 
+
 #include "properties.h"
 #include "shapes.h"
 #include "layers.h"
@@ -8,6 +9,7 @@ string jsonString = "{'v':'5.5.7','fr':60,'ip':0,'op':480,'w':110,'h':110,'nm':'
 /*
 string jsonString = "{'v':'5.5.8','fr':24,'ip':0,'op':63,'w':900,'h':900,'nm':'Comp 1','ddd':1,'assets':[],'layers':[{'ddd':1,'ind':1,'ty':4,'nm':'Shape Layer 4','parent':4,'sr':1,'ks':{'o':{'a':0,'k':100,'ix':11},'rx':{'a':0,'k':0,'ix':8},'ry':{'a':0,'k':270,'ix':9},'rz':{'a':0,'k':0,'ix':10},'or':{'a':0,'k':[0,0,0],'ix':7},'p':{'a':0,'k':[51,0,0],'ix':2},'a':{'a':0,'k':[51,0,0],'ix':1},'s':{'a':0,'k':[100,100,100],'ix':6}},'ao':0,'shapes':[{'ty':'gr','it':[{'ind':0,'ty':'sh','ix':1,'ks':{'a':0,'k':{'i':[[0,0],[0,0],[0,0]],'o':[[0,0],[0,0],[0,0]],'v':[[51.071,102.142],[-51.071,0],[51.071,-102.142]],'c':true},'ix':2},'nm':'Path 1','mn':'ADBE Vector Shape - Group','hd':false},{'ty':'fl','c':{'a':0,'k':[0.125490196078,0.639215686275,0.619607843137,1],'ix':4},'o':{'a':0,'k':100,'ix':5},'r':1,'bm':0,'nm':'Fill 1','mn':'ADBE Vector Graphic - Fill','hd':false},{'ty':'tr','p':{'a':0,'k':[0,0],'ix':2},'a':{'a':0,'k':[0,0],'ix':1},'s':{'a':0,'k':[100,100],'ix':3},'r':{'a':0,'k':0,'ix':6},'o':{'a':0,'k':100,'ix':7},'sk':{'a':0,'k':0,'ix':4},'sa':{'a':0,'k':0,'ix':5},'nm':'Transform'}],'nm':'Shape 1','np':3,'cix':2,'bm':0,'ix':1,'mn':'ADBE Vector Group','hd':false}],'ip':0,'op':658,'st':0,'bm':0},{'ddd':1,'ind':2,'ty':4,'nm':'Shape Layer 3','parent':4,'sr':1,'ks':{'o':{'a':0,'k':100,'ix':11},'rx':{'a':0,'k':0,'ix':8},'ry':{'a':0,'k':180,'ix':9},'rz':{'a':0,'k':0,'ix':10},'or':{'a':0,'k':[0,0,0],'ix':7},'p':{'a':0,'k':[51,0,0],'ix':2},'a':{'a':0,'k':[51,0,0],'ix':1},'s':{'a':0,'k':[100,100,100],'ix':6}},'ao':0,'shapes':[{'ty':'gr','it':[{'ind':0,'ty':'sh','ix':1,'ks':{'a':0,'k':{'i':[[0,0],[0,0],[0,0]],'o':[[0,0],[0,0],[0,0]],'v':[[51.071,102.142],[-51.071,0],[51.071,-102.142]],'c':true},'ix':2},'nm':'Path 1','mn':'ADBE Vector Shape - Group','hd':false},{'ty':'fl','c':{'a':0,'k':[0.882352941176,0.333333333333,0.329411764706,1],'ix':4},'o':{'a':0,'k':100,'ix':5},'r':1,'bm':0,'nm':'Fill 1','mn':'ADBE Vector Graphic - Fill','hd':false},{'ty':'tr','p':{'a':0,'k':[0,0],'ix':2},'a':{'a':0,'k':[0,0],'ix':1},'s':{'a':0,'k':[100,100],'ix':3},'r':{'a':0,'k':0,'ix':6},'o':{'a':0,'k':100,'ix':7},'sk':{'a':0,'k':0,'ix':4},'sa':{'a':0,'k':0,'ix':5},'nm':'Transform'}],'nm':'Shape 1','np':3,'cix':2,'bm':0,'ix':1,'mn':'ADBE Vector Group','hd':false}],'ip':0,'op':658,'st':0,'bm':0},{'ddd':1,'ind':3,'ty':4,'nm':'Shape Layer 2','parent':4,'sr':1,'ks':{'o':{'a':0,'k':100,'ix':11},'rx':{'a':0,'k':0,'ix':8},'ry':{'a':0,'k':90,'ix':9},'rz':{'a':0,'k':0,'ix':10},'or':{'a':0,'k':[0,0,0],'ix':7},'p':{'a':0,'k':[51,0,0],'ix':2},'a':{'a':0,'k':[51,0,0],'ix':1},'s':{'a':0,'k':[100,100,100],'ix':6}},'ao':0,'shapes':[{'ty':'gr','it':[{'ind':0,'ty':'sh','ix':1,'ks':{'a':0,'k':{'i':[[0,0],[0,0],[0,0]],'o':[[0,0],[0,0],[0,0]],'v':[[51.071,102.142],[-51.071,0],[51.071,-102.142]],'c':true},'ix':2},'nm':'Path 1','mn':'ADBE Vector Shape - Group','hd':false},{'ty':'fl','c':{'a':0,'k':[0.44099222819,0,1,1],'ix':4},'o':{'a':0,'k':100,'ix':5},'r':1,'bm':0,'nm':'Fill 1','mn':'ADBE Vector Graphic - Fill','hd':false},{'ty':'tr','p':{'a':0,'k':[0,0],'ix':2},'a':{'a':0,'k':[0,0],'ix':1},'s':{'a':0,'k':[100,100],'ix':3},'r':{'a':0,'k':0,'ix':6},'o':{'a':0,'k':100,'ix':7},'sk':{'a':0,'k':0,'ix':4},'sa':{'a':0,'k':0,'ix':5},'nm':'Transform'}],'nm':'Shape 1','np':3,'cix':2,'bm':0,'ix':1,'mn':'ADBE Vector Group','hd':false}],'ip':0,'op':658,'st':0,'bm':0},{'ddd':1,'ind':4,'ty':4,'nm':'Shape Layer 1','sr':1,'ks':{'o':{'a':0,'k':100,'ix':11},'rx':{'a':0,'k':312.125,'ix':8},'ry':{'a':1,'k':[{'i':{'x':[0.833],'y':[0.833]},'o':{'x':[0.167],'y':[0.167]},'t':0,'s':[0]},{'t':62,'s':[360]}],'ix':9},'rz':{'a':0,'k':138.742,'ix':10},'or':{'a':0,'k':[0,0,0],'ix':7},'p':{'a':0,'k':[491,406,0],'ix':2},'a':{'a':0,'k':[51,0,0],'ix':1},'s':{'a':0,'k':[249.792,249.792,249.792],'ix':6}},'ao':0,'shapes':[{'ty':'gr','it':[{'ind':0,'ty':'sh','ix':1,'ks':{'a':0,'k':{'i':[[0,0],[0,0],[0,0]],'o':[[0,0],[0,0],[0,0]],'v':[[51.071,102.142],[-51.071,0],[51.071,-102.142]],'c':true},'ix':2},'nm':'Path 1','mn':'ADBE Vector Shape - Group','hd':false},{'ty':'fl','c':{'a':0,'k':[0.639215686275,0.96862745098,0.709803921569,1],'ix':4},'o':{'a':0,'k':100,'ix':5},'r':1,'bm':0,'nm':'Fill 1','mn':'ADBE Vector Graphic - Fill','hd':false},{'ty':'tr','p':{'a':0,'k':[0,0],'ix':2},'a':{'a':0,'k':[0,0],'ix':1},'s':{'a':0,'k':[100,100],'ix':3},'r':{'a':0,'k':0,'ix':6},'o':{'a':0,'k':100,'ix':7},'sk':{'a':0,'k':0,'ix':4},'sa':{'a':0,'k':0,'ix':5},'nm':'Transform'}],'nm':'Shape 1','np':3,'cix':2,'bm':0,'ix':1,'mn':'ADBE Vector Group','hd':false}],'ip':0,'op':658,'st':0,'bm':0}],'markers':[]}";
 */
+
 
 //// Helpers
 
@@ -130,8 +132,15 @@ struct alignas(64) ScopeTrail {
 	enum Scopes scope;
 } *theScope;
 
+struct alignas(256) CurrentValues {
+	int currentValueLength = 0;
+	char currentValue[KVLEN];
+	char currentReadKey[KVLEN];
+	char currentReadValue[KVLEN];
+} *input;
+
 string lastValue;
-string currentValue;
+//string currentValue;
 string lastRead;
 
 string currentReadValue;
@@ -157,15 +166,32 @@ struct scopeBefore {
 
 /////////////////////////////////////////////////////////////////////////////
 
-// currently unused function, referred from checkCharacter (commented out over there)
-int determineCurrentScope() {
-	if (theState->stateNow == ScopeOpen || theState->stateNow == ArrayOpen) {
+int assignReadValue() {
+	input->currentReadValue[0] = '\0';
+	strcat(input->currentReadValue, input->currentValue);
+	return 1;
+}
 
-		if (currentValue == "assets") {
+int assignReadKey() {
+	input->currentReadKey[0] = '\0';
+	strcat(input->currentReadKey, input->currentValue);
+	return 1;
+}
 
-			theScope->scope = assets;
-		}
+int resetCurrentValue() {
+	input->currentValueLength = 0;
+	input->currentValue[0] = '\0';
+
+	return 1;
+}
+
+int appendCurrentValue(char passedChar) {
+	if (input->currentValueLength >= KVLEN - 1) {
+		return 0;
 	}
+	input->currentValue[input->currentValueLength] = passedChar;
+	input->currentValue[input->currentValueLength + 1] = '\0';
+	input->currentValueLength = input->currentValueLength + 1;
 	return 1;
 }
 
@@ -424,24 +450,24 @@ int checkScope() {
 			//determineCurrentScope();
 			break;
 		case animation:
-			if (currentReadKey == "assets") {
+			if (strcmp(input->currentReadKey, "assets") == 0) {
 				EM_ASM({console.log('found assets');});
 				addScope(assets);
 				scopeChanged = true;
-			} else if (currentReadKey == "layers") {
+			} else if (strcmp(input->currentReadKey, "layers") == 0) {
 				addScope(layers);
 				scopeChanged = true;
 			}
 			break;
 		case assets:
-			if (currentReadKey == "layers") {
+			if (strcmp(input->currentReadKey, "layers") == 0) {
 				EM_ASM({console.log('found layers');});
 				addScope(assets_layers);
 				scopeChanged = true;
 			}
 			break;
 		case assets_layers:
-			if (currentReadKey == "shapes") {
+			if (strcmp(input->currentReadKey, "shapes") == 0) {
 				EM_ASM({console.log('found shapes');});
 				addScope(assets_layers_shapes);
 				scopeChanged = true;
@@ -451,34 +477,34 @@ int checkScope() {
 			
 			break;
 		case assets_layers_shapes:
-			if (currentReadKey == "ks") {
+			if (strcmp(input->currentReadKey, "ks") == 0) {
 				EM_ASM({console.log('found ks');});
 				addScope(assets_layers_shapes_ks);
 				scopeChanged = true;
-			} else if (currentReadKey == "ty") {
+			} else if (strcmp(input->currentReadKey, "ty") == 0) {
 				addScope(assets_layers_shapes_ty);
 				scopeChanged = true;
 			}
 			break;
 		case assets_layers_shapes_ks:
-			if (currentReadKey == "k") {
+			if (strcmp(input->currentReadKey, "k") == 0) {
 				addScope(assets_layers_shapes_ks_k);
 				scopeChanged = true;
 			}
 			break;
 		case assets_layers_shapes_ks_k:
-			if (currentReadKey == "e") {
+			if (strcmp(input->currentReadKey, "e") == 0) {
 				addScope(assets_layers_shapes_ks_k_e);
 				scopeChanged = true;
 			}
-			if (currentReadKey == "s") {
+			if (strcmp(input->currentReadKey, "s") == 0) {
 				addScope(assets_layers_shapes_ks_k_s);
 				scopeChanged = true;
 			}
 			break;
 		//
 		case layers:
-			if (currentReadKey == "shapes") {
+			if (strcmp(input->currentReadKey, "shapes") == 0) {
 				addScope(layers_shapes);
 				scopeChanged = true;
 			}
@@ -487,26 +513,26 @@ int checkScope() {
 			
 			break;
 		case layers_shapes:
-			if (currentReadKey == "ks") {
+			if (strcmp(input->currentReadKey, "ks") == 0) {
 				addScope(layers_shapes_ks);
 				scopeChanged = true;
-			} else if (currentReadKey == "ty") {
+			} else if (strcmp(input->currentReadKey, "ty") == 0) {
 				addScope(layers_shapes_ty);
 				scopeChanged = true;
 			}
 			break;
 		case layers_shapes_ks:
-			if (currentReadKey == "k") {
+			if (strcmp(input->currentReadKey, "k") == 0) {
 				addScope(layers_shapes_ks_k);
 				scopeChanged = true;
 			}
 			break;
 		case layers_shapes_ks_k:
-			if (currentReadKey == "e") {
+			if (strcmp(input->currentReadKey, "e") == 0) {
 				addScope(layers_shapes_ks_k_e);
 				scopeChanged = true;
 			}
-			if (currentReadKey == "s") {
+			if (strcmp(input->currentReadKey, "s") == 0) {
 				addScope(layers_shapes_ks_k_s);
 				scopeChanged = true;
 			}
@@ -526,9 +552,9 @@ int checkScope() {
 int readingDone() {
 		struct KeyValue* tempKeyValue;
 		if (readingArray) {
-			tempKeyValue = addKeyValue(theScope->currentKeyValueTrail->keyValue, currentReadKey, currentReadValue, true);
+			tempKeyValue = addKeyValue(theScope->currentKeyValueTrail->keyValue, input->currentReadKey, input->currentReadValue, true);
 		} else {
-			tempKeyValue = addKeyValue(theScope->currentKeyValueTrail->keyValue, currentReadKey, currentReadValue, false);
+			tempKeyValue = addKeyValue(theScope->currentKeyValueTrail->keyValue, input->currentReadKey, input->currentReadValue, false);
 		}
 		theScope->currentKeyValueTrail->keyValue = tempKeyValue;
 	return 1;
@@ -536,17 +562,21 @@ int readingDone() {
 
 bool isReadingDone() {
 			EM_ASM({console.log("reading 100.1");});
-			if ((theState->stateNow == KVReading || theState->stateNow == KVReadOpen) || currentValue.length() > 0) {
+			if ((theState->stateNow == KVReading || theState->stateNow == KVReadOpen) || strlen(input->currentValue) > 0) {
 				EM_ASM({console.log("reading 100.2");});
 				if (kvState == Value) {
-					currentReadValue = currentValue;
+					//currentReadValue = input->currentValue;
+					assignReadValue();
 					EM_ASM({console.log("reading 100.2.1");});
 					readingDone();
 					//EM_ASM({console.log("reading 100.2.2");});
-					currentValue.clear();
+					//currentValue.clear();
+					//input->currentValue[0] = '\0';
+					resetCurrentValue();
 					//EM_ASM({console.log("reading 100.3");});
 				} else {
-					currentReadKey = currentValue;
+					//currentReadKey = input->currentValue;
+					assignReadKey();
 					/*
 					if (currentReadKey == "assets") {
 						//EM_ASM({console.log('found assets');});
@@ -556,7 +586,9 @@ bool isReadingDone() {
 					}
 					*/
 					//EM_ASM_({console.log($0);}, (int)theScope->scope);
-					currentValue.clear();
+					//currentValue.clear();
+					//input->currentValue[0] = '\0';
+					resetCurrentValue();
 				}
 				//EM_ASM_({console.log("post-reading " + $0);}, theState->stateNow);
 				return true;
@@ -584,15 +616,18 @@ enum States lastStateBeforeReading() {
 }
 
 int checkCharacter(char& currentChar) {
-	if (currentValue.length() > 0 && currentReadKey.length() > 0) {
-		EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $3 + " ] " + String.fromCharCode($0) + " : " + String.fromCharCode($1) + " : " + String.fromCharCode($2));}, currentChar, currentValue[0], currentReadKey[0], readingArray);
+	/*
+	if (strlen(input->currentValue) > 0 && strlen(input->currentReadKey) > 0) {
+		EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $3 + " ] " + String.fromCharCode($0) + " : " + String.fromCharCode($1) + " : " + String.fromCharCode($2));}, currentChar, input->currentValue[0], input->currentReadKey[0], readingArray);
 	} else {
-		if (currentValue.length() > 0) {
-			EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $2 + " ] " + String.fromCharCode($0) + " : " + String.fromCharCode($1));}, currentChar, currentValue[0], readingArray);
+		if (strlen(input->currentValue) > 0) {
+			EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $2 + " ] " + String.fromCharCode($0) + " : " + String.fromCharCode($1));}, currentChar, input->currentValue[0], readingArray);
 		} else {
 			EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $1 + " ] " + String.fromCharCode($0));}, currentChar, readingArray);
 		}
 	}
+	*/
+	EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $1 + " ] " + String.fromCharCode($0));}, currentChar, readingArray);
 	switch (currentChar) {
 		case '{':
 			//EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);
@@ -746,7 +781,9 @@ int checkCharacter(char& currentChar) {
 			} else {
 				quoteOpened = true;
 				addState(KVReadOpen); //// ADD STATE
-				currentValue.clear();
+				//currentValue.clear();
+				//input->currentValue[0] = '\0';
+				resetCurrentValue();
 			}
 
 			previousScopeClosure = false;
@@ -782,12 +819,15 @@ int checkCharacter(char& currentChar) {
 				currentChar != '\t' &&
 				currentChar != '\v') {
 				//if (theState->stateNow == KVReadOpen) {
-				//EM_ASM({console.log("DEFAULT ");});
+				//EM_ASM({console.log("DEFAULT 10.1 ");});
 					addState(KVReading); //// ADD STATE
+				//EM_ASM({console.log("DEFAULT 10.2 ");});
 				//}
 			} else {
 				if (theState->stateNow == KVReading || theState->stateNow == KVReadOpen) {
+					//EM_ASM({console.log("DEFAULT 10.3 ");});
 					addState(KVReading); //// ADD STATE
+					//EM_ASM({console.log("DEFAULT 10.4 ");});
 				}
 			}
 			previousScopeClosure = false;
@@ -796,7 +836,9 @@ int checkCharacter(char& currentChar) {
 	if (theState->stateNow == KVReading) {
 		//currentValue = currentValue + currentChar;
 		//currentValue.append((char *)currentChar);
-		currentValue.append(1, currentChar);
+		//currentValue.append(1, currentChar);
+		//strcat(input->currentValue, currentChar);
+		appendCurrentValue(currentChar);
 		//EM_ASM_({console.log(String.fromCharCode($0));}, currentChar);
 	}
 
@@ -831,6 +873,7 @@ int deserialize() {
 	theState->stateNow = Start;
 	theState->start = theState;
 	kvState = Key;
+	input = new CurrentValues;
 	//EM_ASM_({console.log("start state " + $0);}, theState);
 
 		//EM_ASM({console.log('deserializing');});
