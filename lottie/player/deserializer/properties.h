@@ -54,10 +54,11 @@ struct alignas(128) PropertiesShapeProp {
 	struct PropertiesShapeProp* prev=NULL;
 	struct PropertiesShapeProp* end=NULL;
 
-	bool c; //closed
 	struct ArrayOfVertex* i = NULL;
 	struct ArrayOfVertex* o = NULL;
 	struct ArrayOfVertex* v = NULL;
+	
+	bool c; //closed
 	/*
 	vector<float> i; // in point - array of 2 elements
 	vector<float> o; // out point
@@ -65,12 +66,12 @@ struct alignas(128) PropertiesShapeProp {
 	*/
 } *currentPropertiesShapeProp;
 
-struct PropertiesShapePropKeyframe {
+struct alignas(128) PropertiesShapePropKeyframe {
 	struct PropertiesShapeProp* e=NULL;
 	struct PropertiesShapeProp* s=NULL;
 } *currentPropertiesShapePropKeyframe;
 
-struct alignas(1024) PropertiesShape {
+struct alignas(4096) PropertiesShape {
 //struct PropertiesShape {
 	string x;
 	string ix;

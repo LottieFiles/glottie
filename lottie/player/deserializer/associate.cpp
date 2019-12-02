@@ -89,6 +89,7 @@ int associateBack(void* object) {
 		case layers:
 			if (theScope->scope == layers_shapes) {
 				currentLayers->shapes = (struct LayersShapes*) object;
+				EM_ASM({console.log("-----------------> encountered layers");});
 			}
 			break;
 		case layers_shapes:
@@ -99,12 +100,14 @@ int associateBack(void* object) {
 		case layers_shapes_ks:
 			if (theScope->scope == layers_shapes_ks_k) {
 				currentPropertiesShape->k = (struct PropertiesShapeProp*) object;
+				EM_ASM({console.log("-----------------> associated back: layers ks");});
 			}
 			break;
 		case layers_shapes_ks_k:
 			if (theScope->scope == layers_shapes_ks_k_e) {
 				currentPropertiesShape->keyframe->e = (struct PropertiesShapeProp*) object;
 				currentPropertiesShape->isKeyframe = true;
+				EM_ASM({console.log("-----------------> associated back: assets ks_k");});
 			} else if (theScope->scope == layers_shapes_ks_k_s) {
 				currentPropertiesShape->keyframe->s = (struct PropertiesShapeProp*) object;
 				currentPropertiesShape->isKeyframe = true;

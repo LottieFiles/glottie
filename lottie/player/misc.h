@@ -6,13 +6,13 @@ struct XY {
 };
 
 //struct alignas(alignof(struct Vertex*)) Vertex {
-struct alignas(32) Vertex {
+struct alignas(128) Vertex {
 //struct Vertex {
 	GLfloat position[4];
 };
 
 //struct alignas(alignof(struct ArrayOfVertex*)) ArrayOfVertex {
-struct alignas(32) ArrayOfVertex {
+struct alignas(128) ArrayOfVertex {
 //struct ArrayOfVertex {
 	struct ArrayOfVertex* start = NULL;
 	struct ArrayOfVertex* next = NULL;
@@ -30,8 +30,9 @@ struct ArrayOfFloat {
 } *currentArrayOfFloat;
 
 //struct alignas(alignof(struct ValuesVector*)) ValuesVector {
-struct alignas(256) ValuesVector {
+struct alignas(128) ValuesVector {
 //struct ValuesVector {
+	char value[KVLEN];
 	struct ValuesVector* start = NULL;
 	struct ValuesVector* prev = NULL;
 	struct ValuesVector* next = NULL;
@@ -43,11 +44,10 @@ struct alignas(256) ValuesVector {
 
 
 	//string value;
-	char value[KVLEN];
 };
 
 //struct alignas(alignof(struct ArrayOfString*)) ArrayOfString {
-struct alignas(32) ArrayOfString {
+struct alignas(128) ArrayOfString {
 //struct ArrayOfString {
 	struct ArrayOfString* root = NULL;
 
@@ -60,22 +60,22 @@ struct alignas(32) ArrayOfString {
 } *currentArrayOfString;
 
 //struct alignas(alignof(struct KeyValue*)) KeyValue {
-struct alignas(512) KeyValue {
+struct alignas(128) KeyValue {
 //struct KeyValue {
-	struct KeyValue* start = NULL;
-	struct KeyValue* next = NULL;
-	struct KeyValue* prev = NULL;
-
 	//string key;
 	char key[KVLEN];
 	//string value = NULL;
 	char value[KVLEN];
+	struct KeyValue* start = NULL;
+	struct KeyValue* next = NULL;
+	struct KeyValue* prev = NULL;
+
 	struct ArrayOfString* arrayValue = NULL;
 } *currentKeyValue;
 
 //struct alignas(alignof(struct KeyValueTrail*)) KeyValueTrail {
 //struct alignas(16777216) KeyValueTrail {
-struct alignas(32) KeyValueTrail {
+struct alignas(128) KeyValueTrail {
 //struct KeyValueTrail {
 	struct KeyValueTrail* start = NULL;
 	struct KeyValueTrail* next = NULL;

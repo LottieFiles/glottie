@@ -39,13 +39,13 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 		traceKeyValue->start = traceKeyValue;
 		traceKeyValue->arrayValue = tempArrayOfString;
 		traceKeyValue->arrayValue->root = tempArrayOfString;
-		EM_ASM_({console.log("addingchildarray 901.91 " + $0);}, traceKeyValue->arrayValue);
+		//EM_ASM_({console.log("addingchildarray 901.91 " + $0);}, traceKeyValue->arrayValue);
 		return traceKeyValue;
 	} else {
 		if (traceKeyValue->arrayValue == NULL) {
 			traceKeyValue->arrayValue = tempArrayOfString;
 			traceKeyValue->arrayValue->root = tempArrayOfString;
-			EM_ASM_({console.log("addingchildarray 901.92 " + $0);}, traceKeyValue->arrayValue);
+			//EM_ASM_({console.log("addingchildarray 901.92 " + $0);}, traceKeyValue->arrayValue);
 			return traceKeyValue;
 		} else if (traceKeyValue->arrayValue->closed == true) {
 			if (traceKeyValue->arrayValue->parent == NULL) {
@@ -73,7 +73,7 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 				traceKeyValue->arrayValue->parent->parent->vector = tempValuesVector;
 				traceKeyValue->arrayValue = tempArrayOfString;
 			}
-			EM_ASM_({console.log("addingchildarray 901.93 " + $0);}, traceKeyValue->arrayValue);
+			//EM_ASM_({console.log("addingchildarray 901.93 " + $0);}, traceKeyValue->arrayValue);
 			return traceKeyValue;
 		}
 	}
@@ -100,10 +100,10 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 	tempVectorValue = new ValuesVector;
 
 	if (traceKeyValue->arrayValue->vector == NULL) {
-		EM_ASM_({console.log("addingchildarray 901.10 " + $0 + " from " + $1);}, tempArrayOfString, traceKeyValue->arrayValue);
+		//EM_ASM_({console.log("addingchildarray 901.10 " + $0 + " from " + $1);}, tempArrayOfString, traceKeyValue->arrayValue);
 		tempVectorValue->start = tempVectorValue;
 	} else {
-		EM_ASM_({console.log("addingchildarray 901.11 " + $0 + " from " + $1);}, tempArrayOfString, traceKeyValue->arrayValue);
+		//EM_ASM_({console.log("addingchildarray 901.11 " + $0 + " from " + $1);}, tempArrayOfString, traceKeyValue->arrayValue);
 		tempVectorValue->start = traceKeyValue->arrayValue->vector->start;
 		tempVectorValue->prev = traceKeyValue->arrayValue->vector;
 		traceKeyValue->arrayValue->vector->next = tempVectorValue;
@@ -135,14 +135,14 @@ struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
 	}
 	if (traceKeyValue->arrayValue != NULL) {
 		if (traceKeyValue->arrayValue->parent != NULL) {
-			EM_ASM_({console.log("toparent current " + $0 + " has parent " + $1);}, traceKeyValue->arrayValue, traceKeyValue->arrayValue->parent->start);
+			//EM_ASM_({console.log("toparent current " + $0 + " has parent " + $1);}, traceKeyValue->arrayValue, traceKeyValue->arrayValue->parent->start);
 			if (traceKeyValue->arrayValue->parent->start->parent != NULL) {
-				EM_ASM_({console.log("toparent done " + $0 + " to " + $1);}, traceKeyValue->arrayValue, traceKeyValue->arrayValue->parent->parent);
+				//EM_ASM_({console.log("toparent done " + $0 + " to " + $1);}, traceKeyValue->arrayValue, traceKeyValue->arrayValue->parent->parent);
 				traceKeyValue->arrayValue = traceKeyValue->arrayValue->parent->parent;
 				currentArrayOfString = traceKeyValue->arrayValue;
 			}
 		} else {
-			EM_ASM_({console.log("toparent closed " + $0);}, traceKeyValue->arrayValue);
+			//EM_ASM_({console.log("toparent closed " + $0);}, traceKeyValue->arrayValue);
 			traceKeyValue->arrayValue->closed = true;
 		}
 	}
@@ -203,11 +203,11 @@ int deleteArrayValuesVector(struct ValuesVector* passedValuesVector) {
 	struct ValuesVector* tempValuesVector;
 	//while (passedValuesVector != NULL && passedValuesVector->next != NULL) {
 	while (! exhausted) {
-		EM_ASM({console.log("deletingArrayValuesVector 1.2");});
+		//EM_ASM({console.log("deletingArrayValuesVector 1.2");});
 		if (passedValuesVector->child != NULL) {
 			deleteArrayValue(passedValuesVector->child);
 		}
-		EM_ASM({console.log("deletingArrayValuesVector 1.3");});
+		//EM_ASM({console.log("deletingArrayValuesVector 1.3");});
 		
 		tempValuesVector = passedValuesVector;
 		if (passedValuesVector->next != NULL) {
@@ -219,7 +219,7 @@ int deleteArrayValuesVector(struct ValuesVector* passedValuesVector) {
 		delete tempValuesVector;
 		//delete passedValuesVector;
 	}
-	EM_ASM({console.log("deletingArrayValuesVector 1.4");});
+	//EM_ASM({console.log("deletingArrayValuesVector 1.4");});
 	//EM_ASM({console.log("deleteArrayValues 1102");});
 	//EM_ASM({console.log("deletingArrayValuesVector 1.3");});
 
@@ -235,11 +235,11 @@ int deleteArrayValue(struct ArrayOfString* passedArrayValue) {
 	if (passedArrayValue != NULL) {
 		if (passedArrayValue->vector != NULL) {	
 			deleteArrayValuesVector(passedArrayValue->vector->start);
-			EM_ASM({console.log("deletingArrayValues 1.2");});
+			//EM_ASM({console.log("deletingArrayValues 1.2");});
 		}
 		delete passedArrayValue;
 	}
-	EM_ASM({console.log("deletingArrayValues 1.3");});
+	//EM_ASM({console.log("deletingArrayValues 1.3");});
 	
 	return 1;
 }
@@ -279,14 +279,14 @@ struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail)
 		temptempKeyValue = tempKeyValue;
 		tempKeyValue = tempKeyValue->next;
 		if (strlen(temptempKeyValue->key) > 0) {
-			EM_ASM_({console.log("deleting key values 802.1 " + $0 + " : " + $1 + " key: " + String.fromCharCode($2));}, temptempKeyValue, tempKeyValue, temptempKeyValue->key[0]);
+			//EM_ASM_({console.log("deleting key values 802.1 " + $0 + " : " + $1 + " key: " + String.fromCharCode($2));}, temptempKeyValue, tempKeyValue, temptempKeyValue->key[0]);
 		} else {
-			EM_ASM_({console.log("deleting key values 802.2 " + $0 + " : " + $1);}, temptempKeyValue, tempKeyValue);
+			//EM_ASM_({console.log("deleting key values 802.2 " + $0 + " : " + $1);}, temptempKeyValue, tempKeyValue);
 		}
 		if (temptempKeyValue->arrayValue != NULL) {
 			//if (strlen(temptempKeyValue->value) < 1) {
 			if (temptempKeyValue->arrayValue->vector != NULL) {
-				EM_ASM({console.log("deleting key values 802.2.1");});
+				//EM_ASM({console.log("deleting key values 802.2.1");});
 				if (temptempKeyValue->arrayValue->root != NULL) {
 					deleteArrayValue(temptempKeyValue->arrayValue->root);
 					temptempKeyValue->arrayValue = NULL;
@@ -297,10 +297,10 @@ struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail)
 		}
 		delete temptempKeyValue;
 	}
-	EM_ASM({console.log("deleting key values 803");});
+	//EM_ASM({console.log("deleting key values 803");});
 	
 	if (tempKeyValue != NULL) {
-		EM_ASM({console.log("deleting key values 803.1");});
+		//EM_ASM({console.log("deleting key values 803.1");});
 		if (strlen(tempKeyValue->key) > 0) {
 			todisplay = tempKeyValue->key[0];
 		} else {
@@ -312,7 +312,7 @@ struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail)
 			valdisplay = ' ';
 		}
 		
-		EM_ASM_({console.log("deleting key values 802.3 " + $0 + " : " + $1 + " key: " + String.fromCharCode($2));}, tempKeyValue, tempKeyValue, tempKeyValue->key[0]);
+		//EM_ASM_({console.log("deleting key values 802.3 " + $0 + " : " + $1 + " key: " + String.fromCharCode($2));}, tempKeyValue, tempKeyValue, tempKeyValue->key[0]);
 		//EM_ASM({console.log("deleting key values 803.2");});
 		/*if (tempKeyValue->arrayValue != NULL && tempKeyValue->arrayValue->root != NULL) {
 			//EM_ASM({console.log("deleting key values 803.2.1");});
@@ -420,7 +420,7 @@ int pushValuesVector(struct ArrayOfString* traceArrayOfString, string tempString
 
 	traceArrayOfString->vector = traceVector;
 
-		EM_ASM_({console.log("pushValuesVector 2.0 " + String.fromCharCode($0));}, traceArrayOfString->vector->value[0]);	
+		//EM_ASM_({console.log("pushValuesVector 2.0 " + String.fromCharCode($0));}, traceArrayOfString->vector->value[0]);	
 	return 1;
 }
 
@@ -455,16 +455,16 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 		struct KeyValue* tempKeyValue = traceKeyValue->start;
 		//EM_ASM({console.log("adding key value 301.2");});	
 		if (keyFound(traceKeyValue, key)) {
-			EM_ASM({console.log("adding key value 301.3");});	
+			//EM_ASM({console.log("adding key value 301.3");});	
 			
 			keyNode = traceKeyValue;
 		} else {
-			EM_ASM({console.log("adding key value new 301.3");});	
+			//EM_ASM({console.log("adding key value new 301.3");});	
 			
 			while (! exhausted) {
 				
 				if (keyFound(tempKeyValue, key)) {
-					EM_ASM({console.log("adding key value 301.4");});	
+					//EM_ASM({console.log("adding key value 301.4");});	
 					keyNode = tempKeyValue;
 				}
 				
@@ -505,15 +505,15 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 		strcpy(keyNode->key, key);
 		
 	}
-	EM_ASM({console.log("adding key value 303.1");});	
+	//EM_ASM({console.log("adding key value 303.1");});	
 
 	if (keyNode == NULL) {
 		if (traceKeyValue != NULL && strlen(traceKeyValue->key) < 1) {
-			EM_ASM({console.log("adding key value 303.1.1");});	
+			//EM_ASM({console.log("adding key value 303.1.1");});	
 			keyNode = traceKeyValue;
 			/*
 			if (key.length() >= 20) {
-				EM_ASM({console.log("adding key value added 303.2");});	
+				//EM_ASM({console.log("adding key value added 303.2");});	
 				strcpy(keyNode->key, key.substr(0,20).c_str());
 			} else {
 				strcpy(keyNode->key, key.c_str());
@@ -522,10 +522,10 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			strcpy(keyNode->key, key);
 		} else {
 
-			EM_ASM({console.log("adding key value 303.2");});	
+			//EM_ASM({console.log("adding key value 303.2");});	
 			keyNode = new KeyValue;
 			
-			EM_ASM({console.log("adding key value 303.3");});	
+			//EM_ASM({console.log("adding key value 303.3");});	
 			if (endNode != NULL) {
 				endNode->next = keyNode;
 				//EM_ASM({console.log("adding key value 303.4");});	
@@ -537,7 +537,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 				keyNode->start = keyNode;
 			}
 	
-			EM_ASM({console.log("adding key value 303.7");});	
+			//EM_ASM({console.log("adding key value 303.7");});	
 			/*
 			keyNode->arrayValue = new ArrayOfString;
 			if (endNode != NULL) {
@@ -559,10 +559,10 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			
 			//addChildArray(keyNode);
 			//keyNode->arrayValue = new ArrayOfString;
-			EM_ASM({console.log("adding key value 303.8");});
+			//EM_ASM({console.log("adding key value 303.8");});
 			/*
 			if (key.length() >= 20) {
-				EM_ASM_({console.log("adding key value 303.7.5" + String.fromCharCode($0));}, key[0]);	
+				//EM_ASM_({console.log("adding key value 303.7.5" + String.fromCharCode($0));}, key[0]);	
 				
 				strcpy(keyNode->key, key.substr(0,20).c_str());
 			} else {
@@ -572,7 +572,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			strcpy(keyNode->key, key);
 		}
 	}
-	EM_ASM({console.log("adding key value 303.8.1");});	
+	//EM_ASM({console.log("adding key value 303.8.1");});	
 	if (isArray) {
 		if (keyNode->arrayValue == NULL) {
 			struct ArrayOfString* tempArrayOfString;
@@ -589,7 +589,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 		pushValuesVector(keyNode->arrayValue, value);
 		//EM_ASM_({console.log("adding key value by array 303.6 " + String.fromCharCode($0));}, value[0]);
 	} else {
-		EM_ASM({console.log("adding key value 303.8.2");});
+		//EM_ASM({console.log("adding key value 303.8.2");});
 		/*
 		if (value.length() >= 20) {
 			strcpy(keyNode->value, value.substr(0,20).c_str());
@@ -615,12 +615,12 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 		passedVertex->next = NULL;
 	} else {*/
 	if (passedVertex == NULL) {
-		EM_ASM({console.log("found an empty vertex");};);
+		//EM_ASM({console.log("found an empty vertex");};);
 		passedVertex = new ArrayOfVertex;
 		passedVertex->start = passedVertex;
 		passedVertex->end = passedVertex;
 	} else {
-		EM_ASM({console.log("found a non-empty vertex");};);
+		//EM_ASM({console.log("found a non-empty vertex");};);
 		//bool exhausted = false;
 		/*while (! exhausted) {
 			if (passedVertex->next == NULL) {
