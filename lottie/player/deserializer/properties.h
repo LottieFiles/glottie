@@ -55,9 +55,9 @@ struct alignas(128) PropertiesShapeProp {
 	struct PropertiesShapeProp* end=NULL;
 
 	bool c; //closed
-	struct ArrayOfVertex* i;
-	struct ArrayOfVertex* o;
-	struct ArrayOfVertex* v;
+	struct ArrayOfVertex* i = NULL;
+	struct ArrayOfVertex* o = NULL;
+	struct ArrayOfVertex* v = NULL;
 	/*
 	vector<float> i; // in point - array of 2 elements
 	vector<float> o; // out point

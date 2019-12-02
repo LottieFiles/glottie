@@ -43,6 +43,9 @@ struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* 
 
 	bool exhausted = false;
 	while (! exhausted) {
+		if (baseVector->child == NULL) {
+			break;
+		}
 		string xvals(baseVector->child->vector->start->value);
 		//for (char& somechar : xvals) {
 		//	EM_ASM({console.log("========================> xval 1 " + String.fromCharCode($0));}, somechar);
@@ -84,7 +87,11 @@ struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* 
 			exhausted = true;
 		}
 	}
-	return targetVertex->start;
+	if (targetVertex != NULL) {
+		return targetVertex->start;
+	} else {
+		return NULL;
+	}
 }
 
 int fillPropertiesShapeProp() {

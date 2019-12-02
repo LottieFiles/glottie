@@ -111,7 +111,7 @@ enum KeyValueState {Key, Value};
 enum KeyValueState kvState = Key;
 
 //struct alignas(alignof(struct StateTrail*)) StateTrail {
-struct alignas(64) StateTrail {
+struct alignas(1024) StateTrail {
 //struct StateTrail {
 	struct StateTrail* start = NULL;
 	struct StateTrail* prev = NULL;
@@ -121,7 +121,7 @@ struct alignas(64) StateTrail {
 } *theState;
 
 //struct alignas(alignof(struct ScopeTrail*)) ScopeTrail {
-struct alignas(64) ScopeTrail {
+struct alignas(1024) ScopeTrail {
 //struct ScopeTrail {
 	struct scopeTrail* start = NULL;
 	struct ScopeTrail* prev = NULL;
@@ -196,11 +196,14 @@ int appendCurrentValue(char passedChar) {
 }
 
 int addState(enum States statePassed) {
-	//EM_ASM_({console.log("adding tempState->prev 1.0 " + $0);}, theState);
+	if (theState->stateNow == KVReading && statePassed == KVReading) {
+		return 0;
+	}
+	EM_ASM_({console.log("adding tempState->prev 1.0 " + $0);}, theState);
 	struct StateTrail* tempState;
-	//EM_ASM_({console.log("adding tempState->prev 1.1 " + $0);}, theState);
+	EM_ASM_({console.log("adding tempState->prev 1.1 " + $0);}, theState);
 	tempState = new StateTrail;
-	//EM_ASM_({console.log("adding tempState->prev 1.2 " + $0);}, theState);
+	EM_ASM_({console.log("adding tempState->prev 1.2 " + $0);}, theState);
 	/*if (theState == NULL) {
 		theState = tempState;
 		theState->start = theState;
@@ -209,13 +212,13 @@ int addState(enum States statePassed) {
 	}*/
 	tempState->prev = theState;
 
-	//EM_ASM_({console.log("adding theState->next 1.1 " + $0);}, tempState);
+	EM_ASM_({console.log("adding theState->next 1.1 " + $0);}, tempState);
 	theState->next = tempState;
-	//EM_ASM_({console.log("adding theState->start 1.1 " + $0);}, theState->start);
+	EM_ASM_({console.log("adding theState->start 1.1 " + $0);}, theState->start);
 	tempState->start = theState->start;
 	tempState->stateNow = statePassed;
 	theState = tempState;
-	//EM_ASM_({console.log("adding theState->start 1.5 " + $0);}, theState->start);
+	EM_ASM_({console.log("adding theState->start 1.5 " + $0);}, theState->start);
 
 	return 1;
 }
@@ -226,9 +229,9 @@ int removeState() {
 		tempState = theState;
 		theState = theState->prev;
 		theState->next = NULL;
-		//EM_ASM_({console.log("removed state 700.1 " + $0);}, theState);
+		EM_ASM_({console.log("removed state 700.1 " + $0);}, theState);
 		delete tempState;
-		//EM_ASM_({console.log("removed state 700.2 " + $0);}, theState);
+		EM_ASM_({console.log("removed state 700.2 " + $0);}, theState);
 	} else {
 		if (theState != NULL) {
 			delete theState;
@@ -244,7 +247,7 @@ int removeState() {
 int removeReadStates() {
 	struct StateTrail* tempState;
 	while (theState->stateNow == KVReading || theState->stateNow == KVReadOpen) {
-		//EM_ASM_({console.log("looping " + $0);}, theState->stateNow);
+		EM_ASM_({console.log("looping " + $0);}, theState->stateNow);
 	
 		if (theState->prev == NULL) {
 			theState->next = NULL;
@@ -262,15 +265,18 @@ int removeReadStates() {
 		theState = new StateTrail;
 		theState->start = theState;
 	}*/
+	if (theState->stateNow == KVReading || theState->stateNow == KVReadOpen) {
+		removeState();
+	}
 	
-	//EM_ASM_({console.log("remove read states done 1.5 " + $0);}, theState->stateNow);
+	EM_ASM_({console.log("remove read states done 1.5 " + $0);}, theState->stateNow);
 
 
 	/*
-	//EM_ASM_({console.log("remove read state 1.0 " + $0);}, theState->stateNow);
+	EM_ASM_({console.log("remove read state 1.0 " + $0);}, theState->stateNow);
 	struct StateTrail* tempState;
 	if (theState == NULL) {
-		//EM_ASM_({console.log("remove read state 1.3 " + $0);}, theState->stateNow);
+		EM_ASM_({console.log("remove read state 1.3 " + $0);}, theState->stateNow);
 		delete theState;
 		theState = new StateTrail;
 		theState->start = theState;
@@ -278,16 +284,16 @@ int removeReadStates() {
 		return 1;
 	}
 	while (theState->prev != NULL && (theState->stateNow == KVReading || theState->stateNow == KVReadOpen)) {
-		//EM_ASM_({console.log("remove read state 1.0.1 " + $0);}, theState->prev);
+		EM_ASM_({console.log("remove read state 1.0.1 " + $0);}, theState->prev);
 		tempState = theState;
 		theState = theState->prev;
 		theState->next = NULL;
-		//EM_ASM_({console.log("remove read state 1.0.2 " + $0);}, theState->prev);
+		EM_ASM_({console.log("remove read state 1.0.2 " + $0);}, theState->prev);
 		delete tempState;
 	}
-	//EM_ASM_({console.log("remove read state 1.1 " + $0);}, theState->stateNow);
+	EM_ASM_({console.log("remove read state 1.1 " + $0);}, theState->stateNow);
 	if (theState->prev == NULL && (theState->stateNow == KVReading || theState->stateNow == KVReadOpen)) {
-		//EM_ASM_({console.log("remove read state 1.2 " + $0);}, theState->stateNow);
+		EM_ASM_({console.log("remove read state 1.2 " + $0);}, theState->stateNow);
 		delete theState;
 		theState = new StateTrail;
 		theState->start = theState;
@@ -336,7 +342,7 @@ struct ScopeTrail* removeObjectsFromScope(struct ScopeTrail* passedScope) {
 }
 
 int removeScope() {
-	//EM_ASM_({console.log($0);}, (int)theScope->scope);
+	EM_ASM_({console.log($0);}, (int)theScope->scope);
 
 	struct ScopeTrail* tempScope;
 
@@ -351,8 +357,8 @@ int removeScope() {
 		theScope->next = NULL;
 		delete tempScope;
 	}
-	//EM_ASM_({console.log("deleting " + $0);}, theScope->scope);
-	//EM_ASM({console.log("deleted kvtrail");});
+	EM_ASM_({console.log("deleting " + $0);}, theScope->scope);
+	EM_ASM({console.log("deleted kvtrail");});
 	*/
 
 	if (theScope == NULL) {
@@ -360,7 +366,7 @@ int removeScope() {
 		return 1;
 	}
 
-	//EM_ASM({console.log("removing scope 1.1 ");});
+	EM_ASM({console.log("removing scope 1.1 ");});
 	tempScope = theScope;
 
 	EM_ASM({console.log("removing scope 1.2 ");});
@@ -371,10 +377,10 @@ int removeScope() {
 			theScope->currentKeyValueTrail = deleteKeyValues(theScope->currentKeyValueTrail);
 			EM_ASM({console.log("removing scope 1.1.1 ");});
 			currentKeyValueTrail = theScope->currentKeyValueTrail;
-			if (currentKeyValueTrail != NULL) {
+			if (theScope->currentKeyValueTrail != NULL && theScope->currentKeyValueTrail->keyValue != NULL) {
 				currentKeyValue = theScope->currentKeyValueTrail->keyValue;
 				EM_ASM({console.log("removing scope 1.1.3 ");});
-				if (currentKeyValue != NULL) {
+				if (theScope->currentKeyValueTrail->keyValue->arrayValue != NULL) {
 					currentArrayOfString = theScope->currentKeyValueTrail->keyValue->arrayValue;
 					EM_ASM({console.log("removing scope 1.1.4 ");});
 				}
@@ -544,7 +550,7 @@ int checkScope() {
 	if (!scopeChanged) {
 		addScope(object);
 	}
-	//EM_ASM_({console.log("-->found this " + $0 + " : " + $1 + " : " + $2);}, (int)previousScope.scopeNow, previousScope.objectCount, theScope->scope);
+	EM_ASM_({console.log("-->found this " + $0 + " : " + $1 + " : " + $2);}, (int)previousScope.scopeNow, previousScope.objectCount, theScope->scope);
 
 	return 1;
 }
@@ -569,28 +575,28 @@ bool isReadingDone() {
 					assignReadValue();
 					EM_ASM({console.log("reading 100.2.1");});
 					readingDone();
-					//EM_ASM({console.log("reading 100.2.2");});
+					EM_ASM({console.log("reading 100.2.2");});
 					//currentValue.clear();
 					//input->currentValue[0] = '\0';
 					resetCurrentValue();
-					//EM_ASM({console.log("reading 100.3");});
+					EM_ASM({console.log("reading 100.3");});
 				} else {
 					//currentReadKey = input->currentValue;
 					assignReadKey();
 					/*
 					if (currentReadKey == "assets") {
-						//EM_ASM({console.log('found assets');});
+						EM_ASM({console.log('found assets');});
 					}
 					if (currentReadKey == "shapes") {
-						//EM_ASM({console.log('found shapes');});
+						EM_ASM({console.log('found shapes');});
 					}
 					*/
-					//EM_ASM_({console.log($0);}, (int)theScope->scope);
+					EM_ASM_({console.log($0);}, (int)theScope->scope);
 					//currentValue.clear();
 					//input->currentValue[0] = '\0';
 					resetCurrentValue();
 				}
-				//EM_ASM_({console.log("post-reading " + $0);}, theState->stateNow);
+				EM_ASM_({console.log("post-reading " + $0);}, theState->stateNow);
 				return true;
 			} else {
 				//currentValue.clear();
@@ -630,8 +636,8 @@ int checkCharacter(char& currentChar) {
 	EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $1 + " ] " + String.fromCharCode($0));}, currentChar, readingArray);
 	switch (currentChar) {
 		case '{':
-			//EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);
-			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
+			EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);
+			EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			if (isReadingDone()) {
 				//readingDone();
 				removeReadStates();
@@ -643,13 +649,13 @@ int checkCharacter(char& currentChar) {
 			tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
 			checkScope();
 			currentKeyValueTrail = theScope->currentKeyValueTrail;
-			//EM_ASM({console.log("adding new key value trail");});
+			EM_ASM({console.log("adding new key value trail");});
 			theScope->currentKeyValueTrail = tempKeyValueTrail;
 				 //newKeyValueTrail(theScope->currentKeyValueTrail);
-			//EM_ASM({console.log("DONE adding new key value trail");});
+			EM_ASM({console.log("DONE adding new key value trail");});
 			//theScope->currentKeyValueTrail = currentKeyValueTrail;
 			if (theState->stateNow == ArrayOpen || theState->stateNow == ScopeOpenInArray || readingArray || theState->stateNow == ScopeToBeRemoved) {
-				//EM_ASM({console.log("opening object in array");});
+				EM_ASM({console.log("opening object in array");});
 				if (theState->keyEncountered) {
 					prepareContainer(true);
 				}
@@ -659,20 +665,20 @@ int checkCharacter(char& currentChar) {
 				addState(ScopeOpen); //// ADD STATE
 			}
 
-			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
-			//EM_ASM_({console.log("OPENED object " + $0);}, theState->stateNow);
+			EM_ASM_({console.log($0);}, (int)theState->stateNow);
+			EM_ASM_({console.log("OPENED object " + $0);}, theState->stateNow);
 			previousScopeClosure = false;
 			break;
 		case '}':
 
-			//EM_ASM_({console.log("CLOSING object " + $0);}, theState->stateNow);
+			EM_ASM_({console.log("CLOSING object " + $0);}, theState->stateNow);
 			if (isReadingDone()) {
 				//readingDone();
 				EM_ASM_({console.log("CLOSING object reading " + $0);}, theState->stateNow);
 				removeReadStates();
 			}
-			//EM_ASM_({console.log("CLOSING reading done " + $0);}, theState->stateNow);
-			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
+			EM_ASM_({console.log("CLOSING reading done " + $0);}, theState->stateNow);
+			EM_ASM_({console.log($0);}, (int)theState->stateNow);
 
 			/*
 			if (theState->prev->stateNow == ArrayOpen || theState->stateNow == ScopeOpenInArray || theState->stateNow == ScopeToBeRemoved) {
@@ -688,7 +694,7 @@ int checkCharacter(char& currentChar) {
 				removeScope();
 				EM_ASM_({console.log("CLOSING removed scope " + $0);}, theState->stateNow);
 				if (theState->stateNow == ScopeOpenInArray) {
-					//EM_ASM_({console.log("CLOSING reverting to array " + $0);}, theState->stateNow);
+					EM_ASM_({console.log("CLOSING reverting to array " + $0);}, theState->stateNow);
 					readingArray = true;
 				}
 				//if (! previousScopeClosure) {
@@ -696,23 +702,23 @@ int checkCharacter(char& currentChar) {
 				if (lastStateBeforeReading() == ScopeOpenInArray) {
 					readingArray = false;
 				}
-					//EM_ASM_({console.log("CLOSING removed state " + $0);}, theState->stateNow);
+					EM_ASM_({console.log("CLOSING removed state " + $0);}, theState->stateNow);
 				//}
 				currentKeyValueTrail = theScope->currentKeyValueTrail;
 			/*} else {
-				//EM_ASM({console.log("still reading array");});
+				EM_ASM({console.log("still reading array");});
 				readingArray = true;
 				if (theState->stateNow == ScopeToBeRemoved) {
 					removeState();
 				}
 				addState(ScopeToBeRemoved);
 			}*/
-			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
-			//EM_ASM_({console.log("CLOSED object " + $0);}, theState->stateNow);
+			EM_ASM_({console.log($0);}, (int)theState->stateNow);
+			EM_ASM_({console.log("CLOSED object " + $0);}, theState->stateNow);
 			previousScopeClosure = true;
 			break;
 		case '[':
-			//EM_ASM_({console.log("[OPENING array " + $0);}, theState->stateNow);
+			EM_ASM_({console.log("[OPENING array " + $0);}, theState->stateNow);
 			theScope->currentKeyValueTrail->keyValue = addChildArray(theScope->currentKeyValueTrail->keyValue);
 			if (isReadingDone()) {
 				//readingDone();
@@ -723,32 +729,32 @@ int checkCharacter(char& currentChar) {
 			//if (theState->stateNow == ArrayOpen) {
 			//}
 			addState(ArrayOpen); //// ADD STATE
-			//EM_ASM_({console.log("[OPENED array " + $0);}, theState->stateNow);
+			EM_ASM_({console.log("[OPENED array " + $0);}, theState->stateNow);
 			previousScopeClosure = false;
 			break;
 		case ']':
-			//EM_ASM_({console.log("[CLOSING array " + $0);}, theState->stateNow);
-			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
+			EM_ASM_({console.log("[CLOSING array " + $0);}, theState->stateNow);
+			EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			if (isReadingDone()) {
 				//readingDone();
 				//readingDone();
 				removeReadStates();
 			}
-			//EM_ASM({console.log("[CLOSING reading completed");});
+			EM_ASM({console.log("[CLOSING reading completed");});
 			kvState = Key;
 			readingArray = false;
-			//EM_ASM({console.log("[CLOSING reading states removed");});
+			EM_ASM({console.log("[CLOSING reading states removed");});
 			theScope->currentKeyValueTrail->keyValue->arrayValue = gotoParentArray(theScope->currentKeyValueTrail->keyValue);
-			//EM_ASM({console.log("[CLOSING gone to parent array");});
+			EM_ASM({console.log("[CLOSING gone to parent array");});
 			/*if (theState->stateNow == ScopeToBeRemoved) {
-				//EM_ASM({console.log("scope to be removed");});
+				EM_ASM({console.log("scope to be removed");});
 				associateKeyValues();
 				removeScope();
 				removeState();
 				currentKeyValueTrail = theScope->currentKeyValueTrail;
 			}*/
 			removeState();
-			//EM_ASM_({console.log("[CLOSED array " + $0);}, theState->stateNow);
+			EM_ASM_({console.log("[CLOSED array " + $0);}, theState->stateNow);
 			previousScopeClosure = false;
 			break;
 		case ':':
@@ -761,18 +767,18 @@ int checkCharacter(char& currentChar) {
 			break;
 		case '\'':
 
-			//EM_ASM({console.log("handling apostrophe 1");});
+			EM_ASM({console.log("handling apostrophe 1");});
 			/*if (isReadingDone()) {
 				//readingDone();
 				//readingDone();
-				//EM_ASM({console.log("handling apostrophe 1.0");});
+				EM_ASM({console.log("handling apostrophe 1.0");});
 				removeReadStates();
-				//EM_ASM({console.log("handling apostrophe 1.1");});
+				EM_ASM({console.log("handling apostrophe 1.1");});
 			} else {
-				//EM_ASM({console.log('read open');});
-				//EM_ASM({console.log("handling apostrophe 1.2");});
+				EM_ASM({console.log('read open');});
+				EM_ASM({console.log("handling apostrophe 1.2");});
 				addState(KVReadOpen); //// ADD STATE
-				//EM_ASM({console.log("kvreadopen ");});
+				EM_ASM({console.log("kvreadopen ");});
 				currentValue.clear();
 			}*/
 			if (quoteOpened && (theState->stateNow == KVReading || theState->stateNow == KVReadOpen)) {
@@ -787,10 +793,10 @@ int checkCharacter(char& currentChar) {
 			}
 
 			previousScopeClosure = false;
-			//EM_ASM({console.log("done handling apostrophe ");});
+			EM_ASM({console.log("done handling apostrophe ");});
 			break;
 		case ',':
-			//EM_ASM({console.log("handling comma ");});
+			EM_ASM({console.log("handling comma ");});
 			//addState(NewElement);
 			if (isReadingDone()) {
 				//readingDone();
@@ -798,17 +804,17 @@ int checkCharacter(char& currentChar) {
 			}
 			removeReadStates();
 
-			//EM_ASM_({console.log("handling comma 1 " + $0);}, theState->stateNow);
+			EM_ASM_({console.log("handling comma 1 " + $0);}, theState->stateNow);
 			//if (lastStateBeforeReading() == ArrayOpen || readingArray) {
 			if (readingArray == true) {
-						//EM_ASM({console.log("reading values into an array ");});
+						EM_ASM({console.log("reading values into an array ");});
 				kvState = Value;
 			} else {
 				kvState = Key;
 			}
 
 			theState->keyEncountered = false;
-			//EM_ASM({console.log("done with comma ");});
+			EM_ASM({console.log("done with comma ");});
 			previousScopeClosure = false;
 			break;
 		default:
@@ -819,15 +825,15 @@ int checkCharacter(char& currentChar) {
 				currentChar != '\t' &&
 				currentChar != '\v') {
 				//if (theState->stateNow == KVReadOpen) {
-				//EM_ASM({console.log("DEFAULT 10.1 ");});
+				EM_ASM({console.log("DEFAULT 10.1 ");});
 					addState(KVReading); //// ADD STATE
-				//EM_ASM({console.log("DEFAULT 10.2 ");});
+				EM_ASM({console.log("DEFAULT 10.2 ");});
 				//}
 			} else {
 				if (theState->stateNow == KVReading || theState->stateNow == KVReadOpen) {
-					//EM_ASM({console.log("DEFAULT 10.3 ");});
+					EM_ASM({console.log("DEFAULT 10.3 ");});
 					addState(KVReading); //// ADD STATE
-					//EM_ASM({console.log("DEFAULT 10.4 ");});
+					EM_ASM({console.log("DEFAULT 10.4 ");});
 				}
 			}
 			previousScopeClosure = false;
@@ -839,12 +845,12 @@ int checkCharacter(char& currentChar) {
 		//currentValue.append(1, currentChar);
 		//strcat(input->currentValue, currentChar);
 		appendCurrentValue(currentChar);
-		//EM_ASM_({console.log(String.fromCharCode($0));}, currentChar);
+		EM_ASM_({console.log(String.fromCharCode($0));}, currentChar);
 	}
 
 	/*///////////// DEBUG stuff
 	if (theState->stateNow == KVReading) {
-		//EM_ASM_({
+		EM_ASM_({
 			console.log(String.fromCharCode($0));
 		}, (int)currentChar);
 	}
@@ -852,7 +858,7 @@ int checkCharacter(char& currentChar) {
 
 	/*///////////// DEBUG stuff
 	if (currentReadKey == "assets") {
-		//EM_ASM({
+		EM_ASM({
 			console.log('found some assets');
 		});
 	}
@@ -874,9 +880,9 @@ int deserialize() {
 	theState->start = theState;
 	kvState = Key;
 	input = new CurrentValues;
-	//EM_ASM_({console.log("start state " + $0);}, theState);
+	EM_ASM_({console.log("start state " + $0);}, theState);
 
-		//EM_ASM({console.log('deserializing');});
+		EM_ASM({console.log('deserializing');});
 
 	for(char& currentChar : jsonString) {
 

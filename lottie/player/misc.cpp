@@ -55,7 +55,7 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 				traceKeyValue->next = tempKeyValue;
 				tempKeyValue->prev = traceKeyValue;
 				//tempArrayOfString->root = traceKeyValue->arrayValue->root;
-				tempArrayOfString->root = tempArrayOfString;
+				tempArrayOfString->root = traceKeyValue->arrayValue->root;
 				tempKeyValue->arrayValue = tempArrayOfString;
 				
 				traceKeyValue = tempKeyValue;
@@ -65,9 +65,11 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 				tempValuesVector->start = traceKeyValue->arrayValue->parent->start;
 				tempValuesVector->prev = traceKeyValue->arrayValue->parent;
 				traceKeyValue->arrayValue->parent->next = tempValuesVector;
-				tempValuesVector->root = traceKeyValue->arrayValue->parent->root;
+				//tempValuesVector->root = traceKeyValue->arrayValue->parent->root;
+				tempValuesVector->root = traceKeyValue->arrayValue->root;
 				tempValuesVector->parent = traceKeyValue->arrayValue->parent->parent;
 				tempValuesVector->child = tempArrayOfString;
+				tempArrayOfString->root = traceKeyValue->arrayValue->root;
 				traceKeyValue->arrayValue->parent->parent->vector = tempValuesVector;
 				traceKeyValue->arrayValue = tempArrayOfString;
 			}
