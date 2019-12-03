@@ -1,17 +1,29 @@
 //// shapes
 
 enum ShapesTy {
-		sh,
-		gr
+		gr, //group
+		sh, //shape
+		el, //ellipse
+		rc, //rect
+		sr, //star
+		fl, //fill
+		gf, //gFill
+		gs, //gStroke
+		st, //stroke
+		mm, //merge
+		tm, //trim
+		rd, //roundedCorners
+		
 	};
 
-struct ShapesItem {
+struct alignas(128) ShapesItem {
 	struct ShapesItem* start;
 	struct ShapesItem* end;
 	struct ShapesItem* next;
 	struct ShapesItem* prev;
 
-	string ty;
+	enum ShapesTy ty;
+	/*
 	struct ShapesShape* shape; // sh
 	struct ShapesEllipse* ellipse; // el
 	struct ShapesRect* rect; // rc
@@ -26,9 +38,11 @@ struct ShapesItem {
 	struct ShapesRoundedCorners* roundedCorners; // rd
 	struct ShapesRepeater* repeater; // rp
 	struct ShapesTransform* transform; // tr
+	*/
+	void* item;
 } *currentShapesItem;
 
-struct ShapesGroup {
+struct alignas(128) ShapesGroup {
 	string mn; // match name
 	string nm; // name
 	string np; // number of properties
@@ -40,7 +54,7 @@ struct ShapesGroup {
 	struct ShapesGroup* parentGroup;
 } *currentShapesGroup;
 
-struct ShapesShape {
+struct alignas(128) ShapesShape {
 	string mn; // match name
 	string nm; // name
 	int d; // direction

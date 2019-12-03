@@ -43,21 +43,26 @@ struct LayersText {
 
 };
 
-struct Asset {
+struct Assets {
+	struct Assets* start = NULL;
+	struct Assets* prev = NULL;
+	struct Assets* next = NULL;
+	struct Assets* end = NULL;
+
         string itemType; // any of 'image', 'precomp'
         int id;
         bool isImage;
         bool isPrecomp;
         struct ImageSource* images;
-        struct PrecompSource* precomps;
+        struct Layers* precomps;
 } *currentAssets;
 
 //struct alignas(128) Layers {
 struct Layers {
-        struct Layers* start;
-        struct Layers* end;
-        struct Layers* prev;
-        struct Layers* next;
+        struct Layers* start = NULL;
+        struct Layers* end = NULL;
+        struct Layers* prev = NULL;
+        struct Layers* next = NULL;
 
 	int ty;
         int id;

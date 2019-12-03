@@ -25,20 +25,34 @@ struct LayersShapes* newLayersShapes() {
         return currentLayersShapes;
 }
 
+struct Assets* newAssets() {
+	struct Assets* tempAssets;
+	tempAssets = new Assets;
+	if (currentAssets == NULL) {
+		tempAssets->start = tempAssets;
+		currentAssets = tempAssets;
+	} else {
+		tempAssets->prev = currentAssets;
+		currentAssets->next = tempAssets;
+		tempAssets->start = currentAssets->start;
+		currentAssets = tempAssets;
+	}
+
+	return currentAssets;
+}
+
 struct Layers* newLayers() {
 	struct Layers* tempLayers;
 	tempLayers = new Layers;
 	if (currentLayers == NULL) {
+		tempLayers->start = tempLayers;
 		currentLayers = tempLayers;
-		currentLayers->start = tempLayers;
-		currentLayers->prev = NULL;
 	} else {
 		tempLayers->prev = currentLayers;
 		currentLayers->next = tempLayers;
+		tempLayers->start = currentLayers->start;
 		currentLayers = tempLayers;
-		currentLayers->start = currentLayers->prev->start;
 	}
-	currentLayers->next = NULL;
 	
 	return currentLayers;
 }

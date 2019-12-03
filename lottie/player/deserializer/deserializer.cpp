@@ -67,6 +67,7 @@ struct Chars {
 
 //enum States {NoState = 0, Animation = 1, Layers = 2, Assets = 3, Chars = 4, Players = 5, Fonts = 6, ks = 7, ao = 8, bm = 9, ddd = 10, maskProperties = 11, ef = 12, shapes = 13, it = 14, t = 15, a = 16, m = 17, r = 18, p = 19, s = 20, sk = 21, sa = 22, o = 23, sw =  24, sc = 25, fc = 26, fh = 27, fs = 28, fb = 29, maxa = 31, mine = 32, maxe = 33, bo = 34, start  = 35, end = 36, Offset = 37, g = 38};
 
+/*
 enum Scopes {
 	noscope = 0,
 	object = 101,
@@ -79,6 +80,12 @@ enum Scopes {
 	assets_layers_shapes_ks_k = 406,
 	assets_layers_shapes_ks_k_e = 407,
 	assets_layers_shapes_ks_k_s = 408,
+	assets_layers_it = 424,
+	assets_layers_it_ty = 421,
+	assets_layers_it_ks = 425,
+	assets_layers_it_ks_k = 426,
+	assets_layers_it_ks_k_e = 427,
+	assets_layers_it_ks_k_s = 428,
 	// 
 	layers = 503,
 	layers_shapes = 504,
@@ -86,7 +93,75 @@ enum Scopes {
 	layers_shapes_ks = 505,
 	layers_shapes_ks_k = 506,
 	layers_shapes_ks_k_e = 507,
-	layers_shapes_ks_k_s = 508
+	layers_shapes_ks_k_s = 508,
+	layers_it = 520,
+	layers_it_ty = 521,
+	layers_it_ks = 525,
+	layers_it_ks_k = 526,
+	layers_it_ks_k_e = 527,
+	layers_it_ks_k_s = 528,
+	//
+	gr = 600,
+	gr_it = 620,
+	gr_it_ty = 621,
+	gr_it_ks = 625,
+	gr_it_ks_k = 626,
+	gr_it_ks_k_e = 627,
+	gr_it_ks_k_s = 628
+	};
+*/
+
+enum Scopes {
+	noscope = 0,
+	object = 101,
+	animation = 1,
+	assets = 2,
+	layers = 3,
+	gr = 4,
+	shapes = 5,
+	it = 6,
+	ty = 7,
+	ks = 8,
+	k = 9,
+	e = 10,
+	s = 11
+	/*
+	assets_layers = 403,
+	assets_layers_shapes = 404,
+	assets_layers_shapes_ty = 401,
+	assets_layers_shapes_ks = 405,
+	assets_layers_shapes_ks_k = 406,
+	assets_layers_shapes_ks_k_e = 407,
+	assets_layers_shapes_ks_k_s = 408,
+	assets_layers_it = 424,
+	assets_layers_it_ty = 421,
+	assets_layers_it_ks = 425,
+	assets_layers_it_ks_k = 426,
+	assets_layers_it_ks_k_e = 427,
+	assets_layers_it_ks_k_s = 428,
+	// 
+	layers = 503,
+	layers_shapes = 504,
+	layers_shapes_ty = 501,
+	layers_shapes_ks = 505,
+	layers_shapes_ks_k = 506,
+	layers_shapes_ks_k_e = 507,
+	layers_shapes_ks_k_s = 508,
+	layers_it = 520,
+	layers_it_ty = 521,
+	layers_it_ks = 525,
+	layers_it_ks_k = 526,
+	layers_it_ks_k_e = 527,
+	layers_it_ks_k_s = 528,
+	//
+	gr = 600,
+	gr_it = 620,
+	gr_it_ty = 621,
+	gr_it_ks = 625,
+	gr_it_ks_k = 626,
+	gr_it_ks_k_e = 627,
+	gr_it_ks_k_s = 628
+	*/
 	};
 
 enum States {
@@ -320,6 +395,7 @@ int removeScope() {
 
 	if (theScope == NULL) {
 		addScope(noscope);
+		addScope(animation);
 		return 1;
 	}
 
@@ -393,18 +469,61 @@ struct scopeBefore lastScopeBeforeObject() {
 		counter = counter + 1;
 		tempScopeTrail = tempScopeTrail->prev;
 	}
-	result.scopeNow = tempScopeTrail->scope;
+	result.scopeNow = tempScopeTrail;
 	result.objectCount = counter;
 	return result;
 }
 
+bool keyIs(char passedKey[KVLEN]) {
+	if (strcmp(input->currentReadKey, passedKey) == 0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 int checkScope() {
+	struct scopeBefore previousScope = lastScopeBeforeObject();
+	scopeChanged = true;
+	if (previousScope.scopeNow->scope == noscope) {
+		addScope(animation);
+	} else if (keyIs("assets")) {
+		addScope(asset);
+	} else if (keyIs("layers")) {
+		addScope(layers);
+	} else if (keyIs("gr")) {
+		addScope(gr);
+	} else if (keyIs("shapes")) {
+		addScope(shapes);
+	} else if (keyIs("it")) {
+		addScope(it);
+	} else if (keyIs("ty")) {
+		addScope(ty);
+	} else if (keyIs("ks")) {
+		addScope(ks);
+	} else if (keyIs("k")) {
+		addScope(k);
+	} else if (keyIs("e")) {
+		addScope(e);
+	} else if (keyIs("s")) {
+		addScope(s);
+
+
+
+
+	} else {
+		addScope(object);
+		scopeChanged = false;	
+	}
+}
+
+int checkScope_old() {
 	bool scopeChanged = false;
 	struct scopeBefore previousScope = lastScopeBeforeObject();
 	//EM_ASM_({console.log("TRYING SCOPE " + $0 + " : " + $1 + " - " + $2);}, previousScope.objectCount, previousScope.scopeNow, currentReadKey[0]);
 	if (previousScope.objectCount <= 1) {
 				//EM_ASM_({console.log("scope hit " + $0 + " : " + $1 + " / " + String.fromCharCode($2));}, previousScope.objectCount, previousScope.scopeNow, currentReadKey[0]);
-	switch (previousScope.scopeNow) {
+	switch (previousScope.scopeNow->scope) {
 		case noscope:
 			//theScope->scope = animation;
 			addScope(animation);

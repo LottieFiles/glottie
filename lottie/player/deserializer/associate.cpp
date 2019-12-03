@@ -7,13 +7,9 @@ int associateKeyValues() {
 			
 			break;
 		case assets_layers_shapes:
-			currentLayersShapes = NULL;
-			currentShapesItem = NULL;
-			currentShapesShape = NULL;
 			
 			break;
 		case assets_layers_shapes_ks:
-			currentPropertiesShape = NULL;
 			break;
 		case assets_layers_shapes_ks_k:
 			EM_ASM({console.log("ks_k");});
@@ -27,14 +23,10 @@ int associateKeyValues() {
 			break;
 		//
 		case layers_shapes:
-			currentLayersShapes = NULL;
-			currentShapesItem = NULL;
-			currentShapesShape = NULL;
 			break;
 		case layers_shapes_ks:
 
 
-			currentPropertiesShape = NULL;
 			break;
 		case layers_shapes_ks_k:
 
@@ -55,6 +47,7 @@ int associateKeyValues() {
 }
 
 int associateBack(void* object) {
+	struct scopeBefore 
 	switch (theScope->prev->scope) {
 		case animation:
 			break;
@@ -156,6 +149,7 @@ int readingDone() {
 */
 
 int prepareContainer(bool arrayOfObjects) {
+	/*
 	switch (theScope->scope) {
 		case noscope:
 			break;
@@ -202,6 +196,33 @@ int prepareContainer(bool arrayOfObjects) {
 		default:
 			break;	
 	}
+	*/
+	struct scopeBefore previousScope = lastScopeBeforeObject();
+	
+	if (scopeBefore.scopeNow->scope == animation) {
+		theAnimation = new Animation;
+	} else if (scopeBefore.scopeNow->scope == assets) {
+		theAnimation->assets = newAssets();
+	} else if (scopeBefore.scopeNow->scope == layers) {
+		if (scopeBefore.scopeNow->prev->scope == assets) {
+			currentAssets->precomps = newLayers();
+		} else {
+			theAnimation->layers = newLayers();
+		}
+	} else if (scopeBefore.scopeNow->scope == it) {
+		if (scopeBefore.scopeNow->scope->prev->scope == 
+	} else if (scopeBefore.scopeNow->scope == gr) {
+		if (scopeBefore.scopeNow->scope->prev->scope == it) {
+		}
+	} else if (scopeBefore.scopeNow->scope == shapes) {
+		
+	} else if (scopeBefore.scopeNow->scope == ty) {
+	} else if (scopeBefore.scopeNow->scope == ks) {
+	} else if (scopeBefore.scopeNow->scope == k) {
+	} else if (scopeBefore.scopeNow->scope == e) {
+	} else if (scopeBefore.scopeNow->scope == s) {
+	}
+	
 	return 1;
 }
 
