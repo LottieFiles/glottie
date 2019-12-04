@@ -623,7 +623,6 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 		//EM_ASM({console.log("found an empty vertex");};);
 		passedVertex = new ArrayOfVertex;
 		passedVertex->start = passedVertex;
-		passedVertex->end = passedVertex;
 	} else {
 		//EM_ASM({console.log("found a non-empty vertex");};);
 		//bool exhausted = false;
@@ -635,11 +634,9 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 			}
 		}*/
 		tempAOV = new ArrayOfVertex;
-		passedVertex->end = tempAOV;
 		tempAOV->prev = passedVertex;
 		passedVertex->next = tempAOV;
 		tempAOV->start = passedVertex->start;
-		tempAOV->end = tempAOV;
 		passedVertex = tempAOV;
 	}
 

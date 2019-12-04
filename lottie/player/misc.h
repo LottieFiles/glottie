@@ -17,7 +17,6 @@ struct alignas(128) ArrayOfVertex {
 	struct ArrayOfVertex* start = NULL;
 	struct ArrayOfVertex* next = NULL;
 	struct ArrayOfVertex* prev = NULL;
-	struct ArrayOfVertex* end = NULL;
 
 	struct Vertex* vertex = NULL;
 };

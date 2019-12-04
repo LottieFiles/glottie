@@ -1,28 +1,18 @@
 // functions
 
-struct LayersShapes* newLayersShapes() {
-	struct LayersShapes* tempLayersShapes;
-	tempLayersShapes = new LayersShapes;
-	currentLayersShapes = tempLayersShapes;
-
-	struct ShapesItem* tempShapesItem;
-	tempShapesItem = new ShapesItem;
-
-	if (currentLayersShapes->shapesItemCount == 0) {
-		currentShapesItem = tempShapesItem;
-		currentShapesItem->start = tempShapesItem;
-		currentShapesItem->prev = NULL;
-		currentLayersShapes->shapesItem = tempShapesItem;
+struct Layers* newLayers(struct Layers* passedLayers) {
+	if (passedLayers == NULL) {
+		passedLayers = new Layers;
+		passedLayers->start = passedLayers;
 	} else {
-		tempShapesItem->prev = currentShapesItem;
-		currentShapesItem->next = tempShapesItem;
-		currentShapesItem = tempShapesItem;
-		currentShapesItem->start = currentShapesItem->prev->start;
+		passedLayers->next = new Layers;
+		passedLayers->next->start = passedLayers->start;
+		passedLayers->next->prev = passedLayers;
+		passedLayers = passedLayers->next;
 	}
-	currentShapesItem->next = NULL;
-	currentLayersShapes->shapesItemCount++;
 
-        return currentLayersShapes;
+	currentLayers = passedLayers;
+        return passedLayers;
 }
 
 struct Assets* newAssets() {
@@ -41,21 +31,6 @@ struct Assets* newAssets() {
 	return currentAssets;
 }
 
-struct Layers* newLayers() {
-	struct Layers* tempLayers;
-	tempLayers = new Layers;
-	if (currentLayers == NULL) {
-		tempLayers->start = tempLayers;
-		currentLayers = tempLayers;
-	} else {
-		tempLayers->prev = currentLayers;
-		currentLayers->next = tempLayers;
-		tempLayers->start = currentLayers->start;
-		currentLayers = tempLayers;
-	}
-	
-	return currentLayers;
-}
 
 ///////////////// assign values
 

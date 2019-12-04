@@ -216,10 +216,6 @@ int prepareContainer(bool arrayOfObjects) {
 			currentLayersShapes->shapes = newShapesItem(currentShapesItem);
 		}
 	} else if (previousScope.scopeNow->scope == shapes) {
-		if (lastScopeBeforeThis(previousScope.scopeNow->prev) == layers) {
-			currentLayers->shapes
-		} else {
-		}
 	} else if (theScope->scope == ty) {
 	} else if (theScope->scope == ks) {
 	} else if (theScope->scope == k) {

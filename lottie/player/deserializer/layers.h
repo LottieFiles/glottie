@@ -1,6 +1,10 @@
 //// layers
 
-struct LayersShapes {
+struct Layers {
+        struct Layers* start = NULL;
+        struct Layers* prev = NULL;
+        struct Layers* next = NULL;
+
 	bool created; // internal flag to indicate this object has already been created
         struct ShapesItem* shapes;
 	int shapesItemCount = 0; // internal use - amount of shapesItems in this object
@@ -21,8 +25,11 @@ struct LayersShapes {
         int ddd;
         struct Mask* maskProperties;
         struct Index* ef; // effects
+      
+	int id;
 
-} *currentLayersShapes;
+        struct LayersText* text;
+} *currentLayers;
 
 struct LayersSolid {
 };
@@ -47,7 +54,6 @@ struct Assets {
 	struct Assets* start = NULL;
 	struct Assets* prev = NULL;
 	struct Assets* next = NULL;
-	struct Assets* end = NULL;
 
         string itemType; // any of 'image', 'precomp'
         int id;
@@ -58,9 +64,8 @@ struct Assets {
 } *currentAssets;
 
 //struct alignas(128) Layers {
-struct Layers {
+struct Layers_old {
         struct Layers* start = NULL;
-        struct Layers* end = NULL;
         struct Layers* prev = NULL;
         struct Layers* next = NULL;
 
@@ -73,7 +78,7 @@ struct Layers {
         struct LayersImage* image;
         struct LayersNull* null;
         struct LayersText* text;
-} *currentLayers;
+} *currentLayers_old;
 
 struct Animation {
         int ip; // entry frame number
@@ -84,8 +89,8 @@ struct Animation {
         bool ddd; // is 3D? (1 = yes, 0 = no)
         string v; // Bodymovin (exporter) version
         string nm; // name of animation
-        struct Layer* layers;
-        struct Asset* assets;
+        struct Layers* layers;
+        struct Assets* assets;
         struct Char* chars;
         struct Player* players;
         struct Font* fonts;

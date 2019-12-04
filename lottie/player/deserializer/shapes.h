@@ -18,7 +18,6 @@ enum ShapesTy {
 
 struct alignas(128) ShapesItem {
 	struct ShapesItem* start;
-	struct ShapesItem* end;
 	struct ShapesItem* next;
 	struct ShapesItem* prev;
 
