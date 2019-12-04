@@ -198,6 +198,8 @@ struct alignas(128) StateTrail {
 //struct alignas(alignof(struct ScopeTrail*)) ScopeTrail {
 struct alignas(128) ScopeTrail {
 //struct ScopeTrail {
+	char currentTy[KVLEN];
+
 	struct scopeTrail* start = NULL;
 	struct ScopeTrail* prev = NULL;
 	struct ScopeTrail* next = NULL;
@@ -208,10 +210,13 @@ struct alignas(128) ScopeTrail {
 } *theScope;
 
 struct alignas(128) CurrentValues {
-	int currentValueLength = 0;
 	char currentValue[KVLEN];
 	char currentReadKey[KVLEN];
 	char currentReadValue[KVLEN];
+
+	char currentTy[KVLEN];
+
+	int currentValueLength = 0;
 } *input;
 
 string lastValue;
@@ -460,6 +465,17 @@ int removeArray() {
 #include "shapes.cpp"
 #include "associate.cpp"
 
+enum Scopes lastScopeBeforeThis(struct ScopeTrail* tempScopeTrail) {
+	if (tempScopeTrail == NULL) {
+		return noscope;
+	}
+	while (tempScopeTrail->prev != NULL && tempScopeTrail->scope == object) {
+		counter = counter + 1;
+		tempScopeTrail = tempScopeTrail->prev;
+	}
+	return tempScopeTrail->scope;
+}
+
 struct scopeBefore lastScopeBeforeObject() {
 	struct scopeBefore result;
 	struct ScopeTrail* tempScopeTrail;
@@ -491,8 +507,6 @@ int checkScope() {
 		addScope(asset);
 	} else if (keyIs("layers")) {
 		addScope(layers);
-	} else if (keyIs("gr")) {
-		addScope(gr);
 	} else if (keyIs("shapes")) {
 		addScope(shapes);
 	} else if (keyIs("it")) {

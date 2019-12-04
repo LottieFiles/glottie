@@ -199,28 +199,32 @@ int prepareContainer(bool arrayOfObjects) {
 	*/
 	struct scopeBefore previousScope = lastScopeBeforeObject();
 	
-	if (scopeBefore.scopeNow->scope == animation) {
+	if (previousScope.scopeNow->scope == animation) {
 		theAnimation = new Animation;
-	} else if (scopeBefore.scopeNow->scope == assets) {
+	} else if (previousScope.scopeNow->scope == assets) {
 		theAnimation->assets = newAssets();
-	} else if (scopeBefore.scopeNow->scope == layers) {
-		if (scopeBefore.scopeNow->prev->scope == assets) {
+	} else if (previousScope.scopeNow->scope == layers) {
+		if (lastScopeBeforeThis(previousScope.scopeNow->prev) == assets) {
 			currentAssets->precomps = newLayers();
 		} else {
 			theAnimation->layers = newLayers();
 		}
-	} else if (scopeBefore.scopeNow->scope == it) {
-		if (scopeBefore.scopeNow->scope->prev->scope == 
-	} else if (scopeBefore.scopeNow->scope == gr) {
-		if (scopeBefore.scopeNow->scope->prev->scope == it) {
+	} else if (previousScope.scopeNow->scope == it) {
+		if (lastScopeBeforeThis(previousScope.scopeNow->prev) == layers) {
+			currentLayers->shapes = newShapesItem(currentShapesItem);
+		} else if (lastScopeBeforeThis(previousScope.scopeNow->prev) == shapes) {
+			currentLayersShapes->shapes = newShapesItem(currentShapesItem);
 		}
-	} else if (scopeBefore.scopeNow->scope == shapes) {
-		
-	} else if (scopeBefore.scopeNow->scope == ty) {
-	} else if (scopeBefore.scopeNow->scope == ks) {
-	} else if (scopeBefore.scopeNow->scope == k) {
-	} else if (scopeBefore.scopeNow->scope == e) {
-	} else if (scopeBefore.scopeNow->scope == s) {
+	} else if (previousScope.scopeNow->scope == shapes) {
+		if (lastScopeBeforeThis(previousScope.scopeNow->prev) == layers) {
+			currentLayers->shapes
+		} else {
+		}
+	} else if (theScope->scope == ty) {
+	} else if (theScope->scope == ks) {
+	} else if (theScope->scope == k) {
+	} else if (theScope->scope == e) {
+	} else if (theScope->scope == s) {
 	}
 	
 	return 1;

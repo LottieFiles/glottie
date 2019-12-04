@@ -449,6 +449,11 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 	struct KeyValue* endNode = NULL;
 	struct KeyValue* createdKeyValue = NULL;
 
+	if (strcmp(key, "ty") == 0) {
+		strcat(input->currentTy, value);
+		strcat(theScope->currentTy, value);
+	}
+
 	//EM_ASM({console.log("adding key value 300.1");});	
 	if (traceKeyValue != NULL) {
 		//EM_ASM({console.log("adding key value 301.1");});	

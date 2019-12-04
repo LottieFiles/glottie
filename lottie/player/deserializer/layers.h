@@ -2,7 +2,7 @@
 
 struct LayersShapes {
 	bool created; // internal flag to indicate this object has already been created
-        struct ShapesItem* shapesItem;
+        struct ShapesItem* shapes;
 	int shapesItemCount = 0; // internal use - amount of shapesItems in this object
         int ind; // index
         string cl; //class

@@ -1,10 +1,22 @@
 // functions
 
-struct ShapesItem* newShapesShape(enum ShapesTy passedTy, struct ShapesItem* passedShapesItem) {
+struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem) {
 	if (passedShapesItem == NULL) {
 		passedShapesItem = new ShapesItem;
+		passedShapesItem->start = passedShapesItem;
+	} else {
+		passedShapesItem->next = new ShapesItem;
+		passedShapesItem->next->start = passedShapesItem->start;
+		passedShapesItem->next->prev = passedShapesItem;
+		passedShapesItem = passedShapesItem->next;
 	}
+	currentShapesItem = passedShapesItem;
+	return passedShapesItem;
+}
 
+	
+
+int updateShapesItemType(enum ShapesTy passedTy, struct ShapesItem* passedShapesItem) {
 	if (passedTy == sh) {
 		passedShapesItem->item = new ShapesShape;
 		passedShapesItem->ty = passedTy;
