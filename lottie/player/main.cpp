@@ -1,4 +1,6 @@
 #define KVLEN 21
+#define ALIGNSIZE 256
+#define TEXTBLOCK 220
 
 #include <functional>
 
@@ -19,9 +21,14 @@ using namespace std;
 std::function<void()> loop;
 void main_loop() { loop(); }
 
+#include "main.h"
 #include "misc.h"
 #include "misc.cpp"
-#include "emscripten/emscripten.cpp"
+#include "deserializer/properties.h"
+#include "deserializer/layers.h"
+#include "deserializer/shapes.h"
+#include "deserializer/helpers.h"
+//#include "emscripten/emscripten.cpp"
 #include "deserializer/deserializer.cpp"
 #include "gl/gl.cpp"
 

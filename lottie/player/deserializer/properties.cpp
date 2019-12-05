@@ -126,64 +126,16 @@ int fillPropertiesShapeProp() {
 			currentPropertiesShapeProp->i = 
 				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, currentPropertiesShapeProp->i);
 
-			/*
-			EM_ASM({console.log("========================> fill 80.2 " + $0 + " : " + $1);}, 
-				currentPropertiesShapeProp->i->start->vertex->position[0],
-				currentPropertiesShapeProp->i->start->vertex->position[1]);
-			*/
-			//tempArrayValue = tempKeyValue->arrayValue->root;
-
-				/*
-				//string xvals(tempKeyValue->arrayValue->root->vector->start->value);
-				//string yvals(tempKeyValue->arrayValue->root->vector->start->next->value);
-				float xval = stof(xvals);
-				float yval = stof(yvals);
-				float vertex[4] = {xval, yval, 0.0f, 1.0f};
-				*/
-				//currentPropertiesShapeProp->i.at(currentPropertiesShapeProp->i.back()).position = {xval, yval, 0.0f, 1.0f};
-				//pushVertex(currentPropertiesShapeProp->i, vertex);
-
-				//EM_ASM({console.log("========================> fill 80.2");});
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "o") == 0) {
 			EM_ASM({console.log("========================> fill 80.3 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			currentPropertiesShapeProp->o = 
 				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, currentPropertiesShapeProp->o);
 
-				/*
-				string xvals(tempKeyValue->arrayValue->root->vector->start->value);
-				string yvals(tempKeyValue->arrayValue->root->vector->start->next->value);
-				float xval = stof(xvals);
-				float yval = stof(yvals);
-				//float xval = stof(tempKeyValue->arrayValue->child->value[0]);
-				//float yval = stof(tempKeyValue->arrayValue->child->value[1]);
-				float vertex[4] = {xval, yval, 0.0f, 1.0f};
-				//EM_ASM_({console.log('traced '.$0);},xval);
-				//currentPropertiesShapeProp->o.emplace_back({xval, yval, 0.0f, 1.0f});
-				pushVertex(currentPropertiesShapeProp->o, vertex);
-				EM_ASM({console.log("========================> fill 80.3");});
-				*/
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "v") == 0) {
 			EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			currentPropertiesShapeProp->v = 
 				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, currentPropertiesShapeProp->v);
 
-				/*
-				string xvals(tempKeyValue->arrayValue->root->vector->start->value);
-				string yvals(tempKeyValue->arrayValue->root->vector->start->next->value);
-				float xval = stof(xvals);
-				float yval = stof(yvals);
-				//float xval = stof(tempKeyValue->arrayValue->child->value[0]);
-				//float yval = stof(tempKeyValue->arrayValue->child->value[1]);
-				float vertex[4] = {xval, yval, 0.0f, 1.0f};
-				//currentPropertiesShapeProp->v.emplace_back({xval, yval, 0.0f, 1.0f});
-				pushVertex(currentPropertiesShapeProp->v, vertex);
-				//////////////// DEBUG stuff
-				EM_ASM_({
-					console.log($0);
-				}, xval);
-				EM_ASM({console.log("========================> fill 80.4");});
-				//////////////////////// DEND 
-				*/
 		}
 
 

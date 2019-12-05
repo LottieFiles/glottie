@@ -17,26 +17,26 @@ struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem) {
 	
 
 int updateShapesItemType(enum ShapesTy passedTy, struct ShapesItem* passedShapesItem) {
-	if (passedTy == sh) {
+	if (passedTy == shape) {
 		passedShapesItem->item = new ShapesShape;
 		passedShapesItem->ty = passedTy;
 		currentShapesShape = passedShapesItem->item;
-	} else if (passedTy == el) {
-	} else if (passedTy == rc) {
-	} else if (passedTy == sr) {
-	} else if (passedTy == fl) {
-	} else if (passedTy == gf) {
-	} else if (passedTy == gs) {
-	} else if (passedTy == st) {
-	} else if (passedTy == mm) {
-	} else if (passedTy == tm) {
-	} else if (passedTy == gr) {
+	} else if (passedTy == group) {
+	} else if (passedTy == ellipse) {
+	} else if (passedTy == rect) {
+	} else if (passedTy == star) {
+	} else if (passedTy == fill) {
+	} else if (passedTy == gFill) {
+	} else if (passedTy == gStroke) {
+	} else if (passedTy == stroke) {
+	} else if (passedTy == merge) {
+	} else if (passedTy == trim) {
 		passedShapesItem->item = new ShapesGroup;
 		passedShapesItem->ty = passedTy;
 		currentShapesGroup = passedShapesItem->item;
-	} else if (passedTy == rd) {
-	} else if (passedTy == rp) {
-	} else if (passedTy == tr) {
+	} else if (passedTy == roundedCorners) {
+	} else if (passedTy == repeater) {
+	} else if (passedTy == transform) {
 	} 
         return passedShapesItem;
 }

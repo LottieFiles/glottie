@@ -213,11 +213,21 @@ int prepareContainer(bool arrayOfObjects) {
 		if (lastScopeBeforeThis(previousScope.scopeNow->prev) == layers) {
 			currentLayers->shapes = newShapesItem(currentShapesItem);
 		} else if (lastScopeBeforeThis(previousScope.scopeNow->prev) == shapes) {
-			currentLayersShapes->shapes = newShapesItem(currentShapesItem);
+			currentLayers->shapes = newShapesItem(currentShapesItem);
 		}
 	} else if (previousScope.scopeNow->scope == shapes) {
+		currentLayers->shapes = newShapesItem(currentShapesItem);
 	} else if (theScope->scope == ty) {
 	} else if (theScope->scope == ks) {
+		if (lastScopeBeforeThis(previousScope.scopeNow->prev) == shapes) {
+		} else {
+			struct ScopeTrail* first;
+			struct ScopeTrail* second;
+			first = lastScopeBeforeThis(previousScope.scopeNow->prev);
+			second = lastScopeBeforeThis(first->prev);
+			if ((first == shapes && second == layers) || (first == it && second == layers)) {
+				currentShapesItem->ks = new newPropertiesShape();
+			}
 	} else if (theScope->scope == k) {
 	} else if (theScope->scope == e) {
 	} else if (theScope->scope == s) {

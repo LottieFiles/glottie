@@ -1,6 +1,6 @@
 //// properties
 
-struct PropertiesValueKeyframe {
+struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
 	int e; //end
 	int s; //start
 	int t; //time
@@ -8,16 +8,18 @@ struct PropertiesValueKeyframe {
 	struct XY* i; // bezier curve interpolation in value
 } *currentPropertiesValueKeyframe;
 
-struct PropertiesValue {
+struct alignas(ALIGNSIZE) PropertiesValue {
 	float k;
-	string ix; //property index
+	//string ix; //property index
 	int a; // animated
-	string x; //expression
+	//string x; //expression
+	struct textBlock* ix;
+	struct textBlock* x;
 
 	struct PropertiesValueKeyframe* keyframe;
 } *currentPropertiesValue;
 
-struct PropertiesMultiDimensionalKeyframe {
+struct alignas(ALIGNSIZE) PropertiesMultiDimensionalKeyframe {
 	vector<float> s; //start
 	int e; //end
 	int t;
@@ -26,7 +28,7 @@ struct PropertiesMultiDimensionalKeyframe {
 	struct XY* o; // bezier curve interpolation out value
 } *currentPropertiesMultiDimensionalKeyframe;
 
-struct PropertiesMultiDimensional {
+struct alignas(ALIGNSIZE) PropertiesMultiDimensional {
 	vector<float> k;
 	string x; // property expression - AE expression that modifies the value
 	string ix; // property index - used for expression
@@ -36,7 +38,7 @@ struct PropertiesMultiDimensional {
 	struct PropertiesMultiDimensionalKeyframe* keyframe=NULL;
 } *currentPropertiesMultiDimensional;
 
-struct PropertiesShapeKeyframed {
+struct alignas(ALIGNSIZE) PropertiesShapeKeyframed {
 	string x;
 	string ix;
 	int a; //animated
@@ -47,7 +49,7 @@ struct PropertiesShapeKeyframed {
 	struct PropertiesShapePropKeyframe* k;	
 } *currentPropertiesShapeKeyframed;
 
-struct alignas(128) PropertiesShapeProp {
+struct alignas(ALIGNSIZE) PropertiesShapeProp {
 //struct PropertiesShapeProp {
 	struct PropertiesShapeProp* start=NULL;
 	struct PropertiesShapeProp* next=NULL;
@@ -66,15 +68,18 @@ struct alignas(128) PropertiesShapeProp {
 	*/
 } *currentPropertiesShapeProp;
 
-struct alignas(128) PropertiesShapePropKeyframe {
+struct alignas(ALIGNSIZE) PropertiesShapePropKeyframe {
 	struct PropertiesShapeProp* e=NULL;
 	struct PropertiesShapeProp* s=NULL;
 } *currentPropertiesShapePropKeyframe;
 
-struct alignas(4096) PropertiesShape {
+struct alignas(ALIGNSIZE) PropertiesShape {
 //struct PropertiesShape {
-	string x;
-	string ix;
+	//string x;
+	//string ix;
+	struct textBlock* x;
+	struct textBlock* ix;
+
 	int a; //animated
 
 	struct PropertiesShapeProp* k;
