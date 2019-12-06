@@ -286,16 +286,18 @@ int prepareContainer(bool arrayOfObjects) {
 		}
 	} else if (theScope->scope == _ty) {
 	} else if (theScope->scope == _ks) {
-		//if (lastScopeBeforeThis(previousScope.scopeNow->prev)->scope == _shapes) { // PropertiesShape
-			if ((theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) || (theScope->prev->scope == _it && theScope->prev->prev->scope == _layers) || (theScope->prev->scope == _it && theScope->prev->prev->scope == _shapes)) {
-				EM_ASM({console.log("-----------------> ks within shapes");});
-				currentShapesItem->ks = newPropertiesShape();
-			}
-		//} else if (lastScopeBeforeThis(previousScope.scopeNow->prev)->scope == _it) { // HelpersTransform
-		//	EM_ASM({console.log("-----------------> ks");});
-		//}
+		if ((theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) || (theScope->prev->scope == _it && theScope->prev->prev->scope == _layers) || (theScope->prev->scope == _it && theScope->prev->prev->scope == _shapes)) { // PropertiesShape
+			EM_ASM({console.log("-----------------> ks within shapes");});
+			currentShapesItem->ks = newPropertiesShape();
+		}
 	} else if (theScope->scope == _k) {
+		if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes) || (theScope->prev->scope == _ks && theScope->prev->prev->scope == _it)) { // PropertiesShapeProp
+			
+		}
 	} else if (theScope->scope == _e) {
+		if ((theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _shapes) || (theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _it)) { // PropertiesShapePropKeyframe
+			
+		}
 	} else if (theScope->scope == _s) {
 	}
 	
