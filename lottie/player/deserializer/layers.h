@@ -1,6 +1,6 @@
 //// layers
 
-struct Layers {
+struct alignas(ALIGNSIZE) Layers {
         struct Layers* start = NULL;
         struct Layers* prev = NULL;
         struct Layers* next = NULL;
@@ -50,7 +50,7 @@ struct LayersText {
 
 };
 
-struct Assets {
+struct alignas(ALIGNSIZE) Assets {
 	struct Assets* start = NULL;
 	struct Assets* prev = NULL;
 	struct Assets* next = NULL;
@@ -64,7 +64,7 @@ struct Assets {
 } *currentAssets;
 
 //struct alignas(128) Layers {
-struct Layers_old {
+struct alignas(ALIGNSIZE) Layers_old {
         struct Layers* start = NULL;
         struct Layers* prev = NULL;
         struct Layers* next = NULL;
@@ -80,7 +80,7 @@ struct Layers_old {
         struct LayersText* text;
 } *currentLayers_old;
 
-struct Animation {
+struct alignas(ALIGNSIZE) Animation {
         int ip; // entry frame number
         int op; // exit frame number
         int fr; // frame rate

@@ -21,6 +21,13 @@ using namespace std;
 std::function<void()> loop;
 void main_loop() { loop(); }
 
+// forward declarations
+struct ScopeTrail* lastScopeBeforeThis(struct ScopeTrail*);
+struct ScopeBefore lastScopeBeforeObject();
+struct Layers* newLayers(struct Layers*);
+struct ShapesItem* newShapesItem(struct ShapesItem*);
+struct PropertiesShape* newPropertiesShape();
+
 #include "main.h"
 #include "misc.h"
 #include "misc.cpp"

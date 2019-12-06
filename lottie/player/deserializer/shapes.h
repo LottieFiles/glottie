@@ -1,20 +1,20 @@
 //// shapes
 
 enum ShapesTy {
-		group, //gr
-		shape, //sh
-		ellipse, //el
-		rect, //rc
-		star, //sr
-		fill, //fl
-		gFill, //gf
-		gStroke, //gs
-		stroke, //st
-		merge, //mm
-		trim, //tm
-		roundedCorners, //rd
-		repeater, // rp
-		transform // tr
+		_group = 0, //gr
+		_shape = 1, //sh
+		_ellipse = 2, //el
+		_rect = 3, //rc
+		_star = 4, //sr
+		_fill = 5, //fl
+		_gFill = 6, //gf
+		_gStroke = 7, //gs
+		_stroke = 8, //st
+		_merge = 9, //mm
+		_trim = 10, //tm
+		_roundedCorners = 11, //rd
+		_repeater = 12, // rp
+		_transform = 13 // tr
 		
 	};
 

@@ -141,7 +141,7 @@ int addScope(enum Scopes scopePassed) {
 
 struct ScopeTrail* removeObjectsFromScope(struct ScopeTrail* passedScope) {
 	struct ScopeTrail* tempScope;
-	while (passedScope->prev != NULL && passedScope->scope == object) {
+	while (passedScope->prev != NULL && passedScope->scope == _object) {
 		tempScope = passedScope;
 		passedScope = passedScope->prev;
 		passedScope->next = NULL;
@@ -156,8 +156,8 @@ int removeScope() {
 	struct ScopeTrail* tempScope;
 
 	if (theScope == NULL) {
-		addScope(noscope);
-		addScope(animation);
+		addScope(_noscope);
+		addScope(_animation);
 		return 1;
 	}
 
@@ -224,21 +224,22 @@ int removeArray() {
 
 struct ScopeTrail* lastScopeBeforeThis(struct ScopeTrail* tempScopeTrail) {
 	if (tempScopeTrail == NULL) {
-		return noscope;
+		return NULL;
 	}
-	while (tempScopeTrail->prev != NULL && tempScopeTrail->scope == object) {
+	int counter = 0;
+	while (tempScopeTrail->prev != NULL && tempScopeTrail->scope == _object) {
 		counter = counter + 1;
 		tempScopeTrail = tempScopeTrail->prev;
 	}
 	return tempScopeTrail;
 }
 
-struct scopeBefore lastScopeBeforeObject() {
-	struct scopeBefore result;
+struct ScopeBefore lastScopeBeforeObject() {
+	struct ScopeBefore result;
 	struct ScopeTrail* tempScopeTrail;
 	tempScopeTrail = theScope;
 	long counter = 0;
-	while (tempScopeTrail->prev != NULL && tempScopeTrail->scope == object) {
+	while (tempScopeTrail->prev != NULL && tempScopeTrail->scope == _object) {
 		counter = counter + 1;
 		tempScopeTrail = tempScopeTrail->prev;
 	}
@@ -247,7 +248,7 @@ struct scopeBefore lastScopeBeforeObject() {
 	return result;
 }
 
-bool keyIs(char passedKey[KVLEN]) {
+bool keyIs(char const *passedKey) {
 	if (strcmp(input->currentReadKey, passedKey) == 0) {
 		return true;
 	} else {
@@ -256,41 +257,48 @@ bool keyIs(char passedKey[KVLEN]) {
 }
 
 int checkScope() {
-	struct scopeBefore previousScope = lastScopeBeforeObject();
+	struct ScopeBefore previousScope = lastScopeBeforeObject();
 	scopeChanged = true;
-	if (previousScope.scopeNow->scope == noscope) {
-		addScope(animation);
+	if (previousScope.scopeNow->scope == _noscope) {
+		addScope(_animation);
 	} else if (keyIs("assets")) {
-		addScope(asset);
+		EM_ASM({console.log("-/--> found assets");});
+		addScope(_assets);
 	} else if (keyIs("layers")) {
-		addScope(layers);
+		EM_ASM({console.log("-/--> found layers");});
+		addScope(_layers);
 	} else if (keyIs("shapes")) {
-		addScope(shapes);
+		EM_ASM({console.log("-/--> found shapes");});
+		addScope(_shapes);
 	} else if (keyIs("it")) {
-		addScope(it);
+		addScope(_it);
 	} else if (keyIs("ty")) {
-		addScope(ty);
+		addScope(_ty);
 	} else if (keyIs("ks")) {
-		addScope(ks);
+		EM_ASM({console.log("-/--> found ks");});
+		addScope(_ks);
 	} else if (keyIs("k")) {
-		addScope(k);
+		addScope(_k);
 	} else if (keyIs("e")) {
-		addScope(e);
+		addScope(_e);
 	} else if (keyIs("s")) {
-		addScope(s);
+		addScope(_s);
 
 
 
 
 	} else {
-		addScope(object);
+		addScope(_object);
 		scopeChanged = false;	
 	}
+
+	return 1;
 }
 
+/*
 int checkScope_old() {
 	bool scopeChanged = false;
-	struct scopeBefore previousScope = lastScopeBeforeObject();
+	struct ScopeBefore previousScope = lastScopeBeforeObject();
 	//EM_ASM_({console.log("TRYING SCOPE " + $0 + " : " + $1 + " - " + $2);}, previousScope.objectCount, previousScope.scopeNow, currentReadKey[0]);
 	if (previousScope.objectCount <= 1) {
 				//EM_ASM_({console.log("scope hit " + $0 + " : " + $1 + " / " + String.fromCharCode($2));}, previousScope.objectCount, previousScope.scopeNow, currentReadKey[0]);
@@ -405,6 +413,7 @@ int checkScope_old() {
 
 	return 1;
 }
+*/
 
 int readingDone() {
 		struct KeyValue* tempKeyValue;
@@ -488,9 +497,9 @@ int checkCharacter(char& currentChar) {
 			//theScope->currentKeyValueTrail = currentKeyValueTrail;
 			if (theState->stateNow == ArrayOpen || theState->stateNow == ScopeOpenInArray || readingArray || theState->stateNow == ScopeToBeRemoved) {
 				//EM_ASM({console.log("opening object in array");});
-				if (theState->keyEncountered) {
+				//if (theState->keyEncountered) {
 					prepareContainer(true);
-				}
+				//}
 				addState(ScopeOpenInArray); //// ADD STATE
 			} else {
 				prepareContainer(false);
@@ -656,7 +665,7 @@ int deserialize() {
 	theState = new StateTrail;
 	theScope->prev = 0;
 	theScope->next = 0;
-	theScope->scope = noscope;
+	theScope->scope = _noscope;
 	theState->stateNow = Start;
 	theState->start = theState;
 	kvState = Key;

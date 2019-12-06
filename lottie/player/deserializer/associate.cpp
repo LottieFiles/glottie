@@ -1,5 +1,5 @@
-
 int associateKeyValues() {
+	/*
 	switch (theScope->scope) {
 		case animation:
 			break;
@@ -41,13 +41,20 @@ int associateKeyValues() {
 		default:
 			break;
 	}
+	*/
 	//popKeyValueTrail();
+
+	if (theScope->scope == _animation) {
+		fillAnimation();
+	}
 
 	return 1;
 }
 
 int associateBack(void* object) {
-	struct scopeBefore 
+	struct ScopeBefore previousScope = lastScopeBeforeObject();
+
+	/*
 	switch (theScope->prev->scope) {
 		case animation:
 			break;
@@ -109,11 +116,13 @@ int associateBack(void* object) {
 		default:
 			break;
 	}
+	*/
 	//resetReferences(); // this is now done at the end of assigning values in associateValues()
 	return 1;
 }
 
 int associateType() {
+	/*
 	switch (theScope->prev->scope) {
 		case assets_layers_shapes: //LayersShapes in assets
 			currentShapesItem->ty = currentReadValue;
@@ -124,6 +133,7 @@ int associateType() {
 			break;
 
 	}
+	*/
 
 	return 1;
 }
@@ -197,40 +207,96 @@ int prepareContainer(bool arrayOfObjects) {
 			break;	
 	}
 	*/
-	struct scopeBefore previousScope = lastScopeBeforeObject();
+	/*
+	struct ScopeBefore previousScope = lastScopeBeforeObject();
 	
-	if (previousScope.scopeNow->scope == animation) {
+	EM_ASM({console.log("-----------------> CHECKING");});
+	if (previousScope.scopeNow->scope == _animation) {
+		EM_ASM({console.log("-----------------> animation");});
 		theAnimation = new Animation;
-	} else if (previousScope.scopeNow->scope == assets) {
+	} else if (previousScope.scopeNow->scope == _assets) {
+		EM_ASM({console.log("-----------------> assets");});
 		theAnimation->assets = newAssets();
-	} else if (previousScope.scopeNow->scope == layers) {
-		if (lastScopeBeforeThis(previousScope.scopeNow->prev) == assets) {
-			currentAssets->precomps = newLayers();
+	} else if (previousScope.scopeNow->scope == _layers) {
+		if (lastScopeBeforeThis(previousScope.scopeNow->prev)->scope == _assets) {
+			EM_ASM({console.log("-----------------> layers within assets");});
+			currentAssets->precomps = newLayers(currentLayers);
 		} else {
-			theAnimation->layers = newLayers();
+			EM_ASM({console.log("-----------------> layers");});
+			theAnimation->layers = newLayers(currentLayers);
 		}
-	} else if (previousScope.scopeNow->scope == it) {
-		if (lastScopeBeforeThis(previousScope.scopeNow->prev) == layers) {
+	} else if (previousScope.scopeNow->scope == _it) {
+		EM_ASM({console.log("-----------------> it");});
+		if (lastScopeBeforeThis(previousScope.scopeNow->prev)->scope == _layers) {
 			currentLayers->shapes = newShapesItem(currentShapesItem);
-		} else if (lastScopeBeforeThis(previousScope.scopeNow->prev) == shapes) {
+		} else if (lastScopeBeforeThis(previousScope.scopeNow->prev)->scope == _shapes) {
 			currentLayers->shapes = newShapesItem(currentShapesItem);
 		}
-	} else if (previousScope.scopeNow->scope == shapes) {
-		currentLayers->shapes = newShapesItem(currentShapesItem);
-	} else if (theScope->scope == ty) {
-	} else if (theScope->scope == ks) {
-		if (lastScopeBeforeThis(previousScope.scopeNow->prev) == shapes) {
-		} else {
+	} else if (previousScope.scopeNow->scope == _shapes) {
+		if (lastScopeBeforeThis(previousScope.scopeNow->prev)->scope == _layers) {
+			EM_ASM({console.log("-----------------> shapes");});
+			currentLayers->shapes = newShapesItem(currentShapesItem);
+		}
+	} else if (theScope->scope == _ty) {
+	} else if (theScope->scope == _ks) {
+		//if (lastScopeBeforeThis(previousScope.scopeNow->prev)->scope == _shapes) { // PropertiesShape
 			struct ScopeTrail* first;
 			struct ScopeTrail* second;
 			first = lastScopeBeforeThis(previousScope.scopeNow->prev);
 			second = lastScopeBeforeThis(first->prev);
-			if ((first == shapes && second == layers) || (first == it && second == layers)) {
-				currentShapesItem->ks = new newPropertiesShape();
+			if ((first->scope == _shapes && second->scope == _layers) || (first->scope == _it && second->scope == _layers) || (first->scope == _it && second->scope == _shapes)) {
+				EM_ASM({console.log("-----------------> ks within shapes");});
+				currentShapesItem->ks = newPropertiesShape();
 			}
-	} else if (theScope->scope == k) {
-	} else if (theScope->scope == e) {
-	} else if (theScope->scope == s) {
+		//} else if (lastScopeBeforeThis(previousScope.scopeNow->prev)->scope == _it) { // HelpersTransform
+		//	EM_ASM({console.log("-----------------> ks");});
+		//}
+	} else if (theScope->scope == _k) {
+	} else if (theScope->scope == _e) {
+	} else if (theScope->scope == _s) {
+	}
+	*/
+
+	
+	if (theScope->scope == _animation) {
+		EM_ASM({console.log("-----------------> animation");});
+		theAnimation = new Animation;
+	} else if (theScope->scope == _assets) {
+		EM_ASM({console.log("-----------------> assets");});
+		theAnimation->assets = newAssets();
+	} else if (theScope->scope == _layers) {
+		if (theScope->prev->scope == _assets) {
+			EM_ASM({console.log("-----------------> layers within assets");});
+			currentAssets->precomps = newLayers(currentLayers);
+		} else {
+			EM_ASM({console.log("-----------------> layers");});
+			theAnimation->layers = newLayers(currentLayers);
+		}
+	} else if (theScope->scope == _it) {
+		EM_ASM({console.log("-----------------> it");});
+		if (theScope->prev->scope == _layers) {
+			currentLayers->shapes = newShapesItem(currentShapesItem);
+		} else if (theScope->prev->scope == _shapes) {
+			currentLayers->shapes = newShapesItem(currentShapesItem);
+		}
+	} else if (theScope->scope == _shapes) {
+		if (theScope->prev->scope == _layers) {
+			EM_ASM({console.log("-----------------> shapes");});
+			currentLayers->shapes = newShapesItem(currentShapesItem);
+		}
+	} else if (theScope->scope == _ty) {
+	} else if (theScope->scope == _ks) {
+		//if (lastScopeBeforeThis(previousScope.scopeNow->prev)->scope == _shapes) { // PropertiesShape
+			if ((theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) || (theScope->prev->scope == _it && theScope->prev->prev->scope == _layers) || (theScope->prev->scope == _it && theScope->prev->prev->scope == _shapes)) {
+				EM_ASM({console.log("-----------------> ks within shapes");});
+				currentShapesItem->ks = newPropertiesShape();
+			}
+		//} else if (lastScopeBeforeThis(previousScope.scopeNow->prev)->scope == _it) { // HelpersTransform
+		//	EM_ASM({console.log("-----------------> ks");});
+		//}
+	} else if (theScope->scope == _k) {
+	} else if (theScope->scope == _e) {
+	} else if (theScope->scope == _s) {
 	}
 	
 	return 1;
