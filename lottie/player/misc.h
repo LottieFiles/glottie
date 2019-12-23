@@ -9,6 +9,7 @@ struct XY {
 struct alignas(ALIGNSIZE) Vertex {
 //struct Vertex {
 	GLfloat position[4];
+	//GLfloat x,y,z,a;
 };
 
 //struct alignas(alignof(struct ArrayOfVertex*)) ArrayOfVertex {

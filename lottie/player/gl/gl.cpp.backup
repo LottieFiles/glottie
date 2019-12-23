@@ -1,0 +1,163 @@
+const GLchar* vertexSource =
+	"layout (location = 0) in vec4 position;\n"
+	"void main()\n"
+	"{\n"
+	"	gl_Position = vec4(position.xyz, 1.0);\n"
+	"}\n";
+//	"attribute vec4 position;\n"
+/*string fragmentSource_pre1("precision mediump float;\n void main() {\n gl_FragColor[0] = gl_FragCoord.x/");
+string fragmentSource_pre2(";\n gl_FragColor[1] = gl_FragCoord.y/");
+string fragmentSource_pre3(";\n gl_FragColor[2] = 0.5;\n }");
+*/
+//string fragmentSource_pre1("precision mediump float;\n void main() {\n  gl_FragColor = vec4(1.0,0.0,1.0,1.0);\n}");
+const GLchar* fragmentSource = 
+	"out vec4 FragColor;\n"
+	"void main() {\n"
+	"	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+	"}\n";
+/*
+const char* fragmentSource_pre1 =
+    "precision mediump float;\n"
+    "void main()                                  \n"
+    "{                                            \n"
+    "  gl_FragColor[0] = gl_FragCoord.x/";
+const char* fragmentSource_pre2 =
+    ";\n   gl_FragColor[1] = gl_FragCoord.y/";
+const char* fragmentSource_pre3 =
+    ";\n   gl_FragColor[2] = 0.5;                     \n"
+    "}                                            \n";
+*/
+
+bool background_is_black = true;
+
+extern "C" void EMSCRIPTEN_KEEPALIVE toggle_background_color() { background_is_black = !background_is_black; }
+
+
+int glInit() {
+	SDL_Renderer *renderer;
+    SDL_Window *window;
+    //SDL_CreateWindowAndRenderer((int)theAnimation->w, (int)theAnimation->h, 0, &window, nullptr);
+	//EM_ASM_({console.log("attempting " + $0 + " : " + $1);}, theAnimation->h, theAnimation->w);
+    SDL_CreateWindowAndRenderer(640, 480, 0, &window, nullptr);
+    //SDL_CreateWindowAndRenderer((int)theAnimation->w, (int)theAnimation->h, 0, &window, &renderer);
+	//EM_ASM({console.log("window created");});
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+    GLuint vbo, indexbuffer;
+    glGenBuffers(1, &vbo);
+
+	/*struct Vertex {
+		GLfloat position[4];
+	};*/
+
+    struct Vertex vertices[] = {{-0.5f, 0.0f, 0.0f, 1.0f}, {0.0f, 0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.0f, 0.0f, 1.0f}, {0.0f, -0.5f, 0.0f, 1.0f}};
+	GLubyte indices[] = {0, 2, 1, 2, 3, 4};
+
+	//EM_ASM({console.log("vertices done");});
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	//EM_ASM({console.log("buffer data done");});
+
+
+	// vertex and frag shaders
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexSource, nullptr);
+    glCompileShader(vertexShader);
+	//EM_ASM({console.log("vertex shader");});
+
+	//char fragmentSource_pre[2560];
+	
+	//char* fragmentSource_pre;
+	string fragmentSource_pre;
+	char* wWidth;
+	char* wHeight;
+	sprintf(wWidth, "%d", theAnimation->w);
+	sprintf(wHeight, "%d", theAnimation->h);
+	string swWidth;
+	swWidth = wWidth;
+	string swHeight;
+	swHeight = wHeight;
+	//EM_ASM_({console.log("frag shader 1.0 " + String.fromCharCode($0));}, swHeight.at(0));
+	/*
+	strcpy(fragmentSource_pre, fragmentSource_pre1);
+	EM_ASM_({console.log("frag pre 1 " + String.fromCharCode($0));}, (char)fragmentSource_pre[0]);
+	strcat(fragmentSource_pre, windowWidth);
+	strcat(fragmentSource_pre, fragmentSource_pre2);
+	strcat(fragmentSource_pre, windowHeight);
+	strcat(fragmentSource_pre, fragmentSource_pre3);
+	*/
+	//strcat(fragmentSource, &fragmentSource_pre);
+	//strcat(fragmentSource, fragmentSource_pre.c_str());
+	//fragmentSource_pre = fragmentSource_pre1 + swWidth + fragmentSource_pre2 + swHeight + fragmentSource_pre3;
+	//EM_ASM({console.log("frag shader 1.1");});
+
+	//fragmentSource_pre = fragmentSource_pre1;
+	//const GLchar* fragmentSource = fragmentSource_pre.c_str();
+
+	//strcat(fragmentSource, fragmentSource_pre.c_str());
+	//EM_ASM({console.log("frag shader 1.2");});
+	//EM_ASM_({console.log("vertex/frag shader pre " + String.fromCharCode($0) + " " + String.fromCharCode($1));}, fragmentSource_pre1.at(0), fragmentSource_pre.at(0));
+	//EM_ASM_({console.log("vertex/frag shader pre " + String.fromCharCode($0));}, (char)fragmentSource[0]);
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentSource, nullptr);
+    glCompileShader(fragmentShader);
+	//EM_ASM({console.log("frag shader");});
+
+    GLuint shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+    glUseProgram(shaderProgram);
+	//EM_ASM_({console.log("vertex/frag shader " + String.fromCharCode($0));}, &fragmentSource[0]);
+	//
+
+
+
+
+    GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+    glEnableVertexAttribArray(posAttrib);
+
+
+
+
+glGenBuffers(1, &indexbuffer);
+glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
+glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	//EM_ASM({console.log("buffers prepped");});
+
+
+
+
+    glVertexAttribPointer(posAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (GLvoid*)0);
+        glDrawArrays(GL_TRIANGLES, 0, 4);
+	EM_ASM({console.log("elements drawn");});
+    loop = [&]
+    {
+	/*
+        const uint32_t milliseconds_since_start = SDL_GetTicks();
+        const uint32_t milliseconds_per_loop = 3000;
+        //vertices[0] = ( milliseconds_since_start % milliseconds_per_loop ) / float(milliseconds_per_loop) - 0.5f;
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	
+        if( background_is_black )
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        else
+            glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glDrawArrays(GL_TRIANGLES, 0, 4);
+
+        SDL_GL_SwapWindow(window);
+	*/
+    };
+
+    //emscripten_set_main_loop(main_loop, 0, true);
+
+    return EXIT_SUCCESS;
+}

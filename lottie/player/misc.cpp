@@ -646,13 +646,48 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 	//}
 
 
-
 	passedVertex->vertex->position[0] = vertex[0];
 	passedVertex->vertex->position[1] = vertex[1];
 	passedVertex->vertex->position[2] = vertex[2];
 	passedVertex->vertex->position[3] = vertex[3];
 
+	/*
+	passedVertex->vertex->x = vertex[0];
+	passedVertex->vertex->y = vertex[1];
+	passedVertex->vertex->z = vertex[2];
+	passedVertex->vertex->a = vertex[3];
+	*/
+
 	return passedVertex;
+}
+
+GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfArray) {
+	if (passedArrayOfVertex == NULL) {
+		return NULL;
+	}
+	passedArrayOfVertex = passedArrayOfVertex->start;
+	bool exhausted = false;
+	GLfloat* tempArray = new GLfloat[sizeOfArray * 4];
+	int index = 0;
+	EM_ASM({console.log("-=-=-=-=> starting");});
+	while (! exhausted) {
+		*(tempArray + index) = passedArrayOfVertex->vertex->position[0];
+		index = index + 1;
+		*(tempArray + index) = passedArrayOfVertex->vertex->position[1];
+		index = index + 1;
+		*(tempArray + index) = passedArrayOfVertex->vertex->position[2];
+		index = index + 1;
+		*(tempArray + index) = passedArrayOfVertex->vertex->position[3];
+		index = index + 1;
+		EM_ASM({console.log("val " + $1);}, tempArray[index - 4]);
+		if (passedArrayOfVertex->next == NULL) {
+			exhausted = true;
+		} else {
+			passedArrayOfVertex = passedArrayOfVertex->next;
+		}
+	}
+	EM_ASM({console.log("-=-=-=-=> ended");});
+	
 }
 
 //////////// type converters

@@ -58,7 +58,23 @@ struct alignas(ALIGNSIZE) PropertiesShapeProp {
 	struct ArrayOfVertex* i = NULL;
 	struct ArrayOfVertex* o = NULL;
 	struct ArrayOfVertex* v = NULL;
-	
+
+	GLfloat* gl_i;
+	GLfloat* gl_o;
+	GLfloat* gl_v;
+
+	unsigned int* gl_i_idx;
+	unsigned int* gl_o_idx;
+	unsigned int* gl_v_idx;
+
+	int i_count = 0;	
+	int o_count = 0;	
+	int v_count = 0;
+
+	int refIndex_i = 0;
+	int refIndex_o = 0;
+	int refIndex_v = 0;
+
 	bool c; //closed
 	/*
 	vector<float> i; // in point - array of 2 elements
@@ -74,6 +90,10 @@ struct alignas(ALIGNSIZE) PropertiesShapePropKeyframe {
 
 struct alignas(ALIGNSIZE) PropertiesShape {
 //struct PropertiesShape {
+	struct PropertiesShape* start=NULL;
+	struct PropertiesShape* next=NULL;
+	struct PropertiesShape* prev=NULL;
+
 	//string x;
 	//string ix;
 	struct textBlock* x;

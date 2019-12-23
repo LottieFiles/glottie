@@ -1,22 +1,34 @@
 
-struct PropertiesShape* newPropertiesShape() {
-	struct PropertiesShape* tempPropertiesShape;
-	tempPropertiesShape = new PropertiesShape;
-	tempPropertiesShape->keyframe = new PropertiesShapePropKeyframe;
-	currentPropertiesShape = tempPropertiesShape;
+struct PropertiesShape* newPropertiesShape(struct PropertiesShape* passedPropertiesShape) {
+	if (passedPropertiesShape == NULL) {
+		passedPropertiesShape = new PropertiesShape;
+		passedPropertiesShape->start = passedPropertiesShape;
+	} else {
+		passedPropertiesShape->next = new PropertiesShape;
+		passedPropertiesShape->next->start = passedPropertiesShape->start;
+		passedPropertiesShape->next->prev = passedPropertiesShape;
+		passedPropertiesShape = passedPropertiesShape->next;
+	}
+	passedPropertiesShape->keyframe = new PropertiesShapePropKeyframe;
 	
-	return tempPropertiesShape;
+	return passedPropertiesShape;
 }
 
-struct PropertiesShapeProp* newPropertiesShapeProp() {
-	struct PropertiesShapeProp* tempPropertiesShapeProp;
-	tempPropertiesShapeProp = new PropertiesShapeProp;
-	tempPropertiesShapeProp->start = tempPropertiesShapeProp;
-	currentPropertiesShapeProp = tempPropertiesShapeProp;
-	//currentPropertiesShapeProp->i = new ArrayOfVertex;
-	//currentPropertiesShapeProp->o = new ArrayOfVertex;
-	//currentPropertiesShapeProp->v = new ArrayOfVertex;
-	return currentPropertiesShapeProp;
+struct PropertiesShapeProp* newPropertiesShapeProp(struct PropertiesShape* passedPropertiesShape, struct PropertiesShapeProp* passedPropertiesShapeProp, bool isKeyframe) {
+	if (passedPropertiesShapeProp == NULL) {
+		passedPropertiesShapeProp = new PropertiesShapeProp;
+		passedPropertiesShapeProp->start = passedPropertiesShapeProp;
+	} else {
+		passedPropertiesShapeProp->next = new PropertiesShapeProp;
+		passedPropertiesShapeProp->next->start = passedPropertiesShapeProp->start;
+		passedPropertiesShapeProp->next->prev = passedPropertiesShapeProp;
+		passedPropertiesShapeProp = passedPropertiesShapeProp->next;
+	}
+	if (isKeyframe) {
+		passedPropertiesShape->isKeyframe = true;
+	}
+
+	return passedPropertiesShapeProp;
 }
 
 struct PropertiesShapePropKeyframe* newPropertiesShapePropKeyframe() {
@@ -30,7 +42,7 @@ struct PropertiesShapePropKeyframe* newPropertiesShapePropKeyframe() {
 //////////////////// assign values
 
 
-struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* traceArrayValue, struct ArrayOfVertex* targetVertex) {
+struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* traceArrayValue, struct ArrayOfVertex* targetVertex, struct PropertiesShapeProp* passedPropertiesShapeProp) {
 	struct ValuesVector* baseVector;
 	if (traceArrayValue == NULL) {
 		return 0;
@@ -42,10 +54,13 @@ struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* 
 	baseVector = traceArrayValue->root->vector->start;
 
 	bool exhausted = false;
+	currentUniversalCount = 0;
 	while (! exhausted) {
 		if (baseVector->child == NULL) {
 			break;
 		}
+		currentUniversalCount = currentUniversalCount + 1;
+
 		string xvals(baseVector->child->vector->start->value);
 		//for (char& somechar : xvals) {
 		//	EM_ASM({console.log("========================> xval 1 " + String.fromCharCode($0));}, somechar);
@@ -94,7 +109,7 @@ struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* 
 	}
 }
 
-int fillPropertiesShapeProp() {
+int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapeProp) {
 	EM_ASM({console.log("========================> entered");});
 	bool exhausted = false;
 	struct KeyValue* tempKeyValue;
@@ -116,25 +131,31 @@ int fillPropertiesShapeProp() {
 		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "c") == 0) {
 			EM_ASM({console.log("========================> fill 80.1");});
 				if (strcmp(tempKeyValue->value, "true") == 0) {
-					currentPropertiesShapeProp->c = true;
+					passedPropertiesShapeProp->c = true;
 				} else {
-					currentPropertiesShapeProp->c = false;
+					passedPropertiesShapeProp->c = false;
 				}
 				EM_ASM({console.log("========================> fill 80.1.1");});
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "i") == 0) {
 			EM_ASM({console.log("========================> fill 80.2 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
-			currentPropertiesShapeProp->i = 
-				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, currentPropertiesShapeProp->i);
+			passedPropertiesShapeProp->i = 
+				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->i, passedPropertiesShapeProp);
+			passedPropertiesShapeProp->i_count = currentUniversalCount;
+			//passedPropertiesShapeProp->gl_i = vertexToGLfloat(passedPropertiesShapeProp->i, passedPropertiesShapeProp->count);
 
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "o") == 0) {
 			EM_ASM({console.log("========================> fill 80.3 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
-			currentPropertiesShapeProp->o = 
-				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, currentPropertiesShapeProp->o);
+			passedPropertiesShapeProp->o = 
+				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->o, passedPropertiesShapeProp);
+			passedPropertiesShapeProp->o_count = currentUniversalCount;
+			//passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->count);
 
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "v") == 0) {
 			EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
-			currentPropertiesShapeProp->v = 
-				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, currentPropertiesShapeProp->v);
+			passedPropertiesShapeProp->v = 
+				populatePropertiesShapePropVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->v, passedPropertiesShapeProp);
+			passedPropertiesShapeProp->v_count = currentUniversalCount;
+			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->count);
 
 		}
 

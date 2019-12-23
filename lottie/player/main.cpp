@@ -28,6 +28,18 @@ struct Layers* newLayers(struct Layers*);
 struct ShapesItem* newShapesItem(struct ShapesItem*);
 struct PropertiesShape* newPropertiesShape();
 
+int currentUniversalCount;
+SDL_Window* wnd;
+SDL_Renderer* rdr;
+SDL_GLContext glc;
+GLuint* vao[1024];
+GLuint* vbo[1024];
+GLuint* ibo[1024];
+GLuint* shaderProgram[1024];
+GLuint mainShader;
+GLint* posAttrib[1024];
+int lastRefIndex = 0;
+
 #include "main.h"
 #include "misc.h"
 #include "misc.cpp"
@@ -38,11 +50,14 @@ struct PropertiesShape* newPropertiesShape();
 //#include "emscripten/emscripten.cpp"
 #include "deserializer/deserializer.cpp"
 #include "gl/gl.cpp"
+#include "gl/prep.cpp"
 
-int main()
-{
+int main() {
 	deserialize();
-	//glInit();
-
+	glInit();
+	//glDraw();
+	prepShapes();
+	glInitShaders(0);
+	glDraw(0,0);
 	return 1;
 }
