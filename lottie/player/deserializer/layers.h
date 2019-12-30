@@ -6,7 +6,7 @@ struct alignas(ALIGNSIZE) Layers {
         struct Layers* next = NULL;
 
 	bool created; // internal flag to indicate this object has already been created
-        struct ShapesItem* shapes;
+        struct ShapesItem* shapes = NULL;
 	int shapesItemCount = 0; // internal use - amount of shapesItems in this object
         int ind; // index
         string cl; //class
@@ -23,8 +23,8 @@ struct alignas(ALIGNSIZE) Layers {
         int ao; //auto-orient
         int bm; //blendmode
         int ddd;
-        struct Mask* maskProperties;
-        struct Index* ef; // effects
+        struct Mask* maskProperties = NULL;
+        struct Index* ef = NULL; // effects
       
 	int id;
 
@@ -59,8 +59,8 @@ struct alignas(ALIGNSIZE) Assets {
         int id;
         bool isImage;
         bool isPrecomp;
-        struct ImageSource* images;
-        struct Layers* precomps;
+        struct ImageSource* images = NULL;
+        struct Layers* precomps = NULL;
 } *currentAssets;
 
 //struct alignas(128) Layers {
@@ -72,12 +72,12 @@ struct alignas(ALIGNSIZE) Layers_old {
 	int ty;
         int id;
         //string itemType; // any of 'shape', 'solid', 'precomp', 'image', 'null', 'text'
-        struct LayersShapes* shapes;
-        struct LayersSolid* solid;
-        struct LayersPrecomp* precomp;
-        struct LayersImage* image;
-        struct LayersNull* null;
-        struct LayersText* text;
+        struct LayersShapes* shapes = NULL;
+        struct LayersSolid* solid = NULL;
+        struct LayersPrecomp* precomp = NULL;
+        struct LayersImage* image = NULL;
+        struct LayersNull* null = NULL;
+        struct LayersText* text = NULL;
 } *currentLayers_old;
 
 struct alignas(ALIGNSIZE) Animation {
@@ -86,14 +86,15 @@ struct alignas(ALIGNSIZE) Animation {
         int fr; // frame rate
         int w; // width
         int h; // height
-        bool ddd; // is 3D? (1 = yes, 0 = no)
+	int z; // depth
+        bool ddd = false; // is 3D? (1 = yes, 0 = no)
         string v; // Bodymovin (exporter) version
         string nm; // name of animation
-        struct Layers* layers;
-        struct Assets* assets;
-        struct Char* chars;
-        struct Player* players;
-        struct Font* fonts;
+        struct Layers* layers = NULL;
+        struct Assets* assets = NULL;
+        struct Char* chars = NULL;
+        struct Player* players = NULL;
+        struct Font* fonts = NULL;
 } *theAnimation;
 
 

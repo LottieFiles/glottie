@@ -42,33 +42,33 @@ struct alignas(ALIGNSIZE) ShapesItem {
 	void* item;
 
 	enum ShapesTy ty;
-	struct PropertiesShape* ks;
+	struct PropertiesShape* ks = NULL;
 	char mn[KVLEN]; // match name
 	char nm[KVLEN]; // name
 	int d; // direction
-	struct PropertiesValue* r; // rotation (radius for roundedCorners[rd])
-	struct PropertiesMultiDimensional* s; // size (scale for transform[tr], start point for gFill[gf])
-	struct PropertiesMultiDimensional* p; // position
-	struct PropertiesValue* o; // opacity [offset for repeater[rp]
-	struct PropertiesMultiDimensional* c; // color (number of copies for repeater[rp])
+	struct PropertiesValue* r = NULL; // rotation (radius for roundedCorners[rd])
+	struct PropertiesMultiDimensional* s = NULL; // size (scale for transform[tr], start point for gFill[gf])
+	struct PropertiesMultiDimensional* p = NULL; // position
+	struct PropertiesValue* o = NULL; // opacity [offset for repeater[rp]
+	struct PropertiesMultiDimensional* c = NULL; // color (number of copies for repeater[rp])
 	int np; // number of properties
-	struct PropertiesMultiDimensional* e; // end point
-	struct PropertiesValue* h; // highlight length
-	struct PropertiesMultiDimensional* a; // anchor point (highlight angle for gFill[gf] and gStroke[gs])
-	struct PropertiesValue* sk; // skew
-	struct PropertiesValue* sa; // skew axis
+	struct PropertiesMultiDimensional* e = NULL; // end point
+	struct PropertiesValue* h = NULL; // highlight length
+	struct PropertiesMultiDimensional* a = NULL; // anchor point (highlight angle for gFill[gf] and gStroke[gs])
+	struct PropertiesValue* sk = NULL; // skew
+	struct PropertiesValue* sa = NULL; // skew axis
 
-	void* g; // gradient colors - to be researched further
+	void* g = NULL; // gradient colors - to be researched further
 
 	int t; // type [1 for linear, 2 for radial]
-	struct PropertiesValue* w; // stroke width
-	struct HelpersLineCap* lc; // line cap
-	struct HelpersLineJoin* lj; // line join
+	struct PropertiesValue* w = NULL; // stroke width
+	struct HelpersLineCap* lc = NULL; // line cap
+	struct HelpersLineJoin* lj = NULL; // line join
 	int ml; // miter limit
 	int mm; // merge mode
-	struct HelpersTransform* tr; // transform
+	struct HelpersTransform* tr = NULL; // transform
 	
-	struct ShapesItem* it;
+	struct ShapesItem* it = NULL;
 	
 } *currentShapesItem;
 

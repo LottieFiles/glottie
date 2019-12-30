@@ -59,6 +59,10 @@ struct alignas(ALIGNSIZE) PropertiesShapeProp {
 	struct ArrayOfVertex* o = NULL;
 	struct ArrayOfVertex* v = NULL;
 
+	struct Buffers* buffers_i = NULL;
+	struct Buffers* buffers_o = NULL;
+	struct Buffers* buffers_v = NULL;
+
 	GLfloat* gl_i;
 	GLfloat* gl_o;
 	GLfloat* gl_v;
@@ -71,9 +75,9 @@ struct alignas(ALIGNSIZE) PropertiesShapeProp {
 	int o_count = 0;	
 	int v_count = 0;
 
-	int refIndex_i = 0;
-	int refIndex_o = 0;
-	int refIndex_v = 0;
+	//int refIndex_i = 0;
+	//int refIndex_o = 0;
+	//int refIndex_v = 0;
 
 	bool c; //closed
 	/*

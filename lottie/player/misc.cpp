@@ -38,12 +38,14 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 		traceKeyValue = new KeyValue;
 		traceKeyValue->start = traceKeyValue;
 		traceKeyValue->arrayValue = tempArrayOfString;
+		tempArrayOfString->root = tempArrayOfString;
 		traceKeyValue->arrayValue->root = tempArrayOfString;
 		//EM_ASM_({console.log("addingchildarray 901.91 " + $0);}, traceKeyValue->arrayValue);
 		return traceKeyValue;
 	} else {
 		if (traceKeyValue->arrayValue == NULL) {
 			traceKeyValue->arrayValue = tempArrayOfString;
+			tempArrayOfString->root = tempArrayOfString;
 			traceKeyValue->arrayValue->root = tempArrayOfString;
 			//EM_ASM_({console.log("addingchildarray 901.92 " + $0);}, traceKeyValue->arrayValue);
 			return traceKeyValue;
@@ -54,22 +56,25 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 				tempKeyValue->start = traceKeyValue->start;
 				traceKeyValue->next = tempKeyValue;
 				tempKeyValue->prev = traceKeyValue;
-				//tempArrayOfString->root = traceKeyValue->arrayValue->root;
 				tempArrayOfString->root = traceKeyValue->arrayValue->root;
+				//tempArrayOfString->root = tempArrayOfString;
 				tempKeyValue->arrayValue = tempArrayOfString;
 				
 				traceKeyValue = tempKeyValue;
 			} else {
 				struct ValuesVector* tempValuesVector;
 				tempValuesVector = new ValuesVector;
-				tempValuesVector->start = traceKeyValue->arrayValue->parent->start;
+				//tempValuesVector->start = traceKeyValue->arrayValue->parent->start;
+				tempValuesVector->start = tempValuesVector;
 				tempValuesVector->prev = traceKeyValue->arrayValue->parent;
 				traceKeyValue->arrayValue->parent->next = tempValuesVector;
 				//tempValuesVector->root = traceKeyValue->arrayValue->parent->root;
 				tempValuesVector->root = traceKeyValue->arrayValue->root;
+				//tempValuesVector->root = tempValuesVector;
 				tempValuesVector->parent = traceKeyValue->arrayValue->parent->parent;
 				tempValuesVector->child = tempArrayOfString;
 				tempArrayOfString->root = traceKeyValue->arrayValue->root;
+				//tempArrayOfString->root = tempArrayOfString;
 				traceKeyValue->arrayValue->parent->parent->vector = tempValuesVector;
 				traceKeyValue->arrayValue = tempArrayOfString;
 			}
@@ -651,6 +656,13 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 	passedVertex->vertex->position[2] = vertex[2];
 	passedVertex->vertex->position[3] = vertex[3];
 
+	if (passedVertex->prev == NULL) {
+		passedVertex->order = 0;
+	} else {
+		passedVertex->order = passedVertex->prev->order + 1;
+	}
+	EM_ASM_({console.log("coords ))) " + $0 + " " + $1);}, passedVertex->vertex->position[0], passedVertex->vertex->position[1]);
+
 	/*
 	passedVertex->vertex->x = vertex[0];
 	passedVertex->vertex->y = vertex[1];
@@ -665,21 +677,44 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 	if (passedArrayOfVertex == NULL) {
 		return NULL;
 	}
+	EM_ASM({console.log("vertextofloat 1.1");});
 	passedArrayOfVertex = passedArrayOfVertex->start;
+	EM_ASM({console.log("vertextofloat 1.2");});
 	bool exhausted = false;
-	GLfloat* tempArray = new GLfloat[sizeOfArray * 4];
+	EM_ASM({console.log("vertextofloat 1.3");});
+	/*
+	int factor = static_cast<int>((sizeOfArray * 4 * 4)/256);
+	int alignSize;
+	if (((sizeOfArray * 4 * 4)/256) > factor) {
+		alignSize = (factor + 1) * 256;
+	} else {
+		alignSize = factor * 256;
+	}
+	static const int alignSizeConst = alignSize;
+	*/
+	sizeOfArray = sizeOfArray * 4;
+	GLfloat* tempArray = new GLfloat[sizeOfArray];
+	EM_ASM({console.log("vertextofloat 1.4");});
 	int index = 0;
 	EM_ASM({console.log("-=-=-=-=> starting");});
 	while (! exhausted) {
-		*(tempArray + index) = passedArrayOfVertex->vertex->position[0];
+		*(tempArray + index) = passedArrayOfVertex->vertex->position[0] / theAnimation->w;
 		index = index + 1;
-		*(tempArray + index) = passedArrayOfVertex->vertex->position[1];
+		*(tempArray + index) = passedArrayOfVertex->vertex->position[1] / theAnimation->h;
 		index = index + 1;
-		*(tempArray + index) = passedArrayOfVertex->vertex->position[2];
+		if (theAnimation->ddd) {
+			if (theAnimation->z > 0) {
+				*(tempArray + index) = passedArrayOfVertex->vertex->position[2] / theAnimation->z;
+			} else {
+				*(tempArray + index) = passedArrayOfVertex->vertex->position[2] / theAnimation->h;
+			}
+		} else {
+			*(tempArray + index) = passedArrayOfVertex->vertex->position[2];
+		}
 		index = index + 1;
 		*(tempArray + index) = passedArrayOfVertex->vertex->position[3];
 		index = index + 1;
-		EM_ASM({console.log("val " + $1);}, tempArray[index - 4]);
+		EM_ASM({console.log("val " + $0);}, *(tempArray + (index - 4)));
 		if (passedArrayOfVertex->next == NULL) {
 			exhausted = true;
 		} else {
@@ -687,7 +722,8 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 		}
 	}
 	EM_ASM({console.log("-=-=-=-=> ended");});
-	
+
+	return tempArray;
 }
 
 //////////// type converters

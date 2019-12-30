@@ -1,5 +1,17 @@
 #define KVLEN 21
 
+struct alignas(ALIGNSIZE) Dimensions {
+	int maxXval;
+	int minXval;
+	int maxYval;
+	int minYval;
+
+	int maxXord;
+	int minXord;
+	int maxYord;
+	int minYord;
+};
+
 struct XY {
 	int x;
 	int y;
@@ -20,6 +32,7 @@ struct alignas(ALIGNSIZE) ArrayOfVertex {
 	struct ArrayOfVertex* prev = NULL;
 
 	struct Vertex* vertex = NULL;
+	int order;
 };
 
 struct ArrayOfFloat {

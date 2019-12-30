@@ -35,7 +35,9 @@ void glInitShaders(int refIndex) {
 	if (refIndex == 0) {
 		mainShader = tempShaderProgram;
 	} else {
-		*(shaderProgram + refIndex) = &tempShaderProgram;
+		struct ShaderProgram* passedShaderProgram;
+		passedShaderProgram = newShaderProgram();
+		passedShaderProgram->shader = &tempShaderProgram;
 	}
 }
 
@@ -58,7 +60,7 @@ void glInit() {
         wnd, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
 }
 
-void glDraw(int shaderIndex, int bufferIndex) {
+void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersToRender) {
 	loop = [&]
 	{
 		/*
@@ -70,36 +72,73 @@ void glDraw(int shaderIndex, int bufferIndex) {
 		*/
 
 		// Clear the screen to black
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		if (redrawRequired) {
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
+			EM_ASM({console.log("glDraw 1.0");});
+	
+			// Draw a triangle from the 3 vertices
+			//glDrawArrays(GL_TRIANGLES, 0, 6);
+			if (redrawList == NULL) {
+				EM_ASM({console.log("glDraw 1.1");});
+				bool exhausted = false;
+				struct Buffers* tempBuffers = lastBuffersCreated->start;
 
-		// Draw a triangle from the 3 vertices
-		//glDrawArrays(GL_TRIANGLES, 0, 6);
-		if (bufferIndex == 0) {
-			int counter = 1;
-			
-			while (*vao[counter] > 0) {
-				if (shaderIndex == 0) {
-					glUseProgram(mainShader);
-				} else {
-					glUseProgram(*shaderProgram[counter]);
+				while (!exhausted) {
+					EM_ASM({console.log("glDraw 1.2");});
+					if (tempBuffers->vao != NULL) {
+						EM_ASM({console.log("glDraw 1.2.1");});
+						if (passedShaderProgram == NULL) {
+							glUseProgram(mainShader);
+						} else {
+							glUseProgram(*(passedShaderProgram->shader));
+						}
+						EM_ASM({console.log("glDraw 1.3");});
+						glBindVertexArrayOES(*(tempBuffers->vao));
+						EM_ASM({console.log("glDraw 1.4");});
+						glDrawElements(GL_TRIANGLES, *(tempBuffers->idx), GL_UNSIGNED_INT, 0);
+						EM_ASM({console.log("glDraw 1.5");});
+						SDL_GL_SwapWindow(wnd);
+						glBindVertexArrayOES(0);
+						EM_ASM({console.log("glDraw 1.6");});
+					}
+					EM_ASM({console.log("glDraw 1.7");});
+					if (tempBuffers->next == NULL) {
+						exhausted = true;
+					} else {
+						tempBuffers = tempBuffers->next;
+					}
+					break;
 				}
-				glBindVertexArrayOES(*vao[counter]);
-				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-				glBindVertexArrayOES(0);
-				counter++;
-			}
-		} else {
-			if (shaderIndex == 0) {
-				glUseProgram(mainShader);
 			} else {
-				glUseProgram(*shaderProgram[shaderIndex]);
+				bool exhausted = false;
+				struct RedrawBuffers* tempRedrawList;
+				tempRedrawList = redrawList->start;
+				struct Buffers* tempBuffers;
+
+				while (!exhausted) {
+					if (passedShaderProgram == NULL) {
+						glUseProgram(mainShader);
+					} else {
+						glUseProgram(*(passedShaderProgram->shader));
+					}
+					tempBuffers = tempRedrawList->buffers;
+					glBindVertexArrayOES(*(tempBuffers->vao));
+					glDrawElements(GL_TRIANGLES, *(tempBuffers->idx), GL_UNSIGNED_INT, 0);
+					glBindVertexArrayOES(0);
+					if (tempRedrawList->next == NULL) {
+						exhausted = true;
+					} else {
+						tempRedrawList = tempRedrawList->next;
+						delete tempRedrawList->prev;
+					}
+				}
+				redrawList = NULL;
+				SDL_GL_SwapWindow(wnd);
 			}
-			glBindVertexArrayOES(*vao[bufferIndex]);
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-			glBindVertexArrayOES(0);
+			redrawRequired = false;
+			EM_ASM({console.log("glDraw DONE");});
 		}
-		SDL_GL_SwapWindow(wnd);
 	};
 
 	#ifdef __EMSCRIPTEN__

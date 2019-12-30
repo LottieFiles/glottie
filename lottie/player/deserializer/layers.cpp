@@ -15,20 +15,19 @@ struct Layers* newLayers(struct Layers* passedLayers) {
         return passedLayers;
 }
 
-struct Assets* newAssets() {
-	struct Assets* tempAssets;
-	tempAssets = new Assets;
-	if (currentAssets == NULL) {
-		tempAssets->start = tempAssets;
-		currentAssets = tempAssets;
+struct Assets* newAssets(struct Assets* passedAssets) {
+	if (passedAssets == NULL) {
+		passedAssets = new Assets;
+		passedAssets->start = passedAssets;
 	} else {
-		tempAssets->prev = currentAssets;
-		currentAssets->next = tempAssets;
-		tempAssets->start = currentAssets->start;
-		currentAssets = tempAssets;
+		passedAssets->next = new Assets;
+		passedAssets->next->start = passedAssets->start;
+		passedAssets->next->prev = passedAssets;
+		passedAssets = passedAssets->next;
 	}
 
-	return currentAssets;
+	currentAssets = passedAssets;
+	return passedAssets;
 }
 
 

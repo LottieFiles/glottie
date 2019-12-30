@@ -115,20 +115,48 @@ int prepareContainer(bool arrayOfObjects) {
 		theAnimation = new Animation;
 	} else if (theScope->scope == _assets) {
 		EM_ASM({console.log("-----------------> assets");});
-		theAnimation->assets = newAssets();
+		theAnimation->assets = newAssets(currentAssets);
 	} else if (theScope->scope == _layers) {
 		if (theScope->prev->scope == _assets) {
 			EM_ASM({console.log("-----------------> layers within assets");});
+			int cpswitch = 0;
+			if (preSwitch[cpswitch] < 0) {
+				preSwitch[cpswitch] = 1;
+			} else if (preSwitch[cpswitch] == 2) {
+				preSwitch[cpswitch] = 3;
+				currentLayers = NULL;
+			}
 			currentAssets->precomps = newLayers(currentLayers);
-		} else {
+		} else if (theScope->prev->scope == _animation) {
 			EM_ASM({console.log("-----------------> layers");});
+			int cpswitch = 0;
+			if (preSwitch[cpswitch] < 0) {
+				preSwitch[cpswitch] = 1;
+			} else if (preSwitch[cpswitch] == 1) {
+				preSwitch[cpswitch] = 3;
+				currentLayers = NULL;
+			}
 			theAnimation->layers = newLayers(currentLayers);
 		}
 	} else if (theScope->scope == _it) {
 		EM_ASM({console.log("-----------------> it");});
 		if (theScope->prev->scope == _layers) {
+			int cpswitch = 1;
+			if (preSwitch[cpswitch] < 0) {
+				preSwitch[cpswitch] = 1;
+			} else if (preSwitch[cpswitch] == 2) {
+				preSwitch[cpswitch] = 3;
+				currentShapesItem = NULL;
+			}
 			currentLayers->shapes = newShapesItem(currentShapesItem);
 		} else if (theScope->prev->scope == _shapes) {
+			int cpswitch = 1;
+			if (preSwitch[cpswitch] < 0) {
+				preSwitch[cpswitch] = 2;
+			} else if (preSwitch[cpswitch] == 1) {
+				preSwitch[cpswitch] = 3;
+				currentShapesItem = NULL;
+			}
 			currentLayers->shapes = newShapesItem(currentShapesItem);
 		}
 	} else if (theScope->scope == _shapes) {

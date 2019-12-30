@@ -27,27 +27,75 @@ struct ScopeBefore lastScopeBeforeObject();
 struct Layers* newLayers(struct Layers*);
 struct ShapesItem* newShapesItem(struct ShapesItem*);
 struct PropertiesShape* newPropertiesShape();
+struct ShaderProgram* newShaderProgram();
 
+/*
+alignas(256) int currentUniversalCount;
+alignas(256) SDL_Window* wnd;
+alignas(256) SDL_Renderer* rdr;
+alignas(256) SDL_GLContext glc;
+alignas(256) int lastRefIndex = 0;
+alignas(256) GLuint mainShader;
+*/
+
+int preSwitch[20]; // to determine the switch of assets to layers (and vice versa)
 int currentUniversalCount;
 SDL_Window* wnd;
 SDL_Renderer* rdr;
 SDL_GLContext glc;
-GLuint* vao[1024];
-GLuint* vbo[1024];
-GLuint* ibo[1024];
-GLuint* shaderProgram[1024];
-GLuint mainShader;
-GLint* posAttrib[1024];
 int lastRefIndex = 0;
+GLuint mainShader;
+
+bool redrawRequired = false;
+//GLuint* shaderProgram;
+
+struct alignas(ALIGNSIZE) RedrawBuffers {
+	struct RedrawBuffers* start;
+	struct RedrawBuffers* next;
+	struct RedrawBuffers* prev;
+
+	struct Buffers* buffers;
+} *redrawList = NULL;
+
+struct alignas(ALIGNSIZE) ShaderProgram {
+	struct ShaderProgram* start = NULL;
+	struct ShaderProgram* next = NULL;
+	struct ShaderProgram* prev = NULL;
+
+	GLuint* shader;
+} *lastShaderProgramCreated;
+
+struct alignas(ALIGNSIZE) Buffers {
+	struct Buffers* start = NULL;
+	struct Buffers* next = NULL;
+	struct Buffers* prev = NULL;
+
+	struct Dimensions* dimensions = NULL;
+
+	GLuint* vao = NULL;
+	GLuint* vbo = NULL;
+	GLuint* ibo = NULL;
+	unsigned int* idx;
+	GLint* posAttrib = NULL;
+	bool changed = false;
+} *lastBuffersCreated;
+
+/*
+alignas(256) GLuint* vao[1024];
+alignas(256) GLuint* vbo[1024];
+alignas(256) GLuint* ibo[1024];
+alignas(256) GLuint* shaderProgram[1024];
+alignas(256) GLint* posAttrib[1024];
+*/
 
 #include "main.h"
 #include "misc.h"
-#include "misc.cpp"
 #include "deserializer/properties.h"
 #include "deserializer/layers.h"
 #include "deserializer/shapes.h"
 #include "deserializer/helpers.h"
 //#include "emscripten/emscripten.cpp"
+#include "misc.cpp"
 #include "deserializer/deserializer.cpp"
 #include "gl/gl.cpp"
 #include "gl/prep.cpp"
@@ -56,8 +104,11 @@ int main() {
 	deserialize();
 	glInit();
 	//glDraw();
-	prepShapes();
 	glInitShaders(0);
-	glDraw(0,0);
+	prepShapes();
+	EM_ASM({console.log("////> done prepping shapes");});
+	redrawRequired = true;
+	glDraw(NULL, NULL);
+	EM_ASM({console.log("////> done drawing");});
 	return 1;
 }
