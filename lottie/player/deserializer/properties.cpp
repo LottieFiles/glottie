@@ -99,10 +99,10 @@ struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* 
 
 		EM_ASM_({console.log("vector " + $0 + " - " + $1);}, xval, yval);
 
-		if (baseVector->next != NULL) {	
-			baseVector = baseVector->next;
-		} else {
+		if (baseVector->next == NULL) {	
 			exhausted = true;
+		} else {
+			baseVector = baseVector->next;
 		}
 	}
 	if (targetVertex != NULL) {

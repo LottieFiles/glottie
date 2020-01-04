@@ -57,46 +57,70 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, struct ShaderProgram* pass
 	return refIndex;
 }
 
-int findDimensions(struct Dimensions* passedDimensions, GLfloat *passedVertices, int count) {
+struct Dimensions* findDimensions(GLfloat *passedVertices, int count) {
 	bool exhausted = false;
+	struct Dimensions* passedDimensions;
+	passedDimensions = new Dimensions;
 
-	for (int i=0; i<=count; i = i + 4) {
-		int currX = *(passedVertices + i);
-		int currY = *(passedVertices + (i + 1));
+	for (int i=0; i < count; i++) {
+		EM_ASM({console.log("finddim 1.1");});
+		GLfloat currX = *(passedVertices + (i * 4));
+		GLfloat currY = *(passedVertices + ((i * 4) + 1));
+		EM_ASM({console.log("finddim 1.2");});
 		if (currX > passedDimensions->maxXval) {
 			passedDimensions->maxXval = currX;
-			passedDimensions->maxXord = ((i + 4) / 4) - 1;
+			passedDimensions->maxXord = i;
 		}
 		if (currX < passedDimensions->minXval) {
 			passedDimensions->minXval = currX;
-			passedDimensions->minXord = ((i + 4) / 4) - 1;
+			passedDimensions->minXord = i;
 		}
+		EM_ASM({console.log("finddim 1.4");});
 		if (currY > passedDimensions->maxYval) {
 			passedDimensions->maxYval = currY;
-			passedDimensions->maxYord = ((i + 4) / 4) - 1;
+			passedDimensions->maxYord = i;
 		}
+		EM_ASM({console.log("finddim 1.5");});
 		if (currY < passedDimensions->minYval) {
+			EM_ASM({console.log("finddim 1.5.1");});
 			passedDimensions->minYval = currY;
-			passedDimensions->minYord = ((i + 4) / 4) - 1;
+			EM_ASM({console.log("finddim 1.5.2");});
+			passedDimensions->minYord = i;
+			EM_ASM({console.log("finddim 1.5.3");});
 		}
+		//EM_ASM_({console.log("finddim 1.3 " + $0 + " " + $1);}, passedDimensions->maxXval, passedDimensions->maxXord);
 	}
+	EM_ASM({console.log("finddim 2");});
+	return passedDimensions;
 }
 
 unsigned int* prepTriangulate(GLfloat* passedVertices, int count, struct Buffers* passedBuffers) {
-	unsigned int* tempIndex;
 	struct Dimensions* dimensions;
-
+	
+	EM_ASM({console.log("pretri 1.1");});
 	if (passedBuffers->changed || passedBuffers->dimensions == NULL) {
-		dimensions = new Dimensions;
-		findDimensions(dimensions, passedVertices, count);
+		EM_ASM({console.log("pretri 1.2");});
+		dimensions = findDimensions(passedVertices, count);
+		EM_ASM({console.log("pretri 1.3");});
+		EM_ASM({console.log("pretri 1.4");});
 		passedBuffers->dimensions = dimensions;
+		EM_ASM({console.log("pretri 1.5");});
 		passedBuffers->changed = false;
 	} else {
 		dimensions = passedBuffers->dimensions;
 	}
-	for (int i = 0; i < count; i++) {
-		*(tempIndex + i) = i;
-	}
+	EM_ASM({console.log("pretri 2.1");});
+	unsigned int* tempIndex;
+	EM_ASM({console.log("pretri 2.1.1");});
+	*(tempIndex + 0) = dimensions->minXord;
+	EM_ASM({console.log("pretri 2.1.2");});
+	*(tempIndex + 1) = dimensions->minYord;
+	EM_ASM({console.log("pretri 2.1.3");});
+	*(tempIndex + 2) = dimensions->maxXord;
+	*(tempIndex + 3) = dimensions->maxXord;
+	*(tempIndex + 4) = dimensions->maxYord;
+	*(tempIndex + 5) = dimensions->minXord;
+	EM_ASM({console.log("pretri 2.2");});
 	return tempIndex;
 }
 
