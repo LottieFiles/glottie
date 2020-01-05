@@ -690,8 +690,8 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 	}
 	static const int alignSizeConst = alignSize;
 	*/
-	sizeOfArray = sizeOfArray * 4;
-	GLfloat* tempArray = new GLfloat[sizeOfArray];
+	//sizeOfArray = sizeOfArray * 4;
+	GLfloat* tempArray = new GLfloat[(sizeOfArray * 4)];
 	EM_ASM({console.log("vertextofloat 1.4");});
 	int index = 0;
 	EM_ASM({console.log("-=-=-=-=> starting");});
@@ -699,6 +699,7 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 		*(tempArray + index) = (passedArrayOfVertex->vertex->position[0] / theAnimation->w) - 0.5;
 		index = index + 1;
 		*(tempArray + index) = (passedArrayOfVertex->vertex->position[1] / theAnimation->h) - 0.5;
+		EM_ASM({console.log("val " + $0 + " " + $1 + " " + $2);}, *(tempArray + index - 1), *(tempArray + index), passedArrayOfVertex->vertex->position[1]);
 		index = index + 1;
 		if (theAnimation->ddd) {
 			if (theAnimation->z > 0) {
@@ -714,7 +715,6 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 		index = index + 1;
 		*(tempArray + index) = passedArrayOfVertex->vertex->position[3];
 		index = index + 1;
-		EM_ASM({console.log("val " + $0);}, *(tempArray + (index - 4)));
 		if (passedArrayOfVertex->next == NULL) {
 			exhausted = true;
 		} else {

@@ -63,10 +63,10 @@ struct Dimensions* findDimensions(GLfloat *passedVertices, int count) {
 	passedDimensions = new Dimensions;
 
 	for (int i=0; i < count; i++) {
-		EM_ASM({console.log("finddim 1.1");});
+		//EM_ASM({console.log("finddim 1.1");});
 		GLfloat currX = *(passedVertices + (i * 4));
 		GLfloat currY = *(passedVertices + ((i * 4) + 1));
-		EM_ASM({console.log("finddim 1.2");});
+		//EM_ASM({console.log("finddim 1.2");});
 		if (currX > passedDimensions->maxXval) {
 			passedDimensions->maxXval = currX;
 			passedDimensions->maxXord = i;
@@ -75,18 +75,15 @@ struct Dimensions* findDimensions(GLfloat *passedVertices, int count) {
 			passedDimensions->minXval = currX;
 			passedDimensions->minXord = i;
 		}
-		EM_ASM({console.log("finddim 1.4");});
+		//EM_ASM({console.log("finddim 1.4");});
 		if (currY > passedDimensions->maxYval) {
 			passedDimensions->maxYval = currY;
 			passedDimensions->maxYord = i;
 		}
-		EM_ASM({console.log("finddim 1.5");});
+		//EM_ASM({console.log("finddim 1.5");});
 		if (currY < passedDimensions->minYval) {
-			EM_ASM({console.log("finddim 1.5.1");});
 			passedDimensions->minYval = currY;
-			EM_ASM({console.log("finddim 1.5.2");});
 			passedDimensions->minYord = i;
-			EM_ASM({console.log("finddim 1.5.3");});
 		}
 		//EM_ASM_({console.log("finddim 1.3 " + $0 + " " + $1);}, passedDimensions->maxXval, passedDimensions->maxXord);
 	}

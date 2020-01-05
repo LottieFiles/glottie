@@ -75,6 +75,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		if (redrawRequired) {
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
+			//glColor3f(0, 0, 0);
+			//glPolygonMode(GL_LINES);
 			EM_ASM({console.log("glDraw 1.0");});
 	
 			// Draw a triangle from the 3 vertices
@@ -82,7 +84,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 			if (redrawList == NULL) {
 				EM_ASM({console.log("glDraw 1.1");});
 				bool exhausted = false;
-				struct Buffers* tempBuffers = lastBuffersCreated->start;
+				struct Buffers* tempBuffers = lastBuffersCreated->start->next->next;
 
 				while (!exhausted) {
 					EM_ASM({console.log("glDraw 1.2");});
@@ -94,13 +96,15 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							glUseProgram(*(passedShaderProgram->shader));
 						}
 						EM_ASM({console.log("glDraw 1.3");});
+						//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 						glBindVertexArrayOES(*(tempBuffers->vao));
+						//glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vbo));
+						//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(tempBuffers->ibo));
 						EM_ASM({console.log("glDraw 1.4 " + $0);}, *(tempBuffers->idx));
-						//glDrawElements(GL_TRIANGLES, *(tempBuffers->idx), GL_UNSIGNED_INT, 0);
-						glDrawElements(GL_TRIANGLES, tempBuffers->idxCount, GL_UNSIGNED_INT, 0);
+						glDrawElements(GL_LINES, tempBuffers->idxCount, GL_UNSIGNED_INT, 0);
 						EM_ASM({console.log("glDraw 1.5 " + $0);}, tempBuffers->idxCount);
-						SDL_GL_SwapWindow(wnd);
 						glBindVertexArrayOES(0);
+						//SDL_GL_SwapWindow(wnd);
 						EM_ASM({console.log("glDraw 1.6");});
 					}
 					EM_ASM({console.log("glDraw 1.7");});
@@ -138,6 +142,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 				SDL_GL_SwapWindow(wnd);
 			}
 			redrawRequired = false;
+			SDL_GL_SwapWindow(wnd);
 			EM_ASM({console.log("glDraw DONE");});
 		}
 	};

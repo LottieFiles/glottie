@@ -43,6 +43,7 @@ int fillAnimation() {
 		if (tempKeyValue) {
 			EM_ASM({console.log("========================> iteration");});
 		}
+			EM_ASM({console.log("========================> iteration pre");});
 		if (strlen(tempKeyValue->key) == 0) {
 			//EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
