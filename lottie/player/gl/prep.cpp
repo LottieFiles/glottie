@@ -13,7 +13,7 @@ struct ShaderProgram* newShaderProgram() {
 	return lastShaderProgramCreated;
 }
 
-int prepVAO(GLfloat* vertices, unsigned int* indices, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers) {
+int prepVAO(GLfloat* vertices, unsigned int* indices, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count) {
 	EM_ASM({console.log("VAO 1.0");});
 	int refIndex = lastRefIndex + 1;
 
@@ -23,7 +23,7 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, struct ShaderProgram* pass
 
 	glGenBuffers(1, &tvbo);
 	glBindBuffer(GL_ARRAY_BUFFER, tvbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * count * 4, vertices, GL_DYNAMIC_DRAW);
 
 	glGenBuffers(1, &tibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tibo);
@@ -42,7 +42,7 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, struct ShaderProgram* pass
 	EM_ASM({console.log("VAO 1.1.3");});
 	glVertexAttribPointer(tempPosAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	EM_ASM({console.log("VAO 1.1.3.1");});
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * passedBuffers->idxCount, indices, GL_STATIC_DRAW);
 	EM_ASM({console.log("VAO 1.1.3.2");});
 	passedBuffers->posAttrib = &tempPosAttrib;
 	EM_ASM({console.log("VAO 1.2");});
@@ -109,8 +109,12 @@ unsigned int* prepTriangulate(GLfloat* passedVertices, int count, struct Buffers
 	} else {
 		dimensions = passedBuffers->dimensions;
 	}
+
+	int idxCount = 6; // to be replaced with actual count
+
 	EM_ASM({console.log("pretri 2.1");});
 	unsigned int* tempIndex;
+	tempIndex = new unsigned int[6];
 	EM_ASM({console.log("pretri 2.1.1");});
 	*(tempIndex + 0) = dimensions->minXord;
 	EM_ASM({console.log("pretri 2.1.2");});
@@ -121,6 +125,9 @@ unsigned int* prepTriangulate(GLfloat* passedVertices, int count, struct Buffers
 	*(tempIndex + 4) = dimensions->maxYord;
 	*(tempIndex + 5) = dimensions->minXord;
 	EM_ASM({console.log("pretri 2.2");});
+
+	passedBuffers->idxCount = idxCount;
+
 	return tempIndex;
 }
 
@@ -154,7 +161,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			EM_ASM({console.log("looping 1.1");});
 			passedPropertiesShapeProp->gl_i_idx = prepTriangulate(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->i_count, passedPropertiesShapeProp->buffers_i);
 			EM_ASM({console.log("looping 1.1.1");});
-			prepVAO(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->gl_i_idx, NULL, passedPropertiesShapeProp->buffers_i);
+			prepVAO(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->gl_i_idx, NULL, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i_count);
 			EM_ASM({console.log("looping 1.1.2");});
 		}
 
@@ -166,7 +173,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			EM_ASM({console.log("looping 1.1");});
 			passedPropertiesShapeProp->gl_o_idx = prepTriangulate(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o);
 			EM_ASM({console.log("looping 1.1.1");});
-			prepVAO(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->gl_o_idx, NULL, passedPropertiesShapeProp->buffers_o);
+			prepVAO(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->gl_o_idx, NULL, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o_count);
 			EM_ASM({console.log("looping 1.1.2");});
 		}
 
@@ -178,7 +185,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			EM_ASM({console.log("looping 1.1");});
 			passedPropertiesShapeProp->gl_v_idx = prepTriangulate(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v);
 			EM_ASM({console.log("looping 1.1.1");});
-			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, NULL, passedPropertiesShapeProp->buffers_v);
+			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count);
 			EM_ASM({console.log("looping 1.1.2");});
 		}
 		EM_ASM({console.log("looping 1.4");});

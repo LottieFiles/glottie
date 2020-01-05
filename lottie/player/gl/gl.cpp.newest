@@ -97,8 +97,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						glBindVertexArrayOES(*(tempBuffers->vao));
 						EM_ASM({console.log("glDraw 1.4 " + $0);}, *(tempBuffers->idx));
 						//glDrawElements(GL_TRIANGLES, *(tempBuffers->idx), GL_UNSIGNED_INT, 0);
-						glDrawElements(GL_TRIANGLES, tempBuffers->idxCount, GL_UNSIGNED_INT, 0);
-						EM_ASM({console.log("glDraw 1.5 " + $0);}, tempBuffers->idxCount);
+						glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+						EM_ASM({console.log("glDraw 1.5 " + $0);}, *(tempBuffers->idx));
 						SDL_GL_SwapWindow(wnd);
 						glBindVertexArrayOES(0);
 						EM_ASM({console.log("glDraw 1.6");});
@@ -125,7 +125,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					}
 					tempBuffers = tempRedrawList->buffers;
 					glBindVertexArrayOES(*(tempBuffers->vao));
-					glDrawElements(GL_TRIANGLES, tempBuffers->idxCount, GL_UNSIGNED_INT, 0);
+					glDrawElements(GL_TRIANGLES, *(tempBuffers->idx), GL_UNSIGNED_INT, 0);
 					glBindVertexArrayOES(0);
 					if (tempRedrawList->next == NULL) {
 						exhausted = true;

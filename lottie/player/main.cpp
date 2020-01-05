@@ -75,7 +75,9 @@ struct alignas(ALIGNSIZE) Buffers {
 	GLuint* vao = NULL;
 	GLuint* vbo = NULL;
 	GLuint* ibo = NULL;
-	unsigned int* idx;
+	unsigned int* idx; // array of triangulation data
+	int idxCount;
+
 	GLint* posAttrib = NULL;
 	bool changed = false;
 } *lastBuffersCreated;
@@ -103,12 +105,13 @@ alignas(256) GLint* posAttrib[1024];
 int main() {
 	deserialize();
 	glInit();
-	//glDraw();
+
 	glInitShaders(0);
 	prepShapes();
 	EM_ASM({console.log("////> done prepping shapes");});
 	redrawRequired = true;
 	glDraw(NULL, NULL);
 	EM_ASM({console.log("////> done drawing");});
+
 	return 1;
 }
