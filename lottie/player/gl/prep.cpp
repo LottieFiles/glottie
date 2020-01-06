@@ -47,12 +47,21 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, struct ShaderProgram* pass
 	passedBuffers->posAttrib = &tempPosAttrib;
 	EM_ASM({console.log("VAO 1.2");});
 
-	passedBuffers->vao = &tvao;
-	passedBuffers->vbo = &tvbo;
-	passedBuffers->ibo = &tibo;
+	passedBuffers->vao = new GLuint;
+	passedBuffers->vbo = new GLuint;
+	passedBuffers->ibo = new GLuint;
+
+	*(passedBuffers->vao) = tvao;
+	*(passedBuffers->vbo) = tvbo;
+	*(passedBuffers->ibo) = tibo;
+
+	//passedBuffers->vao = tvao;
+	//passedBuffers->vbo = tvbo;
+	//passedBuffers->ibo = tibo;
+
 	passedBuffers->idx = indices; 
+		EM_ASM({console.log("done prepping " + $0 + " " + $1);}, tvao, *(passedBuffers->vao));
 	glBindVertexArrayOES(0);
-		EM_ASM({console.log("done prepping");});
 
 	return refIndex;
 }
@@ -151,9 +160,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 
 	while (! exhausted) {
 		if (passedPropertiesShapeProp->i != NULL) {
-			if (passedPropertiesShapeProp->buffers_i == NULL) {
-				passedPropertiesShapeProp->buffers_i = newBuffers();
-			}
+			passedPropertiesShapeProp->buffers_i = newBuffers();
 			passedPropertiesShapeProp->gl_i = vertexToGLfloat(passedPropertiesShapeProp->i, passedPropertiesShapeProp->i_count);
 			EM_ASM({console.log("looping 1.1");});
 			passedPropertiesShapeProp->gl_i_idx = prepTriangulate(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->i_count, passedPropertiesShapeProp->buffers_i);
@@ -163,9 +170,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		}
 
 		if (passedPropertiesShapeProp->o != NULL) {
-			if (passedPropertiesShapeProp->buffers_o == NULL) {
-				passedPropertiesShapeProp->buffers_o = newBuffers();
-			}
+			passedPropertiesShapeProp->buffers_o = newBuffers();
 			passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->o_count);
 			EM_ASM({console.log("looping 1.1");});
 			passedPropertiesShapeProp->gl_o_idx = prepTriangulate(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o);
@@ -175,9 +180,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		}
 
 		if (passedPropertiesShapeProp->v != NULL) {
-			if (passedPropertiesShapeProp->buffers_v == NULL) {
-				passedPropertiesShapeProp->buffers_v = newBuffers();
-			}
+			passedPropertiesShapeProp->buffers_v = newBuffers();
 			passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
 			EM_ASM({console.log("looping 1.1");});
 			passedPropertiesShapeProp->gl_v_idx = prepTriangulate(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v);

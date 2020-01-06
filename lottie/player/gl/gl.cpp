@@ -84,7 +84,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 			if (redrawList == NULL) {
 				EM_ASM({console.log("glDraw 1.1");});
 				bool exhausted = false;
-				struct Buffers* tempBuffers = lastBuffersCreated->start->next->next;
+				struct Buffers* tempBuffers = lastBuffersCreated->start;
 
 				while (!exhausted) {
 					EM_ASM({console.log("glDraw 1.2");});
@@ -100,10 +100,11 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						glBindVertexArrayOES(*(tempBuffers->vao));
 						//glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vbo));
 						//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(tempBuffers->ibo));
-						EM_ASM({console.log("glDraw 1.4 " + $0);}, *(tempBuffers->idx));
+						EM_ASM({console.log("glDraw 1.4 " + $0 + " " + $1);}, *(tempBuffers->idx), *(tempBuffers->vao));
 						glDrawElements(GL_LINES, tempBuffers->idxCount, GL_UNSIGNED_INT, 0);
 						EM_ASM({console.log("glDraw 1.5 " + $0);}, tempBuffers->idxCount);
 						glBindVertexArrayOES(0);
+						glUseProgram(0);
 						//SDL_GL_SwapWindow(wnd);
 						EM_ASM({console.log("glDraw 1.6");});
 					}
@@ -139,10 +140,10 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					}
 				}
 				redrawList = NULL;
-				SDL_GL_SwapWindow(wnd);
+				//SDL_GL_SwapWindow(wnd);
 			}
 			redrawRequired = false;
-			SDL_GL_SwapWindow(wnd);
+			//SDL_GL_SwapWindow(wnd);
 			EM_ASM({console.log("glDraw DONE");});
 		}
 	};
