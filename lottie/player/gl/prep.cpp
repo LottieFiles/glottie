@@ -116,8 +116,31 @@ unsigned int* prepTriangulate(GLfloat* passedVertices, int count, struct Buffers
 		dimensions = passedBuffers->dimensions;
 	}
 
-	using Point = std::array<double, 2>;
-	
+	using Coord = double;
+	using N = unsigned int;
+	using Point = std::array<Coord, 2>;
+	std::vector<std::vector<Point>> polygon;
+	std::vector<Point> prePolygon;
+
+	passedArray = passedArray->start;
+	bool exhausted = false;
+
+	int counter = 0;	
+	while (exhausted) {
+		//tempPoint = {static_cast<double>(passedArray->vertex->position[0]), static_cast<double>(passedArray->vertex->position[1])};
+		//prePolygon.push_back({static_cast<double>(passedArray->vertex->position[0]), static_cast<double>(passedArray->vertex->position[1])});
+		//prePolygon.push_back({(double)passedArray->vertex->position[0], (double)passedArray->vertex->position[1]});
+		counter++;
+		if (passedArray->next == NULL) {
+			exhausted = true;
+		} else {
+			passedArray = passedArray->next;
+		}
+	}
+
+
+	std::vector<unsigned int> indices = mapbox::earcut<unsigned int>(polygon);
+
 	int idxCount = 6; // to be replaced with actual count
 
 	EM_ASM({console.log("pretri 2.1");});
