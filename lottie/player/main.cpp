@@ -80,6 +80,7 @@ struct alignas(ALIGNSIZE) Buffers {
 
 	GLint* posAttrib = NULL;
 	bool changed = false;
+	bool clockwise;
 } *lastBuffersCreated;
 
 /*

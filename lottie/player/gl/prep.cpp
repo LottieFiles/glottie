@@ -66,60 +66,94 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, struct ShaderProgram* pass
 	return refIndex;
 }
 
-struct Dimensions* findDimensions(GLfloat *passedVertices, int count) {
+struct Dimensions* findDimensions(GLfloat *passedVertices, int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray) {
 	bool exhausted = false;
 	struct Dimensions* passedDimensions;
 	passedDimensions = new Dimensions;
 
+	bool clockwise;
+	bool directionFound = false;
+	passedArray = passedArray->start;
 	for (int i=0; i < count; i++) {
 		//EM_ASM({console.log("finddim 1.1");});
 		GLfloat currX = *(passedVertices + (i * 4));
 		GLfloat currY = *(passedVertices + ((i * 4) + 1));
 		//EM_ASM({console.log("finddim 1.2");});
 		if (currX > passedDimensions->maxXval) {
+			if (! directionFound) {
+				if (passedDimensions->maxYval > 0) {
+					clockwise = false;
+					directionFound = true;
+				} else if (passedDimensions->minYval > 0) {
+					clockwise = true;
+					directionFound = true;
+				}
+			}
+			topVertex = passedArray;
 			passedDimensions->maxXval = currX;
 			passedDimensions->maxXord = i;
 		}
 		if (currX < passedDimensions->minXval) {
+			if (! directionFound) {
+				if (passedDimensions->maxYval > 0) {
+					clockwise = true;
+					directionFound = true;
+				} else if (passedDimensions->minYval > 0) {
+					clockwise = false;
+					directionFound = true;
+				}
+			}
 			passedDimensions->minXval = currX;
 			passedDimensions->minXord = i;
 		}
 		//EM_ASM({console.log("finddim 1.4");});
 		if (currY > passedDimensions->maxYval) {
+			if (! directionFound) {
+				if (passedDimensions->maxXval > 0) {
+					clockwise = true;
+					directionFound = true;
+				} else if (passedDimensions->minXval > 0) {
+					clockwise = false;
+					directionFound = true;
+				}
+			}
 			passedDimensions->maxYval = currY;
 			passedDimensions->maxYord = i;
 		}
 		//EM_ASM({console.log("finddim 1.5");});
 		if (currY < passedDimensions->minYval) {
+			if (! directionFound) {
+				if (passedDimensions->maxXval > 0) {
+					clockwise = false;
+					directionFound = true;
+				} else if (passedDimensions->minXval > 0) {
+					clockwise = true;
+					directionFound = true;
+				}
+			}
 			passedDimensions->minYval = currY;
 			passedDimensions->minYord = i;
 		}
 		//EM_ASM_({console.log("finddim 1.3 " + $0 + " " + $1);}, passedDimensions->maxXval, passedDimensions->maxXord);
+		if (passedArray->next != NULL) {
+			passedArray = passedArray->next;
+		}
 	}
+	passedArray->next = passedArray->start;
+	passedArray->start->prev = passedArray;
 	EM_ASM({console.log("finddim 2");});
+	passedBuffers->clockwise = clockwise;
 	return passedDimensions;
 }
 
-	struct alignas(ALIGNSIZE) IntPoint {
-		double X, Y;
-		//GLfloat X, Y;
-	};
+/*
+struct alignas(ALIGNSIZE) IntPoint {
+	double X, Y;
+	//GLfloat X, Y;
+};
+
 namespace mapbox {
 namespace util {
-/*
-template <>
-struct nth<0, Vertex> {
-    inline static auto get(const Vertex *t) {
-        return static_cast<double>(t->position[0]);
-    };
-};
-template <>
-struct nth<1, Vertex> {
-    inline static auto get(const Vertex *t) {
-        return static_cast<double>(t->position[1]);
-    };
-};
-*/
 
 template <>
 struct nth<0, IntPoint> {
@@ -136,6 +170,7 @@ struct nth<1, IntPoint> {
 
 }
 }
+*/
 
 unsigned int* prepTriangulate(GLfloat* passedVertices, int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray) {
 	struct Dimensions* dimensions;
@@ -143,7 +178,7 @@ unsigned int* prepTriangulate(GLfloat* passedVertices, int count, struct Buffers
 	EM_ASM({console.log("pretri 1.1");});
 	if (passedBuffers->changed || passedBuffers->dimensions == NULL) {
 		EM_ASM({console.log("pretri 1.2");});
-		dimensions = findDimensions(passedVertices, count);
+		dimensions = findDimensions(passedVertices, count, passedBuffers, passedArray);
 		EM_ASM({console.log("pretri 1.3");});
 		EM_ASM({console.log("pretri 1.4");});
 		passedBuffers->dimensions = dimensions;
@@ -153,84 +188,28 @@ unsigned int* prepTriangulate(GLfloat* passedVertices, int count, struct Buffers
 		dimensions = passedBuffers->dimensions;
 	}
 
-	/*
-	using Coord = double;
-	using N = unsigned int;
-	using Point = std::array<Coord, 2>;
-	std::vector<std::vector<Point>> polygon;
-	std::vector<Point> prePolygon;
-	*/
+	if (count > 4) {
+		passedArray = dimensions->topVertex;
+		struct ArrayOfVertex* startPoint = passedArray;
+		struct ArrayOfVertex* actualStartPoint = passedArray->start;
+		std::array<struct ArrayOfVertex*> tempArray;
 
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////// REMEMBER TO REPLACE WITH OWN EARCUTTING ALGO ////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	passedArray = passedArray->start;
-	bool exhausted = false;
-
-
-	//struct Vertex* prePolygon[count];
-	//std::vector<struct Vertex*> prePolygon;
-	std::vector<struct IntPoint> prePolygon;
-	prePolygon.clear();
-	prePolygon.reserve(count);
-
-	int counter = 0;
-	int wdelta = theAnimation->w / 2;
-	int hdelta = theAnimation->h / 2;
-	while (!exhausted) {
-		//tempPoint = {static_cast<double>(passedArray->vertex->position[0]), static_cast<double>(passedArray->vertex->position[1])};
-		//prePolygon.push_back({static_cast<double>(passedArray->vertex->position[0]), static_cast<double>(passedArray->vertex->position[1])});
-		//prePolygon.push_back({(double)passedArray->vertex->position[0], (double)passedArray->vertex->position[1]});
-		//prePolygon[counter]->position[0] = passedArray->vertex->position[0];
-		//prePolygon[counter]->position[1] = passedArray->vertex->position[1];
-
-		//prePolygon.push_back(passedArray->vertex);
-		struct IntPoint tempIntPoint;
-		tempIntPoint.X = static_cast<double>(passedArray->vertex->position[0] + wdelta);
-		tempIntPoint.Y = static_cast<double>(passedArray->vertex->position[1] + hdelta);
-		//tempIntPoint.X = passedVertices[(counter * 4)];
-		//tempIntPoint.Y = passedVertices[(counter * 4) + 1];;
-		EM_ASM_({console.log("building prepolygon " + $0);}, tempIntPoint.X);
-
-		prePolygon.push_back(tempIntPoint);
-		EM_ASM({console.log("building prepolygon pushing done");});
-		counter++;
-		if (passedArray->next == NULL) {
-			exhausted = true;
-		} else {
-			passedArray = passedArray->next;
+		bool exhausted = false;
+		while (! exhausted) {
+			
+			if (passedArray->next == startPoint) {
+				exhausted = true;
+			} else {
+				if (passedArray->next == NULL) {
+					passedArray = passedArray->start;
+				} else {
+					passedArray = passedArray->next;
+				}
+			}
 		}
+	} else {
 	}
-	EM_ASM({console.log("building prepolygon done");});
 
-	using N = uint32_t;
-	EM_ASM({console.log("building prepolygon done 1.0");});
-	std::vector<std::vector<struct IntPoint>> polygon;
-	polygon.clear();
-	EM_ASM({console.log("building prepolygon done 1.1");});
-	polygon.push_back({prePolygon});
-	EM_ASM({console.log("building prepolygon done 1.2");});
-	std::vector<N> predices = mapbox::earcut<N>(polygon);
-
-
-	
-	EM_ASM({console.log("building prepolygon done 1.3");});
-	int idxCount = predices.size();
-	EM_ASM({console.log("building prepolygon done 1.4");});
-	unsigned int* tempIndex;
-	EM_ASM({console.log("building prepolygon done 1.5");});
-	tempIndex = new unsigned int[idxCount];
-	EM_ASM({console.log("building prepolygon done 1.6");});
-	passedBuffers->idxCount = idxCount;
-	
-	EM_ASM_({console.log("predex to index start " + $0);}, idxCount);
-	for (int i = 0; i < idxCount; i++) {
-		tempIndex[i] = predices[i];
-		EM_ASM_({console.log("predex to index " + $0 + " " + $1);}, predices[i], tempIndex[i]);
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////
 
