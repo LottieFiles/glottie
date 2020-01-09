@@ -699,7 +699,7 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 		*(tempArray + index) = (passedArrayOfVertex->vertex->position[0] / theAnimation->w) - 0.5;
 		index = index + 1;
 		*(tempArray + index) = (passedArrayOfVertex->vertex->position[1] / theAnimation->h) - 0.5;
-		EM_ASM({console.log("val " + $0 + " " + $1 + " " + $2);}, *(tempArray + index - 1), *(tempArray + index), passedArrayOfVertex->vertex->position[1]);
+		EM_ASM({console.log("val " + $0 + " " + $1 + " " + $2);}, *(tempArray + index - 1), *(tempArray + index), passedArrayOfVertex->vertex->position[0]);
 		index = index + 1;
 		if (theAnimation->ddd) {
 			if (theAnimation->z > 0) {

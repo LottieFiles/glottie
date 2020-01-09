@@ -176,9 +176,7 @@ unsigned int* prepTriangulate(GLfloat* passedVertices, int count, struct Buffers
 	prePolygon.clear();
 	prePolygon.reserve(count);
 
-	int counter = 0;
-	int wdelta = theAnimation->w / 2;
-	int hdelta = theAnimation->h / 2;
+	int counter = 0;	
 	while (!exhausted) {
 		//tempPoint = {static_cast<double>(passedArray->vertex->position[0]), static_cast<double>(passedArray->vertex->position[1])};
 		//prePolygon.push_back({static_cast<double>(passedArray->vertex->position[0]), static_cast<double>(passedArray->vertex->position[1])});
@@ -188,8 +186,8 @@ unsigned int* prepTriangulate(GLfloat* passedVertices, int count, struct Buffers
 
 		//prePolygon.push_back(passedArray->vertex);
 		struct IntPoint tempIntPoint;
-		tempIntPoint.X = static_cast<double>(passedArray->vertex->position[0] + wdelta);
-		tempIntPoint.Y = static_cast<double>(passedArray->vertex->position[1] + hdelta);
+		tempIntPoint.X = static_cast<double>(passedArray->vertex->position[0]);
+		tempIntPoint.Y = static_cast<double>(passedArray->vertex->position[1]);
 		//tempIntPoint.X = passedVertices[(counter * 4)];
 		//tempIntPoint.Y = passedVertices[(counter * 4) + 1];;
 		EM_ASM_({console.log("building prepolygon " + $0);}, tempIntPoint.X);
@@ -279,31 +277,31 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		if (passedPropertiesShapeProp->i != NULL) {
 			passedPropertiesShapeProp->buffers_i = newBuffers();
 			passedPropertiesShapeProp->gl_i = vertexToGLfloat(passedPropertiesShapeProp->i, passedPropertiesShapeProp->i_count);
-			EM_ASM({console.log("looping 1.1 i");});
+			EM_ASM({console.log("looping 1.1");});
 			passedPropertiesShapeProp->gl_i_idx = prepTriangulate(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->i_count, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i);
-			EM_ASM({console.log("looping 1.1.1 i");});
+			EM_ASM({console.log("looping 1.1.1");});
 			prepVAO(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->gl_i_idx, NULL, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i_count);
-			EM_ASM({console.log("looping 1.1.2 i");});
+			EM_ASM({console.log("looping 1.1.2");});
 		}
 
 		if (passedPropertiesShapeProp->o != NULL) {
 			passedPropertiesShapeProp->buffers_o = newBuffers();
 			passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->o_count);
-			EM_ASM({console.log("looping 1.1 o");});
+			EM_ASM({console.log("looping 1.1");});
 			passedPropertiesShapeProp->gl_o_idx = prepTriangulate(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o);
-			EM_ASM({console.log("looping 1.1.1 o");});
+			EM_ASM({console.log("looping 1.1.1");});
 			prepVAO(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->gl_o_idx, NULL, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o_count);
-			EM_ASM({console.log("looping 1.1.2 o");});
+			EM_ASM({console.log("looping 1.1.2");});
 		}
 
 		if (passedPropertiesShapeProp->v != NULL) {
 			passedPropertiesShapeProp->buffers_v = newBuffers();
 			passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
-			EM_ASM({console.log("looping 1.1 v");});
+			EM_ASM({console.log("looping 1.1");});
 			passedPropertiesShapeProp->gl_v_idx = prepTriangulate(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v);
-			EM_ASM({console.log("looping 1.1.1 v");});
+			EM_ASM({console.log("looping 1.1.1");});
 			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count);
-			EM_ASM({console.log("looping 1.1.2 v");});
+			EM_ASM({console.log("looping 1.1.2");});
 		}
 		EM_ASM({console.log("looping 1.4");});
 
@@ -323,7 +321,6 @@ int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape) {
 		return 0;
 	}
 	bool exhausted = false;
-	passedPropertiesShape = passedPropertiesShape->start;
 	while (! exhausted) {
 		if (passedPropertiesShape->isKeyframe) {
 			EM_ASM({console.log("SHAPEPROPKEYFRAME found");});
@@ -347,7 +344,6 @@ int prepShapesItem(struct ShapesItem* passedShapesItem) {
 		return 0;
 	}
 	bool exhausted = false;
-	passedShapesItem = passedShapesItem->start;
 	while (! exhausted) {
 		EM_ASM({console.log("SHAPESITEM found");});
 		prepPropertiesShape(passedShapesItem->ks);

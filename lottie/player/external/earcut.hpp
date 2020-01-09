@@ -10,7 +10,7 @@ namespace mapbox {
 
 namespace util {
 
-template <std::size_t I, typename T> struct nth {
+template <std::size_t I, typename T> struct alignas(ALIGNSIZE) nth {
     inline static typename std::tuple_element<I, T>::type
     get(const T& t) { return std::get<I>(t); };
 };
@@ -29,7 +29,7 @@ public:
     void operator()(const Polygon& points);
 
 private:
-    struct Node {
+    struct alignas(ALIGNSIZE) Node {
         Node(N index, double x_, double y_) : i(index), x(x_), y(y_) {}
         Node(const Node&) = delete;
         Node& operator=(const Node&) = delete;

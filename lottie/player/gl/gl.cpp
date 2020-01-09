@@ -101,7 +101,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						//glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vbo));
 						//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(tempBuffers->ibo));
 						EM_ASM({console.log("glDraw 1.4 " + $0 + " " + $1);}, *(tempBuffers->idx), *(tempBuffers->vao));
-						glDrawElements(GL_LINES, tempBuffers->idxCount, GL_UNSIGNED_INT, 0);
+						glDrawElements(GL_TRIANGLE_STRIP, tempBuffers->idxCount, GL_UNSIGNED_INT, 0);
 						EM_ASM({console.log("glDraw 1.5 " + $0);}, tempBuffers->idxCount);
 						glBindVertexArrayOES(0);
 						glUseProgram(0);
