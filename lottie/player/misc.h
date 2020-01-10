@@ -1,5 +1,15 @@
 #define KVLEN 21
 
+enum Phase {
+		_maxX,
+		_minX,
+		_maxY,
+		_minY,
+		_passedMaxX,
+		_passedMinX,
+		_passedMaxY,
+		_passedMinY
+	};
 
 struct XY {
 	int x;
@@ -22,6 +32,15 @@ struct alignas(ALIGNSIZE) ArrayOfVertex {
 
 	struct Vertex* vertex = NULL;
 	int order;
+	int idxOrder;
+};
+
+struct alignas(ALIGNSIZE) ArrayOfArrayOfVertex {
+	struct ArrayOfArrayOfVertex* start = NULL;
+	struct ArrayOfArrayOfVertex* next = NULL;
+	struct ArrayOfArrayOfVertex* prev = NULL;
+
+	struct ArrayOfVertex* arrayItem;
 };
 
 struct alignas(ALIGNSIZE) Dimensions {
@@ -108,5 +127,10 @@ struct alignas(ALIGNSIZE) textBlock {
 	struct textBlock* prev = NULL;
 
 	char text[TEXTBLOCK];
+};
+
+struct alignas(ALIGNSIZE) TriangulateReturn {
+	GLfloat* vbo;
+	unsigned int* index;
 };
 

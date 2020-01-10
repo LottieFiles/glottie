@@ -66,18 +66,18 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, struct ShaderProgram* pass
 	return refIndex;
 }
 
-struct Dimensions* findDimensions(GLfloat *passedVertices, int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray) {
-	bool exhausted = false;
+struct Dimensions* findDimensions(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray) {
 	struct Dimensions* passedDimensions;
 	passedDimensions = new Dimensions;
 
 	bool clockwise;
 	bool directionFound = false;
 	passedArray = passedArray->start;
-	for (int i=0; i < count; i++) {
+	bool exhausted = false;
+	while (! exhausted) {
 		//EM_ASM({console.log("finddim 1.1");});
-		GLfloat currX = *(passedVertices + (i * 4));
-		GLfloat currY = *(passedVertices + ((i * 4) + 1));
+		GLfloat currX = passedArray->vertex->position[0];
+		GLfloat currY = passedArray->vertex->position[1];
 		//EM_ASM({console.log("finddim 1.2");});
 		if (currX > passedDimensions->maxXval) {
 			if (! directionFound) {
@@ -89,9 +89,7 @@ struct Dimensions* findDimensions(GLfloat *passedVertices, int count, struct Buf
 					directionFound = true;
 				}
 			}
-			topVertex = passedArray;
 			passedDimensions->maxXval = currX;
-			passedDimensions->maxXord = i;
 		}
 		if (currX < passedDimensions->minXval) {
 			if (! directionFound) {
@@ -104,7 +102,6 @@ struct Dimensions* findDimensions(GLfloat *passedVertices, int count, struct Buf
 				}
 			}
 			passedDimensions->minXval = currX;
-			passedDimensions->minXord = i;
 		}
 		//EM_ASM({console.log("finddim 1.4");});
 		if (currY > passedDimensions->maxYval) {
@@ -117,8 +114,8 @@ struct Dimensions* findDimensions(GLfloat *passedVertices, int count, struct Buf
 					directionFound = true;
 				}
 			}
+			passedDimensions->topVertex = passedArray;
 			passedDimensions->maxYval = currY;
-			passedDimensions->maxYord = i;
 		}
 		//EM_ASM({console.log("finddim 1.5");});
 		if (currY < passedDimensions->minYval) {
@@ -132,10 +129,11 @@ struct Dimensions* findDimensions(GLfloat *passedVertices, int count, struct Buf
 				}
 			}
 			passedDimensions->minYval = currY;
-			passedDimensions->minYord = i;
 		}
 		//EM_ASM_({console.log("finddim 1.3 " + $0 + " " + $1);}, passedDimensions->maxXval, passedDimensions->maxXord);
-		if (passedArray->next != NULL) {
+		if (passedArray->next == NULL) {
+			exhausted = true;
+		} else {
 			passedArray = passedArray->next;
 		}
 	}
@@ -172,13 +170,51 @@ struct nth<1, IntPoint> {
 }
 */
 
-unsigned int* prepTriangulate(GLfloat* passedVertices, int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray) {
+unsigned int distanceBetweenPoints(struct Vertex* pointA, struct Vertex* pointB) {
+	return sqrt(pow(((float)pointA->position[0] - (float)pointB->position[0]), 2) + pow(((float)pointA->position[1] - (float)pointB->position[2]), 2));
+}
+
+bool convex(struct Vertex* origin, struct Vertex* next, struct Vertex* nextnext, struct Vertex* prev) {
+	float a, di, ds, bi, bs;
+	a = (float)distanceBetweenPoints(origin, prev);
+	di = (float)distanceBetweenPoints(prev, next);
+	ds = (float)distanceBetweenPoints(prev, nextnext);
+	bi = (float)distanceBetweenPoints(origin, next);
+	bs = (float)distanceBetweenPoints(origin, nextnext);
+	if 	(
+			((pow(a,2) + pow(bi,2) - pow(di,2)) / (2 * a * bi)) <
+			((pow(a,2) + pow(bs,2) - pow(ds,2)) / (2 * a * bs))
+		) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+struct ArrayOfArrayOfVertex* newReserve(struct ArrayOfArrayOfVertex* tempReserve) {
+	if (tempReserve == NULL) {
+		tempReserve = new ArrayOfArrayOfVertex;
+		tempReserve->start = tempReserve;
+	} else {
+		tempReserve->next = new ArrayOfArrayOfVertex;
+		tempReserve->next->prev = tempReserve;
+		tempReserve->next->start = tempReserve->start;
+		tempReserve = tempReserve->next;
+	}
+
+	return tempReserve;
+}
+ 
+struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray) {
 	struct Dimensions* dimensions;
-	
+	enum Phase phase = _maxY;
+	struct TriangulateReturn* tempTriangulateReturn;
+	tempTriangulateReturn = new TriangulateReturn;
+
 	EM_ASM({console.log("pretri 1.1");});
 	if (passedBuffers->changed || passedBuffers->dimensions == NULL) {
 		EM_ASM({console.log("pretri 1.2");});
-		dimensions = findDimensions(passedVertices, count, passedBuffers, passedArray);
+		dimensions = findDimensions(count, passedBuffers, passedArray);
 		EM_ASM({console.log("pretri 1.3");});
 		EM_ASM({console.log("pretri 1.4");});
 		passedBuffers->dimensions = dimensions;
@@ -188,15 +224,54 @@ unsigned int* prepTriangulate(GLfloat* passedVertices, int count, struct Buffers
 		dimensions = passedBuffers->dimensions;
 	}
 
+	struct ArrayOfArrayOfVertex* reserve = NULL;
+	passedArray = dimensions->topVertex;
+	struct ArrayOfVertex* startPoint = passedArray;
+	struct ArrayOfVertex* actualStartPoint = passedArray->start;
+	bool exhausted = false;
+	int coreCount = count;
 	if (count > 4) {
-		passedArray = dimensions->topVertex;
-		struct ArrayOfVertex* startPoint = passedArray;
-		struct ArrayOfVertex* actualStartPoint = passedArray->start;
-		std::array<struct ArrayOfVertex*> tempArray;
-
-		bool exhausted = false;
 		while (! exhausted) {
-			
+			// then determine the rotation direction
+			/*
+			if (dimensions->clockwise) {
+				// finally determine ears
+				if (phase == _maxY) {
+					if (passedArray->prev->vertex->position[1] < passedArray->vertex->position[1] && passedArray->prev->prev->vertex->position[0] 
+				} else if (phase == _passedMaxY) {
+				} else if (phase == _maxX) {
+				} else if (phase == _passedMaxX) {
+				} else if (phase == _minY) {
+				} else if (phase == _passedMinY) {
+				} else if (phase == _minX) {
+				} else if (phase == _passedMinX) {
+				}
+			} else {
+				// finally determine ears
+				if (phase == _maxY) {
+				} else if (phase == _passedMaxY) {
+				} else if (phase == _minX) {
+				} else if (phase == _passedMinX) {
+				} else if (phase == _minY) {
+				} else if (phase == _passedMinY) {
+				} else if (phase == _maxX) {
+				} else if (phase == _passedMaxX) {
+				}
+			}
+			*/
+
+			if 	(
+					! (convex(passedArray->vertex, passedArray->next->vertex, passedArray->next->next->vertex, passedArray->prev->vertex)) ||
+					! (convex(passedArray->vertex, passedArray->prev->vertex, passedArray->prev->prev->vertex, passedArray->next->vertex)) 
+				) {
+				reserve = newReserve(reserve);
+				reserve->arrayItem = passedArray;
+				passedArray->prev->next = passedArray->next;
+				passedArray->next->prev = passedArray->prev;
+				passedArray = passedArray->prev->prev;
+				coreCount = coreCount - 1;
+			}
+
 			if (passedArray->next == startPoint) {
 				exhausted = true;
 			} else {
@@ -206,9 +281,97 @@ unsigned int* prepTriangulate(GLfloat* passedVertices, int count, struct Buffers
 					passedArray = passedArray->next;
 				}
 			}
+
+			/*
+			// first determine the phase (qaudrant)
+			if (passedVertex->order == dimensions->maxXord) {
+				phase = _maxX;
+			} else if (passedVertex->order == dimensions->minXord) {
+				phase = _minX;
+			} else if (passedVertex->order == dimensions->maxYord) {
+				phase = _maxY;
+			} else if (passedVertex->order == dimensions->minYord) {
+				phase = _minY;
+			} else if (phase == _maxX) {
+				phase = _passedMaxX;
+			} else if (phase == _minX) {
+				phase = _passedMinX;
+			} else if (phase == _maxY) {
+				phase = _passedMaxY;
+			} else if (phase == _minY) {
+				phase = _passedMinY;
+			}
+			*/
 		}
 	} else {
 	}
+
+	startPoint = passedArray;
+	GLfloat* tempVBO = new GLfloat[count * 4];
+	unsigned int* tempIndex = new unsigned int[(count * 3) * 2];
+	unsigned int Bcounter = 0;
+	unsigned int Icounter = 0;
+	
+	exhausted = false;
+	*(tempVBO + ((Bcounter * 4) + 0)) = passedArray->vertex->position[0];
+	*(tempVBO + ((Bcounter * 4) + 1)) = passedArray->vertex->position[1];
+	*(tempVBO + ((Bcounter * 4) + 2)) = 0;
+	*(tempVBO + ((Bcounter * 4) + 3)) = 1;
+	passedArray->order = Bcounter;
+	passedArray = passedArray->next;
+	*(tempVBO + ((Bcounter * 4) + 0)) = passedArray->vertex->position[0];
+	*(tempVBO + ((Bcounter * 4) + 1)) = passedArray->vertex->position[1];
+	*(tempVBO + ((Bcounter * 4) + 2)) = 0;
+	*(tempVBO + ((Bcounter * 4) + 3)) = 1;
+	passedArray->order = Bcounter;
+	passedArray = passedArray->next;
+	while (! exhausted) {
+		*(tempVBO + ((Bcounter * 4) + 0)) = passedArray->vertex->position[0];
+		*(tempVBO + ((Bcounter * 4) + 1)) = passedArray->vertex->position[1];
+		*(tempVBO + ((Bcounter * 4) + 2)) = 0;
+		*(tempVBO + ((Bcounter * 4) + 3)) = 1;
+		passedArray->order = Bcounter;
+		*(tempIndex + ((Icounter * 3) + 0)) = startPoint->order;
+		*(tempIndex + ((Icounter * 3) + 0)) = passedArray->prev->order;
+		*(tempIndex + ((Icounter * 3) + 0)) = passedArray->order;
+		Bcounter++;
+		Icounter++;
+		if (passedArray->next == startPoint) {
+			exhausted = true;
+		} else {
+			passedArray = passedArray->next;
+		}
+	}
+
+	if (reserve != NULL) {
+		exhausted = false;
+		reserve = reserve->start;
+		while (! exhausted) {
+			*(tempVBO + ((Bcounter * 4) + 0)) = reserve->arrayItem->vertex->position[0];
+			*(tempVBO + ((Bcounter * 4) + 1)) = reserve->arrayItem->vertex->position[1];
+			*(tempVBO + ((Bcounter * 4) + 2)) = 0;
+			*(tempVBO + ((Bcounter * 4) + 3)) = 1;
+			reserve->arrayItem->order = Bcounter;
+			*(tempIndex + ((Icounter * 3) + 0)) = reserve->arrayItem->order;
+			*(tempIndex + ((Icounter * 3) + 0)) = reserve->arrayItem->prev->order;
+			*(tempIndex + ((Icounter * 3) + 0)) = reserve->arrayItem->next->order;
+			reserve->arrayItem->prev->next = reserve->arrayItem;
+			reserve->arrayItem->next->prev = reserve->arrayItem;
+			Bcounter++;
+			Icounter++;
+			
+			if (reserve->next == NULL) {
+				exhausted = true;
+			} else {
+				reserve = reserve->next;
+				delete reserve->prev;
+			}
+		}
+	}
+
+	passedArray->start->prev->next = NULL;
+	passedArray->start->prev = NULL;
+	passedArray = passedArray->start;
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -228,8 +391,10 @@ unsigned int* prepTriangulate(GLfloat* passedVertices, int count, struct Buffers
 	EM_ASM({console.log("pretri 2.2");});
 	*/
 
-
-	return tempIndex;
+	tempTriangulateReturn->vbo = tempVBO;
+	tempTriangulateReturn->index = tempIndex;
+	
+	return tempTriangulateReturn;
 	//return NULL;
 }
 
@@ -253,13 +418,17 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	}
 	passedPropertiesShapeProp = passedPropertiesShapeProp->start;
 	bool exhausted = false;
+	struct TriangulateReturn* tempTriangulateReturn;
 
 	while (! exhausted) {
+		
 		if (passedPropertiesShapeProp->i != NULL) {
 			passedPropertiesShapeProp->buffers_i = newBuffers();
-			passedPropertiesShapeProp->gl_i = vertexToGLfloat(passedPropertiesShapeProp->i, passedPropertiesShapeProp->i_count);
+			//passedPropertiesShapeProp->gl_i = vertexToGLfloat(passedPropertiesShapeProp->i, passedPropertiesShapeProp->i_count);
 			EM_ASM({console.log("looping 1.1 i");});
-			passedPropertiesShapeProp->gl_i_idx = prepTriangulate(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->i_count, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i);
+			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->i_count, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i);
+			passedPropertiesShapeProp->gl_i = tempTriangulateReturn->vbo;
+			passedPropertiesShapeProp->gl_i_idx = tempTriangulateReturn->index;
 			EM_ASM({console.log("looping 1.1.1 i");});
 			prepVAO(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->gl_i_idx, NULL, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i_count);
 			EM_ASM({console.log("looping 1.1.2 i");});
@@ -267,9 +436,11 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 
 		if (passedPropertiesShapeProp->o != NULL) {
 			passedPropertiesShapeProp->buffers_o = newBuffers();
-			passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->o_count);
+			//passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->o_count);
 			EM_ASM({console.log("looping 1.1 o");});
-			passedPropertiesShapeProp->gl_o_idx = prepTriangulate(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o);
+			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o);
+			passedPropertiesShapeProp->gl_o = tempTriangulateReturn->vbo;
+			passedPropertiesShapeProp->gl_o_idx = tempTriangulateReturn->index;
 			EM_ASM({console.log("looping 1.1.1 o");});
 			prepVAO(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->gl_o_idx, NULL, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o_count);
 			EM_ASM({console.log("looping 1.1.2 o");});
@@ -277,9 +448,11 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 
 		if (passedPropertiesShapeProp->v != NULL) {
 			passedPropertiesShapeProp->buffers_v = newBuffers();
-			passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
+			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
 			EM_ASM({console.log("looping 1.1 v");});
-			passedPropertiesShapeProp->gl_v_idx = prepTriangulate(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v);
+			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v);
+			passedPropertiesShapeProp->gl_v = tempTriangulateReturn->vbo;
+			passedPropertiesShapeProp->gl_v_idx = tempTriangulateReturn->index;
 			EM_ASM({console.log("looping 1.1.1 v");});
 			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count);
 			EM_ASM({console.log("looping 1.1.2 v");});
