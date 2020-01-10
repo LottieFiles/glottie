@@ -225,12 +225,13 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	}
 
 	struct ArrayOfArrayOfVertex* reserve = NULL;
-	passedArray = dimensions->topVertex;
-	struct ArrayOfVertex* startPoint = passedArray;
+	//passedArray = dimensions->topVertex;
+	struct ArrayOfVertex* startPoint = passedArray->start;
 	struct ArrayOfVertex* actualStartPoint = passedArray->start;
 	bool exhausted = false;
 	int coreCount = count;
 	if (count > 4) {
+		EM_ASM({console.log("pretri 2.1");});
 		while (! exhausted) {
 			// then determine the rotation direction
 			/*
@@ -268,18 +269,18 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 				reserve->arrayItem = passedArray;
 				passedArray->prev->next = passedArray->next;
 				passedArray->next->prev = passedArray->prev;
+				if (passedArray == startPoint) {
+					startPoint = passedArray->prev->prev;
+				}
 				passedArray = passedArray->prev->prev;
 				coreCount = coreCount - 1;
 			}
 
+			EM_ASM({console.log("pretri 2.1.1");});
 			if (passedArray->next == startPoint) {
 				exhausted = true;
 			} else {
-				if (passedArray->next == NULL) {
-					passedArray = passedArray->start;
-				} else {
-					passedArray = passedArray->next;
-				}
+				passedArray = passedArray->next;
 			}
 
 			/*
@@ -325,6 +326,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	*(tempVBO + ((Bcounter * 4) + 3)) = 1;
 	passedArray->order = Bcounter;
 	passedArray = passedArray->next;
+	EM_ASM({console.log("pretri 3.1");});
 	while (! exhausted) {
 		*(tempVBO + ((Bcounter * 4) + 0)) = passedArray->vertex->position[0];
 		*(tempVBO + ((Bcounter * 4) + 1)) = passedArray->vertex->position[1];
@@ -429,6 +431,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->i_count, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i);
 			passedPropertiesShapeProp->gl_i = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_i_idx = tempTriangulateReturn->index;
+			delete tempTriangulateReturn;
 			EM_ASM({console.log("looping 1.1.1 i");});
 			prepVAO(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->gl_i_idx, NULL, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i_count);
 			EM_ASM({console.log("looping 1.1.2 i");});
@@ -441,6 +444,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o);
 			passedPropertiesShapeProp->gl_o = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_o_idx = tempTriangulateReturn->index;
+			delete tempTriangulateReturn;
 			EM_ASM({console.log("looping 1.1.1 o");});
 			prepVAO(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->gl_o_idx, NULL, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o_count);
 			EM_ASM({console.log("looping 1.1.2 o");});
@@ -453,6 +457,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v);
 			passedPropertiesShapeProp->gl_v = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_v_idx = tempTriangulateReturn->index;
+			delete tempTriangulateReturn;
 			EM_ASM({console.log("looping 1.1.1 v");});
 			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count);
 			EM_ASM({console.log("looping 1.1.2 v");});

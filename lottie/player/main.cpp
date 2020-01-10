@@ -92,7 +92,6 @@ alignas(256) GLuint* shaderProgram[1024];
 alignas(256) GLint* posAttrib[1024];
 */
 
-#include "external/earcut.hpp"
 #include "main.h"
 #include "misc.h"
 #include "deserializer/properties.h"
