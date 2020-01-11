@@ -318,12 +318,14 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	*(tempVBO + ((Bcounter * 4) + 1)) = passedArray->vertex->position[1];
 	*(tempVBO + ((Bcounter * 4) + 2)) = 0;
 	*(tempVBO + ((Bcounter * 4) + 3)) = 1;
+	Bcounter++;
 	passedArray->order = Bcounter;
 	passedArray = passedArray->next;
 	*(tempVBO + ((Bcounter * 4) + 0)) = passedArray->vertex->position[0];
 	*(tempVBO + ((Bcounter * 4) + 1)) = passedArray->vertex->position[1];
 	*(tempVBO + ((Bcounter * 4) + 2)) = 0;
 	*(tempVBO + ((Bcounter * 4) + 3)) = 1;
+	Bcounter++;
 	passedArray->order = Bcounter;
 	passedArray = passedArray->next;
 	EM_ASM({console.log("pretri 3.1");});
@@ -334,8 +336,9 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		*(tempVBO + ((Bcounter * 4) + 3)) = 1;
 		passedArray->order = Bcounter;
 		*(tempIndex + ((Icounter * 3) + 0)) = startPoint->order;
-		*(tempIndex + ((Icounter * 3) + 0)) = passedArray->prev->order;
-		*(tempIndex + ((Icounter * 3) + 0)) = passedArray->order;
+		*(tempIndex + ((Icounter * 3) + 1)) = passedArray->prev->order;
+		*(tempIndex + ((Icounter * 3) + 2)) = passedArray->order;
+		EM_ASM({console.log("RENDER index " + $0 + " - " + $1 + " - " + $2);}, *(tempIndex + ((Icounter * 3) + 0)), *(tempIndex + ((Icounter * 3) + 1)), *(tempIndex + ((Icounter * 3) + 2)), *(tempVBO + ((Bcounter * 4) + 0)), *(tempVBO + ((Bcounter * 4) + 1)));
 		Bcounter++;
 		Icounter++;
 		if (passedArray->next == startPoint) {
@@ -355,8 +358,13 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 			*(tempVBO + ((Bcounter * 4) + 3)) = 1;
 			reserve->arrayItem->order = Bcounter;
 			*(tempIndex + ((Icounter * 3) + 0)) = reserve->arrayItem->order;
-			*(tempIndex + ((Icounter * 3) + 0)) = reserve->arrayItem->prev->order;
-			*(tempIndex + ((Icounter * 3) + 0)) = reserve->arrayItem->next->order;
+			*(tempIndex + ((Icounter * 3) + 1)) = reserve->arrayItem->prev->order;
+			if (reserve->arrayItem->next->order >= 0) {
+				*(tempIndex + ((Icounter * 3) + 2)) = reserve->arrayItem->next->order;
+			} else {
+				*(tempIndex + ((Icounter * 3) + 2)) = Bcounter + 1;
+			}
+		EM_ASM({console.log("RENDER index " + $0 + " - " + $1 + " - " + $2);}, *(tempIndex + ((Icounter * 3) + 0)), *(tempIndex + ((Icounter * 3) + 1)), *(tempIndex + ((Icounter * 3) + 2)), *(tempVBO + ((Bcounter * 4) + 0)), *(tempVBO + ((Bcounter * 4) + 1)));
 			reserve->arrayItem->prev->next = reserve->arrayItem;
 			reserve->arrayItem->next->prev = reserve->arrayItem;
 			Bcounter++;
