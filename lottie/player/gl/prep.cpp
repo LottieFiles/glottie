@@ -35,7 +35,7 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, struct ShaderProgram* pass
 	} else {
 		tempShaderProgram = *passedShaderProgram->shader;
 	}
-	EM_ASM({console.log("VAO 1.1.1");});
+	EM_ASM_({console.log("VAO 1.1.1 " + $0);}, *(vertices + 0));
 	GLint tempPosAttrib = glGetAttribLocation(tempShaderProgram, "position");
 	EM_ASM({console.log("VAO 1.1.2");});
 	glEnableVertexAttribArray(tempPosAttrib);
@@ -314,24 +314,26 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	unsigned int Icounter = 0;
 	
 	exhausted = false;
-	*(tempVBO + ((Bcounter * 4) + 0)) = (passedArray->vertex->position[0] / theAnimation->w) - 0.5;
-	*(tempVBO + ((Bcounter * 4) + 1)) = (passedArray->vertex->position[1] / theAnimation->h) - 0.5;
+	*(tempVBO + ((Bcounter * 4) + 0)) = ((passedArray->vertex->position[0] - (theAnimation->w / 2)) / theAnimation->w);
+	*(tempVBO + ((Bcounter * 4) + 1)) = ((passedArray->vertex->position[1] - (theAnimation->h / 2)) / theAnimation->h);
 	*(tempVBO + ((Bcounter * 4) + 2)) = 0;
 	*(tempVBO + ((Bcounter * 4) + 3)) = 1;
+		EM_ASM_({console.log("RENDER index " + $0 + " - " + $1 + " - " + $2 + " " + $3 + ":" + $4);}, *(tempIndex + ((Icounter * 3) + 0)), *(tempIndex + ((Icounter * 3) + 1)), *(tempIndex + ((Icounter * 3) + 2)), *(tempVBO + ((Bcounter * 4) + 0)), *(tempVBO + ((Bcounter * 4) + 1)));
 	Bcounter++;
 	passedArray->order = Bcounter;
 	passedArray = passedArray->next;
-	*(tempVBO + ((Bcounter * 4) + 0)) = (passedArray->vertex->position[0] / theAnimation->w) - 0.5;
-	*(tempVBO + ((Bcounter * 4) + 1)) = (passedArray->vertex->position[1] / theAnimation->h) - 0.5;
+	*(tempVBO + ((Bcounter * 4) + 0)) = ((passedArray->vertex->position[0] - (theAnimation->w / 2)) / theAnimation->w);
+	*(tempVBO + ((Bcounter * 4) + 1)) = ((passedArray->vertex->position[1] - (theAnimation->h / 2)) / theAnimation->h);
 	*(tempVBO + ((Bcounter * 4) + 2)) = 0;
 	*(tempVBO + ((Bcounter * 4) + 3)) = 1;
+		EM_ASM_({console.log("RENDER index " + $0 + " - " + $1 + " - " + $2 + " " + $3 + ":" + $4);}, *(tempIndex + ((Icounter * 3) + 0)), *(tempIndex + ((Icounter * 3) + 1)), *(tempIndex + ((Icounter * 3) + 2)), *(tempVBO + ((Bcounter * 4) + 0)), *(tempVBO + ((Bcounter * 4) + 1)));
 	Bcounter++;
 	passedArray->order = Bcounter;
 	passedArray = passedArray->next;
 	EM_ASM({console.log("pretri 3.1");});
 	while (! exhausted) {
-		*(tempVBO + ((Bcounter * 4) + 0)) = (passedArray->vertex->position[0] / theAnimation->w) - 0.5;
-		*(tempVBO + ((Bcounter * 4) + 1)) = (passedArray->vertex->position[1] / theAnimation->h) - 0.5;
+		*(tempVBO + ((Bcounter * 4) + 0)) = ((passedArray->vertex->position[0] - (theAnimation->w / 2)) / theAnimation->w);
+		*(tempVBO + ((Bcounter * 4) + 1)) = ((passedArray->vertex->position[1] - (theAnimation->h / 2)) / theAnimation->h);
 		*(tempVBO + ((Bcounter * 4) + 2)) = 0;
 		*(tempVBO + ((Bcounter * 4) + 3)) = 1;
 		passedArray->order = Bcounter;
@@ -348,12 +350,14 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		}
 	}
 
-	if (reserve != NULL) {
+	if (reserve != NULL && false) {
 		exhausted = false;
 		reserve = reserve->start;
 		while (! exhausted) {
-			*(tempVBO + ((Bcounter * 4) + 0)) = (reserve->arrayItem->vertex->position[0] / theAnimation->w) - 0.5;
-			*(tempVBO + ((Bcounter * 4) + 1)) = (reserve->arrayItem->vertex->position[1] / theAnimation->h) - 0.5;
+			*(tempVBO + ((Bcounter * 4) + 0)) = ((passedArray->vertex->position[0] - (theAnimation->w / 2)) / theAnimation->w);
+			*(tempVBO + ((Bcounter * 4) + 1)) = ((passedArray->vertex->position[1] - (theAnimation->h / 2)) / theAnimation->h);
+			//*(tempVBO + ((Bcounter * 4) + 0)) = (reserve->arrayItem->vertex->position[0] / theAnimation->w);
+			//*(tempVBO + ((Bcounter * 4) + 1)) = (reserve->arrayItem->vertex->position[1] / theAnimation->h);
 			*(tempVBO + ((Bcounter * 4) + 2)) = 0;
 			*(tempVBO + ((Bcounter * 4) + 3)) = 1;
 			reserve->arrayItem->order = Bcounter;
@@ -384,6 +388,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	passedArray->start->prev = NULL;
 	passedArray = passedArray->start;
 
+	passedBuffers->idxCount = Icounter;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////
 
@@ -440,7 +445,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->i_count, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i);
 			passedPropertiesShapeProp->gl_i = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_i_idx = tempTriangulateReturn->index;
-			delete tempTriangulateReturn;
+			//delete tempTriangulateReturn;
 			EM_ASM({console.log("looping 1.1.1 i");});
 			prepVAO(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->gl_i_idx, NULL, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i_count);
 			EM_ASM({console.log("looping 1.1.2 i");});
@@ -453,7 +458,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o);
 			passedPropertiesShapeProp->gl_o = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_o_idx = tempTriangulateReturn->index;
-			delete tempTriangulateReturn;
+			//delete tempTriangulateReturn;
 			EM_ASM({console.log("looping 1.1.1 o");});
 			prepVAO(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->gl_o_idx, NULL, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o_count);
 			EM_ASM({console.log("looping 1.1.2 o");});
@@ -466,7 +471,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v);
 			passedPropertiesShapeProp->gl_v = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_v_idx = tempTriangulateReturn->index;
-			delete tempTriangulateReturn;
+			//delete tempTriangulateReturn;
 			EM_ASM({console.log("looping 1.1.1 v");});
 			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count);
 			EM_ASM({console.log("looping 1.1.2 v");});
