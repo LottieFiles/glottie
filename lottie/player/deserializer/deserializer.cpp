@@ -477,6 +477,7 @@ int checkCharacter(char& currentChar) {
 	//EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $1 + " ] " + String.fromCharCode($0));}, currentChar, readingArray);
 	switch (currentChar) {
 		case '{':
+			justStartedArray = false;
 			//EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			if (isReadingDone()) {
@@ -511,6 +512,7 @@ int checkCharacter(char& currentChar) {
 			previousScopeClosure = false;
 			break;
 		case '}':
+			justStartedArray = false;
 
 			//EM_ASM_({console.log("CLOSING object " + $0);}, theState->stateNow);
 			if (isReadingDone()) {
@@ -543,6 +545,7 @@ int checkCharacter(char& currentChar) {
 			previousScopeClosure = true;
 			break;
 		case '[':
+			justStartedArray = true;
 			//EM_ASM_({console.log("[OPENING array " + $0);}, theState->stateNow);
 			theScope->currentKeyValueTrail->keyValue = addChildArray(theScope->currentKeyValueTrail->keyValue);
 			if (isReadingDone()) {
@@ -560,22 +563,32 @@ int checkCharacter(char& currentChar) {
 		case ']':
 			//EM_ASM_({console.log("[CLOSING array " + $0);}, theState->stateNow);
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
-			if (isReadingDone()) {
-				//readingDone();
-				//readingDone();
+			if (! justStartedArray) {
+				if (isReadingDone()) {
+					//readingDone();
+					//readingDone();
+					removeReadStates();
+				}
+			} else {
 				removeReadStates();
 			}
 			//EM_ASM({console.log("[CLOSING reading completed");});
 			kvState = Key;
 			readingArray = false;
 			//EM_ASM({console.log("[CLOSING reading states removed");});
-			theScope->currentKeyValueTrail->keyValue->arrayValue = gotoParentArray(theScope->currentKeyValueTrail->keyValue);
+			if (justStartedArray) {
+				delete theScope->currentKeyValueTrail->keyValue->arrayValue;
+			} else {
+				theScope->currentKeyValueTrail->keyValue->arrayValue = gotoParentArray(theScope->currentKeyValueTrail->keyValue);
+			}
 			//EM_ASM({console.log("[CLOSING gone to parent array");});
 			removeState();
 			//EM_ASM_({console.log("[CLOSED array " + $0);}, theState->stateNow);
 			previousScopeClosure = false;
+			justStartedArray = false;
 			break;
 		case ':':
+			justStartedArray = false;
 			if (isReadingDone()) {
 			}
 			removeReadStates();
@@ -584,6 +597,7 @@ int checkCharacter(char& currentChar) {
 			previousScopeClosure = false;
 			break;
 		case '\'':
+			justStartedArray = false;
 
 			//EM_ASM({console.log("handling apostrophe 1");});
 			if (quoteOpened && (theState->stateNow == KVReading || theState->stateNow == KVReadOpen)) {
@@ -601,6 +615,7 @@ int checkCharacter(char& currentChar) {
 			//EM_ASM({console.log("done handling apostrophe ");});
 			break;
 		case ',':
+			justStartedArray = true;
 			//EM_ASM({console.log("handling comma ");});
 			//addState(NewElement);
 			if (isReadingDone()) {
@@ -629,6 +644,7 @@ int checkCharacter(char& currentChar) {
 				currentChar != '\r' &&
 				currentChar != '\t' &&
 				currentChar != '\v') {
+				justStartedArray = false;
 				//if (theState->stateNow == KVReadOpen) {
 				//EM_ASM({console.log("DEFAULT 10.1 ");});
 					addState(KVReading); //// ADD STATE

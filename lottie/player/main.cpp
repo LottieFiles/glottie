@@ -105,8 +105,6 @@ alignas(256) GLint* posAttrib[1024];
 #include "gl/prep.cpp"
 
 int main(int argc, char *argv[]) {
-	string tempString(argv[1]);
- 	jsonString = tempString;
 
 	deserialize();
 	glInit();

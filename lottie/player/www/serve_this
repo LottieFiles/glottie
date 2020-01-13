@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#cp ../player.js ./
+cp ../player.js ./
 cp ../player.wasm ./
 
 if [ "$(uname)" == "Linux" ]; then
