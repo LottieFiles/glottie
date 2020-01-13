@@ -46,7 +46,7 @@ void glInit() {
 
     
    wnd = SDL_CreateWindow("test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            theAnimation->w, theAnimation->h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+            theAnimation->w * theAnimation->scaleFactor, theAnimation->h * theAnimation->scaleFactor, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);

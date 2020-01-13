@@ -44,8 +44,8 @@ int fillAnimation() {
 			EM_ASM({console.log("========================> iteration");});
 		}
 			EM_ASM({console.log("========================> iteration pre");});
-		if (strlen(tempKeyValue->key) == 0) {
-			//EM_ASM({console.log("========================> empty");});
+		if (tempKeyValue->arrayValue == NULL && strlen(tempKeyValue->key) == 0) {
+			EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
 				exhausted = true;
 			} else {
@@ -53,6 +53,7 @@ int fillAnimation() {
 			}
 			continue;
 		}
+			EM_ASM({console.log("========================> iteration predone");});
 		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "w") == 0) {
 			string width(tempKeyValue->value);
 			theAnimation->w = stoi(width);

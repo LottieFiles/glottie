@@ -81,13 +81,6 @@ struct alignas(ALIGNSIZE) Layers_old {
 } *currentLayers_old;
 
 struct alignas(ALIGNSIZE) Animation {
-        int ip; // entry frame number
-        int op; // exit frame number
-        int fr; // frame rate
-        int w; // width
-        int h; // height
-	int z; // depth
-        bool ddd = false; // is 3D? (1 = yes, 0 = no)
         string v; // Bodymovin (exporter) version
         string nm; // name of animation
         struct Layers* layers = NULL;
@@ -95,6 +88,17 @@ struct alignas(ALIGNSIZE) Animation {
         struct Char* chars = NULL;
         struct Player* players = NULL;
         struct Font* fonts = NULL;
+        int ip; // entry frame number
+        int op; // exit frame number
+        int fr; // frame rate
+        int w; // width
+        int h; // height
+	int z; // depth
+
+	int scaleFactor = 1;
+
+        bool ddd = false; // is 3D? (1 = yes, 0 = no)
+
 } *theAnimation;
 
 
