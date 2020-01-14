@@ -111,10 +111,15 @@ int simpleFunction(int someInt) {
 	return someInt + someInt;
 }
 
-int doMain(char* someChar) {
+int doMain(char someChar) {
+	/*
 	if (someChar == NULL || strlen(someChar) <= 0) {
 	} else {
-		//jsonString.assign(someChar);
+		jsonString.assign(someChar);
+	}
+	*/
+	if (someChar > 0) {
+		return someChar;
 	}
 
 	deserialize();
