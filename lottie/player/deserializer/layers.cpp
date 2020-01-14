@@ -34,18 +34,18 @@ struct Assets* newAssets(struct Assets* passedAssets) {
 ///////////////// assign values
 
 int fillAnimation() {
-	EM_ASM({console.log("========================> entered");});
+	//EM_ASM({console.log("========================> entered");});
 	bool exhausted = false;
 	struct KeyValue* tempKeyValue;
 	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
 	struct ArrayOfString* tempArrayValue; 
 	while (! exhausted) {
 		if (tempKeyValue) {
-			EM_ASM({console.log("========================> iteration");});
+			//EM_ASM({console.log("========================> iteration");});
 		}
-			EM_ASM({console.log("========================> iteration pre");});
+			//EM_ASM({console.log("========================> iteration pre");});
 		if (tempKeyValue->arrayValue == NULL && strlen(tempKeyValue->key) == 0) {
-			EM_ASM({console.log("========================> empty");});
+			//EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
 				exhausted = true;
 			} else {
@@ -53,15 +53,15 @@ int fillAnimation() {
 			}
 			continue;
 		}
-			EM_ASM({console.log("========================> iteration predone");});
+			//EM_ASM({console.log("========================> iteration predone");});
 		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "w") == 0) {
 			string width(tempKeyValue->value);
 			theAnimation->w = stoi(width);
-			EM_ASM_({console.log("========================> fill 80.1 " + $0);}, theAnimation->w);
+			//EM_ASM_({console.log("========================> fill 80.1 " + $0);}, theAnimation->w);
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "h") == 0) {
 			string height(tempKeyValue->value);
 			theAnimation->h = stoi(height);
-			EM_ASM_({console.log("========================> fill 80.1 " + $0);}, theAnimation->h);
+			//EM_ASM_({console.log("========================> fill 80.1 " + $0);}, theAnimation->h);
 
 		}
 
@@ -73,6 +73,7 @@ int fillAnimation() {
 			tempKeyValue = tempKeyValue->next;
 		}
 	}
+	EM_ASM_({console.log("========================> fill 80.1 " + $0);}, theAnimation->h);
 	//deleteKeyValues(theScope->currentKeyValueTrail);
 
 	return 1;
