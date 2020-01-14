@@ -175,6 +175,7 @@ bool previousScopeClosure = false;
 bool quoteOpened = false;
 bool scopeChanged = false;
 bool justStartedArray = false;
+bool colonEncountered = false;
 
 struct alignas(ALIGNSIZE) ArrayTrail {
 	struct ArrayTrail* start = NULL;

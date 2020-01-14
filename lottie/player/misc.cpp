@@ -582,8 +582,8 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			strcpy(keyNode->key, key);
 		}
 	}
-	//EM_ASM({console.log("adding key value 303.8.1");});	
-	if (isArray) {
+	EM_ASM({console.log("adding key value 303.8.1");});	
+	if (isArray && ! justStartedArray) {
 		if (keyNode->arrayValue == NULL) {
 			struct ArrayOfString* tempArrayOfString;
 			tempArrayOfString = new ArrayOfString;
@@ -597,7 +597,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			//keyNode->arrayValue->root = keyNode->arrayValue;
 		//}
 		pushValuesVector(keyNode->arrayValue, value);
-		//EM_ASM_({console.log("adding key value by array 303.6 " + String.fromCharCode($0));}, value[0]);
+		EM_ASM_({console.log("adding key value by array 303.6 " + String.fromCharCode($0));}, value[0]);
 	} else {
 		//EM_ASM({console.log("adding key value 303.8.2");});
 		/*
@@ -607,6 +607,11 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			strcpy(keyNode->value, value.c_str());
 		}
 		*/
+		if (justStartedArray) {
+			if (strlen(value) <= 0) {
+				value = 0;
+			}
+		}
 		strcpy(keyNode->value, value);
 		//EM_ASM_({console.log("adding key value 303.7 " + String.fromCharCode($0));}, value[0]);
 		

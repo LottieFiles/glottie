@@ -545,7 +545,12 @@ int checkCharacter(char& currentChar) {
 			previousScopeClosure = true;
 			break;
 		case '[':
-			justStartedArray = true;
+			if (colonEncountered) {
+				justStartedArray = true;
+				colonEncountered = false;
+			} else {
+				justStartedArray = false;
+			}
 			//EM_ASM_({console.log("[OPENING array " + $0);}, theState->stateNow);
 			theScope->currentKeyValueTrail->keyValue = addChildArray(theScope->currentKeyValueTrail->keyValue);
 			if (isReadingDone()) {
@@ -570,15 +575,24 @@ int checkCharacter(char& currentChar) {
 					removeReadStates();
 				}
 			} else {
+				if (theScope->currentKeyValueTrail->keyValue->arrayValue->vector != NULL) {
+					theScope->currentKeyValueTrail->keyValue->arrayValue->vector->prev->next = NULL;
+					delete theScope->currentKeyValueTrail->keyValue->arrayValue->vector;
+				}
+				delete theScope->currentKeyValueTrail->keyValue->arrayValue;
+
+				struct KeyValue* tempKeyValue;
+				input->currentReadValue[0] = '\0';
+				strcat(input->currentReadValue, "0");
+				tempKeyValue = addKeyValue(theScope->currentKeyValueTrail->keyValue, input->currentReadKey, input->currentReadValue, false);
+				theScope->currentKeyValueTrail->keyValue = tempKeyValue;
 				removeReadStates();
 			}
 			//EM_ASM({console.log("[CLOSING reading completed");});
 			kvState = Key;
 			readingArray = false;
 			//EM_ASM({console.log("[CLOSING reading states removed");});
-			if (justStartedArray) {
-				delete theScope->currentKeyValueTrail->keyValue->arrayValue;
-			} else {
+			if (! justStartedArray) {
 				theScope->currentKeyValueTrail->keyValue->arrayValue = gotoParentArray(theScope->currentKeyValueTrail->keyValue);
 			}
 			//EM_ASM({console.log("[CLOSING gone to parent array");});
@@ -588,6 +602,7 @@ int checkCharacter(char& currentChar) {
 			justStartedArray = false;
 			break;
 		case ':':
+			colonEncountered = true;
 			justStartedArray = false;
 			if (isReadingDone()) {
 			}
@@ -615,7 +630,7 @@ int checkCharacter(char& currentChar) {
 			//EM_ASM({console.log("done handling apostrophe ");});
 			break;
 		case ',':
-			justStartedArray = true;
+			justStartedArray = false;
 			//EM_ASM({console.log("handling comma ");});
 			//addState(NewElement);
 			if (isReadingDone()) {
