@@ -104,8 +104,10 @@ alignas(256) GLint* posAttrib[1024];
 #include "gl/gl.cpp"
 #include "gl/prep.cpp"
 
-int main(int argc, char *argv[]) {
 
+extern "C" {
+
+int doMain() {
 	deserialize();
 	glInit();
 
@@ -118,3 +120,10 @@ int main(int argc, char *argv[]) {
 
 	return 1;
 }
+
+}
+
+int main(int argc, char *argv[]) {
+	doMain();
+}
+
