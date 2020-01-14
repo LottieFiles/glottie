@@ -478,6 +478,7 @@ int checkCharacter(char& currentChar) {
 	switch (currentChar) {
 		case '{':
 			justStartedArray = false;
+			colonEncountered = false;
 			//EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			if (isReadingDone()) {
@@ -513,6 +514,7 @@ int checkCharacter(char& currentChar) {
 			break;
 		case '}':
 			justStartedArray = false;
+			colonEncountered = false;
 
 			//EM_ASM_({console.log("CLOSING object " + $0);}, theState->stateNow);
 			if (isReadingDone()) {
@@ -575,12 +577,13 @@ int checkCharacter(char& currentChar) {
 					removeReadStates();
 				}
 			} else {
+				/*
 				if (theScope->currentKeyValueTrail->keyValue->arrayValue->vector != NULL) {
 					theScope->currentKeyValueTrail->keyValue->arrayValue->vector->prev->next = NULL;
 					delete theScope->currentKeyValueTrail->keyValue->arrayValue->vector;
 				}
 				delete theScope->currentKeyValueTrail->keyValue->arrayValue;
-
+				*/
 				struct KeyValue* tempKeyValue;
 				input->currentReadValue[0] = '\0';
 				strcat(input->currentReadValue, "0");
@@ -613,6 +616,7 @@ int checkCharacter(char& currentChar) {
 			break;
 		case '\'':
 			justStartedArray = false;
+			colonEncountered = false;
 
 			//EM_ASM({console.log("handling apostrophe 1");});
 			if (quoteOpened && (theState->stateNow == KVReading || theState->stateNow == KVReadOpen)) {
@@ -631,6 +635,7 @@ int checkCharacter(char& currentChar) {
 			break;
 		case ',':
 			justStartedArray = false;
+			colonEncountered = false;
 			//EM_ASM({console.log("handling comma ");});
 			//addState(NewElement);
 			if (isReadingDone()) {
@@ -660,6 +665,7 @@ int checkCharacter(char& currentChar) {
 				currentChar != '\t' &&
 				currentChar != '\v') {
 				justStartedArray = false;
+				colonEncountered = false;
 				//if (theState->stateNow == KVReadOpen) {
 				//EM_ASM({console.log("DEFAULT 10.1 ");});
 					addState(KVReading); //// ADD STATE
