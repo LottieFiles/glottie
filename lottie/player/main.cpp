@@ -114,7 +114,7 @@ int simpleFunction(int someInt) {
 int doMain(char* someChar) {
 	if (someChar == NULL || strlen(someChar) <= 0) {
 	} else {
-		jsonString.assign(someChar);
+		//jsonString.assign(someChar);
 	}
 
 	deserialize();
