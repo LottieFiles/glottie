@@ -111,21 +111,25 @@ int simpleFunction(int someInt) {
 	return someInt + someInt;
 }
 
-int doMain(char* someChar) {
+int doMain(char someChar[]) {
 	/*
 	if (someChar == NULL || strlen(someChar) <= 0) {
 	} else {
 		jsonString.assign(someChar);
 	}
 	*/
-	if (strlen(someChar) > 0) {
-		return strlen(someChar);
-	}
+	//if (someChar.length() > 0) {
+	//	return someChar.length();
+	//}
+	//if (strlen(someChar) > 0) {
+	//	return strlen(someChar);
+	//}
 
 	deserialize();
 	glInit();
 
 	glInitShaders(0);
+	EM_ASM({console.log("////> start of prepping shapes");});
 	prepShapes();
 	EM_ASM({console.log("////> done prepping shapes");});
 	redrawRequired = true;

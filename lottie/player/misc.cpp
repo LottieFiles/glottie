@@ -666,7 +666,7 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 	} else {
 		passedVertex->order = passedVertex->prev->order + 1;
 	}
-	EM_ASM_({console.log("coords ))) " + $0 + " " + $1 + " :: " + $2);}, passedVertex->vertex->position[0], passedVertex->vertex->position[1], passedVertex->order);
+	//EM_ASM_({console.log("coords ))) " + $0 + " " + $1 + " :: " + $2);}, passedVertex->vertex->position[0], passedVertex->vertex->position[1], passedVertex->order);
 
 	/*
 	passedVertex->vertex->x = vertex[0];
