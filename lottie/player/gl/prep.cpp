@@ -230,7 +230,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	struct ArrayOfVertex* actualStartPoint = passedArray->start;
 	bool exhausted = false;
 	int coreCount = count;
-	if (count > 4) {
+	if (count > 3) {
 		EM_ASM({console.log("pretri 2.1");});
 		while (! exhausted) {
 
@@ -258,6 +258,9 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 
 		}
 	} else {
+		if (count < 3) {
+			return NULL;
+		}
 	}
 
 	startPoint = passedArray;
@@ -378,6 +381,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//passedPropertiesShapeProp->gl_i = vertexToGLfloat(passedPropertiesShapeProp->i, passedPropertiesShapeProp->i_count);
 			EM_ASM({console.log("looping 1.1 i");});
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->i_count, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i);
+			if (tempTriangulateReturn == NULL) {return 0;}
 			passedPropertiesShapeProp->gl_i = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_i_idx = tempTriangulateReturn->index;
 			//delete tempTriangulateReturn;
@@ -391,6 +395,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->o_count);
 			EM_ASM({console.log("looping 1.1 o");});
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o);
+			if (tempTriangulateReturn == NULL) {return 0;}
 			passedPropertiesShapeProp->gl_o = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_o_idx = tempTriangulateReturn->index;
 			//delete tempTriangulateReturn;
@@ -404,6 +409,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
 			EM_ASM({console.log("looping 1.1 v");});
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v);
+			if (tempTriangulateReturn == NULL) {return 0;}
 			passedPropertiesShapeProp->gl_v = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_v_idx = tempTriangulateReturn->index;
 			//delete tempTriangulateReturn;

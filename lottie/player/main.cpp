@@ -107,6 +107,10 @@ alignas(256) GLint* posAttrib[1024];
 
 extern "C" {
 
+int simpleFunction(int someInt) {
+	return someInt + someInt;
+}
+
 int doMain(char* someChar) {
 	if (someChar == NULL || strlen(someChar) <= 0) {
 	} else {
