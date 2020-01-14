@@ -107,7 +107,12 @@ alignas(256) GLint* posAttrib[1024];
 
 extern "C" {
 
-int doMain() {
+int doMain(char* someChar) {
+	if (someChar == NULL || strlen(someChar) <= 0) {
+	} else {
+		jsonString.assign(someChar);
+	}
+
 	deserialize();
 	glInit();
 
@@ -124,6 +129,6 @@ int doMain() {
 }
 
 int main(int argc, char *argv[]) {
-	doMain();
+	doMain(NULL);
 }
 
