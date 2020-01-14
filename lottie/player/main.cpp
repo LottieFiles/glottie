@@ -111,7 +111,7 @@ int simpleFunction(int someInt) {
 	return someInt + someInt;
 }
 
-int doMain(char someChar) {
+char doMain(char someChar) {
 	/*
 	if (someChar == NULL || strlen(someChar) <= 0) {
 	} else {
