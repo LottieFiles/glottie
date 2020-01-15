@@ -263,8 +263,8 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		}
 	}
 
-	//startPoint = passedArray;
-	GLfloat* tempVBO = new GLfloat[count * 4];
+	startPoint = passedArray;
+	GLfloat* tempVBO = new GLfloat[count * 4] + 2;
 	unsigned int* tempIndex = new unsigned int[(count * 3) * 2];
 	unsigned int Bcounter = 0;
 	unsigned int Icounter = 0;

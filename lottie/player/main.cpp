@@ -41,8 +41,8 @@ alignas(256) GLuint mainShader;
 
 int preSwitch[20]; // to determine the switch of assets to layers (and vice versa)
 int currentUniversalCount;
-SDL_Window* wnd;
-SDL_Renderer* rdr;
+SDL_Window* wnd = NULL;
+SDL_Renderer* rdr = NULL;
 SDL_GLContext glc;
 int lastRefIndex = 0;
 GLuint mainShader;
@@ -126,7 +126,9 @@ int doMain(char someChar[]) {
 	//}
 
 	deserialize();
+	EM_ASM({console.log("////> init done");});
 	glInit();
+	EM_ASM({console.log("////> gl init done");});
 
 	glInitShaders(0);
 	EM_ASM({console.log("////> start of prepping shapes");});
@@ -142,6 +144,7 @@ int doMain(char someChar[]) {
 }
 
 int main(int argc, char *argv[]) {
+	SDL_Init(SDL_INIT_EVERYTHING);
 	doMain(NULL);
 }
 

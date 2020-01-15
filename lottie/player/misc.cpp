@@ -582,7 +582,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			strcpy(keyNode->key, key);
 		}
 	}
-	EM_ASM({console.log("adding key value 303.8.1");});	
+	//EM_ASM({console.log("adding key value 303.8.1");});	
 	if (isArray && ! justStartedArray) {
 		if (keyNode->arrayValue == NULL) {
 			struct ArrayOfString* tempArrayOfString;
@@ -597,7 +597,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			//keyNode->arrayValue->root = keyNode->arrayValue;
 		//}
 		pushValuesVector(keyNode->arrayValue, value);
-		EM_ASM_({console.log("adding key value by array 303.6 " + String.fromCharCode($0));}, value[0]);
+		//EM_ASM_({console.log("adding key value by array 303.6 " + String.fromCharCode($0));}, value[0]);
 	} else {
 		//EM_ASM({console.log("adding key value 303.8.2");});
 		/*
@@ -666,7 +666,7 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 	} else {
 		passedVertex->order = passedVertex->prev->order + 1;
 	}
-	//EM_ASM_({console.log("coords ))) " + $0 + " " + $1 + " :: " + $2);}, passedVertex->vertex->position[0], passedVertex->vertex->position[1], passedVertex->order);
+	EM_ASM_({console.log("coords ))) " + $0 + " " + $1 + " :: " + $2);}, passedVertex->vertex->position[0], passedVertex->vertex->position[1], passedVertex->order);
 
 	/*
 	passedVertex->vertex->x = vertex[0];

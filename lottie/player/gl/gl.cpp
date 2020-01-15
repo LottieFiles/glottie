@@ -42,22 +42,42 @@ void glInitShaders(int refIndex) {
 }
 
 void glInit() {   
-// SDL_Init(SDL_INIT_VIDEO);
+	EM_ASM_({console.log("glinit 1.0 " + $0 + " " + $1 + " " + $2);}, theAnimation->w, theAnimation->h, theAnimation->scaleFactor);
+	//SDL_Init(SDL_INIT_VIDEO);
 
+	EM_ASM_({console.log("glinit 9 " + $0 + " " + $1 + " " + $2);}, theAnimation->w, theAnimation->h, theAnimation->scaleFactor);
+
+	int* someInt = new int[5000000]();
+	delete[] someInt;
+
+	int scaledWidth = theAnimation->w * theAnimation->scaleFactor;
+	int scaledHeight = theAnimation->h * theAnimation->scaleFactor;
     
-   wnd = SDL_CreateWindow("test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            theAnimation->w * theAnimation->scaleFactor, theAnimation->h * theAnimation->scaleFactor, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	EM_ASM_({console.log("glinit 1.0 " + $0 + " " + $1);}, scaledWidth, scaledHeight);
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-    SDL_GL_SetSwapInterval(0);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	//wnd = new SDL_Window();
+	//wnd = SDL_CreateWindow("l", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
 
-    glc = SDL_GL_CreateContext(wnd);
+	EM_ASM({console.log("glinit 1.1");});
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+	EM_ASM({console.log("glinit 1.2");});
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+	EM_ASM({console.log("glinit 1.3");});
+	SDL_GL_SetSwapInterval(0);
+	EM_ASM({console.log("glinit 1.4");});
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	EM_ASM({console.log("glinit 1.5");});
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-    rdr = SDL_CreateRenderer(
-        wnd, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+	EM_ASM({console.log("glinit 1.6");});
+	glc = SDL_GL_CreateContext(wnd);
+
+	EM_ASM({console.log("glinit 1.7");});
+	rdr = SDL_CreateRenderer(
+		wnd, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+	EM_ASM({console.log("glinit 1.8");});
 }
 
 void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersToRender) {
