@@ -105,6 +105,8 @@ struct ArrayOfVertex* populatePropertiesShapePropVertices(struct ArrayOfString* 
 			baseVector = baseVector->next;
 		}
 	}
+	targetVertex->next = targetVertex->start;
+	targetVertex->start->prev = targetVertex;
 	if (targetVertex != NULL) {
 		return targetVertex->start;
 	} else {

@@ -22,6 +22,8 @@ using namespace std;
 std::function<void()> loop;
 void main_loop() { loop(); }
 
+
+
 // forward declarations
 struct ScopeTrail* lastScopeBeforeThis(struct ScopeTrail*);
 struct ScopeBefore lastScopeBeforeObject();

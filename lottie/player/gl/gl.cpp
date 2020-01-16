@@ -47,8 +47,9 @@ void glInit() {
 
 	EM_ASM_({console.log("glinit 9 " + $0 + " " + $1 + " " + $2);}, theAnimation->w, theAnimation->h, theAnimation->scaleFactor);
 
-	int* someInt = new int[5000000]();
-	delete[] someInt;
+	//int* someInt = new int[5000000]();
+	//delete[] someInt;
+	//wnd = new SDL_Window;
 
 	int scaledWidth = theAnimation->w * theAnimation->scaleFactor;
 	int scaledHeight = theAnimation->h * theAnimation->scaleFactor;
@@ -121,7 +122,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						//glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vbo));
 						//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(tempBuffers->ibo));
 						EM_ASM({console.log("glDraw 1.4 " + $0 + " " + $1);}, *(tempBuffers->idx), *(tempBuffers->vao));
-						glDrawElements(GL_LINES, tempBuffers->idxCount, GL_UNSIGNED_INT, 0);
+						glDrawElements(GL_TRIANGLES, tempBuffers->idxCount, GL_UNSIGNED_INT, 0);
 						EM_ASM({console.log("glDraw 1.5 " + $0);}, tempBuffers->idxCount);
 						glBindVertexArrayOES(0);
 						glUseProgram(0);
@@ -168,11 +169,10 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		}
 	};
 
-	#ifdef __EMSCRIPTEN__
-		emscripten_set_main_loop(main_loop, 0, true);
-	#else
-		while(true) main_loop();
-	#endif
-
+        #ifdef __EMSCRIPTEN__
+                emscripten_set_main_loop(main_loop, 0, true);
+        #else
+                while(true) main_loop();
+        #endif
 }
 

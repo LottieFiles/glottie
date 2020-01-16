@@ -30,9 +30,13 @@ struct alignas(ALIGNSIZE) ArrayOfVertex {
 	struct ArrayOfVertex* next = NULL;
 	struct ArrayOfVertex* prev = NULL;
 
+	struct ArrayOfVertex* bindNext = NULL;
+	struct ArrayOfVertex* bindPrev = NULL;
+
 	struct Vertex* vertex = NULL;
 	int order;
 	int idxOrder;
+	bool reserved = NULL;
 };
 
 struct alignas(ALIGNSIZE) ArrayOfArrayOfVertex {
