@@ -107,6 +107,7 @@ int readingDone() {
 }
 */
 
+
 struct Layers* tempAssetsLayers = NULL;
 struct Layers* tempAnimationLayers = NULL;
 
@@ -170,13 +171,25 @@ int prepareContainer(bool arrayOfObjects) {
 		}
 	} else if (theScope->scope == _shapes) {
 		if (theScope->prev->scope == _layers) {
-			EM_ASM({console.log("-----------------> shapes");});
+			EM_ASM({console.log("-----------------> shapes in layers");});
+			currentLayers->shapes = newShapesItem(currentShapesItem);
+		} else if (theScope->prev->scope == _k) {
+			EM_ASM({console.log("-----------------> shapes in k");});
 			currentLayers->shapes = newShapesItem(currentShapesItem);
 		}
 	} else if (theScope->scope == _ty) {
 	} else if (theScope->scope == _ks) {
-		if ((theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) || (theScope->prev->scope == _it && theScope->prev->prev->scope == _layers) || (theScope->prev->scope == _it && theScope->prev->prev->scope == _shapes)) { // PropertiesShape
-			EM_ASM({console.log("-----------------> ks within shapes");});
+		if (theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) { // PropertiesShape
+			EM_ASM({console.log("-----------------> ks within shapes within layers");});
+			currentShapesItem->ks = newPropertiesShape(currentShapesItem->ks);
+		} else if (theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) {
+			EM_ASM({console.log("-----------------> ks within shapes within layers");});
+			currentShapesItem->ks = newPropertiesShape(currentShapesItem->ks);
+		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _layers) { // PropertiesShape
+			EM_ASM({console.log("-----------------> ks within it within layers");});
+			currentShapesItem->ks = newPropertiesShape(currentShapesItem->ks);
+		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _shapes) { // PropertiesShape
+			EM_ASM({console.log("-----------------> ks within it within shapes");});
 			currentShapesItem->ks = newPropertiesShape(currentShapesItem->ks);
 		}
 	} else if (theScope->scope == _k) {

@@ -139,12 +139,14 @@ int doMain(char someChar[]) {
 	redrawRequired = true;
 
 	struct Buffers* buffersToRender;
-	buffersToRender = lastBuffersCreated->start->next->next;
-	buffersToRender->start = buffersToRender;
-	buffersToRender->next = NULL;
+	if (lastBuffersCreated != NULL) {
+		buffersToRender = lastBuffersCreated->start->next->next;
+		buffersToRender->start = buffersToRender;
+		buffersToRender->next = NULL;
+		glDraw(NULL, NULL);
+	}
 
 	//glDraw(NULL, buffersToRender);
-	glDraw(NULL, NULL);
 
 	EM_ASM({console.log("////> done drawing");});
 

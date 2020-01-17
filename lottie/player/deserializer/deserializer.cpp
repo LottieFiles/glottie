@@ -262,22 +262,24 @@ int checkScope() {
 	if (previousScope.scopeNow->scope == _noscope) {
 		addScope(_animation);
 	} else if (keyIs("assets")) {
-		//EM_ASM({console.log("-/--> found assets");});
+		EM_ASM({console.log("-/--> found assets");});
 		addScope(_assets);
 	} else if (keyIs("layers")) {
-		//EM_ASM({console.log("-/--> found layers");});
+		EM_ASM({console.log("-/--> found layers");});
 		addScope(_layers);
 	} else if (keyIs("shapes")) {
-		//EM_ASM({console.log("-/--> found shapes");});
+		EM_ASM({console.log("-/--> found shapes");});
 		addScope(_shapes);
 	} else if (keyIs("it")) {
+		EM_ASM({console.log("-/--> found it");});
 		addScope(_it);
 	} else if (keyIs("ty")) {
 		addScope(_ty);
 	} else if (keyIs("ks")) {
-		//EM_ASM({console.log("-/--> found ks");});
+		EM_ASM({console.log("-/--> found ks");});
 		addScope(_ks);
 	} else if (keyIs("k")) {
+		EM_ASM({console.log("-/--> found k");});
 		addScope(_k);
 	} else if (keyIs("e")) {
 		addScope(_e);
@@ -477,7 +479,6 @@ int checkCharacter(char& currentChar) {
 	//EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $1 + " ] " + String.fromCharCode($0));}, currentChar, readingArray);
 	switch (currentChar) {
 		case '{':
-			justStartedArray = false;
 			colonEncountered = false;
 			//EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
@@ -488,25 +489,42 @@ int checkCharacter(char& currentChar) {
 			kvState = Key;
 			readingArray = false;
 
-			struct KeyValueTrail* tempKeyValueTrail;
-			tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
-			checkScope();
-			currentKeyValueTrail = theScope->currentKeyValueTrail;
-			//EM_ASM({console.log("adding new key value trail");});
-			theScope->currentKeyValueTrail = tempKeyValueTrail;
+			if (justStartedArray) {
+				struct KeyValueTrail* tempKeyValueTrail;
+				tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
+				checkScope();
+				currentKeyValueTrail = theScope->currentKeyValueTrail;
+				EM_ASM_({console.log("adding new key value trail " + $0);}, theScope->scope);
+				theScope->currentKeyValueTrail = tempKeyValueTrail;
+				justStartedArray = false;
+			}
+
 				 //newKeyValueTrail(theScope->currentKeyValueTrail);
 			//EM_ASM({console.log("DONE adding new key value trail");});
 			//theScope->currentKeyValueTrail = currentKeyValueTrail;
 			if (theState->stateNow == ArrayOpen || theState->stateNow == ScopeOpenInArray || readingArray || theState->stateNow == ScopeToBeRemoved) {
-				//EM_ASM({console.log("opening object in array");});
+				EM_ASM({console.log("opening object in array");});
 				//if (theState->keyEncountered) {
-					prepareContainer(true);
 				//}
+
+				checkScope();
+				prepareContainer(true);
+				
 				addState(ScopeOpenInArray); //// ADD STATE
 			} else {
+				if (! justStartedArray) {
+					struct KeyValueTrail* tempKeyValueTrail;
+					tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
+					checkScope();
+					currentKeyValueTrail = theScope->currentKeyValueTrail;
+					//EM_ASM({console.log("adding new key value trail");});
+					theScope->currentKeyValueTrail = tempKeyValueTrail;
+				}
+
 				prepareContainer(false);
-				addState(ScopeOpen); //// ADD STATE
+
 			}
+			addState(ScopeOpen); //// ADD STATE
 
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			//EM_ASM_({console.log("OPENED object " + $0);}, theState->stateNow);
@@ -527,11 +545,12 @@ int checkCharacter(char& currentChar) {
 
 				associateKeyValues();
 				//EM_ASM_({console.log("CLOSING associated " + $0);}, theState->stateNow);
-				removeScope();
 				//EM_ASM_({console.log("CLOSING removed scope " + $0);}, theState->stateNow);
 				if (theState->stateNow == ScopeOpenInArray) {
 					//EM_ASM_({console.log("CLOSING reverting to array " + $0);}, theState->stateNow);
 					readingArray = true;
+				} else {
+					removeScope();
 				}
 				//if (! previousScopeClosure) {
 					removeState();
