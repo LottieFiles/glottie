@@ -33,6 +33,8 @@ struct alignas(ALIGNSIZE) ArrayOfVertex {
 	struct ArrayOfVertex* bindNext = NULL;
 	struct ArrayOfVertex* bindPrev = NULL;
 
+	struct ArrayOfVertex* reserveNext = NULL;
+
 	struct Vertex* vertex = NULL;
 	int order;
 	int idxOrder;

@@ -262,20 +262,20 @@ int checkScope() {
 	if (previousScope.scopeNow->scope == _noscope) {
 		addScope(_animation);
 	} else if (keyIs("assets")) {
-		EM_ASM({console.log("-/--> found assets");});
+		//EM_ASM({console.log("-/--> found assets");});
 		addScope(_assets);
 	} else if (keyIs("layers")) {
-		EM_ASM({console.log("-/--> found layers");});
+		//EM_ASM({console.log("-/--> found layers");});
 		addScope(_layers);
 	} else if (keyIs("shapes")) {
-		EM_ASM({console.log("-/--> found shapes");});
+		//EM_ASM({console.log("-/--> found shapes");});
 		addScope(_shapes);
 	} else if (keyIs("it")) {
 		addScope(_it);
 	} else if (keyIs("ty")) {
 		addScope(_ty);
 	} else if (keyIs("ks")) {
-		EM_ASM({console.log("-/--> found ks");});
+		//EM_ASM({console.log("-/--> found ks");});
 		addScope(_ks);
 	} else if (keyIs("k")) {
 		addScope(_k);
@@ -367,7 +367,7 @@ int checkScope_old() {
 		//
 		case layers:
 			if (strcmp(input->currentReadKey, "shapes") == 0) {
-				EM_ASM({console.log('found layers');});
+				//EM_ASM({console.log('found layers');});
 				addScope(layers_shapes);
 				scopeChanged = true;
 			}
@@ -377,7 +377,7 @@ int checkScope_old() {
 			break;
 		case layers_shapes:
 			if (strcmp(input->currentReadKey, "ks") == 0) {
-				EM_ASM({console.log("found layers ks");});
+				//EM_ASM({console.log("found layers ks");});
 				addScope(layers_shapes_ks);
 				scopeChanged = true;
 			} else if (strcmp(input->currentReadKey, "ty") == 0) {
@@ -387,7 +387,7 @@ int checkScope_old() {
 			break;
 		case layers_shapes_ks:
 			if (strcmp(input->currentReadKey, "k") == 0) {
-				EM_ASM({console.log("found layers ks k");});
+				//EM_ASM({console.log("found layers ks k");});
 				addScope(layers_shapes_ks_k);
 				scopeChanged = true;
 			}

@@ -180,8 +180,11 @@ int prepareContainer(bool arrayOfObjects) {
 			currentShapesItem->ks = newPropertiesShape(currentShapesItem->ks);
 		}
 	} else if (theScope->scope == _k) {
-		if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes) || (theScope->prev->scope == _ks && theScope->prev->prev->scope == _it)) { // PropertiesShapeProp
+		if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
 			EM_ASM({console.log("-----------------> k within ks within shapes");});
+			currentShapesItem->ks->k = newPropertiesShapeProp(currentShapesItem->ks, currentShapesItem->ks->k, false);
+		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _it)) { // PropertiesShapeProp
+			EM_ASM({console.log("-----------------> k within ks within it");});
 			currentShapesItem->ks->k = newPropertiesShapeProp(currentShapesItem->ks, currentShapesItem->ks->k, false);
 		}
 	} else if (theScope->scope == _e) {

@@ -137,7 +137,15 @@ int doMain(char someChar[]) {
 	prepShapes();
 	EM_ASM({console.log("////> done prepping shapes");});
 	redrawRequired = true;
+
+	struct Buffers* buffersToRender;
+	buffersToRender = lastBuffersCreated->start->next->next;
+	buffersToRender->start = buffersToRender;
+	buffersToRender->next = NULL;
+
+	//glDraw(NULL, buffersToRender);
 	glDraw(NULL, NULL);
+
 	EM_ASM({console.log("////> done drawing");});
 
 	return 1;
