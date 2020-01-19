@@ -174,7 +174,7 @@ int popKeyValueTrail() {
 }
 
 struct KeyValueTrail* newKeyValueTrail(struct KeyValueTrail* traceKeyValueTrail) {
-	if (currentKeyValueTrail == NULL) {
+	if (traceKeyValueTrail == NULL) {
 		//EM_ASM({console.log("newkvtrail 401.1");});
 		traceKeyValueTrail = new KeyValueTrail;
 		traceKeyValueTrail->start = traceKeyValueTrail;

@@ -476,7 +476,7 @@ enum States lastStateBeforeReading() {
 }
 
 int checkCharacter(char& currentChar) {
-	//EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $1 + " ] " + String.fromCharCode($0));}, currentChar, readingArray);
+	EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $1 + " ] " + String.fromCharCode($0) + " " + $2 + " - " + $3 + " " + $4);}, currentChar, readingArray,theScope->currentKeyValueTrail, colonEncountered, justStartedArray);
 	switch (currentChar) {
 		case '{':
 			colonEncountered = false;
@@ -486,45 +486,46 @@ int checkCharacter(char& currentChar) {
 				//readingDone();
 				removeReadStates();
 			}
+
 			kvState = Key;
 			readingArray = false;
 
-			if (justStartedArray) {
-				struct KeyValueTrail* tempKeyValueTrail;
-				tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
+			struct KeyValueTrail* tempKeyValueTrail;
+			if (justStartedArray == true) {
 				checkScope();
-				currentKeyValueTrail = theScope->currentKeyValueTrail;
-				EM_ASM_({console.log("adding new key value trail " + $0);}, theScope->scope);
+				tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
 				theScope->currentKeyValueTrail = tempKeyValueTrail;
-				justStartedArray = false;
+				currentKeyValueTrail = theScope->currentKeyValueTrail;
+				//EM_ASM_({console.log("DONE adding new key value trail in array " + $0);}, currentKeyValueTrail);
+				readingArray = true;
 			}
 
 				 //newKeyValueTrail(theScope->currentKeyValueTrail);
 			//EM_ASM({console.log("DONE adding new key value trail");});
 			//theScope->currentKeyValueTrail = currentKeyValueTrail;
 			if (theState->stateNow == ArrayOpen || theState->stateNow == ScopeOpenInArray || readingArray || theState->stateNow == ScopeToBeRemoved) {
-				EM_ASM({console.log("opening object in array");});
+				//EM_ASM({console.log("opening object in array");});
 				//if (theState->keyEncountered) {
 				//}
 
-				checkScope();
 				prepareContainer(true);
-				
 				addState(ScopeOpenInArray); //// ADD STATE
+				readingArray = true;
 			} else {
 				if (! justStartedArray) {
-					struct KeyValueTrail* tempKeyValueTrail;
-					tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
 					checkScope();
-					currentKeyValueTrail = theScope->currentKeyValueTrail;
-					//EM_ASM({console.log("adding new key value trail");});
+					tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
 					theScope->currentKeyValueTrail = tempKeyValueTrail;
+					currentKeyValueTrail = theScope->currentKeyValueTrail;
+					//EM_ASM_({console.log("DONE adding new key value trail " + $0);}, currentKeyValueTrail);
 				}
 
 				prepareContainer(false);
-
+				addState(ScopeOpen); //// ADD STATE
+				readingArray = false;
 			}
-			addState(ScopeOpen); //// ADD STATE
+			justStartedArray = false;
+			colonEncountered = false;
 
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			//EM_ASM_({console.log("OPENED object " + $0);}, theState->stateNow);
