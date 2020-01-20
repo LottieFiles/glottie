@@ -502,25 +502,26 @@ int checkCharacter(char& currentChar) {
 				 //newKeyValueTrail(theScope->currentKeyValueTrail);
 			//EM_ASM({console.log("DONE adding new key value trail");});
 			//theScope->currentKeyValueTrail = currentKeyValueTrail;
-			if (theState->stateNow == ArrayOpen || theState->stateNow == ScopeOpenInArray || readingArray || theState->stateNow == ScopeToBeRemoved) {
+			//if (theState->stateNow == ArrayOpen || theState->stateNow == ScopeOpenInArray) {
+			if (theState->stateNow == ArrayOpen) {
 				//EM_ASM({console.log("opening object in array");});
 				//if (theState->keyEncountered) {
 				//}
 
 				prepareContainer(true);
 				addState(ScopeOpenInArray); //// ADD STATE
-				readingArray = true;
+				//readingArray = true;
 			} else {
-				if (! justStartedArray) {
-					checkScope();
-					tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
-					theScope->currentKeyValueTrail = tempKeyValueTrail;
-					currentKeyValueTrail = theScope->currentKeyValueTrail;
-					//EM_ASM_({console.log("DONE adding new key value trail " + $0);}, currentKeyValueTrail);
-				}
+					if (! justStartedArray) {
+						checkScope();
+						tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
+						theScope->currentKeyValueTrail = tempKeyValueTrail;
+						currentKeyValueTrail = theScope->currentKeyValueTrail;
+						//EM_ASM_({console.log("DONE adding new key value trail " + $0);}, currentKeyValueTrail);
+					}
 
-				prepareContainer(false);
-				addState(ScopeOpen); //// ADD STATE
+					prepareContainer(false);
+					addState(ScopeOpen); //// ADD STATE
 			}
 			readingArray = false;
 			justStartedArray = false;
@@ -544,25 +545,28 @@ int checkCharacter(char& currentChar) {
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
 
 				associateKeyValues();
-				//EM_ASM_({console.log("CLOSING associated " + $0);}, theState->stateNow);
+				EM_ASM_({console.log("CLOSING associated " + $0);}, theState->stateNow);
 				//EM_ASM_({console.log("CLOSING removed scope " + $0);}, theState->stateNow);
 				if (theState->stateNow == ScopeOpenInArray) {
-					//EM_ASM_({console.log("CLOSING reverting to array " + $0);}, theState->stateNow);
+					EM_ASM_({console.log("CLOSING reverting to array " + $0);}, theState->stateNow);
 					readingArray = true;
-				} else {
-					removeScope();
-				}
-				//if (! previousScopeClosure) {
 					removeState();
-				if (lastStateBeforeReading() == ScopeOpenInArray) {
-					readingArray = false;
+				} else {
+					if (theState->stateNow != ScopeOpen) {
+						removeScope();
+					}
+					removeState();
+					if (lastStateBeforeReading() == ArrayOpen) {
+						readingArray = false;
+					}
+					if (theScope != NULL) {
+						currentKeyValueTrail = theScope->currentKeyValueTrail;
+					} else {
+						currentKeyValueTrail = NULL;
+					}
 				}
-					//EM_ASM_({console.log("CLOSING removed state " + $0);}, theState->stateNow);
-				//}
-				currentKeyValueTrail = theScope->currentKeyValueTrail;
 
-			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
-			//EM_ASM_({console.log("CLOSED object " + $0);}, theState->stateNow);
+			EM_ASM_({console.log("CLOSED object " + $0);}, theState->stateNow);
 			previousScopeClosure = true;
 			break;
 		case '[':
@@ -589,6 +593,12 @@ int checkCharacter(char& currentChar) {
 		case ']':
 			//EM_ASM_({console.log("[CLOSING array " + $0);}, theState->stateNow);
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
+			if (theState->stateNow == ScopeOpenInArray) {
+				EM_ASM_({console.log("[Array closed and scope removed " + $0);}, theState->stateNow);
+				removeScope();
+				removeState();
+				currentKeyValueTrail = theScope->currentKeyValueTrail;
+			}
 			if (! justStartedArray) {
 				if (isReadingDone()) {
 					//readingDone();

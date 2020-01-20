@@ -143,10 +143,10 @@ int doMain(char someChar[]) {
 		buffersToRender = lastBuffersCreated->start->next->next;
 		buffersToRender->start = buffersToRender;
 		buffersToRender->next = NULL;
-		glDraw(NULL, NULL);
+		//glDraw(NULL, NULL);
+		glDraw(NULL, buffersToRender);
 	}
 
-	//glDraw(NULL, buffersToRender);
 
 	EM_ASM({console.log("////> done drawing");});
 
