@@ -47,14 +47,17 @@ int associateKeyValues() {
 	if (theScope->scope == _animation) {
 		fillAnimation();
 	} else if (theScope->scope == _k) {
+		EM_ASM({console.log("-----------------> animation");});
 		if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes) || (theScope->prev->scope == _ks && theScope->prev->prev->scope == _it)) { // PropertiesShapeProp
 			fillPropertiesShapeProp(currentShapesItem->ks->k);
 		}
 	} else if (theScope->scope == _e) {
+		EM_ASM({console.log("-----------------> shapeprop");});
 		if ((theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _shapes) || (theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _it)) { // PropertiesShapePropKeyframe
 			fillPropertiesShapeProp(currentShapesItem->ks->keyframe->e);
 		}
 	} else if (theScope->scope == _s) {
+		EM_ASM({console.log("-----------------> shapeprop");});
 		if ((theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _shapes) || (theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _it)) { // PropertiesShapePropKeyframe
 			fillPropertiesShapeProp(currentShapesItem->ks->keyframe->s);
 		}
