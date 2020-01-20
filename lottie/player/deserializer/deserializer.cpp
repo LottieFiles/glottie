@@ -497,7 +497,6 @@ int checkCharacter(char& currentChar) {
 				theScope->currentKeyValueTrail = tempKeyValueTrail;
 				currentKeyValueTrail = theScope->currentKeyValueTrail;
 				//EM_ASM_({console.log("DONE adding new key value trail in array " + $0);}, currentKeyValueTrail);
-				readingArray = true;
 			}
 
 				 //newKeyValueTrail(theScope->currentKeyValueTrail);
@@ -522,8 +521,8 @@ int checkCharacter(char& currentChar) {
 
 				prepareContainer(false);
 				addState(ScopeOpen); //// ADD STATE
-				readingArray = false;
 			}
+			readingArray = false;
 			justStartedArray = false;
 			colonEncountered = false;
 
