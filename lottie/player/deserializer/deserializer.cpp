@@ -393,6 +393,7 @@ int checkCharacter(char& currentChar) {
 				EM_ASM_({console.log("DONE adding new key value trail in array " + $0);}, currentKeyValueTrail);
 			//}
 
+			checkScope();
 
 
 			if (theState->stateNow == ArrayOpen) {
@@ -422,7 +423,6 @@ int checkCharacter(char& currentChar) {
 				strcat(input->currentReadKey, theState->reservedKey);
 			}
 
-			checkScope();
 
 			struct KeyValueTrail* tempKeyValueTrail;
 			tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
@@ -483,7 +483,6 @@ int checkCharacter(char& currentChar) {
 		case '[':
 			if (colonEncountered) {
 				justStartedArray = true;
-				colonEncountered = false;
 			} else {
 				justStartedArray = false;
 			}
@@ -496,14 +495,15 @@ int checkCharacter(char& currentChar) {
 			kvState = Value;
 			//if (theState->stateNow == ArrayOpen) {
 			//}
-			addState(ArrayOpen); //// ADD STATE
 			theScope->currentKeyValueTrail->keyValue = addChildArray(theScope->currentKeyValueTrail->keyValue);
-			if (theState->prev->stateNow != ArrayOpen) {
+			addState(ArrayOpen); //// ADD STATE
+			if (theState->prev->stateNow != ArrayOpen && colonEncountered) {
 				theState->reservedKey[0] = '\0';
 				strcat(theState->reservedKey, input->currentReadKey);
 			}
 			EM_ASM_({console.log("[OPENED array " + $0);}, theState->stateNow);
 			previousScopeClosure = false;
+			colonEncountered = false;
 			break;
 		case ']':
 			EM_ASM_({console.log("[CLOSING array " + $0);}, theState->stateNow);
@@ -533,9 +533,9 @@ int checkCharacter(char& currentChar) {
 			kvState = Key;
 			readingArray = false;
 			EM_ASM({console.log("[CLOSING reading states removed");});
+			theScope->currentKeyValueTrail->keyValue->arrayValue = gotoParentArray(theScope->currentKeyValueTrail->keyValue);
 			removeState();
 			if (theState->stateNow == ArrayOpen) {
-				theScope->currentKeyValueTrail->keyValue->arrayValue = gotoParentArray(theScope->currentKeyValueTrail->keyValue);
 				readingArray = true;
 			}
 			EM_ASM({console.log("[CLOSING gone to parent array");});
