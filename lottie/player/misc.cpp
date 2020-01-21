@@ -515,11 +515,11 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 		strcpy(keyNode->key, key);
 		
 	}
-	//EM_ASM({console.log("adding key value 303.1");});	
+	EM_ASM({console.log("adding key value 303.1");});	
 
 	if (keyNode == NULL) {
 		if (traceKeyValue != NULL && strlen(traceKeyValue->key) < 1) {
-			//EM_ASM({console.log("adding key value 303.1.1");});	
+			EM_ASM({console.log("adding key value 303.1.1");});	
 			keyNode = traceKeyValue;
 			/*
 			if (key.length() >= 20) {
@@ -532,10 +532,10 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			strcpy(keyNode->key, key);
 		} else {
 
-			//EM_ASM({console.log("adding key value 303.2");});	
+			EM_ASM({console.log("adding key value 303.2");});	
 			keyNode = new KeyValue;
 			
-			//EM_ASM({console.log("adding key value 303.3");});	
+			EM_ASM({console.log("adding key value 303.3");});	
 			if (endNode != NULL) {
 				endNode->next = keyNode;
 				//EM_ASM({console.log("adding key value 303.4");});	
@@ -547,7 +547,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 				keyNode->start = keyNode;
 			}
 	
-			//EM_ASM({console.log("adding key value 303.7");});	
+			EM_ASM({console.log("adding key value 303.7");});	
 			/*
 			keyNode->arrayValue = new ArrayOfString;
 			if (endNode != NULL) {
@@ -569,7 +569,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			
 			//addChildArray(keyNode);
 			//keyNode->arrayValue = new ArrayOfString;
-			//EM_ASM({console.log("adding key value 303.8");});
+			EM_ASM({console.log("adding key value 303.8");});
 			/*
 			if (key.length() >= 20) {
 				//EM_ASM_({console.log("adding key value 303.7.5" + String.fromCharCode($0));}, key[0]);	
@@ -582,7 +582,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			strcpy(keyNode->key, key);
 		}
 	}
-	//EM_ASM({console.log("adding key value 303.8.1");});	
+	EM_ASM({console.log("adding key value 303.8.1");});	
 	if (isArray && ! justStartedArray) {
 		if (keyNode->arrayValue == NULL) {
 			struct ArrayOfString* tempArrayOfString;
@@ -617,7 +617,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 		
 	}
 	//traceKeyValue = keyNode;
-	//EM_ASM({console.log("adding key value 320.1");});	
+	EM_ASM({console.log("adding key value 320.1");});	
 	return keyNode;
 }
 
