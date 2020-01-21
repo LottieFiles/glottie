@@ -393,15 +393,6 @@ int checkCharacter(char& currentChar) {
 				EM_ASM_({console.log("DONE adding new key value trail in array " + $0);}, currentKeyValueTrail);
 			//}
 
-			if (theState->stateNow == ArrayOpen && theState->reservedKeySet) {
-				input->currentReadKey[0] = '\0';
-				strcat(input->currentReadKey, theState->reservedKey);
-			}
-			checkScope();
-			struct KeyValueTrail* tempKeyValueTrail;
-			tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
-			theScope->currentKeyValueTrail = tempKeyValueTrail;
-			currentKeyValueTrail = theScope->currentKeyValueTrail;
 
 
 			if (theState->stateNow == ArrayOpen) {
@@ -426,6 +417,17 @@ int checkCharacter(char& currentChar) {
 					addState(ScopeOpen); //// ADD STATE
 			}
 
+			if (theState->stateNow == ArrayOpen && theState->reservedKeySet) {
+				input->currentReadKey[0] = '\0';
+				strcat(input->currentReadKey, theState->reservedKey);
+			}
+
+			checkScope();
+
+			struct KeyValueTrail* tempKeyValueTrail;
+			tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
+			theScope->currentKeyValueTrail = tempKeyValueTrail;
+			currentKeyValueTrail = theScope->currentKeyValueTrail;
 
 			readingArray = false;
 			justStartedArray = false;
@@ -455,7 +457,6 @@ int checkCharacter(char& currentChar) {
 				removeState();
 				currentKeyValueTrail = theScope->currentKeyValueTrail;
 
-				EM_ASM_({console.log("CLOSING associated " + $0);}, theState->stateNow);
 				EM_ASM_({console.log("CLOSING removed scope " + $0);}, theState->stateNow);
 				/*	readingArray = true;
 					removeState();
