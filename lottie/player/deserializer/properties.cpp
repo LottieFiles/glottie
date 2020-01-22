@@ -31,6 +31,12 @@ struct PropertiesShapeProp* newPropertiesShapeProp(struct PropertiesShape* passe
 	return passedPropertiesShapeProp;
 }
 
+struct PropertiesMultiDimensional* newPropertiesMultiDimensional() {
+	struct PropertiesMultiDimensional* tempPropertiesMultiDimensional;
+	tempPropertiesMultiDimensional = new PropertiesMultiDimensional;
+	return tempPropertiesMultiDimensional;
+}
+
 struct PropertiesShapePropKeyframe* newPropertiesShapePropKeyframe() {
 	struct PropertiesShapePropKeyframe* tempPropertiesShapePropKeyframe;
 	tempPropertiesShapePropKeyframe = new PropertiesShapePropKeyframe;
@@ -174,6 +180,10 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	}
 	//deleteKeyValues(theScope->currentKeyValueTrail);
 
+	return 1;
+}
+
+int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedPropertiesMultiDimensional) {
 	return 1;
 }
 

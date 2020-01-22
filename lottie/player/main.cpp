@@ -144,7 +144,7 @@ int doMain(char someChar[]) {
 		buffersToRender->start = buffersToRender;
 		buffersToRender->next = NULL;
 		//glDraw(NULL, NULL);
-		glDraw(NULL, buffersToRender);
+		glDraw(NULL, NULL);
 	}
 
 

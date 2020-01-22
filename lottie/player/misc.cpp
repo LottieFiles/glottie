@@ -515,11 +515,11 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 		strcpy(keyNode->key, key);
 		
 	}
-	EM_ASM({console.log("adding key value 303.1");});	
+	//EM_ASM({console.log("adding key value 303.1");});	
 
 	if (keyNode == NULL) {
 		if (traceKeyValue != NULL && strlen(traceKeyValue->key) < 1) {
-			EM_ASM({console.log("adding key value 303.1.1");});	
+			//EM_ASM({console.log("adding key value 303.1.1");});	
 			keyNode = traceKeyValue;
 			/*
 			if (key.length() >= 20) {
@@ -532,10 +532,10 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			strcpy(keyNode->key, key);
 		} else {
 
-			EM_ASM({console.log("adding key value 303.2");});	
+			//EM_ASM({console.log("adding key value 303.2");});	
 			keyNode = new KeyValue;
 			
-			EM_ASM({console.log("adding key value 303.3");});	
+			//EM_ASM({console.log("adding key value 303.3");});	
 			if (endNode != NULL) {
 				endNode->next = keyNode;
 				//EM_ASM({console.log("adding key value 303.4");});	
@@ -547,7 +547,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 				keyNode->start = keyNode;
 			}
 	
-			EM_ASM({console.log("adding key value 303.7");});	
+			//EM_ASM({console.log("adding key value 303.7");});	
 			/*
 			keyNode->arrayValue = new ArrayOfString;
 			if (endNode != NULL) {
@@ -569,7 +569,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			
 			//addChildArray(keyNode);
 			//keyNode->arrayValue = new ArrayOfString;
-			EM_ASM({console.log("adding key value 303.8");});
+			//EM_ASM({console.log("adding key value 303.8");});
 			/*
 			if (key.length() >= 20) {
 				//EM_ASM_({console.log("adding key value 303.7.5" + String.fromCharCode($0));}, key[0]);	
@@ -582,7 +582,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			strcpy(keyNode->key, key);
 		}
 	}
-	EM_ASM({console.log("adding key value 303.8.1");});	
+	//EM_ASM({console.log("adding key value 303.8.1");});	
 	if (isArray && ! justStartedArray) {
 		if (keyNode->arrayValue == NULL) {
 			struct ArrayOfString* tempArrayOfString;
@@ -617,7 +617,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 		
 	}
 	//traceKeyValue = keyNode;
-	EM_ASM({console.log("adding key value 320.1");});	
+	//EM_ASM({console.log("adding key value 320.1");});	
 	return keyNode;
 }
 
@@ -666,7 +666,7 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 	} else {
 		passedVertex->order = passedVertex->prev->order + 1;
 	}
-	EM_ASM_({console.log("coords ))) " + $0 + " " + $1 + " :: " + $2);}, passedVertex->vertex->position[0], passedVertex->vertex->position[1], passedVertex->order);
+	//EM_ASM_({console.log("coords ))) " + $0 + " " + $1 + " :: " + $2);}, passedVertex->vertex->position[0], passedVertex->vertex->position[1], passedVertex->order);
 
 	/*
 	passedVertex->vertex->x = vertex[0];
@@ -684,7 +684,7 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 	}
 	passedArrayOfVertex = passedArrayOfVertex->start;
 	bool exhausted = false;
-	EM_ASM({console.log("vertextofloat 1.1");});
+	//EM_ASM({console.log("vertextofloat 1.1");});
 	/*
 	int factor = static_cast<int>((sizeOfArray * 4 * 4)/256);
 	int alignSize;
@@ -697,14 +697,14 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 	*/
 	//sizeOfArray = sizeOfArray * 4;
 	GLfloat* tempArray = new GLfloat[(sizeOfArray * 4)];
-	EM_ASM({console.log("vertextofloat 1.4");});
+	//EM_ASM({console.log("vertextofloat 1.4");});
 	int index = 0;
-	EM_ASM({console.log("-=-=-=-=> starting");});
+	//EM_ASM({console.log("-=-=-=-=> starting");});
 	while (! exhausted) {
 		*(tempArray + index) = (passedArrayOfVertex->vertex->position[0] / theAnimation->w) - 0.5;
 		index = index + 1;
 		*(tempArray + index) = (passedArrayOfVertex->vertex->position[1] / theAnimation->h) - 0.5;
-		EM_ASM({console.log("val " + $0 + " " + $1 + " " + $2);}, *(tempArray + index - 1), *(tempArray + index), passedArrayOfVertex->vertex->position[0]);
+		//EM_ASM({console.log("val " + $0 + " " + $1 + " " + $2);}, *(tempArray + index - 1), *(tempArray + index), passedArrayOfVertex->vertex->position[0]);
 		index = index + 1;
 		if (theAnimation->ddd) {
 			if (theAnimation->z > 0) {
@@ -726,7 +726,7 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 			passedArrayOfVertex = passedArrayOfVertex->next;
 		}
 	}
-	EM_ASM({console.log("-=-=-=-=> ended");});
+	//EM_ASM({console.log("-=-=-=-=> ended");});
 
 	return tempArray;
 }
