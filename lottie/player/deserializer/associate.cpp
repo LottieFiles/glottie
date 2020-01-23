@@ -71,11 +71,11 @@ int associateKeyValues() {
 			fillPropertiesShapeProp(currentShapesItem->ks->keyframe->s);
 		}
 	} else if (theScope->scope == _it) {
-		if (theScope->prev->scope == _layers || theScope->prev->scope = _shapes) {
+		if (theScope->prev->scope == _layers || theScope->prev->scope == _shapes) {
 			fillShapesItem(currentShapesItem);
 		}
 	} else if (theScope->scope == _shapes) {
-		if (theScope->prev->scope == _layers || theScope->prev->scope = _k) {
+		if (theScope->prev->scope == _layers || theScope->prev->scope == _k) {
 			fillShapesItem(currentShapesItem);
 		}
 	} else if (theScope->scope == _a) {
@@ -88,19 +88,19 @@ int associateKeyValues() {
 		}
 	} else if (theScope->scope == _r) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
-			fillPropertiesMultiDimensional(currentShapesItem->r);
+			//fillPropertiesMultiDimensional(currentShapesItem->r);
 		}
 	} else if (theScope->scope == _o) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
-			fillPropertiesMultiDimensional(currentShapesItem->o);
+			//fillPropertiesMultiDimensional(currentShapesItem->o);
 		}
 	} else if (theScope->scope == _sk) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
-			fillPropertiesMultiDimensional(currentShapesItem->sk);
+			//fillPropertiesMultiDimensional(currentShapesItem->sk);
 		}
 	} else if (theScope->scope == _sa) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
-			fillPropertiesMultiDimensional(currentShapesItem->sa);
+			//fillPropertiesMultiDimensional(currentShapesItem->sa);
 		}
 	}
 
@@ -250,33 +250,33 @@ int prepareContainer(bool arrayOfObjects) {
 		}
 	} else if (theScope->scope == _s) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
-			currentShapesItem->s = newPropertiesMultiDimensional(currentShapesItem->s);
+			currentShapesItem->s = newPropertiesMultiDimensional();
 		} else if ((theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _shapes) || (theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _it)) { // PropertiesShapePropKeyframe
 			currentShapesItem->ks->keyframe->s = newPropertiesShapeProp(currentShapesItem->ks, currentShapesItem->ks->keyframe->s, true);
 		}
 	} else if (theScope->scope == _a) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
-			currentShapesItem->a = newPropertiesMultiDimensional(currentShapesItem->s);
+			currentShapesItem->a = newPropertiesMultiDimensional();
 		}
 	} else if (theScope->scope == _p) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
-			currentShapesItem->p = newPropertiesMultiDimensional(currentShapesItem->s);
+			currentShapesItem->p = newPropertiesMultiDimensional();
 		}
 	} else if (theScope->scope == _r) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
-			currentShapesItem->r = newPropertiesMultiDimensional(currentShapesItem->s);
+			//currentShapesItem->r = newPropertiesMultiDimensional();
 		}
 	} else if (theScope->scope == _o) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
-			currentShapesItem->o = newPropertiesMultiDimensional(currentShapesItem->s);
+			//currentShapesItem->o = newPropertiesMultiDimensional();
 		}
 	} else if (theScope->scope == _sk) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
-			currentShapesItem->sk = newPropertiesMultiDimensional(currentShapesItem->s);
+			//currentShapesItem->sk = newPropertiesMultiDimensional();
 		}
 	} else if (theScope->scope == _sa) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
-			currentShapesItem->sa = newPropertiesMultiDimensional(currentShapesItem->s);
+			//currentShapesItem->sa = newPropertiesMultiDimensional();
 		}
 	
 	}

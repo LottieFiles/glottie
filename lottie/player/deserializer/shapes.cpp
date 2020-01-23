@@ -53,7 +53,7 @@ int fillShapesItem(struct ShapesItem* passedShapesItem) {
 		if (tempKeyValue) {
 			//EM_ASM({console.log("========================> iteration");});
 		}
-		if (strlen(tempKeyValue->key) == "tr") {
+		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "tr") == 0) {
 			//EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
 				exhausted = true;
