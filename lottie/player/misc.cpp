@@ -734,3 +734,115 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 //////////// type converters
 
 
+//////////// helpers for populating json objects
+
+struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, struct ArrayOfVertex* targetVertex) {
+	struct ValuesVector* baseVector;
+	if (traceArrayValue == NULL) {
+		return 0;
+	}
+
+	baseVector = traceArrayValue->vector->start;
+
+	bool exhausted = false;
+	currentUniversalCount = 0;
+	while (! exhausted) {
+		if (baseVector->child == NULL) {
+			break;
+		}
+		currentUniversalCount = currentUniversalCount + 1;
+
+		string xvals(baseVector->child->vector->start->value);
+		float xval = 0;
+		if (xvals[0] == '0' || xvals.length() < 1) {
+			xval = 0;
+		} else {
+			if (! xvals.empty()) {
+				xval = stof(xvals);
+			} else {
+				xval = 0;
+			}
+		}
+		string yvals(baseVector->child->vector->start->next->value);
+		float yval = 0;
+		if (yvals[0] == '0' || yvals.length() < 1) {
+			yval = 0;
+		} else {
+			if (! yvals.empty()) {
+				yval = stof(yvals);
+			} else {
+				yval = 0;
+			}
+		}
+		float vertex[4] = {xval, yval, 0.0f, 1.0f};
+		targetVertex = pushVertex(targetVertex, vertex);
+
+		if (baseVector->next == NULL) {	
+			exhausted = true;
+		} else {
+			baseVector = baseVector->next;
+		}
+	}
+	targetVertex->next = targetVertex->start;
+	targetVertex->start->prev = targetVertex;
+	if (targetVertex != NULL) {
+		return targetVertex->start;
+	} else {
+		return NULL;
+	}
+}
+
+float* populateFloatArray(struct ArrayOfString* traceArrayValue) {
+	struct ValuesVector* baseVector;
+	if (traceArrayValue == NULL) {
+		return 0;
+	}
+
+	baseVector = traceArrayValue->vector->start;
+
+	bool exhausted = false;
+	currentUniversalCount = 0;
+	float* tempFloat;
+	while (! exhausted) {
+		if (baseVector->child == NULL) {
+			break;
+		}
+		currentUniversalCount = currentUniversalCount + 1;
+
+		string xvals(baseVector->child->vector->start->value);
+		float xval = 0;
+		if (xvals[0] == '0' || xvals.length() < 1) {
+			xval = 0;
+		} else {
+			if (! xvals.empty()) {
+				xval = stof(xvals);
+			} else {
+				xval = 0;
+			}
+		}
+		/*string yvals(baseVector->child->vector->start->next->value);
+		float yval = 0;
+		if (yvals[0] == '0' || yvals.length() < 1) {
+			yval = 0;
+		} else {
+			if (! yvals.empty()) {
+				yval = stof(yvals);
+			} else {
+				yval = 0;
+			}
+		}*/
+		//float vertex[4] = {xval, yval, 0.0f, 1.0f};
+		//targetVertex = pushVertex(targetVertex, vertex);
+		*(tempFloat + currentUniversalCount) = xval;
+
+		if (baseVector->next == NULL) {	
+			exhausted = true;
+		} else {
+			baseVector = baseVector->next;
+		}
+	}
+	return tempFloat;
+}
+
+
+

@@ -69,6 +69,8 @@ struct alignas(ALIGNSIZE) ShapesItem {
 	struct HelpersTransform* tr = NULL; // transform
 	
 	struct ShapesItem* it = NULL;
+
+	bool isKeyframed = false;
 	
 } *currentShapesItem;
 
