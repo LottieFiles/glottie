@@ -1,9 +1,9 @@
 //// properties
 
 struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
-	int e; //end
-	int s; //start
-	int t; //time
+	float e; //end
+	float s; //start
+	float t; //time
 
 	struct XY* i; // bezier curve interpolation in value
 } *currentPropertiesValueKeyframe;
@@ -20,16 +20,16 @@ struct alignas(ALIGNSIZE) PropertiesValue {
 } *currentPropertiesValue;
 
 struct alignas(ALIGNSIZE) PropertiesMultiDimensionalKeyframe {
-	int* e; // end - array of numbers
-	int* s;
+	float* e; // end - array of numbers
+	float* s;
 } *currentPropertiesMultiDimensionalKeyframe;
 
 struct alignas(ALIGNSIZE) PropertiesMultiDimensional {
 	float* k;
 	string x; // property expression - AE expression that modifies the value
 	string ix; // property index - used for expression
-	vector<float> ti; // in tangent
-	vector<float> to; // out tangent
+	float* ti; // in tangent
+	float* to; // out tangent
 
 	struct PropertiesMultiDimensionalKeyframe* keyframe=NULL;
 } *currentPropertiesMultiDimensional;

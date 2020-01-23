@@ -138,11 +138,15 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 			passedPropertiesMultiDimensional->to = populateFloatArray(tempKeyValue->arrayValue);
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "a") == 0) {
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "e") == 0) {
-			passedPropertiesMultiDimensional->isKeyframed = true;
-			passedPropertiesMultiDimensional->e = populateFloatArray(tempKeyValue->arrayValue);
+			if (passedPropertiesMultiDimensional->keyframe == NULL) {
+				passedPropertiesMultiDimensional->keyframe = new PropertiesMultiDimensionalKeyframe;
+			}
+			passedPropertiesMultiDimensional->keyframe->e = populateFloatArray(tempKeyValue->arrayValue);
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "s") == 0) {
-			passedPropertiesMultiDimensional->isKeyframed = true;
-			passedPropertiesMultiDimensional->s = populateFloatArray(tempKeyValue->arrayValue);
+			if (passedPropertiesMultiDimensional->keyframe == NULL) {
+				passedPropertiesMultiDimensional->keyframe = new PropertiesMultiDimensionalKeyframe;
+			}
+			passedPropertiesMultiDimensional->keyframe->s = populateFloatArray(tempKeyValue->arrayValue);
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "x") == 0) {
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ix") == 0) {
 		}
