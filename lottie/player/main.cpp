@@ -139,16 +139,16 @@ int doMain(char someChar[]) {
 	redrawRequired = true;
 
 	struct Buffers* buffersToRender;
-	if (lastBuffersCreated != NULL) {
+/*	if (lastBuffersCreated != NULL) {
 		buffersToRender = lastBuffersCreated->start->next->next;
 		buffersToRender->start = buffersToRender;
 		buffersToRender->next = NULL;
 		//glDraw(NULL, NULL);
-		glDraw(NULL, NULL);
-	}
+	}*/
+	glDraw(NULL, NULL);
 
 
-	EM_ASM({console.log("////> done drawing");});
+	EM_ASM({console.log("////> done drawing " + $0 + " " + $1);}, theAnimation->w, theAnimation->h);
 
 	return 1;
 }
