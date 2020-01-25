@@ -38,7 +38,37 @@ int updateShapesItemType(enum ShapesTy passedTy, struct ShapesItem* passedShapes
 }
 
 
-
+enum ShapesTy getShapesTy(char* passedTy) {
+	if (strcmp(passedTy, "gr") == 0) {
+		return _group;
+	} else if (strcmp(passedTy, "sh") == 0) {
+		return _shape;
+	} else if (strcmp(passedTy, "el") == 0) {
+		return _ellipse;
+	} else if (strcmp(passedTy, "rc") == 0) {
+		return _rect;
+	} else if (strcmp(passedTy, "sr") == 0) {
+		return _star;
+	} else if (strcmp(passedTy, "fl") == 0) {
+		return _fill;
+	} else if (strcmp(passedTy, "gf") == 0) {
+		return _gFill;
+	} else if (strcmp(passedTy, "gs") == 0) {
+		return _gStroke;
+	} else if (strcmp(passedTy, "st") == 0) {
+		return _stroke;
+	} else if (strcmp(passedTy, "mm") == 0) {
+		return _merge;
+	} else if (strcmp(passedTy, "tm") == 0) {
+		return _trim;
+	} else if (strcmp(passedTy, "rd") == 0) {
+		return _roundCorners;
+	} else if (strcmp(passedTy, "rp") == 0) {
+		return _repeater;
+	} else if (strcmp(passedTy, "tr") == 0) {
+		return _transform;
+	}
+}
 
 
 int fillShapesItem(struct ShapesItem* passedShapesItem) {
@@ -53,7 +83,7 @@ int fillShapesItem(struct ShapesItem* passedShapesItem) {
 		if (tempKeyValue) {
 			//EM_ASM({console.log("========================> iteration");});
 		}
-		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "tr") == 0) {
+		if (strlen(tempKeyValue->key) == 0) {
 			//EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
 				exhausted = true;
@@ -64,6 +94,13 @@ int fillShapesItem(struct ShapesItem* passedShapesItem) {
 		}
 
 
+		if (strlen(tempKeyValue->key) > 0) {
+			if (strcmp(tempKeyValue->key, "ty") == 0) {
+				passedShapeItem->ty = getShapesTy(tempKeyValue->value);
+			} else if (strcmp(tempKeyValue->key, "c") == 0) {
+			} else if (strcmp(tempKeyValue->key, "tr") == 0) {
+			}
+		}
 
 
 
