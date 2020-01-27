@@ -12,7 +12,7 @@ int associateKeyValues() {
 		case assets_layers_shapes_ks:
 			break;
 		case assets_layers_shapes_ks_k:
-			EM_ASM({console.log("ks_k");});
+			//EM_ASM({console.log("ks_k");});
 			fillPropertiesShapeProp();
 			break;
 		case assets_layers_shapes_ks_k_e:
@@ -45,20 +45,21 @@ int associateKeyValues() {
 	//popKeyValueTrail();
 
 	if (theScope->scope == _animation) {
-		EM_ASM({console.log("//----------------> filling animation");});
+		//EM_ASM({console.log("//----------------> filling animation");});
 		fillAnimation();
 	} else if (theScope->scope == _ks) {
 		if (theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) { // PropertiesShape
 		} else if (theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) {
 		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _layers) { // PropertiesShape
 		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _shapes) { // PropertiesShape
+		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _it) { // PropertiesShape
 		}
 	} else if (theScope->scope == _k) {
 		if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
-			EM_ASM({console.log("//---------------> k within ks within shapes");});
+			//EM_ASM({console.log("//---------------> k within ks within shapes");});
 			fillPropertiesShapeProp(currentShapesItem->ks->k);
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _it)) { // PropertiesShapeProp
-			EM_ASM({console.log("//----------------> k within ks within it");});
+			//EM_ASM({console.log("//----------------> k within ks within it");});
 			fillPropertiesShapeProp(currentShapesItem->ks->k);
 		}
 	} else if (theScope->scope == _e) {
@@ -72,15 +73,9 @@ int associateKeyValues() {
 			fillPropertiesShapeProp(currentShapesItem->ks->keyframe->s);
 		}
 	} else if (theScope->scope == _it) {
-		if (theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) { // PropertiesShape
+		if (theScope->prev->scope == _layers) {
 			fillShapesItem(currentShapesItem);
-		} else if (theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) {
-			fillShapesItem(currentShapesItem);
-		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _layers) { // PropertiesShape
-			fillShapesItem(currentShapesItem);
-		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _shapes) { // PropertiesShape
-			fillShapesItem(currentShapesItem);
-		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _it) { // PropertiesShape
+		} else if (theScope->prev->scope == _shapes) {
 			fillShapesItem(currentShapesItem);
 		}
 	} else if (theScope->scope == _shapes) {
@@ -112,6 +107,15 @@ int associateKeyValues() {
 	} else if (theScope->scope == _sa) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
 			//fillPropertiesMultiDimensional(currentShapesItem->sa);
+		}
+	} else if (theScope->scope == _c) {
+		if (theScope->prev->scope == _shapes) {
+			fillPropertiesMultiDimensional(currentShapesItem->c);
+		} else if (theScope->prev->scope == _it) {
+			fillPropertiesMultiDimensional(currentShapesItem->c);
+		} else if (strcmp(theScope->prev->currentTy,"fl") == 0) {
+			EM_ASM({console.log("//----------------> c populating");});
+			fillPropertiesMultiDimensional(currentShapesItem->c);
 		}
 	}
 
@@ -170,18 +174,18 @@ int prepareContainer(bool arrayOfObjects) {
 	
 	if (theScope->scope == _animation) {
 		preSwitch[0] = 0;
-		EM_ASM({console.log("-----------------> animation");});
+		//EM_ASM({console.log("-----------------> animation");});
 		currentLayers = NULL;
 		theAnimation = new Animation;
 	} else if (theScope->scope == _assets) {
 		preSwitch[0] = 0;
-		EM_ASM({console.log("-----------------> assets");});
+		//EM_ASM({console.log("-----------------> assets");});
 		currentLayers = NULL;
 		theAnimation->assets = newAssets(currentAssets);
 	} else if (theScope->scope == _layers) {
 		preSwitch[1] = 0;
 		if (theScope->prev->scope == _assets) {
-			EM_ASM({console.log("-----------------> layers within assets");});
+			//EM_ASM({console.log("-----------------> layers within assets");});
 			if (preSwitch[0] == 2) {
 				tempAnimationLayers = currentLayers;
 				currentLayers = tempAssetsLayers;
@@ -194,7 +198,7 @@ int prepareContainer(bool arrayOfObjects) {
 			}
 			currentAssets->precomps = newLayers(currentLayers);
 		} else if (theScope->prev->scope == _animation) {
-			EM_ASM({console.log("-----------------> layers");});
+			//EM_ASM({console.log("-----------------> layers");});
 			if (preSwitch[0] == 1) {
 				tempAssetsLayers = currentLayers;
 				currentLayers = tempAnimationLayers;
@@ -208,16 +212,16 @@ int prepareContainer(bool arrayOfObjects) {
 			theAnimation->layers = newLayers(currentLayers);
 		}
 	} else if (theScope->scope == _it) {
-		EM_ASM({console.log("-----------------> it");});
+		//EM_ASM({console.log("-----------------> it");});
 		if (theScope->prev->scope == _layers) {
-			EM_ASM({console.log("-----------------> it within layers");});
+			//EM_ASM({console.log("-----------------> it within layers");});
 			/*if (preSwitch[1] != 1) {
 				preSwitch[1] = 1;
 				currentShapesItem = NULL;
 			}*/
 			currentLayers->shapes = newShapesItem(currentShapesItem);
 		} else if (theScope->prev->scope == _shapes) {
-			EM_ASM({console.log("-----------------> it within shapes");});
+			//EM_ASM({console.log("-----------------> it within shapes");});
 			/*if (preSwitch[1] != 2) {
 				preSwitch[1] = 2;
 				currentShapesItem = NULL;
@@ -226,36 +230,36 @@ int prepareContainer(bool arrayOfObjects) {
 		}
 	} else if (theScope->scope == _shapes) {
 		if (theScope->prev->scope == _layers) {
-			EM_ASM({console.log("-----------------> shapes in layers");});
+			//EM_ASM({console.log("-----------------> shapes in layers");});
 			currentLayers->shapes = newShapesItem(currentShapesItem);
 		} else if (theScope->prev->scope == _k) {
-			EM_ASM({console.log("-----------------> shapes in k");});
+			//EM_ASM({console.log("-----------------> shapes in k");});
 			currentLayers->shapes = newShapesItem(currentShapesItem);
 		}
 	} else if (theScope->scope == _ty) {
 	} else if (theScope->scope == _ks) {
 		if (theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) { // PropertiesShape
-			EM_ASM({console.log("-----------------> ks within shapes within layers");});
+			//EM_ASM({console.log("-----------------> ks within shapes within layers");});
 			currentShapesItem->ks = newPropertiesShape(currentShapesItem->ks);
 		} else if (theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) {
-			EM_ASM({console.log("-----------------> ks within shapes within layers");});
+			//EM_ASM({console.log("-----------------> ks within shapes within layers");});
 			currentShapesItem->ks = newPropertiesShape(currentShapesItem->ks);
 		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _layers) { // PropertiesShape
-			EM_ASM({console.log("-----------------> ks within it within layers");});
+			//EM_ASM({console.log("-----------------> ks within it within layers");});
 			currentShapesItem->ks = newPropertiesShape(currentShapesItem->ks);
 		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _shapes) { // PropertiesShape
-			EM_ASM({console.log("-----------------> ks within it within shapes");});
+			//EM_ASM({console.log("-----------------> ks within it within shapes");});
 			currentShapesItem->ks = newPropertiesShape(currentShapesItem->ks);
 		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _it) { // PropertiesShape
-			EM_ASM({console.log("-----------------> ks within it within shapes");});
+			//EM_ASM({console.log("-----------------> ks within it within shapes");});
 			currentShapesItem->ks = newPropertiesShape(currentShapesItem->ks);
 		}
 	} else if (theScope->scope == _k) {
 		if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
-			EM_ASM({console.log("-----------------> k within ks within shapes");});
+			//EM_ASM({console.log("-----------------> k within ks within shapes");});
 			currentShapesItem->ks->k = newPropertiesShapeProp(currentShapesItem->ks, currentShapesItem->ks->k, false);
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _it)) { // PropertiesShapeProp
-			EM_ASM({console.log("-----------------> k within ks within it");});
+			//EM_ASM({console.log("-----------------> k within ks within it");});
 			currentShapesItem->ks->k = newPropertiesShapeProp(currentShapesItem->ks, currentShapesItem->ks->k, false);
 		}
 	} else if (theScope->scope == _e) {
@@ -292,11 +296,19 @@ int prepareContainer(bool arrayOfObjects) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
 			//currentShapesItem->sa = newPropertiesMultiDimensional();
 		}
-	} else if (theScope->scope == _ef) {
-		if (theScope->prev->scope == _shapes) {
-		} else if (theScope->prev->scope == _it) {
-		}
 	
+	} else if (theScope->scope == _c) {
+		EM_ASM({console.log("-----------------> c ");});
+		if (theScope->prev->scope == _shapes) {
+			EM_ASM({console.log("-----------------> c within shapes");});
+			currentShapesItem->c = newPropertiesMultiDimensional();
+		} else if (theScope->prev->scope == _it) {
+			EM_ASM({console.log("-----------------> c within it");});
+			currentShapesItem->c = newPropertiesMultiDimensional();
+		} else if (strcmp(theScope->prev->currentTy,"fl") == 0) {
+			EM_ASM({console.log("-----------------> c within it");});
+			currentShapesItem->c = newPropertiesMultiDimensional();
+		}
 	}
 	
 	return 1;

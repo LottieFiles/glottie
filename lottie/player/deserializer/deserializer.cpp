@@ -309,6 +309,9 @@ int checkScope() {
 		addScope(_sk);
 	} else if (keyIs("sa")) {
 		addScope(_sa);
+	} else if (keyIs("c")) {
+		EM_ASM({console.log("-/--> found c");});
+		addScope(_c);
 
 
 

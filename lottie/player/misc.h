@@ -85,7 +85,6 @@ struct alignas(ALIGNSIZE) ValuesVector {
 	struct ArrayOfString* parent = NULL; // only one
 	struct ArrayOfString* child = NULL; // only one
 
-
 	//string value;
 };
 
@@ -137,6 +136,23 @@ struct alignas(ALIGNSIZE) textBlock {
 
 struct alignas(ALIGNSIZE) TriangulateReturn {
 	GLfloat* vbo;
+	GLfloat* cbo;
 	unsigned int* index;
 };
+
+struct alignas(ALIGNSIZE) ColorsReturn {
+	GLfloat* cbo;
+	int cboLength;
+};
+
+struct alignas(ALIGNSIZE) FloatArrayReturn {
+	float* floatArray;
+	int count;
+};
+
+struct alignas(ALIGNSIZE) IntArrayReturn {
+	int* intArray;
+	int count;
+};
+
 

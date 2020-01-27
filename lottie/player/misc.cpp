@@ -733,6 +733,15 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 
 //////////// type converters
 
+float stringToFloat(char* passedString) {
+	string tempString(passedString);
+	return stof(tempString);
+}
+
+int stringToInt(char* passedString) {
+	string tempString(passedString);
+	return stoi(tempString);
+}
 
 //////////// helpers for populating json objects
 
@@ -754,7 +763,7 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 
 		string xvals(baseVector->child->vector->start->value);
 		float xval = 0;
-		if (xvals[0] == '0' || xvals.length() < 1) {
+		if (xvals.length() < 1) {
 			xval = 0;
 		} else {
 			if (! xvals.empty()) {
@@ -765,7 +774,7 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 		}
 		string yvals(baseVector->child->vector->start->next->value);
 		float yval = 0;
-		if (yvals[0] == '0' || yvals.length() < 1) {
+		if (yvals.length() < 1) {
 			yval = 0;
 		} else {
 			if (! yvals.empty()) {
@@ -792,8 +801,11 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 	}
 }
 
-float* populateFloatArray(struct ArrayOfString* traceArrayValue) {
+struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValue) {
 	struct ValuesVector* baseVector;
+	struct FloatArrayReturn* tempFloatArray;
+	int tempCount = 0;
+	tempFloatArray = new FloatArrayReturn;
 	if (traceArrayValue == NULL) {
 		return 0;
 	}
@@ -801,17 +813,30 @@ float* populateFloatArray(struct ArrayOfString* traceArrayValue) {
 	baseVector = traceArrayValue->vector->start;
 
 	bool exhausted = false;
-	currentUniversalCount = 0;
 	float* tempFloat;
 	while (! exhausted) {
-		if (baseVector->child == NULL) {
-			break;
+		tempCount++;
+		if (baseVector->next == NULL) {	
+			exhausted = true;
+		} else {
+			baseVector = baseVector->next;
 		}
-		currentUniversalCount = currentUniversalCount + 1;
+	}
+	tempFloatArray->count = tempCount;
+	tempFloatArray->floatArray = new float[tempCount];
 
-		string xvals(baseVector->child->vector->start->value);
+	EM_ASM({console.log("->>-->> count " + $0);}, tempCount);
+	baseVector = traceArrayValue->vector->start;
+	exhausted = false;
+	currentUniversalCount = 0;
+	while (! exhausted) {
+		/*if (baseVector->child == NULL) {
+			break;
+		}*/
+
+		string xvals(baseVector->value);
 		float xval = 0;
-		if (xvals[0] == '0' || xvals.length() < 1) {
+		if (xvals.length() < 1) {
 			xval = 0;
 		} else {
 			if (! xvals.empty()) {
@@ -833,7 +858,9 @@ float* populateFloatArray(struct ArrayOfString* traceArrayValue) {
 		}*/
 		//float vertex[4] = {xval, yval, 0.0f, 1.0f};
 		//targetVertex = pushVertex(targetVertex, vertex);
-		*(tempFloat + currentUniversalCount) = xval;
+		*(tempFloatArray->floatArray + currentUniversalCount) = xval;
+		currentUniversalCount = currentUniversalCount + 1;
+		EM_ASM({console.log("->>-->> found k value " + $0);}, xval);
 
 		if (baseVector->next == NULL) {	
 			exhausted = true;
@@ -841,7 +868,7 @@ float* populateFloatArray(struct ArrayOfString* traceArrayValue) {
 			baseVector = baseVector->next;
 		}
 	}
-	return tempFloat;
+	return tempFloatArray;
 }
 
 

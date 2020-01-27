@@ -62,12 +62,13 @@ enum ShapesTy getShapesTy(char* passedTy) {
 	} else if (strcmp(passedTy, "tm") == 0) {
 		return _trim;
 	} else if (strcmp(passedTy, "rd") == 0) {
-		return _roundCorners;
+		return _roundedCorners;
 	} else if (strcmp(passedTy, "rp") == 0) {
 		return _repeater;
 	} else if (strcmp(passedTy, "tr") == 0) {
 		return _transform;
 	}
+	return _noshape;
 }
 
 
@@ -96,8 +97,8 @@ int fillShapesItem(struct ShapesItem* passedShapesItem) {
 
 		if (strlen(tempKeyValue->key) > 0) {
 			if (strcmp(tempKeyValue->key, "ty") == 0) {
-				passedShapeItem->ty = getShapesTy(tempKeyValue->value);
-			} else if (strcmp(tempKeyValue->key, "c") == 0) {
+				passedShapesItem->ty = getShapesTy(tempKeyValue->value);
+				EM_ASM({console.log("==========-------------=======> shape type recorded " + $0);}, passedShapesItem->ty);
 			} else if (strcmp(tempKeyValue->key, "tr") == 0) {
 			}
 		}

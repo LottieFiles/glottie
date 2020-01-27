@@ -74,7 +74,8 @@ enum Scopes {
 	_r = 14,
 	_o = 15,
 	_sk = 16,
-	_sa = 17
+	_sa = 17,
+	_c = 18
 	/*
 	assets_layers = 403,
 	assets_layers_shapes = 404,
@@ -130,6 +131,71 @@ enum States {
 	NewElement = 13,
 	ScopeToBeRemoved = 14
 	};
+
+// forward declarations
+struct ScopeTrail* lastScopeBeforeThis(struct ScopeTrail*);
+struct ScopeBefore lastScopeBeforeObject();
+struct Layers* newLayers(struct Layers*);
+struct ShapesItem* newShapesItem(struct ShapesItem*);
+struct PropertiesShape* newPropertiesShape();
+struct ShaderProgram* newShaderProgram();
+
+/*
+alignas(256) int currentUniversalCount;
+alignas(256) SDL_Window* wnd;
+alignas(256) SDL_Renderer* rdr;
+alignas(256) SDL_GLContext glc;
+alignas(256) int lastRefIndex = 0;
+alignas(256) GLuint mainShader;
+*/
+
+int preSwitch[20]; // to determine the switch of assets to layers (and vice versa)
+int currentUniversalCount;
+SDL_Window* wnd = NULL;
+SDL_Renderer* rdr = NULL;
+SDL_GLContext glc;
+int lastRefIndex = 0;
+GLuint mainShader;
+
+bool redrawRequired = false;
+//GLuint* shaderProgram;
+
+struct alignas(ALIGNSIZE) RedrawBuffers {
+	struct RedrawBuffers* start;
+	struct RedrawBuffers* next;
+	struct RedrawBuffers* prev;
+
+	struct Buffers* buffers;
+} *redrawList = NULL;
+
+struct alignas(ALIGNSIZE) ShaderProgram {
+	struct ShaderProgram* start = NULL;
+	struct ShaderProgram* next = NULL;
+	struct ShaderProgram* prev = NULL;
+
+	GLuint* shader;
+} *lastShaderProgramCreated;
+
+struct alignas(ALIGNSIZE) Buffers {
+	struct Buffers* start = NULL;
+	struct Buffers* next = NULL;
+	struct Buffers* prev = NULL;
+
+	struct Dimensions* dimensions = NULL;
+
+	GLuint* vao = NULL;
+	GLuint* vbo = NULL;
+	GLuint* cbo = NULL;
+	GLuint* ibo = NULL;
+	unsigned int* idx; // array of triangulation data
+	int idxCount;
+
+	GLint* posAttrib = NULL;
+	bool changed = false;
+	bool clockwise;
+} *lastBuffersCreated;
+
+
 
 enum KeyValueState {Key, Value};
 

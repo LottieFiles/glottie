@@ -114,11 +114,12 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 	//EM_ASM({console.log("========================> entered");});
 	bool exhausted = false;
 	struct KeyValue* tempKeyValue;
+	struct FloatArrayReturn* tempFloatArray = NULL;
 	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
 	struct ArrayOfString* tempArrayValue; 
 	while (! exhausted) {
 		if (tempKeyValue) {
-			//EM_ASM({console.log("========================> iteration");});
+			EM_ASM({console.log("========================> iteration 99");});
 		}
 		if (strlen(tempKeyValue->key) == 0) {
 			//EM_ASM({console.log("========================> empty");});
@@ -131,26 +132,44 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 		}
 
 		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "k") == 0) {
-			passedPropertiesMultiDimensional->k = populateFloatArray(tempKeyValue->arrayValue);
+			EM_ASM({console.log("========================> found k in c");});
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue);
+			passedPropertiesMultiDimensional->k = tempFloatArray->floatArray;
+			passedPropertiesMultiDimensional->k_count = tempFloatArray->count;
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ti") == 0) {
-			passedPropertiesMultiDimensional->ti = populateFloatArray(tempKeyValue->arrayValue);
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue);
+			passedPropertiesMultiDimensional->ti = tempFloatArray->floatArray;
+			passedPropertiesMultiDimensional->ti_count = tempFloatArray->count;
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "to") == 0) {
-			passedPropertiesMultiDimensional->to = populateFloatArray(tempKeyValue->arrayValue);
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue);
+			passedPropertiesMultiDimensional->to = tempFloatArray->floatArray;
+			passedPropertiesMultiDimensional->to_count = tempFloatArray->count;
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "a") == 0) {
+			passedPropertiesMultiDimensional->a = stringToInt(tempKeyValue->value);
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "e") == 0) {
 			if (passedPropertiesMultiDimensional->keyframe == NULL) {
 				passedPropertiesMultiDimensional->keyframe = new PropertiesMultiDimensionalKeyframe;
 			}
-			passedPropertiesMultiDimensional->keyframe->e = populateFloatArray(tempKeyValue->arrayValue);
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue);
+			passedPropertiesMultiDimensional->keyframe->e = tempFloatArray->floatArray;
+			passedPropertiesMultiDimensional->keyframe->e_count = tempFloatArray->count;
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "s") == 0) {
 			if (passedPropertiesMultiDimensional->keyframe == NULL) {
 				passedPropertiesMultiDimensional->keyframe = new PropertiesMultiDimensionalKeyframe;
 			}
-			passedPropertiesMultiDimensional->keyframe->s = populateFloatArray(tempKeyValue->arrayValue);
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue);
+			passedPropertiesMultiDimensional->keyframe->s = tempFloatArray->floatArray;
+			passedPropertiesMultiDimensional->keyframe->s_count = tempFloatArray->count;
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "x") == 0) {
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ix") == 0) {
 		}
-	
+		
+
+		if (tempFloatArray != NULL) {
+			delete tempFloatArray;
+			tempFloatArray = NULL;
+		}
+
 		if (tempKeyValue->next == NULL) {
 			exhausted = true;
 		} else {

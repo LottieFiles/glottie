@@ -10,6 +10,7 @@ struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
 
 struct alignas(ALIGNSIZE) PropertiesValue {
 	float* k;
+	int k_count;
 	//string ix; //property index
 	int a; // animated
 	//string x; //expression
@@ -21,15 +22,21 @@ struct alignas(ALIGNSIZE) PropertiesValue {
 
 struct alignas(ALIGNSIZE) PropertiesMultiDimensionalKeyframe {
 	float* e; // end - array of numbers
+	int e_count;
 	float* s;
+	int s_count;
 } *currentPropertiesMultiDimensionalKeyframe;
 
 struct alignas(ALIGNSIZE) PropertiesMultiDimensional {
 	float* k;
+	int k_count;
 	string x; // property expression - AE expression that modifies the value
 	string ix; // property index - used for expression
 	float* ti; // in tangent
+	int ti_count; // in tangent
 	float* to; // out tangent
+	int to_count; // out tangent
+	int a;
 
 	struct PropertiesMultiDimensionalKeyframe* keyframe=NULL;
 } *currentPropertiesMultiDimensional;
@@ -62,6 +69,10 @@ struct alignas(ALIGNSIZE) PropertiesShapeProp {
 	GLfloat* gl_i;
 	GLfloat* gl_o;
 	GLfloat* gl_v;
+
+	GLfloat* gl_i_Fill;
+	GLfloat* gl_o_Fill;
+	GLfloat* gl_v_Fill;
 
 	unsigned int* gl_i_idx;
 	unsigned int* gl_o_idx;
