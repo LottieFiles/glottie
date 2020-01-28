@@ -410,6 +410,11 @@ int checkCharacter(char& currentChar) {
 				//EM_ASM_({console.log("DONE adding new key value trail in array " + $0);}, currentKeyValueTrail);
 			//}
 
+			if (theState->stateNow == ArrayOpen && theState->reservedKeySet) {
+				input->currentReadKey[0] = '\0';
+				strcat(input->currentReadKey, theState->reservedKey);
+			}
+
 			if (theState->stateNow == ArrayOpen) {
 				addState(ScopeOpenInArray); //// ADD STATE
 			} else {
@@ -438,12 +443,6 @@ int checkCharacter(char& currentChar) {
 					prepareContainer(false);
 			}
 
-			if (theState->stateNow == ArrayOpen && theState->reservedKeySet) {
-				input->currentReadKey[0] = '\0';
-				strcat(input->currentReadKey, theState->reservedKey);
-			}
-
-
 			struct KeyValueTrail* tempKeyValueTrail;
 			tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
 			theScope->currentKeyValueTrail = tempKeyValueTrail;
@@ -469,9 +468,6 @@ int checkCharacter(char& currentChar) {
 			}
 			//EM_ASM_({console.log("CLOSING reading done " + $0);}, theState->stateNow);
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
-				if (theState->stateNow == ScopeOpenInArray) {
-					readingArray = true;
-				}
 				associateKeyValues();
 				removeScope();
 				removeState();
@@ -517,13 +513,24 @@ int checkCharacter(char& currentChar) {
 			//}
 			theScope->currentKeyValueTrail->keyValue = addChildArray(theScope->currentKeyValueTrail->keyValue);
 			addState(ArrayOpen); //// ADD STATE
-			if (theState->prev->stateNow != ArrayOpen && colonEncountered) {
-				theState->reservedKey[0] = '\0';
-				strcat(theState->reservedKey, input->currentReadKey);
-			}
-			//EM_ASM_({console.log("[OPENED array " + $0);}, theState->stateNow);
+
 			previousScopeClosure = false;
 			colonEncountered = false;
+
+			if (strlen(input->currentReadKey) > 0) {
+				theState->reservedKey[0] = '\0';
+				strcat(theState->reservedKey, input->currentReadKey);
+				theState->reservedKeySet = true;
+			} else {
+				if (theState->prev->reservedKeySet) {
+					theState->reservedKey[0] = '\0';
+					strcat(theState->reservedKey, theState->prev->reservedKey);
+					theState->reservedKeySet = true;
+				}
+			}
+
+			//EM_ASM_({console.log("[OPENED array " + $0);}, theState->stateNow);
+
 			break;
 		case ']':
 			//EM_ASM_({console.log("[CLOSING array " + $0);}, theState->stateNow);
@@ -554,6 +561,10 @@ int checkCharacter(char& currentChar) {
 			readingArray = false;
 			//EM_ASM({console.log("[CLOSING reading states removed");});
 			theScope->currentKeyValueTrail->keyValue->arrayValue = gotoParentArray(theScope->currentKeyValueTrail->keyValue);
+
+			theState->reservedKeySet = true;
+			theState->reservedKey[0] = '\0';
+
 			removeState();
 			if (theState->stateNow == ArrayOpen) {
 				readingArray = true;

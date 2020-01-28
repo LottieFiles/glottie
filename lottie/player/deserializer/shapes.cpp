@@ -39,36 +39,39 @@ int updateShapesItemType(enum ShapesTy passedTy, struct ShapesItem* passedShapes
 
 
 enum ShapesTy getShapesTy(char* passedTy) {
+	enum ShapesTy tempShapesTy;
 	if (strcmp(passedTy, "gr") == 0) {
-		return _group;
+		tempShapesTy = _group;
 	} else if (strcmp(passedTy, "sh") == 0) {
-		return _shape;
+		tempShapesTy = _shape;
 	} else if (strcmp(passedTy, "el") == 0) {
-		return _ellipse;
+		tempShapesTy = _ellipse;
 	} else if (strcmp(passedTy, "rc") == 0) {
-		return _rect;
+		tempShapesTy = _rect;
 	} else if (strcmp(passedTy, "sr") == 0) {
-		return _star;
+		tempShapesTy = _star;
 	} else if (strcmp(passedTy, "fl") == 0) {
-		return _fill;
+		tempShapesTy = _fill;
 	} else if (strcmp(passedTy, "gf") == 0) {
-		return _gFill;
+		tempShapesTy = _gFill;
 	} else if (strcmp(passedTy, "gs") == 0) {
-		return _gStroke;
+		tempShapesTy = _gStroke;
 	} else if (strcmp(passedTy, "st") == 0) {
-		return _stroke;
+		tempShapesTy = _stroke;
 	} else if (strcmp(passedTy, "mm") == 0) {
-		return _merge;
+		tempShapesTy = _merge;
 	} else if (strcmp(passedTy, "tm") == 0) {
-		return _trim;
+		tempShapesTy = _trim;
 	} else if (strcmp(passedTy, "rd") == 0) {
-		return _roundedCorners;
+		tempShapesTy = _roundedCorners;
 	} else if (strcmp(passedTy, "rp") == 0) {
-		return _repeater;
+		tempShapesTy = _repeater;
 	} else if (strcmp(passedTy, "tr") == 0) {
-		return _transform;
+		tempShapesTy = _transform;
+	} else {
+		tempShapesTy = _noshape;
 	}
-	return _noshape;
+	return tempShapesTy;
 }
 
 
@@ -84,7 +87,7 @@ int fillShapesItem(struct ShapesItem* passedShapesItem) {
 		if (tempKeyValue) {
 			//EM_ASM({console.log("========================> iteration");});
 		}
-		if (strlen(tempKeyValue->key) == 0) {
+		/*if (strlen(tempKeyValue->key) == 0) {
 			//EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
 				exhausted = true;
@@ -92,13 +95,13 @@ int fillShapesItem(struct ShapesItem* passedShapesItem) {
 				tempKeyValue = tempKeyValue->next;
 			}
 			continue;
-		}
+		}*/
 
 
 		if (strlen(tempKeyValue->key) > 0) {
 			if (strcmp(tempKeyValue->key, "ty") == 0) {
+				//EM_ASM({console.log("==========-------------========> shape type recorded " + $0 + " " + String.fromCharCode($1));}, passedShapesItem->ty, tempKeyValue->value[0]);
 				passedShapesItem->ty = getShapesTy(tempKeyValue->value);
-				EM_ASM({console.log("==========-------------=======> shape type recorded " + $0);}, passedShapesItem->ty);
 			} else if (strcmp(tempKeyValue->key, "tr") == 0) {
 			}
 		}

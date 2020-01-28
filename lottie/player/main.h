@@ -191,6 +191,7 @@ struct alignas(ALIGNSIZE) Buffers {
 	int idxCount;
 
 	GLint* posAttrib = NULL;
+	GLint* colAttrib = NULL;
 	bool changed = false;
 	bool clockwise;
 } *lastBuffersCreated;

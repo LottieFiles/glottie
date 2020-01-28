@@ -13,7 +13,7 @@ struct ShaderProgram* newShaderProgram() {
 	return lastShaderProgramCreated;
 }
 
-int prepVAO(GLfloat* vertices, unsigned int* indices, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count) {
+int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count) {
 	//EM_ASM_({console.log("VAO 1.0 " + $0 + " " + $1);}, count, passedBuffers->idxCount);
 	int refIndex = lastRefIndex + 1;
 
@@ -26,17 +26,10 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, struct ShaderProgram* pass
 	}
 	*/
 
-	GLuint tvao, tvbo, tibo;
+	GLuint tvao, tvbo, tibo, tcbo;
 	glGenVertexArraysOES(1, &tvao);
 	glBindVertexArrayOES(tvao);
 
-	glGenBuffers(1, &tvbo);
-	glBindBuffer(GL_ARRAY_BUFFER, tvbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * count * 4, vertices, GL_DYNAMIC_DRAW);
-
-	glGenBuffers(1, &tibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tibo);
-	//EM_ASM({console.log("VAO 1.1");});
 
 	GLuint tempShaderProgram;
 	if (passedShaderProgram == NULL) {
@@ -44,26 +37,45 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, struct ShaderProgram* pass
 	} else {
 		tempShaderProgram = *passedShaderProgram->shader;
 	}
-	
-	//EM_ASM_({console.log("VAO 1.1.1 " + $0);}, *(vertices + 0));
+
+	glGenBuffers(1, &tvbo);
+	glBindBuffer(GL_ARRAY_BUFFER, tvbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * count * 4, vertices, GL_DYNAMIC_DRAW);
+
+	glGenBuffers(1, &tcbo);
+	glBindBuffer(GL_ARRAY_BUFFER, tcbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * count * 4, colors, GL_DYNAMIC_DRAW);
+
+
+
 	GLint tempPosAttrib = glGetAttribLocation(tempShaderProgram, "position");
-	//EM_ASM({console.log("VAO 1.1.2");});
 	glEnableVertexAttribArray(tempPosAttrib);
-	//EM_ASM({console.log("VAO 1.1.3");});
 	glVertexAttribPointer(tempPosAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	//EM_ASM({console.log("VAO 1.1.3.1");});
+
+	GLint tempColAttrib = glGetAttribLocation(tempShaderProgram, "colors");
+	glEnableVertexAttribArray(tempColAttrib);
+	glVertexAttribPointer(tempColAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+
+
+	glGenBuffers(1, &tibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * passedBuffers->idxCount, indices, GL_DYNAMIC_DRAW);
-	//EM_ASM({console.log("VAO 1.1.3.2");});
+
+
+
 	passedBuffers->posAttrib = &tempPosAttrib;
-	//EM_ASM({console.log("VAO 1.2");});
+	passedBuffers->colAttrib = &tempPosAttrib;
 
 	passedBuffers->vao = new GLuint;
 	passedBuffers->vbo = new GLuint;
 	passedBuffers->ibo = new GLuint;
+	passedBuffers->cbo = new GLuint;
 
 	*(passedBuffers->vao) = tvao;
 	*(passedBuffers->vbo) = tvbo;
 	*(passedBuffers->ibo) = tibo;
+	*(passedBuffers->cbo) = tcbo;
 
 	//passedBuffers->vao = tvao;
 	//passedBuffers->vbo = tvbo;
@@ -425,9 +437,9 @@ float* getFill(struct ShapesItem* passedShapesItem) {
 	bool exhausted = false;
 	while (! exhausted) {
 		if (tempShapesItem->ty == _fill) {
-			EM_ASM({console.log("////-------> looking for color");});
+			//EM_ASM({console.log("////-------> looking for color");});
 			if (tempShapesItem->c != NULL) {
-				EM_ASM_({console.log("////-------> color " + $0 + " " + $1 + " " + $2);}, *(tempShapesItem->c->k), *(tempShapesItem->c->k + 1), *(tempShapesItem->c->k + 2));
+				//EM_ASM_({console.log("////-------> color " + $0 + " " + $1 + " " + $2);}, *(tempShapesItem->c->k), *(tempShapesItem->c->k + 1), *(tempShapesItem->c->k + 2));
 				if (tempShapesItem->c->k_count > 0) {
 					*(tempFloat + 0) = *(tempShapesItem->c->k + 0);
 					*(tempFloat + 1) = *(tempShapesItem->c->k + 0);
@@ -486,7 +498,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	while (! exhausted) {
 		float* defaultFill = getFill(passedShapesItem);
 
-		EM_ASM({console.log("looping 1");});
+		//EM_ASM({console.log("looping 1");});
 		if (passedPropertiesShapeProp->i != NULL) {
 			passedPropertiesShapeProp->buffers_i = newBuffers();
 			//passedPropertiesShapeProp->gl_i = vertexToGLfloat(passedPropertiesShapeProp->i, passedPropertiesShapeProp->i_count);
@@ -494,11 +506,11 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->i_count, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i, defaultFill);
 			if (tempTriangulateReturn == NULL) {return 0;}
 			passedPropertiesShapeProp->gl_i = tempTriangulateReturn->vbo;
-			passedPropertiesShapeProp->gl_i_Fill = tempTriangulateReturn->cbo;
+			passedPropertiesShapeProp->gl_i_fill = tempTriangulateReturn->cbo;
 			passedPropertiesShapeProp->gl_i_idx = tempTriangulateReturn->index;
 			//delete tempTriangulateReturn;
 			//EM_ASM({console.log("looping 1.1.1 i");});
-			prepVAO(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->gl_i_idx, NULL, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i_count);
+			prepVAO(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->gl_i_idx, passedPropertiesShapeProp->gl_i_fill, NULL, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i_count);
 			//EM_ASM({console.log("looping 1.1.2 i");});
 		}
 
@@ -509,11 +521,11 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o, defaultFill);
 			if (tempTriangulateReturn == NULL) {return 0;}
 			passedPropertiesShapeProp->gl_o = tempTriangulateReturn->vbo;
-			passedPropertiesShapeProp->gl_o_Fill = tempTriangulateReturn->cbo;
+			passedPropertiesShapeProp->gl_o_fill = tempTriangulateReturn->cbo;
 			passedPropertiesShapeProp->gl_o_idx = tempTriangulateReturn->index;
 			//delete tempTriangulateReturn;
 			//EM_ASM({console.log("looping 1.1.1 o");});
-			prepVAO(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->gl_o_idx, NULL, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o_count);
+			prepVAO(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->gl_o_idx, passedPropertiesShapeProp->gl_i_fill, NULL, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o_count);
 			//EM_ASM({console.log("looping 1.1.2 o");});
 		}
 
@@ -524,11 +536,11 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill);
 			if (tempTriangulateReturn == NULL) {return 0;}
 			passedPropertiesShapeProp->gl_v = tempTriangulateReturn->vbo;
-			passedPropertiesShapeProp->gl_v_Fill = tempTriangulateReturn->cbo;
+			passedPropertiesShapeProp->gl_v_fill = tempTriangulateReturn->cbo;
 			passedPropertiesShapeProp->gl_v_idx = tempTriangulateReturn->index;
 			//delete tempTriangulateReturn;
 			//EM_ASM({console.log("looping 1.1.1 v");});
-			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count);
+			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, passedPropertiesShapeProp->gl_i_fill, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count);
 			//EM_ASM({console.log("looping 1.1.2 v");});
 		}
 

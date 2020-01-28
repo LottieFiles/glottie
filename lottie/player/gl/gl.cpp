@@ -1,17 +1,25 @@
 // Shader sources
 const GLchar* vertexSource =
-    "attribute vec4 position;    \n"
+    "#version 300 es    \n"
+    "in vec4 position;    \n"
+    "in vec4 colors;    \n"
+    "out vec4 vcolors;    \n"
     "void main()                  \n"
     "{                            \n"
-    "   gl_Position = vec4(position.xyz, 1.0);  \n"
+    "  gl_Position = position;  \n"
+    "  vcolors = colors;  \n"
     "}                            \n";
 const GLchar* fragmentSource =
-    "precision mediump float;\n"
-    "void main()                                  \n"
-    "{                                            \n"
-    "  gl_FragColor = vec4 (1.0, 1.0, 1.0, 1.0 );\n"
-    "}                                            \n";
+    "#version 300 es    \n"
+    "precision mediump float; \n"
+    "in vec4 vcolors; \n"
+    "out vec4 gl_FragColor; \n"
+    "void main()                         \n"
+    "{                                           \n"
+    "  gl_FragColor = vcolors; \n"
+    "}                                      \n";
 
+//    "precision mediump float; \n"
 
 void glInitShaders(int refIndex) {
 	GLuint tempShaderProgram;

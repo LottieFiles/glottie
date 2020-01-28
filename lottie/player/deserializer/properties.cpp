@@ -90,7 +90,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->count);
 
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "v") == 0) {
-			EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
+			//EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->v = 
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->v);
 			passedPropertiesShapeProp->v_count = currentUniversalCount;
@@ -119,7 +119,7 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 	struct ArrayOfString* tempArrayValue; 
 	while (! exhausted) {
 		if (tempKeyValue) {
-			EM_ASM({console.log("========================> iteration 99");});
+			//EM_ASM({console.log("========================> iteration 99");});
 		}
 		if (strlen(tempKeyValue->key) == 0) {
 			//EM_ASM({console.log("========================> empty");});
@@ -132,16 +132,16 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 		}
 
 		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "k") == 0) {
-			EM_ASM({console.log("========================> found k in c");});
-			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue);
+			//EM_ASM({console.log("========================> found k in c");});
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			passedPropertiesMultiDimensional->k = tempFloatArray->floatArray;
 			passedPropertiesMultiDimensional->k_count = tempFloatArray->count;
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ti") == 0) {
-			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue);
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, false);
 			passedPropertiesMultiDimensional->ti = tempFloatArray->floatArray;
 			passedPropertiesMultiDimensional->ti_count = tempFloatArray->count;
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "to") == 0) {
-			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue);
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, false);
 			passedPropertiesMultiDimensional->to = tempFloatArray->floatArray;
 			passedPropertiesMultiDimensional->to_count = tempFloatArray->count;
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "a") == 0) {
@@ -150,14 +150,14 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 			if (passedPropertiesMultiDimensional->keyframe == NULL) {
 				passedPropertiesMultiDimensional->keyframe = new PropertiesMultiDimensionalKeyframe;
 			}
-			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue);
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			passedPropertiesMultiDimensional->keyframe->e = tempFloatArray->floatArray;
 			passedPropertiesMultiDimensional->keyframe->e_count = tempFloatArray->count;
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "s") == 0) {
 			if (passedPropertiesMultiDimensional->keyframe == NULL) {
 				passedPropertiesMultiDimensional->keyframe = new PropertiesMultiDimensionalKeyframe;
 			}
-			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue);
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			passedPropertiesMultiDimensional->keyframe->s = tempFloatArray->floatArray;
 			passedPropertiesMultiDimensional->keyframe->s_count = tempFloatArray->count;
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "x") == 0) {

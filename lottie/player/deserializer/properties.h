@@ -70,9 +70,9 @@ struct alignas(ALIGNSIZE) PropertiesShapeProp {
 	GLfloat* gl_o;
 	GLfloat* gl_v;
 
-	GLfloat* gl_i_Fill;
-	GLfloat* gl_o_Fill;
-	GLfloat* gl_v_Fill;
+	GLfloat* gl_i_fill;
+	GLfloat* gl_o_fill;
+	GLfloat* gl_v_fill;
 
 	unsigned int* gl_i_idx;
 	unsigned int* gl_o_idx;

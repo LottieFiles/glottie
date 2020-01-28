@@ -801,7 +801,7 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 	}
 }
 
-struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValue) {
+struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValue, bool positive) {
 	struct ValuesVector* baseVector;
 	struct FloatArrayReturn* tempFloatArray;
 	int tempCount = 0;
@@ -825,7 +825,7 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 	tempFloatArray->count = tempCount;
 	tempFloatArray->floatArray = new float[tempCount];
 
-	EM_ASM({console.log("->>-->> count " + $0);}, tempCount);
+	//EM_ASM({console.log("->>-->> count " + $0);}, tempCount);
 	baseVector = traceArrayValue->vector->start;
 	exhausted = false;
 	currentUniversalCount = 0;
@@ -858,9 +858,12 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 		}*/
 		//float vertex[4] = {xval, yval, 0.0f, 1.0f};
 		//targetVertex = pushVertex(targetVertex, vertex);
+		if (positive && xval < 0) {
+			xval = xval * -1;
+		}
 		*(tempFloatArray->floatArray + currentUniversalCount) = xval;
 		currentUniversalCount = currentUniversalCount + 1;
-		EM_ASM({console.log("->>-->> found k value " + $0);}, xval);
+		//EM_ASM({console.log("->>-->> found k value " + $0);}, xval);
 
 		if (baseVector->next == NULL) {	
 			exhausted = true;
