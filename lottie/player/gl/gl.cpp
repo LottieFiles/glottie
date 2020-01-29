@@ -16,21 +16,23 @@ const GLchar* fragmentSource =
     "  gl_FragColor = vcolors; \n"
     "} \n";
 
+//    "  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); \n"
+//    "  gl_FragColor = vcolors; \n"
 //    "out vec4 FragColor; \n"
 //    "precision mediump float; \n"
 //    "precision mediump float; \n"
 
 void glInitShaders(int refIndex) {
 	GLuint tempShaderProgram;
-    // Create and compile the vertex shader
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexSource, NULL);
-    glCompileShader(vertexShader);
+	// Create and compile the vertex shader
+	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexSource, NULL);
+	glCompileShader(vertexShader);
 
-    // Create and compile the fragment shader
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
-    glCompileShader(fragmentShader);
+	// Create and compile the fragment shader
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
+	glCompileShader(fragmentShader);
 
 	GLint vertexSuccess = 0;
 	GLint fragmentSuccess = 0;
@@ -43,14 +45,14 @@ void glInitShaders(int refIndex) {
 		EM_ASM({console.log("..................> fragment shader failed")});
 	}
 
-    // Link the vertex and fragment shader into a shader program
-    tempShaderProgram = glCreateProgram();
+	// Link the vertex and fragment shader into a shader program
+	tempShaderProgram = glCreateProgram();
 
-    glAttachShader(tempShaderProgram, vertexShader);
-    glAttachShader(tempShaderProgram, fragmentShader);
-    // glBindFragDataLocation(shaderProgram, 0, "outColor");
-    glLinkProgram(tempShaderProgram);
-    glUseProgram(tempShaderProgram);
+	glAttachShader(tempShaderProgram, vertexShader);
+	glAttachShader(tempShaderProgram, fragmentShader);
+	// glBindFragDataLocation(shaderProgram, 0, "outColor");
+	glLinkProgram(tempShaderProgram);
+	glUseProgram(tempShaderProgram);
 
 	if (refIndex == 0) {
 		mainShader = tempShaderProgram;

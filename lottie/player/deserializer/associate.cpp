@@ -223,22 +223,22 @@ int prepareContainer(bool arrayOfObjects) {
 				preSwitch[1] = 1;
 				currentShapesItem = NULL;
 			}*/
-			currentLayers->shapes = newShapesItem(currentShapesItem);
+			currentLayers->shapes = newShapesItem(currentLayers->shapes);
 		} else if (theScope->prev->scope == _shapes) {
-			currentLayers->shapes = newShapesItem(currentShapesItem);
+			currentLayers->shapes = newShapesItem(currentLayers->shapes);
 		} else if (theScope->prev->scope == _shapes) {
-			currentLayers->shapes = newShapesItem(currentShapesItem);
+			currentLayers->shapes = newShapesItem(currentLayers->shapes);
 		}
 	} else if (theScope->scope == _shapes) {
 		//EM_ASM({console.log("----------------------------------------------------> shapes");});
 		if (theScope->prev->scope == _layers) {
 			//EM_ASM({console.log("-----------------> shapes in layers");});
-			currentLayers->shapes = newShapesItem(currentShapesItem);
+			currentLayers->shapes = newShapesItem(currentLayers->shapes);
 		} else if (theScope->prev->scope == _k) {
 			//EM_ASM({console.log("-----------------> shapes in k");});
-			currentLayers->shapes = newShapesItem(currentShapesItem);
+			currentLayers->shapes = newShapesItem(currentLayers->shapes);
 		} else if (theScope->prev->scope == _it) {
-			currentLayers->shapes = newShapesItem(currentShapesItem);
+			currentLayers->shapes = newShapesItem(currentLayers->shapes);
 		}
 	} else if (theScope->scope == _ty) {
 	} else if (theScope->scope == _ks) {

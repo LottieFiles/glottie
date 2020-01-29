@@ -254,6 +254,7 @@ bool scopeChanged = false;
 bool justStartedArray = false;
 bool colonEncountered = false;
 bool previousScopeNotArray = false;
+int currentOrderIndex = 0;
 
 struct alignas(ALIGNSIZE) ArrayTrail {
 	struct ArrayTrail* start = NULL;

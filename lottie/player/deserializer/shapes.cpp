@@ -10,6 +10,8 @@ struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem) {
 		passedShapesItem->next->prev = passedShapesItem;
 		passedShapesItem = passedShapesItem->next;
 	}
+	currentOrderIndex++;
+	passedShapesItem->order = currentOrderIndex;
 	currentShapesItem = passedShapesItem;
 	return passedShapesItem;
 }

@@ -38,13 +38,16 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct Sh
 		tempShaderProgram = *passedShaderProgram->shader;
 	}
 
+	GLint tempPosAttrib = glGetAttribLocation(tempShaderProgram, "position");
+	glEnableVertexAttribArray(tempPosAttrib);
+	GLint tempColAttrib = glGetAttribLocation(tempShaderProgram, "color");
+	glEnableVertexAttribArray(tempColAttrib);
+
 	glGenBuffers(1, &tvbo);
 	glBindBuffer(GL_ARRAY_BUFFER, tvbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * count * 4, vertices, GL_DYNAMIC_DRAW);
 	//glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	GLint tempPosAttrib = glGetAttribLocation(tempShaderProgram, "position");
-	glEnableVertexAttribArray(tempPosAttrib);
 	glVertexAttribPointer(tempPosAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glGenBuffers(1, &tcbo);
@@ -52,6 +55,7 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct Sh
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * count * 4, colors, GL_DYNAMIC_DRAW);
 	//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
+	glVertexAttribPointer(tempColAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	/*
 	glEnableVertexAttribArray(0);
@@ -63,9 +67,7 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct Sh
 
 
 
-	GLint tempColAttrib = glGetAttribLocation(tempShaderProgram, "color");
-	glEnableVertexAttribArray(tempColAttrib);
-	glVertexAttribPointer(tempColAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
 
 
 
@@ -252,7 +254,7 @@ struct ArrayOfArrayOfVertex* newReserve(struct ArrayOfArrayOfVertex* tempReserve
 	return tempReserve;
 }
  
-struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill) {
+struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill, int order) {
 
 	struct TriangulateReturn* tempTriangulateReturn;
 	tempTriangulateReturn = new TriangulateReturn;
@@ -355,15 +357,19 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	while (! exhausted) {
 		*(tempVBO + ((Bcounter * 4) + 0)) = ((2 * passedArray->vertex->position[0]) / theAnimation->w);
 		*(tempVBO + ((Bcounter * 4) + 1)) = ((2 * passedArray->vertex->position[1]) / theAnimation->h) * -1;
-		
-		*(tempVBO + ((Bcounter * 4) + 2)) = 1 - (Bcounter / 100000000);
+		if (passedArray->vertex->position[2] == 0) {
+			*(tempVBO + ((Bcounter * 4) + 2)) = 1 - ((float)order / 100000);
+			EM_ASM({console.log("depth ------> " + $0 + " " + $1);}, *(tempVBO + ((Bcounter * 4) + 2)), order);
+		} else {
+			*(tempVBO + ((Bcounter * 4) + 2)) = passedArray->vertex->position[2];
+		}
 		*(tempVBO + ((Bcounter * 4) + 3)) = 1;
 
 		*(tempCBO + ((Bcounter * 4) + 0)) = *(defaultFill + 0);
 		*(tempCBO + ((Bcounter * 4) + 1)) = *(defaultFill + 1);
 		*(tempCBO + ((Bcounter * 4) + 2)) = *(defaultFill + 2);
 		*(tempCBO + ((Bcounter * 4) + 3)) = *(defaultFill + 3);
-
+		//EM_ASM({console.log("colors ---> " + $0 + " " + $1 + " " + $2 + " " + $3);}, *(tempCBO + ((Bcounter * 4) + 0)), *(tempCBO + ((Bcounter * 4) + 1)), *(tempCBO + ((Bcounter * 4) + 2)), *(tempCBO + ((Bcounter * 4) + 3)));
 		passedArray->idxOrder = Bcounter;
 		if (readItems >= 2) {
 			*(tempIndex + ((Icounter * 3) + 0)) = startPoint->idxOrder;
@@ -389,7 +395,11 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 			*(tempVBO + ((Bcounter * 4) + 0)) = ((2 * reserve->arrayItem->vertex->position[0]) / theAnimation->w);
 			*(tempVBO + ((Bcounter * 4) + 1)) = ((2 * reserve->arrayItem->vertex->position[1]) / theAnimation->h) * -1;
 
-			*(tempVBO + ((Bcounter * 4) + 2)) = 1 - (Bcounter / 100000000);
+			if (passedArray->vertex->position[2] == 0) {
+				*(tempVBO + ((Bcounter * 4) + 2)) = 1 - ((float)order / 100000);
+			} else {
+				*(tempVBO + ((Bcounter * 4) + 2)) = passedArray->vertex->position[2];
+			}
 			*(tempVBO + ((Bcounter * 4) + 3)) = 1;
 
 			*(tempCBO + ((Bcounter * 4) + 0)) = *(defaultFill + 0);
@@ -450,11 +460,11 @@ float* getFill(struct ShapesItem* passedShapesItem) {
 		if (tempShapesItem->ty == _fill) {
 			//EM_ASM({console.log("////-------> looking for color");});
 			if (tempShapesItem->c != NULL) {
-				//EM_ASM_({console.log("////-------> color " + $0 + " " + $1 + " " + $2);}, *(tempShapesItem->c->k), *(tempShapesItem->c->k + 1), *(tempShapesItem->c->k + 2));
 				if (tempShapesItem->c->k_count > 0) {
+					//EM_ASM_({console.log("////-------> color " + $0 + " " + $1 + " " + $2);}, *(tempShapesItem->c->k), *(tempShapesItem->c->k + 1), *(tempShapesItem->c->k + 2));
 					*(tempFloat + 0) = *(tempShapesItem->c->k + 0);
-					*(tempFloat + 1) = *(tempShapesItem->c->k + 0);
-					*(tempFloat + 2) = *(tempShapesItem->c->k + 0);
+					*(tempFloat + 1) = *(tempShapesItem->c->k + 1);
+					*(tempFloat + 2) = *(tempShapesItem->c->k + 2);
 					if (tempShapesItem->c->k_count < 4) {
 						*(tempFloat + 3) = 1;
 					} else {
@@ -514,7 +524,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->buffers_i = newBuffers();
 			//passedPropertiesShapeProp->gl_i = vertexToGLfloat(passedPropertiesShapeProp->i, passedPropertiesShapeProp->i_count);
 			//EM_ASM({console.log("looping 1.1 i");});
-			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->i_count, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i, defaultFill);
+			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->i_count, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i, defaultFill, passedShapesItem->order);
 			if (tempTriangulateReturn == NULL) {return 0;}
 			passedPropertiesShapeProp->gl_i = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_i_fill = tempTriangulateReturn->cbo;
@@ -529,7 +539,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->buffers_o = newBuffers();
 			//passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->o_count);
 			//EM_ASM({console.log("looping 1.1 o");});
-			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o, defaultFill);
+			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o, defaultFill, passedShapesItem->order);
 			if (tempTriangulateReturn == NULL) {return 0;}
 			passedPropertiesShapeProp->gl_o = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_o_fill = tempTriangulateReturn->cbo;
@@ -544,7 +554,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->buffers_v = newBuffers();
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
 			//EM_ASM({console.log("looping 1.1 v");});
-			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill);
+			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, passedShapesItem->order);
 			if (tempTriangulateReturn == NULL) {return 0;}
 			passedPropertiesShapeProp->gl_v = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_v_fill = tempTriangulateReturn->cbo;
