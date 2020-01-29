@@ -41,18 +41,29 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct Sh
 	glGenBuffers(1, &tvbo);
 	glBindBuffer(GL_ARRAY_BUFFER, tvbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * count * 4, vertices, GL_DYNAMIC_DRAW);
-
-	glGenBuffers(1, &tcbo);
-	glBindBuffer(GL_ARRAY_BUFFER, tcbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * count * 4, colors, GL_DYNAMIC_DRAW);
-
-
+	//glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	GLint tempPosAttrib = glGetAttribLocation(tempShaderProgram, "position");
 	glEnableVertexAttribArray(tempPosAttrib);
 	glVertexAttribPointer(tempPosAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	GLint tempColAttrib = glGetAttribLocation(tempShaderProgram, "colors");
+	glGenBuffers(1, &tcbo);
+	glBindBuffer(GL_ARRAY_BUFFER, tcbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * count * 4, colors, GL_DYNAMIC_DRAW);
+	//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+
+	/*
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	*/
+
+
+
+	GLint tempColAttrib = glGetAttribLocation(tempShaderProgram, "color");
 	glEnableVertexAttribArray(tempColAttrib);
 	glVertexAttribPointer(tempColAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
@@ -65,7 +76,7 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct Sh
 
 
 	passedBuffers->posAttrib = &tempPosAttrib;
-	passedBuffers->colAttrib = &tempPosAttrib;
+	passedBuffers->colAttrib = &tempColAttrib;
 
 	passedBuffers->vao = new GLuint;
 	passedBuffers->vbo = new GLuint;

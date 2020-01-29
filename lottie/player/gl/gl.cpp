@@ -1,24 +1,23 @@
 // Shader sources
 const GLchar* vertexSource =
-    "#version 300 es    \n"
-    "in vec4 position;    \n"
-    "in vec4 colors;    \n"
-    "out vec4 vcolors;    \n"
-    "void main()                  \n"
-    "{                            \n"
-    "  gl_Position = position;  \n"
-    "  vcolors = colors;  \n"
-    "}                            \n";
+    "attribute vec4 position; \n"
+    "attribute vec4 color; \n"
+    "varying vec4 vcolors; \n"
+    "void main() \n"
+    "{ \n"
+    "  vcolors = color; \n"
+    "  gl_Position = position; \n"
+    "} \n";
 const GLchar* fragmentSource =
-    "#version 300 es    \n"
     "precision mediump float; \n"
-    "in vec4 vcolors; \n"
-    "out vec4 gl_FragColor; \n"
-    "void main()                         \n"
-    "{                                           \n"
+    "varying vec4 vcolors; \n"
+    "void main() \n"
+    "{ \n"
     "  gl_FragColor = vcolors; \n"
-    "}                                      \n";
+    "} \n";
 
+//    "out vec4 FragColor; \n"
+//    "precision mediump float; \n"
 //    "precision mediump float; \n"
 
 void glInitShaders(int refIndex) {
@@ -33,13 +32,26 @@ void glInitShaders(int refIndex) {
     glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
     glCompileShader(fragmentShader);
 
+	GLint vertexSuccess = 0;
+	GLint fragmentSuccess = 0;
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &vertexSuccess);
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &fragmentSuccess);
+	if (vertexSuccess == GL_FALSE) {
+		EM_ASM({console.log("..................> vertex shader failed")});
+	}
+	if (fragmentSuccess == GL_FALSE) {
+		EM_ASM({console.log("..................> fragment shader failed")});
+	}
+
     // Link the vertex and fragment shader into a shader program
     tempShaderProgram = glCreateProgram();
+
     glAttachShader(tempShaderProgram, vertexShader);
     glAttachShader(tempShaderProgram, fragmentShader);
     // glBindFragDataLocation(shaderProgram, 0, "outColor");
     glLinkProgram(tempShaderProgram);
     glUseProgram(tempShaderProgram);
+
 	if (refIndex == 0) {
 		mainShader = tempShaderProgram;
 	} else {
