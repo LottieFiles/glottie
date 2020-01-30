@@ -208,7 +208,7 @@ struct nth<1, IntPoint> {
 float distanceBetweenPoints(struct Vertex* pointA, struct Vertex* pointB) {
 	float distance = ( sqrt(pow(((float)pointA->position[0] - (float)pointB->position[0]), 2) + pow(((float)pointA->position[1] - (float)pointB->position[1]), 2)) );
 	
-	//EM_ASM_({console.log("    ///////////> " + $0 + " " + $1 + " " + $2 + " " + $3 + " " + $4);}, distance, pointA->position[0], pointB->position[0], pointA->position[1], pointB->position[1]);
+	EM_ASM_({console.log("    ///////////> " + $0 + " " + $1 + " " + $2 + " " + $3 + " " + $4);}, distance, pointA->position[0], pointB->position[0], pointA->position[1], pointB->position[1]);
 	return distance;
 }
 
@@ -221,7 +221,7 @@ int convex(struct Vertex* origin, struct Vertex* next, struct Vertex* nextnext, 
 	bs = distanceBetweenPoints(origin, nextnext);
 	float firstAngle = ((pow(a,2) + pow(bi,2) - pow(di,2)) / (2 * a * bi));
 	float secondAngle = ((pow(a,2) + pow(bs,2) - pow(ds,2)) / (2 * a * bs));
-	//EM_ASM_({console.log("///////////> " + $0 + " " + $1 + " : " + $2 + " " + $3 + " " + $4 + " " + " " + $5 + " " + $6);}, firstAngle, secondAngle, a, di, bi, ds, bs);
+	EM_ASM_({console.log("///////////> " + $0 + " " + $1 + " : " + $2 + " " + $3 + " " + $4 + " " + " " + $5 + " " + $6);}, firstAngle, secondAngle, a, di, bi, ds, bs);
 	if ((firstAngle == 0 || isnan(firstAngle)) && (secondAngle == 0 || isnan(secondAngle))) {
 		if (	
 				a == 0 &&
@@ -287,6 +287,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	int coreCount = count;
 	int angleOne, angleTwo;
 	bool outlierEncountered = false;
+	EM_ASM({console.log("pretri 2");});
 	if (count > 3) {
 		//EM_ASM({console.log("pretri 2.1");});
 		bool entered = true;
@@ -320,7 +321,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 					passedArray->reserved = true;
 					passedArray = reserveNextArray;
 					coreCount = coreCount - 1;
-					//EM_ASM({console.log("outlier found");});
+					EM_ASM({console.log("outlier found");});
 					outlierEncountered = true;
 				}
 			}
@@ -335,23 +336,29 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 			}
 		}
 	} else {
+		EM_ASM({console.log("skipped " + $0);}, count);
 		if (count < 3) {
 			return NULL;
 		}
 	}
 	reserveEnd = reserve;
 
-	//EM_ASM({console.log("done checking for outliers");});
+	EM_ASM({console.log("done checking for outliers 1 " + $0);}, count);
 
-	passedArray = startPoint;
+	if (outlierEncountered) {
+		passedArray = startPoint;
+	}
+	EM_ASM({console.log("done checking for outliers 1.1 " + $0);}, count);
 
 	GLfloat* tempVBO = new GLfloat[(count * 4) + 2]();
+	EM_ASM({console.log("done checking for outliers 1.2 " + $0);}, count);
 	GLfloat* tempCBO = new GLfloat[(count * 4) + 2]();
+	EM_ASM({console.log("done checking for outliers 1.3 " + $0);}, count);
 	unsigned int* tempIndex = new unsigned int[(count * 3) * 2]();
 	unsigned int Bcounter = 0;
 	unsigned int Icounter = 0;
 	
-	//EM_ASM({console.log("done checking for outliers");});
+	EM_ASM({console.log("done checking for outliers");});
 	exhausted = false;
 	int readItems = 0;
 	while (! exhausted) {
@@ -359,7 +366,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		*(tempVBO + ((Bcounter * 4) + 1)) = ((2 * passedArray->vertex->position[1]) / theAnimation->h) * -1;
 		if (passedArray->vertex->position[2] == 0) {
 			*(tempVBO + ((Bcounter * 4) + 2)) = 1 - ((float)order / 100000);
-			EM_ASM({console.log("depth ------> " + $0 + " " + $1);}, *(tempVBO + ((Bcounter * 4) + 2)), order);
+			//EM_ASM({console.log("depth ------> " + $0 + " " + $1);}, *(tempVBO + ((Bcounter * 4) + 2)), order);
 		} else {
 			*(tempVBO + ((Bcounter * 4) + 2)) = passedArray->vertex->position[2];
 		}
@@ -519,6 +526,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	while (! exhausted) {
 		float* defaultFill = getFill(passedShapesItem);
 
+		EM_ASM({console.log("tracing 1 ");});
 		//EM_ASM({console.log("looping 1");});
 		if (passedPropertiesShapeProp->i != NULL) {
 			passedPropertiesShapeProp->buffers_i = newBuffers();
@@ -535,10 +543,11 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//EM_ASM({console.log("looping 1.1.2 i");});
 		}
 
+		EM_ASM({console.log("tracing 2 ");});
 		if (passedPropertiesShapeProp->o != NULL) {
 			passedPropertiesShapeProp->buffers_o = newBuffers();
 			//passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->o_count);
-			//EM_ASM({console.log("looping 1.1 o");});
+			EM_ASM({console.log("looping 1.1 o");});
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o, defaultFill, passedShapesItem->order);
 			if (tempTriangulateReturn == NULL) {return 0;}
 			passedPropertiesShapeProp->gl_o = tempTriangulateReturn->vbo;
@@ -546,10 +555,12 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->gl_o_idx = tempTriangulateReturn->index;
 			//delete tempTriangulateReturn;
 			//EM_ASM({console.log("looping 1.1.1 o");});
-			prepVAO(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->gl_o_idx, passedPropertiesShapeProp->gl_i_fill, NULL, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o_count);
-			//EM_ASM({console.log("looping 1.1.2 o");});
+			EM_ASM({console.log("looping 1.2 o");});
+			prepVAO(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->gl_o_idx, passedPropertiesShapeProp->gl_o_fill, NULL, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o_count);
+			EM_ASM({console.log("looping 1.1.2 o");});
 		}
 
+		EM_ASM({console.log("tracing 3 ");});
 		if (passedPropertiesShapeProp->v != NULL) {
 			passedPropertiesShapeProp->buffers_v = newBuffers();
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
@@ -561,7 +572,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->gl_v_idx = tempTriangulateReturn->index;
 			//delete tempTriangulateReturn;
 			//EM_ASM({console.log("looping 1.1.1 v");});
-			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, passedPropertiesShapeProp->gl_i_fill, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count);
+			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, passedPropertiesShapeProp->gl_v_fill, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count);
 			//EM_ASM({console.log("looping 1.1.2 v");});
 		}
 
@@ -569,13 +580,14 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		delete defaultFill;
 		//EM_ASM({console.log("looping 1.4");});
 
+		EM_ASM({console.log("tracing 4 ");});
 		if (passedPropertiesShapeProp->next == NULL) {
 			exhausted = true;
 		} else {
 			passedPropertiesShapeProp = passedPropertiesShapeProp->next;
 		}
 	}
-	//EM_ASM({console.log("all prep done");});
+	EM_ASM({console.log("all prep done");});
 	
 	return 1;
 }
