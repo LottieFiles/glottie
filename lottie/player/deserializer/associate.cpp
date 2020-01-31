@@ -190,7 +190,7 @@ int prepareContainer(bool arrayOfObjects) {
 		preSwitch[1] = 0;
 		if (theScope->prev->scope == _assets) {
 			EM_ASM({console.log("-----------------> layers within assets");});
-			if (preSwitch[0] == 2) {
+			/*if (preSwitch[0] == 2) {
 				tempAnimationLayers = currentLayers;
 				currentLayers = tempAssetsLayers;
 				currentShapesItem = NULL;
@@ -199,11 +199,12 @@ int prepareContainer(bool arrayOfObjects) {
 				currentLayers = NULL;
 				currentShapesItem = NULL;
 				preSwitch[0] = 1;
-			}
-			currentAssets->precomps = newLayers(currentLayers);
+			}*/
+			currentAssets->precomps = newLayers(currentAssets->precomps);
+			currentLayers->shapes = NULL;
 		} else if (theScope->prev->scope == _animation) {
 			EM_ASM({console.log("-----------------> layers");});
-			if (preSwitch[0] == 1) {
+			/*if (preSwitch[0] == 1) {
 				tempAssetsLayers = currentLayers;
 				currentLayers = tempAnimationLayers;
 				currentShapesItem = NULL;
@@ -212,8 +213,9 @@ int prepareContainer(bool arrayOfObjects) {
 				currentLayers = NULL;
 				currentShapesItem = NULL;
 				preSwitch[0] = 2;
-			}
-			theAnimation->layers = newLayers(currentLayers);
+			}*/
+			theAnimation->layers = newLayers(theAnimation->layers);
+			currentLayers->shapes = NULL;
 		}
 	} else if (theScope->scope == _it) {
 		EM_ASM({console.log("----------------------------------------------------> it");});
