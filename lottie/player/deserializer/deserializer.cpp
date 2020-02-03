@@ -423,7 +423,7 @@ int checkCharacter(char& currentChar) {
 
 			checkScope();
 
-			if (theState->stateNow == ArrayOpen) {
+			if (theState->stateNow == ScopeOpenInArray) {
 				//EM_ASM({console.log("opening object in array");});
 
 				prepareContainer(true);

@@ -639,7 +639,7 @@ int prepShapesItem(struct ShapesItem* passedShapesItem) {
 }
 
 int prepLayers(struct Layers* passedLayers) {
-	EM_ASM({console.log("LAYERS found pre 1.0");});
+	EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- LAYERS found pre 1.0");});
 	if (passedLayers->shapes == NULL || passedLayers == NULL) {
 		return 0;
 	}
@@ -672,7 +672,9 @@ int prepAssets(struct Assets* passedAssets) {
 	bool exhausted = false;
 	while (! exhausted) {
 		EM_ASM({console.log("PRECOMP found");});
-		prepLayers(passedAssets->precomps);
+		if (passedAssets->precomps != NULL) {
+			prepLayers(passedAssets->precomps->start);
+		}
 		if (passedAssets->next == NULL) {
 			exhausted = true;
 		} else {

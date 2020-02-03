@@ -49,7 +49,7 @@ struct PropertiesShapePropKeyframe* newPropertiesShapePropKeyframe() {
 
 
 int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapeProp) {
-	//EM_ASM({console.log("========================> entered");});
+	EM_ASM({console.log("[[[[[[[[[[[[[========================> entered");});
 	bool exhausted = false;
 	struct KeyValue* tempKeyValue;
 	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
@@ -76,21 +76,21 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 				}
 				//EM_ASM({console.log("========================> fill 80.1.1");});
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "i") == 0) {
-			//EM_ASM({console.log("========================> fill 80.2 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
+			EM_ASM({console.log("========================> fill 80.2 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->i = 
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->i);
 			passedPropertiesShapeProp->i_count = currentUniversalCount;
 			//passedPropertiesShapeProp->gl_i = vertexToGLfloat(passedPropertiesShapeProp->i, passedPropertiesShapeProp->count);
 
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "o") == 0) {
-			//EM_ASM({console.log("========================> fill 80.3 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
+			EM_ASM({console.log("========================> fill 80.3 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->o = 
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->o);
 			passedPropertiesShapeProp->o_count = currentUniversalCount;
 			//passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->count);
 
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "v") == 0) {
-			//EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
+			EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->v = 
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->v);
 			passedPropertiesShapeProp->v_count = currentUniversalCount;
@@ -105,6 +105,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			tempKeyValue = tempKeyValue->next;
 		}
 	}
+	EM_ASM({console.log("[[[[[[[[[[[[[========================> done");});
 	//deleteKeyValues(theScope->currentKeyValueTrail);
 
 	return 1;

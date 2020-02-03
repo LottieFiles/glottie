@@ -185,13 +185,13 @@ int prepareContainer(bool arrayOfObjects) {
 		preSwitch[0] = 0;
 		EM_ASM({console.log("-----------------> assets");});
 		currentLayers = NULL;
-		theAnimation->assets = newAssets(currentAssets);
+		theAnimation->assets = newAssets(theAnimation->assets);
 	} else if (theScope->scope == _layers) {
 		preSwitch[1] = 0;
 		if (theScope->prev->scope == _assets) {
 			EM_ASM({console.log("-----------------> layers within assets");});
 			/*if (preSwitch[0] == 2) {
-				tempAnimationLayers = currentLayers;
+				tempAnimationLayers = theAnimation->layers;
 				currentLayers = tempAssetsLayers;
 				currentShapesItem = NULL;
 				preSwitch[0] = 1;
@@ -200,12 +200,12 @@ int prepareContainer(bool arrayOfObjects) {
 				currentShapesItem = NULL;
 				preSwitch[0] = 1;
 			}*/
-			currentAssets->precomps = newLayers(currentAssets->precomps);
-			currentLayers->shapes = NULL;
+			theAnimation->assets->precomps = newLayers(theAnimation->assets->precomps);
+			currentLayers = theAnimation->assets->precomps;
 		} else if (theScope->prev->scope == _animation) {
 			EM_ASM({console.log("-----------------> layers");});
 			/*if (preSwitch[0] == 1) {
-				tempAssetsLayers = currentLayers;
+				tempAssetsLayers = theAnimation->assets->precomps;
 				currentLayers = tempAnimationLayers;
 				currentShapesItem = NULL;
 				preSwitch[0] = 2;
@@ -215,7 +215,7 @@ int prepareContainer(bool arrayOfObjects) {
 				preSwitch[0] = 2;
 			}*/
 			theAnimation->layers = newLayers(theAnimation->layers);
-			currentLayers->shapes = NULL;
+			currentLayers = theAnimation->layers;
 		}
 	} else if (theScope->scope == _it) {
 		EM_ASM({console.log("----------------------------------------------------> it");});
