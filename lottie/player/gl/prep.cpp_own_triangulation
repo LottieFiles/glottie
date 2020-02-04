@@ -1,61 +1,4 @@
-#include <array>
-#include "../external/earcut.hpp"
-
-struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill, int order) {
-	struct TriangulateReturn* tempTriangulate;
-	using Coord = double;
-	using N = uint32_t;
-	using Point = std::array<Coord, 2>;
-	std::vector<std::vector<Point>> polygon;
-	std::array<Coord, 2> tempPoint;
-	polygon[0].reserve(count + 2);
-
-	bool exhausted = false;
-	passedArray = passedArray->start;
-	GLfloat* tempVBO = new GLfloat[count * 4];
-	GLfloat* tempCBO = new GLfloat[count * 4];
-	unsigned int* tempIndex = new unsigned int[count * 3];
-	int Bcounter = 0;
-	while (! exhausted) {
-		tempPoint.at(0) = (double)passedArray->vertex->position[0]*10000;
-		tempPoint.at(1) = (double)passedArray->vertex->position[1]*10000;
-		
-		//polygon.at(Bcounter).push_back({(uint32_t)(passedArray->vertex->position[0]*10000), (uint32_t)(passedArray->vertex->position[0]*10000)});
-		polygon.at(Bcounter).push_back(tempPoint);
-		if (passedArray->vertex->position[2] == 0) {
-			*(tempVBO + ((Bcounter * 4) + 2)) = 1 - ((float)order / 100000);
-		} else {
-			*(tempVBO + ((Bcounter * 4) + 2)) = passedArray->vertex->position[2];
-		}
-		*(tempVBO + ((Bcounter * 4) + 3)) = 1;
-
-		*(tempCBO + ((Bcounter * 4) + 0)) = *(defaultFill + 0);
-		*(tempCBO + ((Bcounter * 4) + 1)) = *(defaultFill + 1);
-		*(tempCBO + ((Bcounter * 4) + 2)) = *(defaultFill + 2);
-		*(tempCBO + ((Bcounter * 4) + 3)) = *(defaultFill + 3);
-		Bcounter++;
-		if (passedArray->next == NULL) {
-			exhausted = true;
-		} else {
-			passedArray = passedArray->next;
-		}
-	}
-	std::vector<N> indices;
-	indices.reserve(count * 3);
-	indices = mapbox::earcut<N>(polygon);
-	for (int i = 0; i < polygon.size(); i++) {
-		*(tempVBO + ((Bcounter * 4) + 0)) = (2 * ((float)polygon.at(i).at(0) / 10000)) / theAnimation->w;
-		*(tempVBO + ((Bcounter * 4) + 1)) = (2 * ((float)polygon.at(i).at(1) / 10000)) / theAnimation->h;
-	}
-	
-	for (int i = 0; i < indices.size(); i++) {
-		*(tempIndex + i) = indices[i];
-	}
-	tempTriangulate->vbo = tempVBO;
-	tempTriangulate->cbo = tempCBO;
-	tempTriangulate->index = tempIndex;
-	return tempTriangulate;
-}
+#include "triangulate.cpp"
 
 struct ShaderProgram* newShaderProgram() {
 	struct ShaderProgram* tempShaderProgram;
@@ -175,7 +118,7 @@ float* getFill(struct ShapesItem* passedShapesItem) {
 					if (tempShapesItem->c->k_count < 4) {
 						*(tempFloat + 3) = 1;
 					} else {
-						*(tempFloat + 3) = *(tempShapesItem->c->k + 3);
+						*(tempFloat + 3) = *(tempShapesItem->c->k + 0);
 					}
 				} else {
 					*(tempFloat + 0) = 1;

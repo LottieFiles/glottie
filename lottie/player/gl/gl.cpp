@@ -8,6 +8,7 @@ const GLchar* vertexSource =
     "  vcolors = color; \n"
     "  gl_Position = position; \n"
     "} \n";
+
 const GLchar* fragmentSource =
     "precision mediump float; \n"
     "varying vec4 vcolors; \n"
