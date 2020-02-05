@@ -43,9 +43,9 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	std::vector<N> indices;
 	indices.reserve(count * 3);
 	indices = mapbox::earcut<N>(polygon);
-	for (int i = 0; i < polygon.size(); i++) {
-		*(tempVBO + ((Bcounter * 4) + 0)) = (2 * ((float)polygon.at(i).at(0) / 10000)) / theAnimation->w;
-		*(tempVBO + ((Bcounter * 4) + 1)) = (2 * ((float)polygon.at(i).at(1) / 10000)) / theAnimation->h;
+	for (int i = 0; i < Bcounter; i++) {
+		*(tempVBO + ((Bcounter * 4) + 0)) = (2 * ((float)(polygon.at(i)).at(0) / 10000)) / theAnimation->w;
+		*(tempVBO + ((Bcounter * 4) + 1)) = (2 * ((float)(polygon.at(i)).at(1) / 10000)) / theAnimation->h;
 	}
 	
 	for (int i = 0; i < indices.size(); i++) {
