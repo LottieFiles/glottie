@@ -1,27 +1,74 @@
 #include <array>
 #include "../external/earcut.hpp"
 
+	struct alignas(ALIGNSIZE) IntPoint {
+		int64_t X, Y;
+	};
+namespace mapbox {
+namespace util {
+
+template <>
+struct alignas(ALIGNSIZE) nth<0, IntPoint> {
+    inline static auto get(const IntPoint &t) {
+        return t.X;
+    };
+};
+template <>
+struct alignas(ALIGNSIZE) nth<1, IntPoint> {
+    inline static auto get(const IntPoint &t) {
+        return t.Y;
+    };
+};
+
+} // namespace util
+} // namespace mapbox
+
 struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill, int order) {
 	struct TriangulateReturn* tempTriangulate;
+	tempTriangulate = new TriangulateReturn;
 	using Coord = double;
 	using N = uint32_t;
 	using Point = std::array<Coord, 2>;
-	std::vector<std::vector<Point>> polygon;
-	std::array<Coord, 2> tempPoint;
+
+
+	
+	EM_ASM({console.log("attempting to add tempPoint 0.1");});
+	std::vector<std::vector<IntPoint>> polygon;
+	//alignas(ALIGNSIZE) std::vector<std::vector<IntPoint>> polygon;
+	EM_ASM({console.log("attempting to add tempPoint 0.2");});
+	//alignas(ALIGNSIZE) std::array<Coord, 2> tempPoint;
+	struct IntPoint* tempPoint = new IntPoint();
+	
+	EM_ASM({console.log("attempting to add tempPoint 0.3");});
+	polygon.reserve(1);
 	polygon[0].reserve(count + 2);
 
+	EM_ASM({console.log("attempting to add tempPoint 0.4");});
 	bool exhausted = false;
 	passedArray = passedArray->start;
 	GLfloat* tempVBO = new GLfloat[count * 4];
 	GLfloat* tempCBO = new GLfloat[count * 4];
+	EM_ASM({console.log("attempting to add tempPoint 1");});
 	unsigned int* tempIndex = new unsigned int[count * 3];
+	EM_ASM({console.log("attempting to add tempPoint 2");});
 	int Bcounter = 0;
+	tempPoint->X = (double)passedArray->vertex->position[0]*10000;
+	tempPoint->Y = (double)passedArray->vertex->position[1]*10000;
 	while (! exhausted) {
-		tempPoint.at(0) = (double)passedArray->vertex->position[0]*10000;
-		tempPoint.at(1) = (double)passedArray->vertex->position[1]*10000;
+
+		EM_ASM({console.log("attempting to add tempPoint 1.1 " + $0);}, Bcounter);
+		//tempPoint.X = (double)passedArray->vertex->position[0]*10000;
+		//tempPoint.Y = (double)passedArray->vertex->position[1]*10000;
+		tempPoint->X = (double)passedArray->vertex->position[0]*10000;
+		tempPoint->Y = (double)passedArray->vertex->position[1]*10000;
+		//tempPoint.at(0) = (double)passedArray->vertex->position[0]*10000;
+		//tempPoint.at(1) = (double)passedArray->vertex->position[1]*10000;
 		
 		//polygon.at(Bcounter).push_back({(uint32_t)(passedArray->vertex->position[0]*10000), (uint32_t)(passedArray->vertex->position[0]*10000)});
-		polygon.at(Bcounter).push_back(tempPoint);
+	
+		//polygon[0][Bcounter].reserve(1);	
+		polygon[0].push_back(*tempPoint);
+		EM_ASM({console.log("attempting to add tempPoint 1.3 " + $0);}, Bcounter);
 		if (passedArray->vertex->position[2] == 0) {
 			*(tempVBO + ((Bcounter * 4) + 2)) = 1 - ((float)order / 100000);
 		} else {
@@ -34,18 +81,23 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		*(tempCBO + ((Bcounter * 4) + 2)) = *(defaultFill + 2);
 		*(tempCBO + ((Bcounter * 4) + 3)) = *(defaultFill + 3);
 		Bcounter++;
-		if (passedArray->next == NULL) {
+		if (passedArray->next == passedArray->start) {
 			exhausted = true;
 		} else {
 			passedArray = passedArray->next;
 		}
 	}
+	EM_ASM({console.log("attempting to add tempPoint 1.4");});
 	std::vector<N> indices;
 	indices.reserve(count * 3);
 	indices = mapbox::earcut<N>(polygon);
+	EM_ASM({console.log("attempting to add tempPoint 1.5");});
 	for (int i = 0; i < Bcounter; i++) {
-		*(tempVBO + ((Bcounter * 4) + 0)) = (2 * ((float)(polygon.at(i)).at(0) / 10000)) / theAnimation->w;
-		*(tempVBO + ((Bcounter * 4) + 1)) = (2 * ((float)(polygon.at(i)).at(1) / 10000)) / theAnimation->h;
+		EM_ASM({console.log("attempting to add tempPoint 3 " + $0);}, i);
+		*(tempVBO + ((Bcounter * 4) + 0)) = (2 * ((float)(polygon[0][i]).X / 10000)) / theAnimation->w;
+		*(tempVBO + ((Bcounter * 4) + 1)) = (2 * ((float)(polygon[0][i]).Y / 10000)) / theAnimation->h;
+		//*(tempVBO + ((Bcounter * 4) + 0)) = (2 * ((float)(polygon[0][i])[0] / 10000)) / theAnimation->w;
+		//*(tempVBO + ((Bcounter * 4) + 1)) = (2 * ((float)(polygon[0][i])[1] / 10000)) / theAnimation->h;
 	}
 	
 	for (int i = 0; i < indices.size(); i++) {
