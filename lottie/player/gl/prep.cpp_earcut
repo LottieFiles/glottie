@@ -1,4 +1,132 @@
-#include "triangulate.cpp"
+#include <array>
+#include "../external/earcut.hpp"
+
+struct alignas(ALIGNSIZE) IntPoint {
+	int64_t X, Y;
+};
+
+namespace mapbox {
+namespace util {
+
+template <>
+struct alignas(ALIGNSIZE) nth<0, IntPoint> {
+    inline static auto get(const IntPoint &t) {
+        return t.X;
+    };
+};
+template <>
+struct alignas(ALIGNSIZE) nth<1, IntPoint> {
+    inline static auto get(const IntPoint &t) {
+        return t.Y;
+    };
+};
+
+} // namespace util
+} // namespace mapbox
+
+struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill, int order) {
+	struct TriangulateReturn* tempTriangulate;
+	tempTriangulate = new TriangulateReturn;
+	using Coord = double;
+	using N = uint32_t;
+	using Point = std::array<Coord, 2>;
+
+
+	
+	EM_ASM({console.log("attempting to add tempPoint 0.1");});
+	alignas(ALIGNSIZE) std::vector<std::vector<IntPoint>> polygon;
+	//alignas(ALIGNSIZE) std::vector<std::vector<IntPoint>> polygon;
+	EM_ASM({console.log("attempting to add tempPoint 0.2");});
+	//alignas(ALIGNSIZE) std::array<Coord, 2> tempPoint;
+	
+	EM_ASM({console.log("attempting to add tempPoint 0.3");});
+	polygon.reserve(1);	
+	polygon[0].reserve(count*2);
+
+	EM_ASM({console.log("attempting to add tempPoint 0.4");});
+	bool exhausted = false;
+	passedArray = passedArray->start;
+	GLfloat* tempVBO = new GLfloat[count * 4];
+	GLfloat* tempCBO = new GLfloat[count * 4];
+	EM_ASM({console.log("attempting to add tempPoint 1");});
+	EM_ASM({console.log("attempting to add tempPoint 2");});
+	int Bcounter = 0;
+	//tempPoint->X = (double)passedArray->vertex->position[0]*10000;
+	//tempPoint->Y = (double)passedArray->vertex->position[1]*10000;
+	float depth = order / 100000000;
+	struct IntPoint* tempPoint;
+	tempPoint = new IntPoint();
+
+	while (! exhausted) {
+
+		EM_ASM({console.log("attempting to add tempPoint 1.1 " + $0);}, Bcounter);
+		//tempPoint.X = (double)passedArray->vertex->position[0]*10000;
+		//tempPoint.Y = (double)passedArray->vertex->position[1]*10000;
+		tempPoint->X = (uint32_t)passedArray->vertex->position[0]*10000;
+		tempPoint->Y = (uint32_t)passedArray->vertex->position[1]*10000;
+		//tempPoint.at(0) = (double)passedArray->vertex->position[0]*10000;
+		//tempPoint.at(1) = (double)passedArray->vertex->position[1]*10000;
+		
+		//polygon.at(Bcounter).push_back({(uint32_t)(passedArray->vertex->position[0]*10000), (uint32_t)(passedArray->vertex->position[0]*10000)});
+	
+		//polygon[0][Bcounter].reserve(1);	
+		polygon[0].push_back(*tempPoint);
+		EM_ASM({console.log("attempting to add tempPoint 1.2 " + $0);}, Bcounter);
+		if (Bcounter > 0) {
+		//	EM_ASM_({console.log("attempting to add tempPoint 1.1.9 " + $0 + " : " + $1);}, (long)(polygon[0][Bcounter].X), (long)(polygon[0][Bcounter].Y));
+		}
+		EM_ASM({console.log("attempting to add tempPoint 1.3 " + $0);}, Bcounter);
+		//EM_ASM({console.log("attempting to add tempPoint 1.9 " + $0 + " : " + $1);}, (polygon.at(0).at(Bcounter)).X, (polygon.at(0).at(Bcounter)).Y);
+		if (passedArray->vertex->position[2] == 0) {
+			*(tempVBO + ((Bcounter * 4) + 2)) = 1 - ((float)order / 100000);
+		} else {
+			*(tempVBO + ((Bcounter * 4) + 2)) = passedArray->vertex->position[2];
+		}
+		*(tempVBO + ((Bcounter * 4) + 3)) = 1;
+
+		*(tempVBO + ((Bcounter * 4) + 0)) = (2 * passedArray->vertex->position[0]) / theAnimation->w;
+		*(tempVBO + ((Bcounter * 4) + 1)) = (2 * passedArray->vertex->position[1]) / theAnimation->h;
+		EM_ASM_({console.log("attempting to add tempPoint 1.9 " + $0 + " : " + $1);}, *(tempVBO + ((Bcounter * 4) + 0)), *(tempVBO + ((Bcounter * 4) + 1)));
+		*(tempVBO + ((Bcounter * 4) + 2)) = depth;
+		*(tempVBO + ((Bcounter * 4) + 3)) = 1;
+
+		*(tempCBO + ((Bcounter * 4) + 0)) = *(defaultFill + 0);
+		*(tempCBO + ((Bcounter * 4) + 1)) = *(defaultFill + 1);
+		*(tempCBO + ((Bcounter * 4) + 2)) = *(defaultFill + 2);
+		*(tempCBO + ((Bcounter * 4) + 3)) = *(defaultFill + 3);
+		Bcounter++;
+		if (passedArray->next == passedArray->start) {
+			exhausted = true;
+		} else {
+			passedArray = passedArray->next;
+		}
+	}
+
+	// remember to add holes (new polygon[] array for each hole)
+	
+
+	EM_ASM({console.log("attempting to add tempPoint 1.4");});
+	alignas(ALIGNSIZE) std::vector<N> indices;
+	EM_ASM({console.log("attempting to add tempPoint 1.4.1");});
+	//indices.reserve((Bcounter * 3));
+	EM_ASM({console.log("attempting to add tempPoint 1.4.2");});
+	indices = mapbox::earcut<N>(polygon);
+	EM_ASM({console.log("attempting to add tempPoint 1.5");});
+
+	unsigned int* tempIndex = new unsigned int[indices.size() + 10];
+	EM_ASM({console.log("attempting to add tempPoint 1.5.1");});
+	for (int i = 0; i < indices.size(); i++) {
+		*(tempIndex + i) = indices[i];
+	}
+	EM_ASM({console.log("attempting to add tempPoint 1.6");});
+	tempTriangulate->vbo = tempVBO;
+	EM_ASM({console.log("attempting to add tempPoint 1.7");});
+	tempTriangulate->cbo = tempCBO;
+	EM_ASM({console.log("attempting to add tempPoint 1.8");});
+	tempTriangulate->index = tempIndex;
+	EM_ASM({console.log("attempting to add tempPoint 1.9");});
+	return tempTriangulate;
+}
 
 struct ShaderProgram* newShaderProgram() {
 	struct ShaderProgram* tempShaderProgram;
@@ -39,6 +167,7 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct Sh
 		tempShaderProgram = *passedShaderProgram->shader;
 	}
 
+	EM_ASM({console.log("prepvao 1.0");});
 	GLint tempPosAttrib = glGetAttribLocation(tempShaderProgram, "position");
 	glEnableVertexAttribArray(tempPosAttrib);
 	GLint tempColAttrib = glGetAttribLocation(tempShaderProgram, "color");
@@ -48,6 +177,7 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct Sh
 	glBindBuffer(GL_ARRAY_BUFFER, tvbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * count * 4, vertices, GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	EM_ASM({console.log("prepvao 1.1");});
 
 	glVertexAttribPointer(tempPosAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
@@ -55,6 +185,7 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct Sh
 	glBindBuffer(GL_ARRAY_BUFFER, tcbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * count * 4, colors, GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	EM_ASM({console.log("prepvao 1.2");});
 
 	glVertexAttribPointer(tempColAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
@@ -70,6 +201,7 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct Sh
 	glGenBuffers(1, &tibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * passedBuffers->idxCount, indices, GL_DYNAMIC_DRAW);
+	EM_ASM({console.log("prepvao 1.3");});
 
 
 
@@ -81,9 +213,13 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct Sh
 	passedBuffers->ibo = new GLuint;
 	passedBuffers->cbo = new GLuint;
 
+	EM_ASM({console.log("prepvao 1.4");});
 	*(passedBuffers->vao) = tvao;
+	EM_ASM({console.log("prepvao 1.5");});
 	*(passedBuffers->vbo) = tvbo;
+	EM_ASM({console.log("prepvao 1.6");});
 	*(passedBuffers->ibo) = tibo;
+	EM_ASM({console.log("prepvao 1.7");});
 	*(passedBuffers->cbo) = tcbo;
 
 	//passedBuffers->vao = tvao;
@@ -93,6 +229,7 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct Sh
 	passedBuffers->idx = indices; 
 		//EM_ASM({console.log("done prepping " + $0 + " " + $1);}, tvao, *(passedBuffers->vao));
 	glBindVertexArrayOES(0);
+	EM_ASM({console.log("prepvao 1.8");});
 
 	return refIndex;
 }
@@ -118,7 +255,7 @@ float* getFill(struct ShapesItem* passedShapesItem) {
 					if (tempShapesItem->c->k_count < 4) {
 						*(tempFloat + 3) = 1;
 					} else {
-						*(tempFloat + 3) = *(tempShapesItem->c->k + 0);
+						*(tempFloat + 3) = *(tempShapesItem->c->k + 3);
 					}
 				} else {
 					*(tempFloat + 0) = 1;
@@ -165,62 +302,62 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	bool exhausted = false;
 	struct TriangulateReturn* tempTriangulateReturn;
 
-
+	float* defaultFill = getFill(passedShapesItem);
 	while (! exhausted) {
-		float* defaultFill = getFill(passedShapesItem);
 
 		//EM_ASM({console.log("tracing 1 ");});
-		//EM_ASM({console.log("looping 1");});
+		EM_ASM({console.log("looping 1");});
 		if (passedPropertiesShapeProp->i != NULL) {
 			passedPropertiesShapeProp->buffers_i = newBuffers();
 			//passedPropertiesShapeProp->gl_i = vertexToGLfloat(passedPropertiesShapeProp->i, passedPropertiesShapeProp->i_count);
-			//EM_ASM({console.log("looping 1.1 i");});
+			EM_ASM({console.log("looping 1.1 i");});
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->i_count, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i, defaultFill, passedShapesItem->order);
 			if (tempTriangulateReturn == NULL) {return 0;}
 			passedPropertiesShapeProp->gl_i = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_i_fill = tempTriangulateReturn->cbo;
 			passedPropertiesShapeProp->gl_i_idx = tempTriangulateReturn->index;
 			//delete tempTriangulateReturn;
-			//EM_ASM({console.log("looping 1.1.1 i");});
+			EM_ASM({console.log("looping 1.1.1 i");});
 			prepVAO(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->gl_i_idx, passedPropertiesShapeProp->gl_i_fill, NULL, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i_count);
-			//EM_ASM({console.log("looping 1.1.2 i");});
+			EM_ASM({console.log("looping 1.1.2 i");});
 		}
 
 		//EM_ASM({console.log("tracing 2 ");});
 		if (passedPropertiesShapeProp->o != NULL) {
 			passedPropertiesShapeProp->buffers_o = newBuffers();
 			//passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->o_count);
-			//EM_ASM({console.log("looping 1.1 o");});
+			EM_ASM({console.log("looping 1.1 o");});
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o, defaultFill, passedShapesItem->order);
 			if (tempTriangulateReturn == NULL) {return 0;}
 			passedPropertiesShapeProp->gl_o = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_o_fill = tempTriangulateReturn->cbo;
 			passedPropertiesShapeProp->gl_o_idx = tempTriangulateReturn->index;
 			//delete tempTriangulateReturn;
-			//EM_ASM({console.log("looping 1.1.1 o");});
+			EM_ASM({console.log("looping 1.1.1 o");});
 			//EM_ASM({console.log("looping 1.2 o");});
 			prepVAO(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->gl_o_idx, passedPropertiesShapeProp->gl_o_fill, NULL, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o_count);
-			//EM_ASM({console.log("looping 1.1.2 o");});
+			EM_ASM({console.log("looping 1.1.2 o");});
 		}
 
 		//EM_ASM({console.log("tracing 3 ");});
 		if (passedPropertiesShapeProp->v != NULL) {
 			passedPropertiesShapeProp->buffers_v = newBuffers();
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
-			//EM_ASM({console.log("looping 1.1 v");});
+			EM_ASM({console.log("looping 1.1 v");});
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, passedShapesItem->order);
 			if (tempTriangulateReturn == NULL) {return 0;}
 			passedPropertiesShapeProp->gl_v = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_v_fill = tempTriangulateReturn->cbo;
 			passedPropertiesShapeProp->gl_v_idx = tempTriangulateReturn->index;
 			//delete tempTriangulateReturn;
-			//EM_ASM({console.log("looping 1.1.1 v");});
+			EM_ASM({console.log("looping 1.1.1 v");});
 			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, passedPropertiesShapeProp->gl_v_fill, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count);
-			//EM_ASM({console.log("looping 1.1.2 v");});
+			EM_ASM({console.log("looping 1.1.2 v");});
 		}
 
+		
 		delete tempTriangulateReturn;
-		delete defaultFill;
+		//delete defaultFill;
 		//EM_ASM({console.log("looping 1.4");});
 
 		//EM_ASM({console.log("tracing 4 ");});
@@ -230,7 +367,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp = passedPropertiesShapeProp->next;
 		}
 	}
-	//EM_ASM({console.log("all prep done");});
+	EM_ASM({console.log("all prep done");});
 	
 	return 1;
 }
