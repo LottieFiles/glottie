@@ -247,17 +247,21 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	//}
 	//EM_ASM({console.log("done checking for outliers 1.1 " + $0);}, count);
 
-	GLfloat* tempVBO = new GLfloat[(count * 4) + 2];
+	GLfloat* tempVBO = new GLfloat[(count * 4)];
 	//EM_ASM({console.log("done checking for outliers 1.2 " + $0);}, count);
-	GLfloat* tempCBO = new GLfloat[(count * 4) + 2];
+	GLfloat* tempCBO = new GLfloat[(count * 4)];
 	//EM_ASM({console.log("done checking for outliers 1.3 " + $0);}, count);
-	unsigned int* tempIndex = new unsigned int[(count * 3) + 12];
+	unsigned int* tempIndex = new unsigned int[(count * 3)];
 	unsigned int Bcounter = 0;
 	unsigned int Icounter = 0;
 	
 	EM_ASM({console.log("done checking for outliers");});
 	exhausted = false;
 	int readItems = 0;
+	if (*(defaultFill + 0) == 0) {*(defaultFill + 0) = 1;}
+	if (*(defaultFill + 1) == 0) {*(defaultFill + 1) = 1;}
+	if (*(defaultFill + 2) == 0) {*(defaultFill + 2) = 1;}
+	if (*(defaultFill + 3) == 0) {*(defaultFill + 3) = 1;}
 	while (! exhausted) {
 		*(tempVBO + ((Bcounter * 4) + 0)) = ((2 * passedArray->vertex->position[0]) / theAnimation->w);
 		*(tempVBO + ((Bcounter * 4) + 1)) = ((2 * passedArray->vertex->position[1]) / theAnimation->h) * -1;
@@ -267,13 +271,9 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		} else {
 			*(tempVBO + ((Bcounter * 4) + 2)) = passedArray->vertex->position[2];
 		}
-		*(tempVBO + ((Bcounter * 4) + 2)) = 1;
+		//*(tempVBO + ((Bcounter * 4) + 2)) = 1;
 		*(tempVBO + ((Bcounter * 4) + 3)) = 1;
 
-		if (*(defaultFill + 0) == 0) {*(defaultFill + 0) = 1;}
-		if (*(defaultFill + 1) == 0) {*(defaultFill + 1) = 1;}
-		if (*(defaultFill + 2) == 0) {*(defaultFill + 2) = 1;}
-		if (*(defaultFill + 3) == 0) {*(defaultFill + 3) = 1;}
 		*(tempCBO + ((Bcounter * 4) + 0)) = *(defaultFill + 0);
 		*(tempCBO + ((Bcounter * 4) + 1)) = *(defaultFill + 1);
 		*(tempCBO + ((Bcounter * 4) + 2)) = *(defaultFill + 2);
@@ -309,13 +309,9 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 			} else {
 				*(tempVBO + ((Bcounter * 4) + 2)) = passedArray->vertex->position[2];
 			}
-			*(tempVBO + ((Bcounter * 4) + 2)) = 1;
+			//*(tempVBO + ((Bcounter * 4) + 2)) = 1;
 			*(tempVBO + ((Bcounter * 4) + 3)) = 1;
 
-		if (*(defaultFill + 0) == 0) {*(defaultFill + 0) = 1;}
-		if (*(defaultFill + 1) == 0) {*(defaultFill + 1) = 1;}
-		if (*(defaultFill + 2) == 0) {*(defaultFill + 2) = 1;}
-		if (*(defaultFill + 3) == 0) {*(defaultFill + 3) = 1;}
 			*(tempCBO + ((Bcounter * 4) + 0)) = *(defaultFill + 0);
 			*(tempCBO + ((Bcounter * 4) + 1)) = *(defaultFill + 1);
 			*(tempCBO + ((Bcounter * 4) + 2)) = *(defaultFill + 2);

@@ -166,8 +166,8 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	struct TriangulateReturn* tempTriangulateReturn;
 
 
+	float* defaultFill = getFill(passedShapesItem);
 	while (! exhausted) {
-		float* defaultFill = getFill(passedShapesItem);
 
 		//EM_ASM({console.log("tracing 1 ");});
 		//EM_ASM({console.log("looping 1");});
@@ -220,7 +220,6 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		}
 
 		delete tempTriangulateReturn;
-		delete defaultFill;
 		//EM_ASM({console.log("looping 1.4");});
 
 		//EM_ASM({console.log("tracing 4 ");});
@@ -230,6 +229,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp = passedPropertiesShapeProp->next;
 		}
 	}
+	delete defaultFill;
 	//EM_ASM({console.log("all prep done");});
 	
 	return 1;
