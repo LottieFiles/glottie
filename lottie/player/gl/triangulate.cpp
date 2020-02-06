@@ -300,6 +300,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		exhausted = false;
 		reserve = reserveEnd;
 		int BcounterReserveStart = Bcounter;
+		int IcounterReserveStart = Icounter;
 		while (! exhausted) {
 			*(tempVBO + ((Bcounter * 4) + 0)) = ((2 * reserve->arrayItem->vertex->position[0]) / theAnimation->w);
 			*(tempVBO + ((Bcounter * 4) + 1)) = ((2 * reserve->arrayItem->vertex->position[1]) / theAnimation->h) * -1;
@@ -328,6 +329,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		exhausted = false;
 		reserve = reserveEnd;
 		Bcounter = BcounterReserveStart;
+		Icounter = IcounterReserveStart;
 		while (! exhausted) {
 			*(tempIndex + ((Icounter * 3) + 0)) = reserve->arrayItem->idxOrder;
 			*(tempIndex + ((Icounter * 3) + 1)) = reserve->arrayItem->bindPrev->idxOrder;
