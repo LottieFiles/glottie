@@ -138,6 +138,7 @@ struct alignas(ALIGNSIZE) TriangulateReturn {
 	GLfloat* vbo;
 	GLfloat* cbo;
 	unsigned int* index;
+	int indexCount;
 };
 
 struct alignas(ALIGNSIZE) ColorsReturn {

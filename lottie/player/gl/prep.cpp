@@ -58,20 +58,12 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct Sh
 
 	glVertexAttribPointer(tempColAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	/*
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	*/
-
 
 	glGenBuffers(1, &tibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * passedBuffers->idxCount, indices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * passedBuffers->idxCount * 3, indices, GL_DYNAMIC_DRAW);
 
-
+	EM_ASM_({console.log("--......--> array sizes " + $0 + " " + $1);}, sizeof(GLfloat) * count * 4, sizeof(unsigned int) * passedBuffers->idxCount);
 
 	passedBuffers->posAttrib = &tempPosAttrib;
 	passedBuffers->colAttrib = &tempColAttrib;
@@ -86,12 +78,13 @@ int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct Sh
 	*(passedBuffers->ibo) = tibo;
 	*(passedBuffers->cbo) = tcbo;
 
+	EM_ASM_({console.log("--......--> done loading buffers " + $0 + " " + $1);}, passedBuffers->idxCount, indices);
+
 	//passedBuffers->vao = tvao;
 	//passedBuffers->vbo = tvbo;
 	//passedBuffers->ibo = tibo;
 
 	passedBuffers->idx = indices; 
-		//EM_ASM({console.log("done prepping " + $0 + " " + $1);}, tvao, *(passedBuffers->vao));
 	glBindVertexArrayOES(0);
 
 	return refIndex;
@@ -121,10 +114,16 @@ float* getFill(struct ShapesItem* passedShapesItem) {
 						*(tempFloat + 3) = *(tempShapesItem->c->k + 0);
 					}
 				} else {
-					*(tempFloat + 0) = 1;
-					*(tempFloat + 1) = 1;
-					*(tempFloat + 2) = 1;
-					*(tempFloat + 3) = 1;
+
+				}
+				if (*(tempFloat + 0) == 0 &&
+					*(tempFloat + 1) == 0 &&
+					*(tempFloat + 2) == 0)
+					{
+						*(tempFloat + 0) = 1;
+						*(tempFloat + 1) = 1;
+						*(tempFloat + 2) = 1;
+						*(tempFloat + 3) = 1;
 				}
 				return tempFloat;
 			}
@@ -183,7 +182,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//delete tempTriangulateReturn;
 			//EM_ASM({console.log("looping 1.1.1 i");});
 			prepVAO(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->gl_i_idx, passedPropertiesShapeProp->gl_i_fill, NULL, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i_count);
-			//EM_ASM({console.log("looping 1.1.2 i");});
+			EM_ASM({console.log("looping 1.1.2 i");});
 		}
 
 		//EM_ASM({console.log("tracing 2 ");});
@@ -200,7 +199,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//EM_ASM({console.log("looping 1.1.1 o");});
 			//EM_ASM({console.log("looping 1.2 o");});
 			prepVAO(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->gl_o_idx, passedPropertiesShapeProp->gl_o_fill, NULL, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o_count);
-			//EM_ASM({console.log("looping 1.1.2 o");});
+			EM_ASM({console.log("looping 1.1.2 o");});
 		}
 
 		//EM_ASM({console.log("tracing 3 ");});
@@ -216,9 +215,12 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//delete tempTriangulateReturn;
 			//EM_ASM({console.log("looping 1.1.1 v");});
 			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, passedPropertiesShapeProp->gl_v_fill, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count);
-			//EM_ASM({console.log("looping 1.1.2 v");});
+			EM_ASM({console.log("looping 1.1.2 v");});
 		}
 
+		delete tempTriangulateReturn->vbo;
+		delete tempTriangulateReturn->cbo;
+		delete tempTriangulateReturn->index;
 		delete tempTriangulateReturn;
 		//EM_ASM({console.log("looping 1.4");});
 

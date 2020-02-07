@@ -31,6 +31,7 @@ alignas(256) GLint* posAttrib[1024];
 */
 
 #include "main.h"
+#include "gl/gl.h"
 #include "misc.h"
 #include "deserializer/properties.h"
 #include "deserializer/layers.h"
