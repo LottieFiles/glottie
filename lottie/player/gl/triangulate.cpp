@@ -163,15 +163,23 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	if (count > 3) {
 		//EM_ASM({console.log("pretri 2.1");});
 		bool entered = true;
+		bool startEncountered = false;
+		int cyclesAfterStartEncountered = 0;
 		while (! exhausted) {
 			angleOne = (convex(passedArray->vertex, passedArray->next->vertex, passedArray->next->next->vertex, passedArray->prev->vertex));
 			angleTwo = (convex(passedArray->vertex, passedArray->prev->vertex, passedArray->prev->prev->vertex, passedArray->next->vertex));
 			if (angleOne == 3 && angleTwo == 3) {
+				if (startEncountered) {
+					cyclesAfterStartEncountered++;
+				}
 				coreCount = coreCount - 1;
 			} else {
 				if (
 					angleOne == 1 && angleTwo == 1
 				) {
+					if (startEncountered) {
+						cyclesAfterStartEncountered++;
+					}
 				} else {
 					reserve = newReserve(reserve);
 					reserve->arrayItem = passedArray;
@@ -197,13 +205,25 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 					outlierEncountered = true;
 				}
 			}
-			if (passedArray->next == startPoint) {
-				exhausted = true;
-			} else {
-				if (outlierEncountered) {
-					outlierEncountered = false;
+			if (startEncountered) {
+				if (cyclesAfterStartEncountered > 3) {
+					exhausted = true;
 				} else {
-					passedArray = passedArray->next;
+					if (outlierEncountered) {
+						outlierEncountered = false;
+					} else {
+						passedArray = passedArray->next;
+					}
+				}
+			} else {
+				if (passedArray->next == startPoint) {
+					startEncountered = true;
+				} else {
+					if (outlierEncountered) {
+						outlierEncountered = false;
+					} else {
+						passedArray = passedArray->next;
+					}
 				}
 			}
 		}
@@ -322,7 +342,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	tempTriangulateReturn->vbo = tempVBO;
 	tempTriangulateReturn->cbo = tempCBO;
 	tempTriangulateReturn->index = tempIndex;
-	tempTriangulateReturn->indexCount = passedBuffers->idxCount;
+	tempTriangulateReturn->idxCount = Bcounter;
 
 	return tempTriangulateReturn;
 }
