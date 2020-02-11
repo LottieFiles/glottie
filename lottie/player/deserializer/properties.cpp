@@ -105,6 +105,63 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			tempKeyValue = tempKeyValue->next;
 		}
 	}
+
+
+	exhausted = false;
+	passedPropertiesShape->i = passedPropertiesShape
+	struct PropertiesShapeProp* o1;
+	struct PropertiesShapeProp* o2;
+	struct PropertiesShapeProp* p1;
+	struct PropertiesShapeProp* p2;
+	float op1y, op1x, op2y, op2x;
+	float op1ys, op1xs, op2ys, op2xs;
+	float d1x, d1y, d2x, d2y, ooy, oox;
+	float d1xs, d1ys, d2xs, d2ys, ooys, ooxs;
+
+	while (! exhausted) {
+		if (passedPropertiesShapeProp->v->next == NULL ||
+			passedPropertiesShapeProp->v->next == passedPropertiesShapeProp->v->start) {
+			exhausted = true;
+		} else {
+			if (passedPropertiesShapeProp->i->next != NULL &&
+				passedPropertiesShapeProp->o->next != NULL) {
+				if (passedPropertiesShapeProp->i->vertex->position[0] != 0 && 
+					passedPropertiesShapeProp->i->vertex->position[1] != 0 &&
+					passedPropertiesShapeProp->o->vertex->position[0] != 0 &&
+					passedPropertiesShapeProp->o->vertex->position[1] != 0) {
+					continue;
+				} else {
+					passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
+					passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
+					passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
+				}
+			} else {
+				break;
+			}
+		}
+		o1 = passedPropertiesShapeProp->v->prev;
+		o2 = passedPropertiesShapeProp->v;
+		p1 = passedPropertiesShapeProp->o->prev;
+		p2 = passedPropertiesShapeProp->i;
+
+		op1x = o1->vertex->position[0] - p1->vertex->position[0];
+		op1y = o1->vertex->position[1] - p1->vertex->position[1];
+		op1x = o2->vertex->position[0] - p2->vertex->position[0];
+		op1y = o2->vertex->position[1] - p2->vertex->position[1];
+		float segSize = 0.10;
+		float segments = 1 / segSize;
+		float segNow = 1;
+
+		while (segNow < segments) {
+			
+
+
+
+			segNow++;
+		}
+		
+	}
+
 	//EM_ASM({console.log("[[[[[[[[[[[[[========================> done");});
 	//deleteKeyValues(theScope->currentKeyValueTrail);
 

@@ -164,6 +164,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	while (! exhausted) {
 		elementCount++;
 
+		/*
 		//EM_ASM({console.log("tracing 1 ");});
 		//EM_ASM({console.log("looping 1");});
 		if (passedPropertiesShapeProp->i != NULL) {
@@ -199,6 +200,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			EM_ASM({console.log("---------> stats " + $0 + " " + $1 + " " + $2 + " " + $3);}, *(tempTriangulateReturn->vbo + 0), *(tempTriangulateReturn->cbo + 0), *(tempTriangulateReturn->index + 0), tempTriangulateReturn->idxCount);
 			delete tempTriangulateReturn;
 		}
+		*/
 
 		//EM_ASM({console.log("tracing 3 ");});
 		if (passedPropertiesShapeProp->v != NULL) {
@@ -216,7 +218,10 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			EM_ASM({console.log("---------> stats " + $0 + " " + $1 + " " + $2 + " " + $3);}, *(tempTriangulateReturn->vbo + 0), *(tempTriangulateReturn->cbo + 0), *(tempTriangulateReturn->index + 0), tempTriangulateReturn->idxCount);
 			delete tempTriangulateReturn;
 		}
-	
+
+		bezierNode = passedPropertiesShapeProp->gl_v;
+
+			
 		//if (elementCount == 1 || passedPropertiesShapeProp->next == NULL) {
 //			EM_ASM({console.log("---------> stats " + $0 + " " + $1 + " " + $2 + " " + $3);}, *(tempTriangulateReturn->vbo + 0), *(tempTriangulateReturn->cbo + 0), *(tempTriangulateReturn->index + 0), tempTriangulateReturn->idxCount);
 		//}
