@@ -144,17 +144,25 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		p1 = passedPropertiesShapeProp->o->prev;
 		p2 = passedPropertiesShapeProp->i;
 
-		op1x = o1->vertex->position[0] - p1->vertex->position[0];
-		op1y = o1->vertex->position[1] - p1->vertex->position[1];
-		op1x = o2->vertex->position[0] - p2->vertex->position[0];
-		op1y = o2->vertex->position[1] - p2->vertex->position[1];
+		op1x = p1->vertex->position[0] - o1->vertex->position[0];
+		op1y = p1->vertex->position[1] - o1->vertex->position[1];
+		op2x = p2->vertex->position[0] - o2->vertex->position[0];
+		op2y = p2->vertex->position[1] - o2->vertex->position[1];
+		oox = p2->vertex->position[0] - p1->vertex->position[0];
+		ooy = p2->vertex->position[1] - p1->vertex->position[1];
 		float segSize = 0.10;
 		float segments = 1 / segSize;
 		float segNow = 1;
+		op1xs = op1x / segments;
+		op1ys = op1y / segments;
+		op2xs = op2x / segments;
+		op2ys = op2y / segments;
+		ooxs = oox / segments;
+		ooys = ooy / segments;
 
 		while (segNow < segments) {
 			
-
+			d1x = 
 
 
 			segNow++;
