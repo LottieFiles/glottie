@@ -136,7 +136,8 @@ struct alignas(ALIGNSIZE) textBlock {
 };
 
 struct alignas(ALIGNSIZE) TriangulateReturn {
-	GLfloat* vbo;
+	//GLfloat* vbo;
+	struct Vertex* vbo;
 	GLfloat* cbo;
 	unsigned int* index;
 	int idxCount;

@@ -68,7 +68,8 @@ struct alignas(ALIGNSIZE) PropertiesShapeProp {
 
 	GLfloat* gl_i;
 	GLfloat* gl_o;
-	GLfloat* gl_v;
+	//GLfloat* gl_v;
+	struct Vertex* gl_v;
 
 	GLfloat* gl_i_fill;
 	GLfloat* gl_o_fill;

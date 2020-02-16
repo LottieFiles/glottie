@@ -1,12 +1,13 @@
 // Shader sources
 const GLchar* vertexSource =
-    "attribute vec4 position; \n"
+    "attribute vec4 new_position; \n"
     "attribute vec4 color; \n"
     "varying vec4 vcolors; \n"
     "void main() \n"
     "{ \n"
     "  vcolors = color; \n"
-    "  gl_Position = position; \n"
+//    "  gl_Position = position; \n"
+    "  gl_Position = vec4(new_position.position[0], new_position.position[1], new_position.position[2], new_position.position[3]); \n"
     "} \n";
 
 const GLchar* fragmentSource =
