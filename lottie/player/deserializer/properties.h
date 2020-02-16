@@ -81,6 +81,7 @@ struct alignas(ALIGNSIZE) PropertiesShapeProp {
 	int i_count = 0;	
 	int o_count = 0;	
 	int v_count = 0;
+	int bezier_count = 0;
 
 	//int refIndex_i = 0;
 	//int refIndex_o = 0;

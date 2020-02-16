@@ -38,7 +38,8 @@ struct alignas(ALIGNSIZE) ArrayOfVertex {
 	struct Vertex* vertex = NULL;
 	int order;
 	int idxOrder;
-	bool reserved = NULL;
+	bool reserved = false;
+	bool bezier = false;
 };
 
 struct alignas(ALIGNSIZE) ArrayOfArrayOfVertex {

@@ -219,7 +219,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			delete tempTriangulateReturn;
 		}
 
-		bezierNode = passedPropertiesShapeProp->gl_v;
+		//bezierNode = passedPropertiesShapeProp->gl_v;
 
 			
 		//if (elementCount == 1 || passedPropertiesShapeProp->next == NULL) {

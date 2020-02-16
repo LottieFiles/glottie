@@ -225,6 +225,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 					}
 				}
 			}
+			EM_ASM({console.log("checking outlier");});
 		}
 	} else {
 		//EM_ASM({console.log("skipped " + $0);}, count);
@@ -239,12 +240,12 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	//if (outlierEncountered) {
 		passedArray = startPoint;
 	//}
-	//EM_ASM({console.log("done checking for outliers 1.1 " + $0);}, count);
+	EM_ASM({console.log("done checking for outliers 1.1 " + $0);}, count);
 
 	GLfloat* tempVBO = new GLfloat[(count * 4)];
-	//EM_ASM({console.log("done checking for outliers 1.2 " + $0);}, count);
+	EM_ASM({console.log("done checking for outliers 1.2 " + $0);}, count);
 	GLfloat* tempCBO = new GLfloat[(count * 4)];
-	//EM_ASM({console.log("done checking for outliers 1.3 " + $0);}, count);
+	EM_ASM({console.log("done checking for outliers 1.3 " + $0);}, count);
 	unsigned int* tempIndex = new unsigned int[(count * 3)];
 	int Bcounter = 0;
 	
@@ -274,7 +275,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 			*(tempIndex + ((Icounter * 3) + 0)) = startPoint->idxOrder;
 			*(tempIndex + ((Icounter * 3) + 1)) = passedArray->prev->idxOrder;
 			*(tempIndex + ((Icounter * 3) + 2)) = passedArray->idxOrder;
-			EM_ASM_({console.log("RENDER index " + $0 + " - " + $1 + " - " + $2 + " " + $3 + ":" + $4 + " ---- " + $5 + " " + $6 + " " + $7 + " horiz: " + $8 + " (" + $9 + ")");}, *(tempIndex + ((Icounter * 3) + 0)), *(tempIndex + ((Icounter * 3) + 1)), *(tempIndex + ((Icounter * 3) + 2)), *(tempVBO + ((Bcounter * 4) + 0)), *(tempVBO + ((Bcounter * 4) + 1)), startPoint->order, passedArray->prev->order, passedArray->idxOrder, passedArray->vertex->position[0], passedArray->idxOrder);
+			EM_ASM_({console.log("RENDER index " + $0 + " - " + $1 + " - " + $2 + " " + $3 + ":" + $4 + " ---- " + $5 + " " + $6 + " " + $7 + " horiz: " + $8 + " (" + $9 + ") " + $10);}, *(tempIndex + ((Icounter * 3) + 0)), *(tempIndex + ((Icounter * 3) + 1)), *(tempIndex + ((Icounter * 3) + 2)), *(tempVBO + ((Bcounter * 4) + 0)), *(tempVBO + ((Bcounter * 4) + 1)), startPoint->order, passedArray->prev->order, passedArray->idxOrder, passedArray->vertex->position[0], passedArray->idxOrder, passedArray->bezier);
 			Icounter++;
 		}
 		Bcounter++;
@@ -291,6 +292,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		reserve = reserveEnd;
 		int BcounterReserveStart = Bcounter;
 		while (! exhausted) {
+			EM_ASM({console.log("adding outliers");});
 			*(tempVBO + ((Bcounter * 4) + 0)) = ((2 * reserve->arrayItem->vertex->position[0]) / theAnimation->w);
 			*(tempVBO + ((Bcounter * 4) + 1)) = ((2 * reserve->arrayItem->vertex->position[1]) / theAnimation->h) * -1;
 
