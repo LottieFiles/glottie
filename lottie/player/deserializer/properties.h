@@ -66,18 +66,30 @@ struct alignas(ALIGNSIZE) PropertiesShapeProp {
 	struct Buffers* buffers_o = NULL;
 	struct Buffers* buffers_v = NULL;
 
-	GLfloat* gl_i;
-	GLfloat* gl_o;
+	//GLfloat* gl_i;
+	//GLfloat* gl_o;
 	//GLfloat* gl_v;
+	struct Vertex* gl_i;
+	struct Vertex* gl_o;
 	struct Vertex* gl_v;
 
+	/*
 	GLfloat* gl_i_fill;
 	GLfloat* gl_o_fill;
 	GLfloat* gl_v_fill;
+	*/
+	struct Vertex* gl_i_fill;
+	struct Vertex* gl_o_fill;
+	struct Vertex* gl_v_fill;
 
+	/*
 	unsigned int* gl_i_idx;
 	unsigned int* gl_o_idx;
 	unsigned int* gl_v_idx;
+	*/
+	struct IndexArray* gl_i_idx;
+	struct IndexArray* gl_o_idx;
+	struct IndexArray* gl_v_idx;
 
 	int i_count = 0;	
 	int o_count = 0;	

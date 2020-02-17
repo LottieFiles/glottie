@@ -15,7 +15,7 @@ struct ShaderProgram* newShaderProgram() {
 }
 
 //int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count, int idxCount) {
-int prepVAO(struct Vertex* vertices, unsigned int* indices, GLfloat* colors, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count, int idxCount) {
+int prepVAO(struct Vertex* vertices, struct IndexArray* indices, struct Vertex* colors, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count, int idxCount) {
 	//EM_ASM_({console.log("VAO 1.0 " + $0 + " " + $1);}, count, passedBuffers->idxCount);
 	int refIndex = lastRefIndex + 1;
 
@@ -45,7 +45,7 @@ int prepVAO(struct Vertex* vertices, unsigned int* indices, GLfloat* colors, str
 
 	glGenBuffers(1, &tcbo);
 	glBindBuffer(GL_ARRAY_BUFFER, tcbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * count * 4, colors, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(struct Vertex) * count, colors, GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glVertexAttribPointer(tempColAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
@@ -53,7 +53,7 @@ int prepVAO(struct Vertex* vertices, unsigned int* indices, GLfloat* colors, str
 
 	glGenBuffers(1, &tibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * idxCount * 3, indices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(struct IndexArray) * idxCount, indices, GL_DYNAMIC_DRAW);
 
 	EM_ASM_({console.log("--......--> array sizes " + $0 + " " + $1);}, sizeof(GLfloat) * count * 4, sizeof(unsigned int) * idxCount * 3);
 

@@ -36,7 +36,7 @@ struct alignas(ALIGNSIZE) Buffers {
 	GLuint* vbo = NULL;
 	GLuint* cbo = NULL;
 	GLuint* ibo = NULL;
-	unsigned int* idx; // array of triangulation data
+	struct IndexArray* idx; // array of triangulation data
 	int idxCount;
 
 	GLint* posAttrib = NULL;

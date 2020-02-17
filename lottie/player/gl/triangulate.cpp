@@ -244,9 +244,11 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	struct Vertex* tempVBO = new Vertex[count];
 	//GLfloat* tempVBO = new GLfloat[(count * 4)];
 	EM_ASM({console.log("done checking for outliers 1.2 " + $0);}, count);
-	GLfloat* tempCBO = new GLfloat[(count * 4)];
+	struct Vertex* tempCBO = new Vertex[count];
+	//GLfloat* tempCBO = new GLfloat[(count * 4)];
 	EM_ASM({console.log("done checking for outliers 1.3 " + $0);}, count);
-	unsigned int* tempIndex = new unsigned int[(count * 3)];
+	struct IndexArray* tempIndex = new IndexArray[count];
+	//unsigned int* tempIndex = new unsigned int[(count * 3)];
 	int Bcounter = 0;
 	
 	EM_ASM({console.log("done checking for outliers");});
@@ -276,16 +278,23 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		}
 		(tempVBO + (Bcounter * 4))->position[3] = 1;
 
+		/*
 		*(tempCBO + ((Bcounter * 4) + 0)) = *(defaultFill + 0);
 		*(tempCBO + ((Bcounter * 4) + 1)) = *(defaultFill + 1);
 		*(tempCBO + ((Bcounter * 4) + 2)) = *(defaultFill + 2);
 		*(tempCBO + ((Bcounter * 4) + 3)) = *(defaultFill + 3);
+		*/
+
+		(tempCBO + (Bcounter * 4))->position[0] = *(defaultFill + 0);
+		(tempCBO + (Bcounter * 4))->position[1] = *(defaultFill + 1);
+		(tempCBO + (Bcounter * 4))->position[2] = *(defaultFill + 2);
+		(tempCBO + (Bcounter * 4))->position[3] = *(defaultFill + 3);
 		//EM_ASM({console.log("colors ---> " + $0 + " " + $1 + " " + $2 + " " + $3);}, *(tempCBO + ((Bcounter * 4) + 0)), *(tempCBO + ((Bcounter * 4) + 1)), *(tempCBO + ((Bcounter * 4) + 2)), *(tempCBO + ((Bcounter * 4) + 3)));
 		passedArray->idxOrder = Bcounter;
 		if (Bcounter > 1) {
-			*(tempIndex + ((Icounter * 3) + 0)) = startPoint->idxOrder;
-			*(tempIndex + ((Icounter * 3) + 1)) = passedArray->prev->idxOrder;
-			*(tempIndex + ((Icounter * 3) + 2)) = passedArray->idxOrder;
+			(tempIndex + (Icounter * 3))->position[0] = startPoint->idxOrder;
+			(tempIndex + (Icounter * 3))->position[1] = passedArray->prev->idxOrder;
+			(tempIndex + (Icounter * 3))->position[2] = passedArray->idxOrder;
 			//EM_ASM_({console.log("RENDER index " + $0 + " - " + $1 + " - " + $2 + " " + $3 + ":" + $4 + " ---- " + $5 + " " + $6 + " " + $7 + " horiz: " + $8 + " (" + $9 + ") " + $10);}, *(tempIndex + ((Icounter * 3) + 0)), *(tempIndex + ((Icounter * 3) + 1)), *(tempIndex + ((Icounter * 3) + 2)), *(tempVBO + ((Bcounter * 4) + 0)), *(tempVBO + ((Bcounter * 4) + 1)), startPoint->order, passedArray->prev->order, passedArray->idxOrder, passedArray->vertex->position[0], passedArray->idxOrder, passedArray->bezier);
 			Icounter++;
 		}
@@ -326,10 +335,17 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 			}
 			(tempVBO + (Bcounter * 4))->position[3] = 1;
 
+			/*
 			*(tempCBO + ((Bcounter * 4) + 0)) = *(defaultFill + 0);
 			*(tempCBO + ((Bcounter * 4) + 1)) = *(defaultFill + 1);
 			*(tempCBO + ((Bcounter * 4) + 2)) = *(defaultFill + 2);
 			*(tempCBO + ((Bcounter * 4) + 3)) = *(defaultFill + 3);
+			*/
+
+			(tempCBO + (Bcounter * 4))->position[0] = *(defaultFill + 0);
+			(tempCBO + (Bcounter * 4))->position[1] = *(defaultFill + 1);
+			(tempCBO + (Bcounter * 4))->position[2] = *(defaultFill + 2);
+			(tempCBO + (Bcounter * 4))->position[3] = *(defaultFill + 3);
 
 			reserve->arrayItem->idxOrder = Bcounter;
 			Bcounter++;
@@ -343,9 +359,15 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		reserve = reserveEnd;
 		Bcounter = BcounterReserveStart;
 		while (! exhausted) {
+			/*
 			*(tempIndex + ((Icounter * 3) + 0)) = reserve->arrayItem->idxOrder;
 			*(tempIndex + ((Icounter * 3) + 1)) = reserve->arrayItem->bindPrev->idxOrder;
 			*(tempIndex + ((Icounter * 3) + 2)) = reserve->arrayItem->bindNext->idxOrder;
+			*/
+
+			(tempIndex + (Icounter * 3))->position[0] = startPoint->idxOrder;
+			(tempIndex + (Icounter * 3))->position[1] = passedArray->prev->idxOrder;
+			(tempIndex + (Icounter * 3))->position[2] = passedArray->idxOrder;
 			//EM_ASM_({console.log("RENDER index earcut " + $0 + " - " + $1 + " - " + $2 + " " + $3 + ":" + $4 + " " + $5);}, *(tempIndex + ((Icounter * 3) + 0)), *(tempIndex + ((Icounter * 3) + 1)), *(tempIndex + ((Icounter * 3) + 2)), *(tempVBO + ((Icounter * 4) + 0)), *(tempVBO + ((Icounter * 4) + 1)), reserve->arrayItem->idxOrder);
 			Icounter++;
 			reserve->arrayItem->next->prev = reserve->arrayItem;
