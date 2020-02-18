@@ -8,8 +8,8 @@ struct Dimensions* findDimensions(int count, struct Buffers* passedBuffers, stru
 	bool exhausted = false;
 	while (! exhausted) {
 		//EM_ASM({console.log("finddim 1.1");});
-		GLfloat currX = passedArray->vertex->position[0];
-		GLfloat currY = passedArray->vertex->position[1];
+		GLfloat currX = passedArray->vertex->x;
+		GLfloat currY = passedArray->vertex->y;
 		//EM_ASM({console.log("finddim 1.2");});
 		if (currX > passedDimensions->maxXval) {
 			if (! directionFound) {
@@ -78,9 +78,9 @@ struct Dimensions* findDimensions(int count, struct Buffers* passedBuffers, stru
 
 
 float distanceBetweenPoints(struct Vertex* pointA, struct Vertex* pointB) {
-	float distance = ( sqrt(pow(((float)pointA->position[0] - (float)pointB->position[0]), 2) + pow(((float)pointA->position[1] - (float)pointB->position[1]), 2)) );
+	float distance = ( sqrt(pow(((float)pointA->x - (float)pointB->x), 2) + pow(((float)pointA->y - (float)pointB->y), 2)) );
 	
-	//EM_ASM_({console.log("    ///////////> " + $0 + " " + $1 + " " + $2 + " " + $3 + " " + $4);}, distance, pointA->position[0], pointB->position[0], pointA->position[1], pointB->position[1]);
+	//EM_ASM_({console.log("    ///////////> " + $0 + " " + $1 + " " + $2 + " " + $3 + " " + $4);}, distance, pointA->x, pointB->x, pointA->y, pointB->y);
 	return distance;
 }
 
@@ -93,7 +93,7 @@ int convex(struct Vertex* origin, struct Vertex* next, struct Vertex* nextnext, 
 	bs = distanceBetweenPoints(origin, nextnext);
 	float firstAngle = ((pow(a,2) + pow(bi,2) - pow(di,2)) / (2 * a * bi));
 	float secondAngle = ((pow(a,2) + pow(bs,2) - pow(ds,2)) / (2 * a * bs));
-	//EM_ASM_({console.log("///////////> " + $0 + " " + $1 + " : " + $2 + " " + $3 + " " + $4 + " " + " " + $5 + " " + $6 + " --- " + $7 + " : " + $8);}, firstAngle, secondAngle, a, di, bi, ds, bs, origin->position[0], origin->position[1]);
+	//EM_ASM_({console.log("///////////> " + $0 + " " + $1 + " : " + $2 + " " + $3 + " " + $4 + " " + " " + $5 + " " + $6 + " --- " + $7 + " : " + $8);}, firstAngle, secondAngle, a, di, bi, ds, bs, origin->x, origin->y);
 	if ((firstAngle == 0 || isnan(firstAngle)) && (secondAngle == 0 || isnan(secondAngle))) {
 		if (	
 				a == 0 &&
@@ -159,6 +159,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	int coreCount = count;
 	int angleOne, angleTwo;
 	bool outlierEncountered = false;
+	int outlierCount = 0;
 	//EM_ASM({console.log("pretri 2");});
 	if (count > 3) {
 		//EM_ASM({console.log("pretri 2.1");});
@@ -199,6 +200,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 					passedArray->reserved = true;
 					passedArray = reserveNextArray;
 					coreCount = coreCount - 1;
+					outlierCount++;
 					EM_ASM({console.log("outlier found");});
 					outlierEncountered = true;
 				}
@@ -235,19 +237,19 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	}
 	reserveEnd = reserve;
 
-	EM_ASM({console.log("done checking for outliers 1 " + $0);}, count);
+	EM_ASM({console.log("done checking for outliers 1 - " + $0 + " " + $1);}, count, outlierCount);
 
 	//if (outlierEncountered) {
 		passedArray = startPoint;
 	//}
 	EM_ASM({console.log("done checking for outliers 1.1 " + $0);}, count);
-	struct Vertex* tempVBO = new Vertex[count];
+	struct Vertex* tempVBO = new Vertex[count + 1];
 	//GLfloat* tempVBO = new GLfloat[(count * 4)];
 	EM_ASM({console.log("done checking for outliers 1.2 " + $0);}, count);
-	struct Vertex* tempCBO = new Vertex[count];
+	struct Vertex* tempCBO = new Vertex[count + 1];
 	//GLfloat* tempCBO = new GLfloat[(count * 4)];
 	EM_ASM({console.log("done checking for outliers 1.3 " + $0);}, count);
-	struct IndexArray* tempIndex = new IndexArray[count];
+	struct IndexArray* tempIndex = new IndexArray[count + outlierCount + 1];
 	//unsigned int* tempIndex = new unsigned int[(count * 3)];
 	int Bcounter = 0;
 	
@@ -257,26 +259,26 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	int Icounter = 0;
 	while (! exhausted) {
 		/*
-		*(tempVBO + ((Bcounter * 4) + 0)) = ((2 * passedArray->vertex->position[0]) / theAnimation->w);
-		*(tempVBO + ((Bcounter * 4) + 1)) = ((2 * passedArray->vertex->position[1]) / theAnimation->h) * -1;
-		if (passedArray->vertex->position[2] == 0) {
+		*(tempVBO + ((Bcounter * 4) + 0)) = ((2 * passedArray->vertex->x) / theAnimation->w);
+		*(tempVBO + ((Bcounter * 4) + 1)) = ((2 * passedArray->vertex->y) / theAnimation->h) * -1;
+		if (passedArray->vertex->z == 0) {
 			*(tempVBO + ((Bcounter * 4) + 2)) = ((float)order / 100000);
 			//EM_ASM({console.log("depth ------> " + $0 + " " + $1);}, *(tempVBO + ((Bcounter * 4) + 2)), order);
 		} else {
-			*(tempVBO + ((Bcounter * 4) + 2)) = passedArray->vertex->position[2];
+			*(tempVBO + ((Bcounter * 4) + 2)) = passedArray->vertex->z;
 		}
 		*(tempVBO + ((Bcounter * 4) + 3)) = 1;
 		*/
 
-		(tempVBO + (Bcounter * 4))->position[0] = ((2 * passedArray->vertex->position[0]) / theAnimation->w);
-		(tempVBO + (Bcounter * 4))->position[1] = ((2 * passedArray->vertex->position[1]) / theAnimation->h) * -1;
-		if (passedArray->vertex->position[2] == 0) {
-			(tempVBO + (Bcounter * 4))->position[2] = ((float)order / 100000);
+		(tempVBO + Bcounter)->x = ((2 * passedArray->vertex->x) / theAnimation->w);
+		(tempVBO + Bcounter)->y = ((2 * passedArray->vertex->y) / theAnimation->h) * -1;
+		if (passedArray->vertex->z == 0) {
+			(tempVBO + Bcounter)->z = ((float)order / 100000);
 			//EM_ASM({console.log("depth ------> " + $0 + " " + $1);}, *(tempVBO + ((Bcounter * 4) + 2)), order);
 		} else {
-			(tempVBO + (Bcounter * 4))->position[2] = passedArray->vertex->position[2];
+			(tempVBO + Bcounter)->z = passedArray->vertex->z;
 		}
-		(tempVBO + (Bcounter * 4))->position[3] = 1;
+		(tempVBO + Bcounter)->a = 1;
 
 		/*
 		*(tempCBO + ((Bcounter * 4) + 0)) = *(defaultFill + 0);
@@ -285,17 +287,17 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		*(tempCBO + ((Bcounter * 4) + 3)) = *(defaultFill + 3);
 		*/
 
-		(tempCBO + (Bcounter * 4))->position[0] = *(defaultFill + 0);
-		(tempCBO + (Bcounter * 4))->position[1] = *(defaultFill + 1);
-		(tempCBO + (Bcounter * 4))->position[2] = *(defaultFill + 2);
-		(tempCBO + (Bcounter * 4))->position[3] = *(defaultFill + 3);
+		(tempCBO + Bcounter)->x = *(defaultFill + 0);
+		(tempCBO + Bcounter)->y = *(defaultFill + 1);
+		(tempCBO + Bcounter)->z = *(defaultFill + 2);
+		(tempCBO + Bcounter)->a = *(defaultFill + 3);
 		//EM_ASM({console.log("colors ---> " + $0 + " " + $1 + " " + $2 + " " + $3);}, *(tempCBO + ((Bcounter * 4) + 0)), *(tempCBO + ((Bcounter * 4) + 1)), *(tempCBO + ((Bcounter * 4) + 2)), *(tempCBO + ((Bcounter * 4) + 3)));
 		passedArray->idxOrder = Bcounter;
 		if (Bcounter > 1) {
-			(tempIndex + (Icounter * 3))->position[0] = startPoint->idxOrder;
-			(tempIndex + (Icounter * 3))->position[1] = passedArray->prev->idxOrder;
-			(tempIndex + (Icounter * 3))->position[2] = passedArray->idxOrder;
-			//EM_ASM_({console.log("RENDER index " + $0 + " - " + $1 + " - " + $2 + " " + $3 + ":" + $4 + " ---- " + $5 + " " + $6 + " " + $7 + " horiz: " + $8 + " (" + $9 + ") " + $10);}, *(tempIndex + ((Icounter * 3) + 0)), *(tempIndex + ((Icounter * 3) + 1)), *(tempIndex + ((Icounter * 3) + 2)), *(tempVBO + ((Bcounter * 4) + 0)), *(tempVBO + ((Bcounter * 4) + 1)), startPoint->order, passedArray->prev->order, passedArray->idxOrder, passedArray->vertex->position[0], passedArray->idxOrder, passedArray->bezier);
+			(tempIndex + Icounter)->x = startPoint->idxOrder;
+			(tempIndex + Icounter)->y = passedArray->prev->idxOrder;
+			(tempIndex + Icounter)->z = passedArray->idxOrder;
+			//EM_ASM_({console.log("RENDER index " + $0 + " - " + $1 + " - " + $2 + " " + $3 + ":" + $4 + " ---- " + $5 + " " + $6 + " " + $7 + " horiz: " + $8 + " (" + $9 + ") " + $10);}, *(tempIndex + ((Icounter * 3) + 0)), *(tempIndex + ((Icounter * 3) + 1)), *(tempIndex + ((Icounter * 3) + 2)), *(tempVBO + ((Bcounter * 4) + 0)), *(tempVBO + ((Bcounter * 4) + 1)), startPoint->order, passedArray->prev->order, passedArray->idxOrder, passedArray->vertex->x, passedArray->idxOrder, passedArray->bezier);
 			Icounter++;
 		}
 		Bcounter++;
@@ -314,26 +316,26 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		while (! exhausted) {
 			EM_ASM({console.log("adding outliers");});
 			/*
-			*(tempVBO + ((Bcounter * 4) + 0)) = ((2 * reserve->arrayItem->vertex->position[0]) / theAnimation->w);
-			*(tempVBO + ((Bcounter * 4) + 1)) = ((2 * reserve->arrayItem->vertex->position[1]) / theAnimation->h) * -1;
+			*(tempVBO + ((Bcounter * 4) + 0)) = ((2 * reserve->arrayItem->vertex->x) / theAnimation->w);
+			*(tempVBO + ((Bcounter * 4) + 1)) = ((2 * reserve->arrayItem->vertex->y) / theAnimation->h) * -1;
 
-			if (passedArray->vertex->position[2] == 0) {
+			if (passedArray->vertex->z == 0) {
 				*(tempVBO + ((Bcounter * 4) + 2)) = ((float)order / 100000);
 			} else {
-				*(tempVBO + ((Bcounter * 4) + 2)) = passedArray->vertex->position[2];
+				*(tempVBO + ((Bcounter * 4) + 2)) = passedArray->vertex->z;
 			}
 			*(tempVBO + ((Bcounter * 4) + 3)) = 1;
 			*/
 
-			(tempVBO + (Bcounter * 4))->position[0] = ((2 * passedArray->vertex->position[0]) / theAnimation->w);
-			(tempVBO + (Bcounter * 4))->position[1] = ((2 * passedArray->vertex->position[1]) / theAnimation->h) * -1;
-			if (passedArray->vertex->position[2] == 0) {
-				(tempVBO + (Bcounter * 4))->position[2] = ((float)order / 100000);
+			(tempVBO + Bcounter)->x = ((2 * passedArray->vertex->x) / theAnimation->w);
+			(tempVBO + Bcounter)->y = ((2 * passedArray->vertex->y) / theAnimation->h) * -1;
+			if (passedArray->vertex->z == 0) {
+				(tempVBO + Bcounter)->z = ((float)order / 100000);
 				//EM_ASM({console.log("depth ------> " + $0 + " " + $1);}, *(tempVBO + ((Bcounter * 4) + 2)), order);
 			} else {
-				(tempVBO + (Bcounter * 4))->position[2] = passedArray->vertex->position[2];
+				(tempVBO + Bcounter)->z = passedArray->vertex->z;
 			}
-			(tempVBO + (Bcounter * 4))->position[3] = 1;
+			(tempVBO + Bcounter)->a = 1;
 
 			/*
 			*(tempCBO + ((Bcounter * 4) + 0)) = *(defaultFill + 0);
@@ -342,10 +344,10 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 			*(tempCBO + ((Bcounter * 4) + 3)) = *(defaultFill + 3);
 			*/
 
-			(tempCBO + (Bcounter * 4))->position[0] = *(defaultFill + 0);
-			(tempCBO + (Bcounter * 4))->position[1] = *(defaultFill + 1);
-			(tempCBO + (Bcounter * 4))->position[2] = *(defaultFill + 2);
-			(tempCBO + (Bcounter * 4))->position[3] = *(defaultFill + 3);
+			(tempCBO + Bcounter)->x = *(defaultFill + 0);
+			(tempCBO + Bcounter)->y = *(defaultFill + 1);
+			(tempCBO + Bcounter)->z = *(defaultFill + 2);
+			(tempCBO + Bcounter)->a = *(defaultFill + 3);
 
 			reserve->arrayItem->idxOrder = Bcounter;
 			Bcounter++;
@@ -358,6 +360,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		exhausted = false;
 		reserve = reserveEnd;
 		Bcounter = BcounterReserveStart;
+		EM_ASM({console.log("done adding outliers, now for indices");});
 		while (! exhausted) {
 			/*
 			*(tempIndex + ((Icounter * 3) + 0)) = reserve->arrayItem->idxOrder;
@@ -365,10 +368,11 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 			*(tempIndex + ((Icounter * 3) + 2)) = reserve->arrayItem->bindNext->idxOrder;
 			*/
 
-			(tempIndex + (Icounter * 3))->position[0] = startPoint->idxOrder;
-			(tempIndex + (Icounter * 3))->position[1] = passedArray->prev->idxOrder;
-			(tempIndex + (Icounter * 3))->position[2] = passedArray->idxOrder;
+			(tempIndex + Icounter)->x = startPoint->idxOrder;
+			(tempIndex + Icounter)->y = passedArray->prev->idxOrder;
+			(tempIndex + Icounter)->z = passedArray->idxOrder;
 			//EM_ASM_({console.log("RENDER index earcut " + $0 + " - " + $1 + " - " + $2 + " " + $3 + ":" + $4 + " " + $5);}, *(tempIndex + ((Icounter * 3) + 0)), *(tempIndex + ((Icounter * 3) + 1)), *(tempIndex + ((Icounter * 3) + 2)), *(tempVBO + ((Icounter * 4) + 0)), *(tempVBO + ((Icounter * 4) + 1)), reserve->arrayItem->idxOrder);
+			EM_ASM_({console.log("adding index " + $0);}, Icounter);
 			Icounter++;
 			reserve->arrayItem->next->prev = reserve->arrayItem;
 			reserve->arrayItem->prev->next = reserve->arrayItem;

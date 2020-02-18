@@ -19,8 +19,8 @@ struct XY {
 //struct alignas(alignof(struct Vertex*)) Vertex {
 struct alignas(ALIGNSIZE) Vertex {
 //struct Vertex {
-	GLfloat position[4];
-	//GLfloat x,y,z,a;
+	//GLfloat position[4];
+	GLfloat x,y,z,a;
 };
 
 //struct alignas(alignof(struct ArrayOfVertex*)) ArrayOfVertex {
@@ -159,6 +159,7 @@ struct alignas(ALIGNSIZE) IntArrayReturn {
 };
 
 struct alignas(ALIGNSIZE) IndexArray {
-	unsigned int position[3];
+	//unsigned int position[3];
+	unsigned int x, y, z;
 };
 

@@ -143,10 +143,10 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		} else {
 			if (passedPropertiesShapeProp->i->next != NULL &&
 				passedPropertiesShapeProp->o->next != NULL) {
-				if (passedPropertiesShapeProp->i->vertex->position[0] == 0 && 
-					passedPropertiesShapeProp->i->vertex->position[1] == 0 &&
-					passedPropertiesShapeProp->o->vertex->position[0] == 0 &&
-					passedPropertiesShapeProp->o->vertex->position[1] == 0) {
+				if (passedPropertiesShapeProp->i->vertex->x == 0 && 
+					passedPropertiesShapeProp->i->vertex->y == 0 &&
+					passedPropertiesShapeProp->o->vertex->x == 0 &&
+					passedPropertiesShapeProp->o->vertex->y == 0) {
 						passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
 						passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
 						passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
@@ -172,12 +172,12 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		p1 = passedPropertiesShapeProp->o->prev;
 		p2 = passedPropertiesShapeProp->i;
 
-		op1x = p1->vertex->position[0] - o1->vertex->position[0];
-		op1y = p1->vertex->position[1] - o1->vertex->position[1];
-		op2x = p2->vertex->position[0] - o2->vertex->position[0];
-		op2y = p2->vertex->position[1] - o2->vertex->position[1];
-		oox = p2->vertex->position[0] - p1->vertex->position[0];
-		ooy = p2->vertex->position[1] - p1->vertex->position[1];
+		op1x = p1->vertex->x - o1->vertex->x;
+		op1y = p1->vertex->y - o1->vertex->y;
+		op2x = p2->vertex->x - o2->vertex->x;
+		op2y = p2->vertex->y - o2->vertex->y;
+		oox = p2->vertex->x - p1->vertex->x;
+		ooy = p2->vertex->y - p1->vertex->y;
 		float segSize = 0.10;
 		float segments = 1 / segSize;
 		float segNow = 1;
@@ -191,22 +191,22 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		while (segNow < segments) {
 			intermediate = new ArrayOfVertex;
 			intermediate->vertex = new Vertex;
-			ps1->position[0] = (op1xs * segNow) + o1->vertex->position[0];
-			ps1->position[1] = (op1ys * segNow) + o1->vertex->position[1];
-			ps2->position[0] = (ooxs * segNow) + p1->vertex->position[0];
-			ps2->position[1] = (ooys * segNow) + p1->vertex->position[1];
-			ps3->position[0] = (op2xs * segNow) + o2->vertex->position[0];
-			ps3->position[1] = (op2ys * segNow) + o2->vertex->position[1];
+			ps1->x = (op1xs * segNow) + o1->vertex->x;
+			ps1->y = (op1ys * segNow) + o1->vertex->y;
+			ps2->x = (ooxs * segNow) + p1->vertex->x;
+			ps2->y = (ooys * segNow) + p1->vertex->y;
+			ps3->x = (op2xs * segNow) + o2->vertex->x;
+			ps3->y = (op2ys * segNow) + o2->vertex->y;
 			
-			pt1->position[0] = ((ps2->position[0] - ps1->position[0]) / segments * segNow) + ps1->position[0];
-			pt1->position[1] = ((ps2->position[1] - ps1->position[1]) / segments * segNow) + ps1->position[1];
-			pt2->position[0] = ((ps3->position[0] - ps2->position[0]) / segments * segNow) + ps2->position[0];
-			pt2->position[1] = ((ps3->position[1] - ps2->position[1]) / segments * segNow) + ps2->position[1];
+			pt1->x = ((ps2->x - ps1->x) / segments * segNow) + ps1->x;
+			pt1->y = ((ps2->y - ps1->y) / segments * segNow) + ps1->y;
+			pt2->x = ((ps3->x - ps2->x) / segments * segNow) + ps2->x;
+			pt2->y = ((ps3->y - ps2->y) / segments * segNow) + ps2->y;
 
-			intermediate->vertex->position[0] = ((pt2->position[0] - pt1->position[0]) / segments * segNow) + pt1->position[0];
-			intermediate->vertex->position[1] = ((pt2->position[1] - pt1->position[1]) / segments * segNow) + pt2->position[1];
-			intermediate->vertex->position[2] = 0;
-			intermediate->vertex->position[3] = 1;
+			intermediate->vertex->x = ((pt2->x - pt1->x) / segments * segNow) + pt1->x;
+			intermediate->vertex->y = ((pt2->y - pt1->y) / segments * segNow) + pt2->y;
+			intermediate->vertex->z = 0;
+			intermediate->vertex->a = 1;
 
 			intermediate->bezier = true;
 

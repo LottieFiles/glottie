@@ -656,17 +656,17 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 	//}
 
 
-	passedVertex->vertex->position[0] = vertex[0];
-	passedVertex->vertex->position[1] = vertex[1];
-	passedVertex->vertex->position[2] = vertex[2];
-	passedVertex->vertex->position[3] = vertex[3];
+	passedVertex->vertex->x = vertex[0];
+	passedVertex->vertex->y = vertex[1];
+	passedVertex->vertex->z = vertex[2];
+	passedVertex->vertex->a = vertex[3];
 
 	if (passedVertex->prev == NULL) {
 		passedVertex->order = 0;
 	} else {
 		passedVertex->order = passedVertex->prev->order + 1;
 	}
-	//EM_ASM_({console.log("coords ))) " + $0 + " " + $1 + " :: " + $2);}, passedVertex->vertex->position[0], passedVertex->vertex->position[1], passedVertex->order);
+	//EM_ASM_({console.log("coords ))) " + $0 + " " + $1 + " :: " + $2);}, passedVertex->vertex->x, passedVertex->vertex->y, passedVertex->order);
 
 	/*
 	passedVertex->vertex->x = vertex[0];
@@ -701,16 +701,16 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 	int index = 0;
 	//EM_ASM({console.log("-=-=-=-=> starting");});
 	while (! exhausted) {
-		*(tempArray + index) = (passedArrayOfVertex->vertex->position[0] / theAnimation->w) - 0.5;
+		*(tempArray + index) = (passedArrayOfVertex->vertex->x / theAnimation->w) - 0.5;
 		index = index + 1;
-		*(tempArray + index) = (passedArrayOfVertex->vertex->position[1] / theAnimation->h) - 0.5;
-		//EM_ASM({console.log("val " + $0 + " " + $1 + " " + $2);}, *(tempArray + index - 1), *(tempArray + index), passedArrayOfVertex->vertex->position[0]);
+		*(tempArray + index) = (passedArrayOfVertex->vertex->y / theAnimation->h) - 0.5;
+		//EM_ASM({console.log("val " + $0 + " " + $1 + " " + $2);}, *(tempArray + index - 1), *(tempArray + index), passedArrayOfVertex->vertex->x);
 		index = index + 1;
 		if (theAnimation->ddd) {
 			if (theAnimation->z > 0) {
-				*(tempArray + index) = (passedArrayOfVertex->vertex->position[2] / theAnimation->z) - 0.5;
+				*(tempArray + index) = (passedArrayOfVertex->vertex->z / theAnimation->z) - 0.5;
 			} else {
-				*(tempArray + index) = (passedArrayOfVertex->vertex->position[2] / theAnimation->h) - 0.5;
+				*(tempArray + index) = (passedArrayOfVertex->vertex->z / theAnimation->h) - 0.5;
 			}
 		} else {
 			if (passedArrayOfVertex->order > 0) {
@@ -718,7 +718,7 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 			}
 		}
 		index = index + 1;
-		*(tempArray + index) = passedArrayOfVertex->vertex->position[3];
+		*(tempArray + index) = passedArrayOfVertex->vertex->a;
 		index = index + 1;
 		if (passedArrayOfVertex->next == NULL) {
 			exhausted = true;

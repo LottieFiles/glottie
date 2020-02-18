@@ -7,7 +7,7 @@ const GLchar* vertexSource =
     "{ \n"
     "  vcolors = color; \n"
 //    "  gl_Position = position; \n"
-    "  gl_Position = vec4(new_position.position[0], new_position.position[1], new_position.position[2], new_position.position[3]); \n"
+    "  gl_Position = vec4(new_position.x, new_position.y, new_position.z, new_position.a); \n"
     "} \n";
 
 const GLchar* fragmentSource =
@@ -15,7 +15,7 @@ const GLchar* fragmentSource =
     "varying vec4 vcolors; \n"
     "void main() \n"
     "{ \n"
-    "  gl_FragColor = vcolors; \n"
+    "  gl_FragColor = vec4(vcolors.x, vcolors.y, vcolors.z, vcolors.a); \n"
 //    "  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); \n"
     "} \n";
 
