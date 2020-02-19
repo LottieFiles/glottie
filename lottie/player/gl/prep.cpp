@@ -15,7 +15,7 @@ struct ShaderProgram* newShaderProgram() {
 }
 
 //int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count, int idxCount) {
-int prepVAO(struct Vertex* vertices, struct IndexArray* indices, struct Vertex* colors, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count, int idxCount) {
+int prepVAO(std::vector<GLfloat> vertices, std::vector<unsigned int> indices, std::vector<GLfloat> colors, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count, int idxCount) {
 	//EM_ASM_({console.log("VAO 1.0 " + $0 + " " + $1);}, count, passedBuffers->idxCount);
 	int refIndex = lastRefIndex + 1;
 
@@ -38,24 +38,26 @@ int prepVAO(struct Vertex* vertices, struct IndexArray* indices, struct Vertex* 
 
 	glGenBuffers(1, &tvbo);
 	glBindBuffer(GL_ARRAY_BUFFER, tvbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(struct Vertex) * count, vertices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (vertices.size() * sizeof(GLfloat)), &vertices[0], GL_DYNAMIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glVertexAttribPointer(tempPosAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glGenBuffers(1, &tcbo);
 	glBindBuffer(GL_ARRAY_BUFFER, tcbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(struct Vertex) * count, colors, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (colors.size() * sizeof(GLfloat)), &colors[0], GL_DYNAMIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(colors), &colors[0], GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glVertexAttribPointer(tempColAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-
 	glGenBuffers(1, &tibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(struct IndexArray) * idxCount, indices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (indices.size() * sizeof(unsigned int)), &indices[0], GL_DYNAMIC_DRAW);
 
-	EM_ASM_({console.log("--......--> array sizes " + $0 + " " + $1);}, sizeof(GLfloat) * count * 4, sizeof(unsigned int) * idxCount * 3);
+	//EM_ASM_({console.log("--......--> array sizes " + $0 + " " + $1 + " " + $2);}, (sizeof(GLfloat) * vertices->size()), (sizeof(unsigned int) * indices->size()), (*indices).at(0));
+	EM_ASM_({console.log("--......--> array sizes " + $0 + " " + $1);}, (sizeof(GLfloat) * vertices.size()), (sizeof(unsigned int) * indices.size()));
 
 	passedBuffers->posAttrib = &tempPosAttrib;
 	passedBuffers->colAttrib = &tempColAttrib;
@@ -70,7 +72,7 @@ int prepVAO(struct Vertex* vertices, struct IndexArray* indices, struct Vertex* 
 	*(passedBuffers->ibo) = tibo;
 	*(passedBuffers->cbo) = tcbo;
 
-	EM_ASM_({console.log("--......--> done loading buffers " + $0 + " " + $1);}, idxCount, indices);
+	//EM_ASM_({console.log("--......--> done loading buffers " + $0 + " " + $1);}, idxCount, indices);
 
 	//passedBuffers->vao = tvao;
 	//passedBuffers->vbo = tvbo;
@@ -210,12 +212,13 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//EM_ASM({console.log("looping 1.1 v");});
 			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, passedShapesItem->order);
 			if (tempTriangulateReturn == NULL) {return 0;}
+			
 			passedPropertiesShapeProp->gl_v = tempTriangulateReturn->vbo;
 			passedPropertiesShapeProp->gl_v_fill = tempTriangulateReturn->cbo;
 			passedPropertiesShapeProp->gl_v_idx = tempTriangulateReturn->index;
 			//EM_ASM({console.log("looping 1.1.1 v");});
 			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, passedPropertiesShapeProp->gl_v_fill, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count, tempTriangulateReturn->idxCount);
-			EM_ASM({console.log("looping 1.1.2 v");});
+			EM_ASM({console.log("looping 1.1.2 v " + $0);}, tempTriangulateReturn->vbo.size());
 			//EM_ASM({console.log("---------> stats " + $0 + " " + $1 + " " + $2 + " " + $3);}, *(tempTriangulateReturn->vbo + 0), *(tempTriangulateReturn->cbo + 0), *(tempTriangulateReturn->index + 0), tempTriangulateReturn->idxCount);
 			delete tempTriangulateReturn;
 		}

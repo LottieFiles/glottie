@@ -137,9 +137,12 @@ struct alignas(ALIGNSIZE) textBlock {
 
 struct alignas(ALIGNSIZE) TriangulateReturn {
 	//GLfloat* vbo;
-	struct Vertex* vbo;
-	struct Vertex* cbo;
-	struct IndexArray* index;
+	//struct Vertex* vbo;
+	//struct Vertex* cbo;
+	//struct IndexArray* index;
+	std::vector<GLfloat> vbo;
+	std::vector<GLfloat> cbo;
+	std::vector<unsigned int> index;
 	int idxCount;
 };
 
@@ -160,6 +163,8 @@ struct alignas(ALIGNSIZE) IntArrayReturn {
 
 struct alignas(ALIGNSIZE) IndexArray {
 	//unsigned int position[3];
-	unsigned int x, y, z;
+	int x;
+	int y;
+	int z;
 };
 
