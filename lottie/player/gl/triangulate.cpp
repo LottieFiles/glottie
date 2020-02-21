@@ -155,12 +155,14 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	struct ArrayOfVertex* actualStartPoint = passedArray->start;
 	struct ArrayOfVertex* reservePrevArray;
 	struct ArrayOfVertex* reserveNextArray;
+	passedArray = passedArray->start;
+	//passedArray = passedArray->start->prev->prev;
 	bool exhausted = false;
 	int coreCount = count;
 	int angleOne, angleTwo;
 	bool outlierEncountered = false;
 	int outlierCount = 0;
-	EM_ASM({console.log("pretri 2");});
+	EM_ASM({console.log("pretri 2 " + $0);}, count);
 	if (count > 3) {
 		bool entered = true;
 		bool startEncountered = false;
@@ -204,26 +206,13 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 					outlierEncountered = true;
 				}
 			}
-			if (startEncountered) {
-				//if (cyclesAfterStartEncountered > 3) {
-				if (passedArray->next == startPoint) {
-					exhausted = true;
-				} else {
-					if (outlierEncountered) {
-						outlierEncountered = false;
-					} else {
-						passedArray = passedArray->next;
-					}
-				}
+			if (passedArray->next == startPoint) {
+				exhausted = true;
 			} else {
-				if (passedArray->next == startPoint) {
-					startEncountered = true;
+				if (outlierEncountered) {
+					outlierEncountered = false;
 				} else {
-					if (outlierEncountered) {
-						outlierEncountered = false;
-					} else {
-						passedArray = passedArray->next;
-					}
+					passedArray = passedArray->next;
 				}
 			}
 			EM_ASM({console.log("checking outlier");});

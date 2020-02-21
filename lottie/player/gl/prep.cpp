@@ -38,7 +38,7 @@ int prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices, 
 
 	glGenBuffers(1, &tvbo);
 	glBindBuffer(GL_ARRAY_BUFFER, tvbo);
-	glBufferData(GL_ARRAY_BUFFER, (vertices.size() * sizeof(GLfloat)), &vertices[0], GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (vertices.size() * sizeof(vertices)), &vertices[0], GL_DYNAMIC_DRAW);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_DYNAMIC_DRAW);
 	//glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
@@ -46,7 +46,7 @@ int prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices, 
 
 	glGenBuffers(1, &tcbo);
 	glBindBuffer(GL_ARRAY_BUFFER, tcbo);
-	glBufferData(GL_ARRAY_BUFFER, (colors.size() * sizeof(GLfloat)), &colors[0], GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (colors.size() * sizeof(colors)), &colors[0], GL_DYNAMIC_DRAW);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(colors), &colors[0], GL_DYNAMIC_DRAW);
 	//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
@@ -54,7 +54,7 @@ int prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices, 
 
 	glGenBuffers(1, &tibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (indices.size() * sizeof(unsigned int)), &indices[0], GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (indices.size() * sizeof(indices)), &indices[0], GL_DYNAMIC_DRAW);
 
 	passedBuffers->posAttrib = &tempPosAttrib;
 	passedBuffers->colAttrib = &tempColAttrib;
