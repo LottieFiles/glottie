@@ -155,7 +155,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	struct ArrayOfVertex* actualStartPoint = passedArray->start;
 	struct ArrayOfVertex* reservePrevArray;
 	struct ArrayOfVertex* reserveNextArray;
-	passedArray = passedArray->start;
+	passedArray = startPoint;
 	//passedArray = passedArray->start->prev->prev;
 	bool exhausted = false;
 	int coreCount = count;
@@ -206,13 +206,26 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 					outlierEncountered = true;
 				}
 			}
-			if (passedArray->next == startPoint) {
-				exhausted = true;
-			} else {
-				if (outlierEncountered) {
-					outlierEncountered = false;
+			if (startEncountered == true) {
+				if (passedArray->next == startPoint) {
+					exhausted = true;
 				} else {
-					passedArray = passedArray->next;
+					if (outlierEncountered) {
+						outlierEncountered = false;
+					} else {
+						passedArray = passedArray->next;
+					}
+				}
+			} else {
+				if (passedArray->next == startPoint) {
+					//exhausted = true;
+					startEncountered = true;
+				} else {
+					if (outlierEncountered) {
+						outlierEncountered = false;
+					} else {
+						passedArray = passedArray->next;
+					}
 				}
 			}
 			EM_ASM({console.log("checking outlier");});
@@ -285,7 +298,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		*/
 		//passedProp->gl_v.resize((Bcounter + 1) * 4);
 
-		EM_ASM({console.log("adding regulars");});
+		EM_ASM({console.log("adding regulars " + $0);}, passedArray->vertex->x);
 		passedProp->gl_v.push_back((2 * passedArray->vertex->x) / theAnimation->w);
 		passedProp->gl_v.push_back(((2 * passedArray->vertex->y) / theAnimation->h) * -1);
 		if (passedArray->vertex->z == 0) {
@@ -344,13 +357,13 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 			*/
 			//passedProp->gl_v.resize((Bcounter + 1) * 4);
 
-			EM_ASM({console.log("adding regulars 2");});
-			passedProp->gl_v.push_back((2 * passedArray->vertex->x) / theAnimation->w);
-			passedProp->gl_v.push_back(((2 * passedArray->vertex->y) / theAnimation->h) * -1);
+			EM_ASM({console.log("adding regulars 2 " + $0);}, reserve->arrayItem->vertex->x);
+			passedProp->gl_v.push_back((2 * reserve->arrayItem->vertex->x) / theAnimation->w);
+			passedProp->gl_v.push_back(((2 * reserve->arrayItem->vertex->y) / theAnimation->h) * -1);
 			if (passedArray->vertex->z == 0) {
 				passedProp->gl_v.push_back((float)order / 100000);
 			} else {
-				passedProp->gl_v.push_back(passedArray->vertex->z);
+				passedProp->gl_v.push_back(reserve->arrayItem->vertex->z);
 			}
 			passedProp->gl_v.push_back(1);
 

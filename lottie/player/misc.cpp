@@ -825,7 +825,7 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 	tempFloatArray->count = tempCount;
 	tempFloatArray->floatArray = new float[tempCount];
 
-	//EM_ASM({console.log("->>-->> count " + $0);}, tempCount);
+	EM_ASM({console.log("->>-->> count " + $0);}, tempCount);
 	baseVector = traceArrayValue->vector->start;
 	exhausted = false;
 	currentUniversalCount = 0;
@@ -863,7 +863,7 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 		}
 		*(tempFloatArray->floatArray + currentUniversalCount) = xval;
 		currentUniversalCount = currentUniversalCount + 1;
-		//EM_ASM({console.log("->>-->> found k value " + $0);}, xval);
+		EM_ASM({console.log("->>-->> found k value " + $0);}, xval);
 
 		if (baseVector->next == NULL) {	
 			exhausted = true;

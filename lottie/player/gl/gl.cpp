@@ -145,8 +145,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						//glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vbo));
 						//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(tempBuffers->ibo));
 						//EM_ASM({console.log("glDraw 1.4 " + $0 + " " + $1);}, *(tempBuffers->idx), *(tempBuffers->vao));
-						EM_ASM({console.log("glDraw 1.5 " + $0);}, tempBuffers->idxCount);
-						glDrawElements(GL_TRIANGLES, tempBuffers->idxCount, GL_UNSIGNED_INT, 0);
+						EM_ASM({console.log("glDraw 1.5 " + $0);}, tempBuffers->idx.size());
+						glDrawElements(GL_LINES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
 						glBindVertexArrayOES(0);
 						glUseProgram(0);
 						//SDL_GL_SwapWindow(wnd);
