@@ -289,14 +289,12 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	std::vector<unsigned int> tempIndex;
 	*/
 
-	/*
 	EM_ASM({console.log("sorted 1");});
-	passedProp->gl_v.reserve(count * 4);
+	passedProp->gl_v.reserve((count + 1) * 4);
 	EM_ASM({console.log("sorted 2");});
-	passedProp->gl_v_fill.reserve(count * 4);
+	passedProp->gl_v_fill.reserve((count + 1) * 4);
 	EM_ASM({console.log("sorted 3");});
-	passedProp->gl_v_idx.reserve((count + outlierCount) * 3);
-	*/
+	passedProp->gl_v_idx.reserve((count + 1 + outlierCount) * 3);
 
 	int Bcounter = 0;
 	
@@ -318,7 +316,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		*/
 		//passedProp->gl_v.resize((Bcounter + 1) * 4);
 
-		EM_ASM({console.log("adding regulars " + $0);}, passedArray->vertex->x);
+		EM_ASM_({console.log("adding regulars 1 " + $0);}, passedArray->vertex->x);
 		passedProp->gl_v.push_back((2 * passedArray->vertex->x) / theAnimation->w);
 		passedProp->gl_v.push_back(((2 * passedArray->vertex->y) / theAnimation->h) * -1);
 		if (passedArray->vertex->z == 0) {
@@ -328,6 +326,7 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		}
 		passedProp->gl_v.push_back(1);
 
+		EM_ASM({console.log("adding regulars 1.1 ");});
 		/*
 		*(passedProp->gl_v_fill + ((Bcounter * 4) + 0)) = *(defaultFill + 0);
 		*(passedProp->gl_v_fill + ((Bcounter * 4) + 1)) = *(defaultFill + 1);
@@ -337,11 +336,16 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 
 		//passedProp->gl_v_fill.resize((Bcounter + 1) * 4);
 
+		EM_ASM({console.log("adding regulars 1.2 ");});
 		passedProp->gl_v_fill.push_back(*(defaultFill + 0));
+		//EM_ASM({console.log("adding regulars 1.2 ");});
 		passedProp->gl_v_fill.push_back(*(defaultFill + 1));
+		//EM_ASM({console.log("adding regulars 1.2 ");});
 		passedProp->gl_v_fill.push_back(*(defaultFill + 2));
+		//EM_ASM({console.log("adding regulars 1.2 ");});
 		passedProp->gl_v_fill.push_back(*(defaultFill + 3));
 		passedArray->idxOrder = Bcounter;
+		EM_ASM({console.log("adding regulars 1.3 ");});
 		if (Bcounter > 1) {
 			//passedProp->gl_v_idx.resize((Icounter + 1) * 3);
 			passedProp->gl_v_idx.push_back(startPoint->idxOrder);
@@ -350,11 +354,13 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 			Icounter++;
 		}
 		Bcounter++;
+		EM_ASM({console.log("adding regulars 1.4 ");});
 		//readItems++;
 		if (passedArray->next == startPoint) {
 			exhausted = true;
 		} else {
 			passedArray = passedArray->next;
+			//delete passedArray->prev;
 		}
 	}
 
@@ -431,11 +437,34 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 			reserve->arrayItem->reserved = false;
 			if (reserve->prev == NULL) {
 				exhausted = true;
-				delete reserve;
+				//delete reserve;
 			} else {
 				reserve = reserve->prev;
-				delete reserve->next;
+				//delete reserve->next;
 			}
+		}
+	}
+
+	passedArray = passedArray->start;
+	exhausted = false;
+	while (! exhausted) {
+		if (passedArray->next == passedArray->start) {
+			exhausted = true;
+			delete passedArray;
+		} else {
+			passedArray = passedArray->next;
+			delete passedArray->prev;
+		}
+	}
+	reserve = reserveEnd;
+	exhausted = false;
+	while (! exhausted) {
+		if (reserve->prev == NULL) {
+			exhausted = true;
+			delete reserve;
+		} else {
+			reserve = reserve->prev;
+			delete reserve->next;
 		}
 	}
 
