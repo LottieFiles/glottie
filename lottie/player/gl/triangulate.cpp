@@ -168,42 +168,44 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		bool startEncountered = false;
 		int cyclesAfterStartEncountered = 0;
 		while (! exhausted) {
-			angleOne = (convex(passedArray->vertex, passedArray->next->vertex, passedArray->next->next->vertex, passedArray->prev->vertex));
-			angleTwo = (convex(passedArray->vertex, passedArray->prev->vertex, passedArray->prev->prev->vertex, passedArray->next->vertex));
-			if (angleOne == 3 && angleTwo == 3) {
-				//if (startEncountered > 1) {
-				//	cyclesAfterStartEncountered++;
-				//}
-				coreCount = coreCount - 1;
-			} else {
-				if (angleOne == 1 && angleTwo == 1) {
+			if (! passedArray->reserved) {
+				angleOne = (convex(passedArray->vertex, passedArray->next->vertex, passedArray->next->next->vertex, passedArray->prev->vertex));
+				angleTwo = (convex(passedArray->vertex, passedArray->prev->vertex, passedArray->prev->prev->vertex, passedArray->next->vertex));
+				if (angleOne == 3 && angleTwo == 3) {
 					//if (startEncountered > 1) {
 					//	cyclesAfterStartEncountered++;
 					//}
-				} else {
-					reserve = newReserve(reserve);
-					reserve->arrayItem = passedArray;
-					reservePrevArray = passedArray->prev;
-					while (reservePrevArray->reserved) {
-						reservePrevArray = reservePrevArray->prev;
-					}
-					passedArray->bindPrev = reservePrevArray;
-					reserveNextArray = passedArray->next;
-					while (reserveNextArray->reserved) {
-						reserveNextArray = reserveNextArray->next;
-					}
-					passedArray->bindNext = reserveNextArray;
-					reservePrevArray->next = reserveNextArray;
-					reserveNextArray->prev = reservePrevArray;
-					if (passedArray == startPoint) {
-						startPoint = reserveNextArray;
-					}
-					passedArray->reserved = true;
-					passedArray = reserveNextArray;
 					coreCount = coreCount - 1;
-					outlierCount++;
-					EM_ASM({console.log("outlier found");});
-					outlierEncountered = true;
+				} else {
+					if (angleOne == 1 && angleTwo == 1) {
+						//if (startEncountered > 1) {
+						//	cyclesAfterStartEncountered++;
+						//}
+					} else {
+						reserve = newReserve(reserve);
+						reserve->arrayItem = passedArray;
+						reservePrevArray = passedArray->prev;
+						while (reservePrevArray->reserved) {
+							reservePrevArray = reservePrevArray->prev;
+						}
+						passedArray->bindPrev = reservePrevArray;
+						reserveNextArray = passedArray->next;
+						while (reserveNextArray->reserved) {
+							reserveNextArray = reserveNextArray->next;
+						}
+						passedArray->bindNext = reserveNextArray;
+						reservePrevArray->next = reserveNextArray;
+						reserveNextArray->prev = reservePrevArray;
+						if (passedArray == startPoint) {
+							startPoint = reserveNextArray;
+						}
+						passedArray->reserved = true;
+						passedArray = reserveNextArray;
+						coreCount = coreCount - 1;
+						outlierCount++;
+						EM_ASM({console.log("outlier found");});
+						outlierEncountered = true;
+					}
 				}
 			}
 			if (startEncountered == true) {
