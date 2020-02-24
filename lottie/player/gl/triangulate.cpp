@@ -289,7 +289,8 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	std::vector<unsigned int> tempIndex;
 	*/
 
-	EM_ASM({console.log("sorted 1");});
+	globalObjCount = globalObjCount + count + outlierCount;
+	EM_ASM_({console.log("sorted 1 " + $0 + " " + $1 + " " + $2);}, count, outlierCount, globalObjCount);
 	passedProp->gl_v.reserve((count + 1) * 4);
 	EM_ASM({console.log("sorted 2");});
 	passedProp->gl_v_fill.reserve((count + 1) * 4);
