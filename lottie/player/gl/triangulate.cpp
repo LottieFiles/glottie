@@ -126,10 +126,11 @@ struct ArrayOfArrayOfVertex* newReserve(struct ArrayOfArrayOfVertex* tempReserve
 	return tempReserve;
 }
  
-struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill, int order, struct PropertiesShapeProp* passedProp) {
+void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill, int order, struct PropertiesShapeProp* passedProp) {
+//struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill, int order, struct PropertiesShapeProp* passedProp) {
 
-	struct TriangulateReturn* tempTriangulateReturn;
-	tempTriangulateReturn = new TriangulateReturn;
+	//struct TriangulateReturn* tempTriangulateReturn;
+	//tempTriangulateReturn = new TriangulateReturn;
 
 	/*
 	struct Dimensions* dimensions;
@@ -252,12 +253,12 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 		}
 	} else {
 		if (count < 3) {
-			return NULL;
+			return;
 		}
 	}
 	reserveEnd = reserve;
 
-	EM_ASM_({console.log("done checking for outliers 1 - " + $0 + " " + $1);}, count, outlierCount);
+	EM_ASM_({console.log("done checking for outliers 1 - " + $0 + " " + $1 + " " + wasmTable.length);}, count, outlierCount);
 
 	//if (outlierEncountered) {
 		passedArray = startPoint;
@@ -480,6 +481,6 @@ struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffe
 	*/
 
 
-	return tempTriangulateReturn;
+	//return tempTriangulateReturn;
 }
 
