@@ -49,17 +49,17 @@ struct PropertiesShapePropKeyframe* newPropertiesShapePropKeyframe() {
 
 
 int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapeProp) {
-	//EM_ASM({console.log("[[[[[[[[[[[[[========================> entered");});
+	EM_ASM({console.log("[[[[[[[[[[[[[========================> entered");});
 	bool exhausted = false;
 	struct KeyValue* tempKeyValue;
 	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
 	struct ArrayOfString* tempArrayValue; 
 	while (! exhausted) {
 		if (tempKeyValue) {
-			//EM_ASM({console.log("========================> iteration");});
+			EM_ASM({console.log("========================> iteration");});
 		}
 		if (strlen(tempKeyValue->key) == 0) {
-			//EM_ASM({console.log("========================> empty");});
+			EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
 				exhausted = true;
 			} else {
@@ -68,29 +68,29 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			continue;
 		}
 		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "c") == 0) {
-			//EM_ASM({console.log("========================> fill 80.1");});
+			EM_ASM({console.log("========================> fill 80.1");});
 				if (strcmp(tempKeyValue->value, "true") == 0) {
 					passedPropertiesShapeProp->c = true;
 				} else {
 					passedPropertiesShapeProp->c = false;
 				}
-				//EM_ASM({console.log("========================> fill 80.1.1");});
+				EM_ASM({console.log("========================> fill 80.1.1");});
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "i") == 0) {
-			//EM_ASM({console.log("========================> fill 80.2 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
+			EM_ASM({console.log("========================> fill 80.2 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->i = 
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->i);
 			passedPropertiesShapeProp->i_count = currentUniversalCount;
 			//passedPropertiesShapeProp->gl_i = vertexToGLfloat(passedPropertiesShapeProp->i, passedPropertiesShapeProp->count);
 
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "o") == 0) {
-			//EM_ASM({console.log("========================> fill 80.3 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
+			EM_ASM({console.log("========================> fill 80.3 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->o = 
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->o);
 			passedPropertiesShapeProp->o_count = currentUniversalCount;
 			//passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->count);
 
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "v") == 0) {
-			//EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
+			EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->v = 
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->v);
 			passedPropertiesShapeProp->v_count = currentUniversalCount;
@@ -106,7 +106,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		}
 	}
 
-		return 1;
+	//	return 1;
 	if (passedPropertiesShapeProp->i == NULL || passedPropertiesShapeProp->o == NULL || passedPropertiesShapeProp->v == NULL) {
 		return 1;
 	}
@@ -150,7 +150,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 						passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
 						passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
 						passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
-						//EM_ASM({console.log("non-bezier ");});
+						EM_ASM({console.log("non-bezier ");});
 						startedCycling = true;
 						continue;
 				} else {
@@ -188,7 +188,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		ooxs = oox / segments;
 		ooys = ooy / segments;
 
-		//EM_ASM_({console.log("[[[[[[[[[[[[[========================> starting " + $0 + " " + $1 + " " + $2 + " " + $3);}, o1->vertex->x, p1->vertex->x, o2->vertex->y, p2->vertex->y);
+		EM_ASM_({console.log("[[[[[[[[[[[[[========================> starting " + $0 + " " + $1 + " " + $2 + " " + $3);}, o1->vertex->x, p1->vertex->x, o2->vertex->y, p2->vertex->y);
 		while (segNow < segments) {
 			intermediate = new ArrayOfVertex;
 			intermediate->vertex = new Vertex;
@@ -206,7 +206,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 
 			intermediate->vertex->x = (((pt2->x - pt1->x) / segments) * segNow) + pt1->x;
 			intermediate->vertex->y = (((pt2->y - pt1->y) / segments) * segNow) + pt2->y;
-			//EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
+			EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
 			intermediate->vertex->z = 0;
 			intermediate->vertex->a = 1;
 
@@ -226,23 +226,23 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->v = intermediate;
 			
 
-			//EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0);}, intermediate);
+			EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0);}, intermediate);
 			segNow++;
 			passedPropertiesShapeProp->v_count++;
 			passedPropertiesShapeProp->bezier_count++;
 		}
 		
-		//EM_ASM({console.log("[[[[[[[[[[[[[========================> segment added ----");});
+		EM_ASM({console.log("[[[[[[[[[[[[[========================> segment added ----");});
 	}
 
-	//EM_ASM({console.log("[[[[[[[[[[[[[========================> done");});
+	EM_ASM({console.log("[[[[[[[[[[[[[========================> done");});
 	//deleteKeyValues(theScope->currentKeyValueTrail);
 
 	return 1;
 }
 
 int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedPropertiesMultiDimensional) {
-	//EM_ASM({console.log("========================> entered");});
+	EM_ASM({console.log("========================> entered");});
 	bool exhausted = false;
 	struct KeyValue* tempKeyValue;
 	struct FloatArrayReturn* tempFloatArray = NULL;
@@ -250,10 +250,10 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 	struct ArrayOfString* tempArrayValue; 
 	while (! exhausted) {
 		if (tempKeyValue) {
-			//EM_ASM({console.log("========================> iteration 99");});
+			EM_ASM({console.log("========================> iteration 99");});
 		}
 		if (strlen(tempKeyValue->key) == 0) {
-			//EM_ASM({console.log("========================> empty");});
+			EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
 				exhausted = true;
 			} else {
@@ -263,7 +263,7 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 		}
 
 		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "k") == 0) {
-			//EM_ASM({console.log("========================> found k in c");});
+			EM_ASM({console.log("========================> found k in c");});
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			passedPropertiesMultiDimensional->k = tempFloatArray->floatArray;
 			passedPropertiesMultiDimensional->k_count = tempFloatArray->count;

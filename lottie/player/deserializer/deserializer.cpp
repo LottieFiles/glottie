@@ -180,9 +180,9 @@ int removeScope() {
 		//EM_ASM({console.log("removing scope 1.1 ");});
 		if (theScope->currentKeyValueTrail != NULL) {
 			//EM_ASM({console.log("removing scope 1.1.0 ");});
-			deleteKeyValues(theScope->currentKeyValueTrail);
+			//deleteKeyValues(theScope->currentKeyValueTrail);
 			//EM_ASM({console.log("removing scope 1.1.1 ");});
-			delete theScope->currentKeyValueTrail;
+			//delete theScope->currentKeyValueTrail;
 			theScope->currentKeyValueTrail = NULL;
 			currentKeyValueTrail = theScope->currentKeyValueTrail;
 			/*
@@ -210,7 +210,7 @@ int removeScope() {
 	} else {
 		theScope->next = NULL;
 		deleteKeyValues(theScope->currentKeyValueTrail);
-		delete theScope->currentKeyValueTrail;
+		//delete theScope->currentKeyValueTrail;
 		theScope->currentKeyValueTrail = NULL;
 	}
 	//EM_ASM_({console.log("left behind " + $0);}, theScope->scope);
