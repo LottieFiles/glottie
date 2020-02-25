@@ -64,6 +64,7 @@ int doMain(char someChar[]) {
 	//	return strlen(someChar);
 	//}
 
+
 	deserialize();
 	EM_ASM({console.log("////> init done");});
 	glInit();

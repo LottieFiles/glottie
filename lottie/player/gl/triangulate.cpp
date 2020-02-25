@@ -458,15 +458,17 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 			delete passedArray->prev;
 		}
 	}
-	reserve = reserveEnd;
-	exhausted = false;
-	while (! exhausted) {
-		if (reserve->prev == NULL) {
-			exhausted = true;
-			delete reserve;
-		} else {
-			reserve = reserve->prev;
-			delete reserve->next;
+	if (reserve != NULL) {
+		reserve = reserveEnd;
+		exhausted = false;
+		while (! exhausted) {
+			if (reserve->prev == NULL) {
+				exhausted = true;
+				delete reserve;
+			} else {
+				reserve = reserve->prev;
+				delete reserve->next;
+			}
 		}
 	}
 

@@ -15,9 +15,9 @@ struct ShaderProgram* newShaderProgram() {
 }
 
 //int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count, int idxCount) {
-int prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices, std::vector<GLfloat>& colors, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count, int idxCount) {
+void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices, std::vector<GLfloat>& colors, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count, int idxCount) {
 	EM_ASM_({console.log("VAO 1.0 " + $0 + " " + $1);}, count, passedBuffers->idxCount);
-	int refIndex = lastRefIndex + 1;
+	//int refIndex = lastRefIndex + 1;
 
 	GLuint tvao, tvbo, tibo, tcbo;
 	glGenVertexArraysOES(1, &tvao);
@@ -75,11 +75,14 @@ int prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices, 
 	//passedBuffers->vbo = tvbo;
 	//passedBuffers->ibo = tibo;
 
+	EM_ASM({console.log("--......--> done loading buffers 1.0");});
 	passedBuffers->idx = indices;
+	EM_ASM({console.log("--......--> done loading buffers 1.1");});
 	passedBuffers->idxCount = idxCount;
+	EM_ASM({console.log("--......--> done loading buffers 1.2");});
 	glBindVertexArrayOES(0);
 
-	return refIndex;
+	//return refIndex;
 }
 
 float* getFill(struct ShapesItem* passedShapesItem) {

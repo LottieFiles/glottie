@@ -174,6 +174,7 @@ int popKeyValueTrail() {
 }
 
 struct KeyValueTrail* newKeyValueTrail(struct KeyValueTrail* traceKeyValueTrail) {
+	/*
 	if (traceKeyValueTrail == NULL) {
 		//EM_ASM({console.log("newkvtrail 401.1");});
 		traceKeyValueTrail = new KeyValueTrail;
@@ -189,8 +190,11 @@ struct KeyValueTrail* newKeyValueTrail(struct KeyValueTrail* traceKeyValueTrail)
 		tempKeyValueTrail->start = traceKeyValueTrail->start;
 		traceKeyValueTrail = tempKeyValueTrail;
 	}
-	currentKeyValueTrail = traceKeyValueTrail;
-	return traceKeyValueTrail;
+	*/
+	//currentKeyValueTrail = traceKeyValueTrail;
+	
+	currentKeyValueTrail = new KeyValueTrail;
+	return currentKeyValueTrail;
 }
 
 int deleteArrayValue(struct ArrayOfString* passedArrayValue);
@@ -249,14 +253,15 @@ int deleteArrayValue(struct ArrayOfString* passedArrayValue) {
 	return 1;
 }
 
-struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail) {
+//void KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail) {
+void deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail) {
 	//EM_ASM({console.log("deleting key values 801");});
 	char todisplay;
 	char valdisplay;
 
 	
 	if (passedKeyValueTrail == NULL || passedKeyValueTrail->keyValue == NULL) {
-		return 0;
+		return;
 	}
 	struct KeyValue* tempKeyValue;
 	struct KeyValue* temptempKeyValue;
@@ -265,8 +270,12 @@ struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail)
 	
 	int counter = 0;
 	//EM_ASM({console.log("deleting key values 802");});
-	while (tempKeyValue != NULL && tempKeyValue->next != NULL) {
-		
+	//while (tempKeyValue != NULL && tempKeyValue->next != NULL) {
+	bool exhausted = false;
+	while (! exhausted) {
+		//EM_ASM({console.log("deleting key values 802.0");});
+
+		/*
 		if (strlen(tempKeyValue->key) > 0) {
 			todisplay = tempKeyValue->key[0];
 		} else {
@@ -278,18 +287,43 @@ struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail)
 		} else {
 			valdisplay = ' ';
 		}
+		*/
 		
 		counter++;
-		
-		temptempKeyValue = tempKeyValue;
-		tempKeyValue = tempKeyValue->next;
-		if (strlen(temptempKeyValue->key) > 0) {
-			//EM_ASM_({console.log("deleting key values 802.1 " + $0 + " : " + $1 + " key: " + String.fromCharCode($2));}, temptempKeyValue, tempKeyValue, temptempKeyValue->key[0]);
+
+		if (strlen(tempKeyValue->key) > 0) {
+			//EM_ASM_({console.log("deleting key values 802.1 " + $0 + " : key: " + String.fromCharCode($2));}, tempKeyValue, tempKeyValue->key[0]);
 		} else {
-			//EM_ASM_({console.log("deleting key values 802.2 " + $0 + " : " + $1);}, temptempKeyValue, tempKeyValue);
+			//EM_ASM_({console.log("deleting key values 802.2 " + $0);}, tempKeyValue);
 		}
+
+		if (tempKeyValue->arrayValue != NULL) {
+			//EM_ASM({console.log("deleting key values 802.2.0");});
+			if (tempKeyValue->arrayValue->vector != NULL) {
+				//EM_ASM({console.log("deleting key values 802.2.1");});
+				if (tempKeyValue->arrayValue->root != NULL) {
+					deleteArrayValue(tempKeyValue->arrayValue->root);
+					tempKeyValue->arrayValue = NULL;
+				}
+			} else {
+				delete tempKeyValue->arrayValue;
+			}
+		}
+		
+		if (tempKeyValue->next == NULL) {
+			exhausted = true;
+			delete tempKeyValue;
+			tempKeyValue = NULL;
+		} else {
+			temptempKeyValue = tempKeyValue;
+			tempKeyValue = tempKeyValue->next;
+			delete temptempKeyValue;
+		}
+		
+		/*
 		if (temptempKeyValue->arrayValue != NULL) {
 			//if (strlen(temptempKeyValue->value) < 1) {
+			//EM_ASM({console.log("deleting key values 802.2.0");});
 			if (temptempKeyValue->arrayValue->vector != NULL) {
 				//EM_ASM({console.log("deleting key values 802.2.1");});
 				if (temptempKeyValue->arrayValue->root != NULL) {
@@ -300,7 +334,8 @@ struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail)
 				delete temptempKeyValue->arrayValue;
 			}
 		}
-		delete temptempKeyValue;
+		*/
+		//EM_ASM({console.log("deleting key values 802.2.2");});
 	}
 	//EM_ASM({console.log("deleting key values 803");});
 	
@@ -341,15 +376,21 @@ struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail)
 		//delete tempKeyValue->arrayValue;
 		delete tempKeyValue;
 	}
-	
+
+
+	/*	
+	struct KeyValueTrail* temptempKeyValueTrail;
 	//EM_ASM({console.log("deleting key values 804");});
 	if (passedKeyValueTrail->prev != NULL) {
+		temptempKeyValueTrail = passedKeyValueTrail;
 		if (passedKeyValueTrail->next != NULL) {
 			passedKeyValueTrail->next->prev = passedKeyValueTrail->prev;
 			passedKeyValueTrail->prev->next = passedKeyValueTrail->next;
 		} else {
-			//passedKeyValueTrail->next->prev = NULL;
+			passedKeyValueTrail->prev->next = NULL;
 		}
+	} else {
+		temptempKeyValueTrail = NULL;
 	}
 	
 	//EM_ASM({console.log("deleting key values 805");});
@@ -358,17 +399,15 @@ struct KeyValueTrail* deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail)
 			passedKeyValueTrail->prev->next = passedKeyValueTrail->next;
 			passedKeyValueTrail->next->prev = passedKeyValueTrail->prev;
 		} else {
-			//passedKeyValueTrail->prev->next = NULL;
+			passedKeyValueTrail->next->prev = NULL;
+		}
+		if (temptempKeyValueTrail != NULL) {
+			temptempKeyValueTrail = passedKeyValueTrail;
 		}
 	}
-	struct KeyValueTrail* temptempKeyValueTrail;
-	if (passedKeyValueTrail->prev != NULL) {
-		temptempKeyValueTrail = passedKeyValueTrail->prev;
-	} else {
-		temptempKeyValueTrail = new KeyValueTrail;
-	}
-	delete passedKeyValueTrail;
-	return temptempKeyValueTrail;
+	//delete passedKeyValueTrail;
+	*/
+	//return temptempKeyValueTrail;
 }
 
 int removeKeyValueTrail() { // to be called from within associateKeyValue()
@@ -825,7 +864,7 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 	tempFloatArray->count = tempCount;
 	tempFloatArray->floatArray = new float[tempCount];
 
-	EM_ASM({console.log("->>-->> count " + $0);}, tempCount);
+	//EM_ASM({console.log("->>-->> count " + $0);}, tempCount);
 	baseVector = traceArrayValue->vector->start;
 	exhausted = false;
 	currentUniversalCount = 0;
@@ -863,7 +902,7 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 		}
 		*(tempFloatArray->floatArray + currentUniversalCount) = xval;
 		currentUniversalCount = currentUniversalCount + 1;
-		EM_ASM({console.log("->>-->> found k value " + $0);}, xval);
+		//EM_ASM({console.log("->>-->> found k value " + $0);}, xval);
 
 		if (baseVector->next == NULL) {	
 			exhausted = true;
