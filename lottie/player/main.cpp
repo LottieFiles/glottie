@@ -21,6 +21,7 @@ using namespace std;
 
 std::function<void()> loop;
 void main_loop() { loop(); }
+void _doMain() { loop(); }
 
 /*
 alignas(256) GLuint* vao[1024];

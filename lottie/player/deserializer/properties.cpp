@@ -188,7 +188,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		ooxs = oox / segments;
 		ooys = ooy / segments;
 
-		EM_ASM_({console.log("[[[[[[[[[[[[[========================> starting " + $0 + " " + $1 + " " + $2 + " " + $3);}, o1->vertex->x, p1->vertex->x, o2->vertex->y, p2->vertex->y);
+		EM_ASM_({console.log("[[[[[[[[[[[[[========================> starting " + $0 + " , " + $1 + " : " + $2 + " , " + $3 + " : " + $4 + " , " + $5 + " : " + $6 + " , " + $7);}, o1->vertex->x, o1->vertex->y, p1->vertex->x, p1->vertex->y, o2->vertex->x, o2->vertex->y, p2->vertex->x, p2->vertex->y);
 		while (segNow < segments) {
 			intermediate = new ArrayOfVertex;
 			intermediate->vertex = new Vertex;
@@ -205,7 +205,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			pt2->y = (((ps3->y - ps2->y) / segments) * segNow) + ps2->y;
 
 			intermediate->vertex->x = (((pt2->x - pt1->x) / segments) * segNow) + pt1->x;
-			intermediate->vertex->y = (((pt2->y - pt1->y) / segments) * segNow) + pt2->y;
+			intermediate->vertex->y = (((pt2->y - pt1->y) / segments) * segNow) + pt1->y;
 			EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
 			intermediate->vertex->z = 0;
 			intermediate->vertex->a = 1;
@@ -226,7 +226,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->v = intermediate;
 			
 
-			EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0);}, intermediate);
+			//EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0);}, intermediate);
 			segNow++;
 			passedPropertiesShapeProp->v_count++;
 			passedPropertiesShapeProp->bezier_count++;

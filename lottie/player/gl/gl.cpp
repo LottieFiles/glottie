@@ -192,9 +192,11 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 	};
 
         #ifdef __EMSCRIPTEN__
-                emscripten_set_main_loop(main_loop, 0, true);
+                //emscripten_set_main_loop(main_loop, 0, true);
+                emscripten_set_main_loop(_doMain, 0, true);
         #else
-                while(true) main_loop();
+                //while(true) main_loop();
+                while(true) _doMain();
         #endif
 }
 

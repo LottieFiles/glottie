@@ -209,7 +209,7 @@ int removeScope() {
 		tempScope = NULL;
 	} else {
 		theScope->next = NULL;
-		deleteKeyValues(theScope->currentKeyValueTrail);
+		//deleteKeyValues(theScope->currentKeyValueTrail);
 		//delete theScope->currentKeyValueTrail;
 		theScope->currentKeyValueTrail = NULL;
 	}
