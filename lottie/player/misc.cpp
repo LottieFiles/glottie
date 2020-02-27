@@ -782,7 +782,7 @@ int stringToInt(char* passedString) {
 
 //////////// helpers for populating json objects
 
-struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, struct ArrayOfVertex* targetVertex, struct PropertieShapeProp* passedPropertiesShapeProp) {
+struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, struct ArrayOfVertex* targetVertex, struct PropertiesShapeProp* passedPropertiesShapeProp) {
 	struct ValuesVector* baseVector;
 	if (traceArrayValue == NULL) {
 		return 0;
@@ -822,10 +822,10 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 		}
 		float vertex[4] = {xval, yval, 0.0f, 1.0f};
 		targetVertex = pushVertex(targetVertex, vertex);
-		if (passedPropertiesShapeProp->lowestX > xval) {
+		if (xval < passedPropertiesShapeProp->lowestX) {
 			passedPropertiesShapeProp->lowestX = xval;
 		}
-		if (passedPropertiesShapeProp->lowestY > yval) {
+		if (yval < passedPropertiesShapeProp->lowestY) {
 			passedPropertiesShapeProp->lowestY = yval;
 		}
 

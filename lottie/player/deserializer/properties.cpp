@@ -92,10 +92,23 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "v") == 0) {
 			EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->v = 
-				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->v passedPropertiesShapeProp);
+				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->v, passedPropertiesShapeProp);
 			passedPropertiesShapeProp->v_count = currentUniversalCount;
+
+
+	
 			bool subExhausted = false;
+			passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->start;
+			while (! subExhausted) {
+				EM_ASM_({console.log("**** associating values " + $0 + " " + $1 + " " + $2 + " " + $3);}, passedPropertiesShapeProp->v->vertex->x, passedPropertiesShapeProp->v->vertex->y, passedPropertiesShapeProp->lowestX, passedPropertiesShapeProp->lowestY);
+				if (passedPropertiesShapeProp->v->next == passedPropertiesShapeProp->v->start) {
+					subExhausted = true;
+				} else {
+					passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
+				}
+			}
 			/*
+			bool subExhausted = false;
 			passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->start;
 			while (! subExhausted) {
 				if (passedPropertiesShapeProp->v->vertex->x < passedPropertiesShapeProp->lowestX) {
@@ -197,8 +210,8 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		}
 		o1 = passedPropertiesShapeProp->v->prev;
 		o2 = passedPropertiesShapeProp->v;
-		p1 = passedPropertiesShapeProp->i->prev;
-		p2 = passedPropertiesShapeProp->o;
+		p1 = passedPropertiesShapeProp->o->prev;
+		p2 = passedPropertiesShapeProp->i;
 
 		EM_ASM_({console.log("[[[[[[[[[[[[[========================> starting " + $0 + " , " + $1 + " : " + $2 + " , " + $3 + " : " + $4 + " , " + $5 + " : " + $6 + " , " + $7);}, o1->vertex->x, o1->vertex->y, p1->vertex->x, p1->vertex->y, o2->vertex->x, o2->vertex->y, p2->vertex->x, p2->vertex->y);
 
