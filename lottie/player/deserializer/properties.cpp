@@ -78,22 +78,40 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "i") == 0) {
 			EM_ASM({console.log("========================> fill 80.2 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->i = 
-				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->i);
+				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->i, passedPropertiesShapeProp);
 			passedPropertiesShapeProp->i_count = currentUniversalCount;
 			//passedPropertiesShapeProp->gl_i = vertexToGLfloat(passedPropertiesShapeProp->i, passedPropertiesShapeProp->count);
 
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "o") == 0) {
 			EM_ASM({console.log("========================> fill 80.3 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->o = 
-				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->o);
+				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->o, passedPropertiesShapeProp);
 			passedPropertiesShapeProp->o_count = currentUniversalCount;
 			//passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->count);
 
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "v") == 0) {
 			EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->v = 
-				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->v);
+				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->v passedPropertiesShapeProp);
 			passedPropertiesShapeProp->v_count = currentUniversalCount;
+			bool subExhausted = false;
+			/*
+			passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->start;
+			while (! subExhausted) {
+				if (passedPropertiesShapeProp->v->vertex->x < passedPropertiesShapeProp->lowestX) {
+					passedPropertiesShapeProp->lowestX = passedPropertiesShapeProp->v->vertex->x;
+				}
+				if (passedPropertiesShapeProp->v->vertex->y < passedPropertiesShapeProp->lowestY) {
+					passedPropertiesShapeProp->lowestY = passedPropertiesShapeProp->v->vertex->y;
+				}
+				EM_ASM_({console.log("**** associating values " + $0 + " " + $1 + " " + $2 + " " + $3);}, passedPropertiesShapeProp->v->vertex->x, passedPropertiesShapeProp->v->vertex->y, passedPropertiesShapeProp->lowestX, passedPropertiesShapeProp->lowestY);
+				if (passedPropertiesShapeProp->v->next == passedPropertiesShapeProp->v->start) {
+					subExhausted = true;
+				} else {
+					passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
+				}
+			}
+			*/
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->count);
 		}
 
@@ -122,6 +140,15 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	struct PropertiesShapeProp* p1;
 	struct PropertiesShapeProp* p2;
 	*/
+
+	int xoff = 0;
+	int yoff = 0;
+	if (passedPropertiesShapeProp->lowestX < 0) {
+		xoff = passedPropertiesShapeProp->lowestX * -1;
+	}
+	if (passedPropertiesShapeProp->lowestY < 0) {
+		yoff = passedPropertiesShapeProp->lowestY * -1;
+	}
 	struct ArrayOfVertex *o1, *o2, *p1, *p2;
 	float op1y, op1x, op2y, op2x;
 	float op1ys, op1xs, op2ys, op2xs;
@@ -136,6 +163,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	pt1 = new Vertex;
 	pt2 = new Vertex;
 	bool startedCycling = false;
+
 
 	while (! exhausted) {
 		if ((passedPropertiesShapeProp->v->next == passedPropertiesShapeProp->v->start) && startedCycling) {
@@ -169,15 +197,37 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		}
 		o1 = passedPropertiesShapeProp->v->prev;
 		o2 = passedPropertiesShapeProp->v;
-		p1 = passedPropertiesShapeProp->o->prev;
-		p2 = passedPropertiesShapeProp->i;
+		p1 = passedPropertiesShapeProp->i->prev;
+		p2 = passedPropertiesShapeProp->o;
 
-		op1x = p1->vertex->x - o1->vertex->x;
-		op1y = p1->vertex->y - o1->vertex->y;
-		op2x = p2->vertex->x - o2->vertex->x;
-		op2y = p2->vertex->y - o2->vertex->y;
-		oox = p2->vertex->x - p1->vertex->x;
-		ooy = p2->vertex->y - p1->vertex->y;
+		EM_ASM_({console.log("[[[[[[[[[[[[[========================> starting " + $0 + " , " + $1 + " : " + $2 + " , " + $3 + " : " + $4 + " , " + $5 + " : " + $6 + " , " + $7);}, o1->vertex->x, o1->vertex->y, p1->vertex->x, p1->vertex->y, o2->vertex->x, o2->vertex->y, p2->vertex->x, p2->vertex->y);
+
+		o1->vertex->x = o1->vertex->x + xoff;
+		o1->vertex->y = o1->vertex->y + yoff;
+		o2->vertex->x = o2->vertex->x + xoff;
+		o2->vertex->y = o2->vertex->y + yoff;
+		p1->vertex->x = p1->vertex->x + xoff;
+		p1->vertex->y = p1->vertex->y + yoff;
+		p2->vertex->x = p2->vertex->x + xoff;
+		p2->vertex->y = p2->vertex->y + yoff;
+
+		/*
+		float odist = distanceBetweenPoints(o1->vertex, o2->vertex) / 2;
+		if (odist < 0) {
+			odist = odist * -1;
+		}
+
+		if (p1->vertex->x > odist) {
+			
+		}
+		*/
+
+		op1x = (p1->vertex->x) - (o1->vertex->x);
+		op1y = (p1->vertex->y) - (o1->vertex->y);
+		op2x = (p2->vertex->x) - (o2->vertex->x);
+		op2y = (p2->vertex->y) - (o2->vertex->y);
+		oox = (p2->vertex->x) - (p1->vertex->x);
+		ooy = (p2->vertex->y) - (p1->vertex->y);
 		float segSize = 0.10;
 		float segments = 1 / segSize;
 		float segNow = 1;
@@ -188,24 +238,23 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		ooxs = oox / segments;
 		ooys = ooy / segments;
 
-		EM_ASM_({console.log("[[[[[[[[[[[[[========================> starting " + $0 + " , " + $1 + " : " + $2 + " , " + $3 + " : " + $4 + " , " + $5 + " : " + $6 + " , " + $7);}, o1->vertex->x, o1->vertex->y, p1->vertex->x, p1->vertex->y, o2->vertex->x, o2->vertex->y, p2->vertex->x, p2->vertex->y);
 		while (segNow < segments) {
 			intermediate = new ArrayOfVertex;
 			intermediate->vertex = new Vertex;
-			ps1->x = (op1xs * segNow) + o1->vertex->x;
-			ps1->y = (op1ys * segNow) + o1->vertex->y;
-			ps2->x = (ooxs * segNow) + p1->vertex->x;
-			ps2->y = (ooys * segNow) + p1->vertex->y;
-			ps3->x = (op2xs * segNow) + o2->vertex->x;
-			ps3->y = (op2ys * segNow) + o2->vertex->y;
+			ps1->x = (op1xs * segNow) + (o1->vertex->x);
+			ps1->y = (op1ys * segNow) + (o1->vertex->y);
+			ps2->x = (ooxs * segNow) + (p1->vertex->x);
+			ps2->y = (ooys * segNow) + (p1->vertex->y);
+			ps3->x = (op2xs * segNow) + (o2->vertex->x);
+			ps3->y = (op2ys * segNow) + (o2->vertex->y);
 			
-			pt1->x = (((ps2->x - ps1->x) / segments) * segNow) + ps1->x;
-			pt1->y = (((ps2->y - ps1->y) / segments) * segNow) + ps1->y;
-			pt2->x = (((ps3->x - ps2->x) / segments) * segNow) + ps2->x;
-			pt2->y = (((ps3->y - ps2->y) / segments) * segNow) + ps2->y;
+			pt1->x = ((( ps2->x - ps1->x ) / segments) * segNow) + ps1->x;
+			pt1->y = ((( ps2->y - ps1->y ) / segments) * segNow) + ps1->y;
+			pt2->x = ((( ps3->x - ps2->x ) / segments) * segNow) + ps2->x;
+			pt2->y = ((( ps3->y - ps2->y ) / segments) * segNow) + ps2->y;
 
-			intermediate->vertex->x = (((pt2->x - pt1->x) / segments) * segNow) + pt1->x;
-			intermediate->vertex->y = (((pt2->y - pt1->y) / segments) * segNow) + pt1->y;
+			intermediate->vertex->x = ( (((pt2->x - pt1->x) / segments) * segNow) + pt1->x ) - xoff;
+			intermediate->vertex->y = ( (((pt2->y - pt1->y) / segments) * segNow) + pt1->y ) - yoff;
 			EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
 			intermediate->vertex->z = 0;
 			intermediate->vertex->a = 1;
@@ -231,6 +280,15 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->v_count++;
 			passedPropertiesShapeProp->bezier_count++;
 		}
+
+		o1->vertex->x = o1->vertex->x - xoff;
+		o1->vertex->y = o1->vertex->y - yoff;
+		o2->vertex->x = o2->vertex->x - xoff;
+		o2->vertex->y = o2->vertex->y - yoff;
+		p1->vertex->x = p1->vertex->x - xoff;
+		p1->vertex->y = p1->vertex->y - yoff;
+		p2->vertex->x = p2->vertex->x - xoff;
+		p2->vertex->y = p2->vertex->y - yoff;
 		
 		EM_ASM({console.log("[[[[[[[[[[[[[========================> segment added ----");});
 	}

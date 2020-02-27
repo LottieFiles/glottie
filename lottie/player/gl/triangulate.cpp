@@ -76,13 +76,14 @@ struct Dimensions* findDimensions(int count, struct Buffers* passedBuffers, stru
 	return passedDimensions;
 }
 
-
+/*
 float distanceBetweenPoints(struct Vertex* pointA, struct Vertex* pointB) {
 	float distance = ( sqrt(pow(((float)pointA->x - (float)pointB->x), 2) + pow(((float)pointA->y - (float)pointB->y), 2)) );
 	
 	//EM_ASM_({console.log("    ///////////> " + $0 + " " + $1 + " " + $2 + " " + $3 + " " + $4);}, distance, pointA->x, pointB->x, pointA->y, pointB->y);
 	return distance;
 }
+*/
 
 int convex(struct Vertex* origin, struct Vertex* next, struct Vertex* nextnext, struct Vertex* prev) {
 	float a, di, ds, bi, bs;

@@ -782,7 +782,7 @@ int stringToInt(char* passedString) {
 
 //////////// helpers for populating json objects
 
-struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, struct ArrayOfVertex* targetVertex) {
+struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, struct ArrayOfVertex* targetVertex, struct PropertieShapeProp* passedPropertiesShapeProp) {
 	struct ValuesVector* baseVector;
 	if (traceArrayValue == NULL) {
 		return 0;
@@ -822,6 +822,12 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 		}
 		float vertex[4] = {xval, yval, 0.0f, 1.0f};
 		targetVertex = pushVertex(targetVertex, vertex);
+		if (passedPropertiesShapeProp->lowestX > xval) {
+			passedPropertiesShapeProp->lowestX = xval;
+		}
+		if (passedPropertiesShapeProp->lowestY > yval) {
+			passedPropertiesShapeProp->lowestY = yval;
+		}
 
 		if (baseVector->next == NULL) {	
 			exhausted = true;
@@ -912,4 +918,11 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 }
 
 
+// common functions related to geometry
+
+float distanceBetweenPoints(struct Vertex* pointA, struct Vertex* pointB) {
+	float distance = ( sqrt(pow(((float)pointA->x - (float)pointB->x), 2) + pow(((float)pointA->y - (float)pointB->y), 2)) );
+	//EM_ASM_({console.log("    ///////////> " + $0 + " " + $1 + " " + $2 + " " + $3 + " " + $4);}, distance, pointA->x, pointB->x, pointA->y, pointB->y);
+	return distance;
+}
 
