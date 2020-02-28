@@ -829,6 +829,8 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 			passedPropertiesShapeProp->lowestY = yval;
 		}
 
+		EM_ASM_({console.log("**** populating values " + $0 + " " + $1);}, xval, yval);
+
 		if (baseVector->next == NULL) {	
 			exhausted = true;
 		} else {
