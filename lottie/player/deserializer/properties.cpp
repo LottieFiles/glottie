@@ -146,6 +146,9 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 
 	exhausted = false;
 
+	//passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->start->prev;
+	//passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->start->prev;
+	//passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->start->prev;
 	passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->start;
 	passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->start;
 	passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->start;
@@ -180,21 +183,28 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	pt2 = new Vertex;
 	bool startedCycling = false;
 
-	struct ArrayOfVertex* nextVertex = NULL;
+	//struct ArrayOfVertex* nextVertex = NULL;
+	struct ArrayOfVertex* lastIntermediate = NULL;
 
 	while (! exhausted) {
-		if ((passedPropertiesShapeProp->v->next == passedPropertiesShapeProp->v->start) && startedCycling) {
-			passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
-			passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
-			if (nextVertex != NULL) {
-				passedPropertiesShapeProp->v = nextVertex;
-			} else {
-				passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
-			}
+		if (		
+				(
+					//passedPropertiesShapeProp->v->next == passedPropertiesShapeProp->v->start ||
+					passedPropertiesShapeProp->v == passedPropertiesShapeProp->v->start
+				)
+				&& startedCycling == true
+			) {
+			//passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
+			//passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
+			//if (nextVertex != NULL) {
+			//	passedPropertiesShapeProp->v = nextVertex;
+			//} else {
+			//	passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
+			//}
+			break;
 			exhausted = true;
+			continue;
 		} else {
-			if (passedPropertiesShapeProp->i->next != NULL &&
-				passedPropertiesShapeProp->o->next != NULL) {
 				if (
 						(
 							passedPropertiesShapeProp->i->vertex->x == 0 && 
@@ -211,35 +221,23 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 					) {
 						passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
 						passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
-						if (nextVertex != NULL) {
-							passedPropertiesShapeProp->v = nextVertex;
-						} else {
-							passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
-						}
+						passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
 						EM_ASM({console.log("non-bezier ");});
-						//startedCycling = true;
 						continue;
 				} else {
 					passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
 					passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
-					if (nextVertex != NULL) {
-						passedPropertiesShapeProp->v = nextVertex;
-					} else {
-						passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
-						//startedCycling = true;
-					}
+					passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
+					EM_ASM({console.log("breakout ");});
 				}
-			} else {
-				EM_ASM({console.log("breakout ");});
-				break;
-			}
-			//startedCycling = true;
+
 		}
+		startedCycling = true;
 		o1 = passedPropertiesShapeProp->v->prev;
 		o2 = passedPropertiesShapeProp->v;
 		p1 = passedPropertiesShapeProp->o->prev;
 		p2 = passedPropertiesShapeProp->i;
-		nextVertex = passedPropertiesShapeProp->v->next;
+		//nextVertex = passedPropertiesShapeProp->v;
 
 		EM_ASM_({console.log("[[[[[[[[[[[[[========================> starting " + $0 + " , " + $1 + " : " + $2 + " , " + $3 + " : " + $4 + " , " + $5 + " : " + $6 + " , " + $7);}, o1->vertex->x, o1->vertex->y, p1->vertex->x, p1->vertex->y, o2->vertex->x, o2->vertex->y, p2->vertex->x, p2->vertex->y);
 
@@ -305,9 +303,17 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			intermediate->bezier = true;
 
 			intermediate->start = passedPropertiesShapeProp->v->start;
-			intermediate->prev = passedPropertiesShapeProp->v;
-			intermediate->next = nextVertex;
-			passedPropertiesShapeProp->v->next = intermediate;
+			if (lastIntermediate == NULL) {
+				intermediate->prev = passedPropertiesShapeProp->v->prev;
+				passedPropertiesShapeProp->v->prev->next = intermediate;
+				passedPropertiesShapeProp->v->prev = intermediate;
+			} else {
+				intermediate->prev = lastIntermediate;
+				lastIntermediate->next = intermediate;
+				passedPropertiesShapeProp->v->prev = intermediate;
+			}
+			intermediate->next = passedPropertiesShapeProp->v;
+			lastIntermediate = intermediate;
 
 			/*
 			intermediate->start = passedPropertiesShapeProp->v->start;
@@ -319,7 +325,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			intermediate->next->prev = intermediate;
 			*/
 
-			passedPropertiesShapeProp->v = intermediate;
+			//passedPropertiesShapeProp->v = intermediate;
 
 			//EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0);}, intermediate);
 			segNow++;
