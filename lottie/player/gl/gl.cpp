@@ -128,8 +128,10 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 			if (redrawList == NULL) {
 				EM_ASM({console.log("glDraw 1.1");});
 				bool exhausted = false;
-				struct Buffers* tempBuffers = lastBuffersCreated->start;
+				//struct Buffers* tempBuffers = lastBuffersCreated->start;
+				struct Buffers* tempBuffers = lastBuffersCreated->start->prev;
 
+				bool firstCycleDone = false;
 				while (!exhausted) {
 					EM_ASM({console.log("glDraw 1.2");});
 					if (tempBuffers->vao != NULL) {
@@ -152,11 +154,20 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						EM_ASM({console.log("glDraw 1.6");});
 					}
 					EM_ASM({console.log("glDraw 1.7");});
+
+					if (tempBuffers->prev == tempBuffers->start->prev && firstCycleDone) {
+						exhausted = true;
+					} else {
+						tempBuffers = tempBuffers->prev;
+					}
+					firstCycleDone = true;
+					/*
 					if (tempBuffers->next == NULL) {
 						exhausted = true;
 					} else {
 						tempBuffers = tempBuffers->next;
 					}
+					*/
 					//break;
 				}
 			} else {

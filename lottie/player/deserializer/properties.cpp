@@ -241,6 +241,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 
 		EM_ASM_({console.log("[[[[[[[[[[[[[========================> starting " + $0 + " , " + $1 + " : " + $2 + " , " + $3 + " : " + $4 + " , " + $5 + " : " + $6 + " , " + $7);}, o1->vertex->x, o1->vertex->y, p1->vertex->x, p1->vertex->y, o2->vertex->x, o2->vertex->y, p2->vertex->x, p2->vertex->y);
 
+		/*
 		o1->vertex->x = o1->vertex->x + xoff;
 		o1->vertex->y = o1->vertex->y + yoff;
 		o2->vertex->x = o2->vertex->x + xoff;
@@ -249,6 +250,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		p1->vertex->y = p1->vertex->y + yoff;
 		p2->vertex->x = p2->vertex->x + xoff;
 		p2->vertex->y = p2->vertex->y + yoff;
+		*/
 
 		/*
 		float odist = distanceBetweenPoints(o1->vertex, o2->vertex) / 2;
@@ -264,13 +266,22 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		float segSize = 0.10;
 		float segments = 1 / segSize;
 		float segNow = 1;
-		
+
 		op1x = p1->vertex->x - o1->vertex->x;
 		op1y = p1->vertex->y - o1->vertex->y;
-		op2x = p2->vertex->x - o2->vertex->x;
-		op2y = p2->vertex->y - o2->vertex->y;
+		op2x = o2->vertex->x - p2->vertex->x;
+		op2y = o2->vertex->y - p2->vertex->y;
 		oox = p2->vertex->x - p1->vertex->x;
 		ooy = p2->vertex->y - p1->vertex->y;
+
+		/*
+		op1x = o1->vertex->x - p1->vertex->x;
+		op1y = o1->vertex->y - p1->vertex->y;
+		op2x = o2->vertex->x - p2->vertex->x;
+		op2y = o2->vertex->y - p2->vertex->y;
+		oox = p1->vertex->x - p2->vertex->x;
+		ooy = p1->vertex->y - p2->vertex->y;
+		*/
 
 		op1xs = op1x / segments;
 		op1ys = op1y / segments;
@@ -284,18 +295,27 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			intermediate->vertex = new Vertex;
 			ps1->x = (op1xs * segNow) + o1->vertex->x;
 			ps1->y = (op1ys * segNow) + o1->vertex->y;
-			ps2->x = (ooxs * segNow) + p1->vertex->x;
-			ps2->y = (ooys * segNow) + p1->vertex->y;
-			ps3->x = (op2xs * segNow) + o2->vertex->x;
-			ps3->y = (op2ys * segNow) + o2->vertex->y;
+			ps2->x = (ooxs * segNow) + p2->vertex->x;
+			ps2->y = (ooys * segNow) + p2->vertex->y;
+			ps3->x = (op2xs * segNow) + p1->vertex->x;
+			ps3->y = (op2ys * segNow) + p1->vertex->y;
 
+			/*
+			pt1->x = ( ((ps2->x - ps1->x) / segments) * segNow) + ps1->x;
+			pt1->y = ( ((ps2->y - ps1->y) / segments) * segNow) + ps1->y;
+			pt2->x = ( ((ps3->x - ps2->x) / segments) * segNow) + ps2->x;
+			pt2->y = ( ((ps3->y - ps2->y) / segments) * segNow) + ps2->y;
+			*/
+	
 			pt1->x = ( ((ps2->x - ps1->x) / segments) * segNow) + ps1->x;
 			pt1->y = ( ((ps2->y - ps1->y) / segments) * segNow) + ps1->y;
 			pt2->x = ( ((ps3->x - ps2->x) / segments) * segNow) + ps2->x;
 			pt2->y = ( ((ps3->y - ps2->y) / segments) * segNow) + ps2->y;
 
-			intermediate->vertex->x = ( (((pt2->x - pt1->x) / segments) * segNow) + pt1->x ) - xoff;
-			intermediate->vertex->y = ( (((pt2->y - pt1->y) / segments) * segNow) + pt1->y ) - yoff;
+			//intermediate->vertex->x = ( (((pt2->x - pt1->x) / segments) * segNow) + pt1->x ) - xoff;
+			//intermediate->vertex->y = ( (((pt2->y - pt1->y) / segments) * segNow) + pt1->y ) - yoff;
+			intermediate->vertex->x = ( (((pt2->x - pt1->x) / segments) * segNow) + pt1->x );
+			intermediate->vertex->y = ( (((pt2->y - pt1->y) / segments) * segNow) + pt1->y );
 			EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
 			intermediate->vertex->z = 0;
 			intermediate->vertex->a = 1;
@@ -333,6 +353,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->bezier_count++;
 		}
 
+		/*
 		o1->vertex->x = o1->vertex->x - xoff;
 		o1->vertex->y = o1->vertex->y - yoff;
 		o2->vertex->x = o2->vertex->x - xoff;
@@ -341,10 +362,12 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		p1->vertex->y = p1->vertex->y - yoff;
 		p2->vertex->x = p2->vertex->x - xoff;
 		p2->vertex->y = p2->vertex->y - yoff;
+		*/
 
-		EM_ASM({console.log("[[[[[[[[[[[[[========================> segment added ----");});
+		//EM_ASM({console.log("[[[[[[[[[[[[[========================> segment added ----");});
 	}
 
+	/*
 	exhausted = false;
 	passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->start;
 	while (! exhausted) {
@@ -355,6 +378,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;	
 		}
 	}
+	*/
 
 	EM_ASM({console.log("[[[[[[[[[[[[[========================> done");});
 	//deleteKeyValues(theScope->currentKeyValueTrail);

@@ -150,6 +150,8 @@ struct Buffers* newBuffers() {
 		lastBuffersCreated->next = tempBuffers;
 		tempBuffers->prev = lastBuffersCreated;
 	}
+	tempBuffers->next = tempBuffers->start;
+	tempBuffers->start->prev = tempBuffers;
 	lastBuffersCreated = tempBuffers;
 	//EM_ASM({console.log("buffer created ");});
 	return lastBuffersCreated;
