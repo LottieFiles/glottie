@@ -24,7 +24,8 @@ struct alignas(ALIGNSIZE) Layers {
         int bm; //blendmode
         int ddd;
         struct Mask* maskProperties = NULL;
-        struct Index* ef = NULL; // effects
+        //struct Index* ef = NULL; // effects
+        struct Effects* ef = NULL; // effects
       
 	int id;
 

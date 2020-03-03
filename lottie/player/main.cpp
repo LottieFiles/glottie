@@ -1,5 +1,5 @@
-#define KVLEN 21
-#define ALIGNSIZE 128
+#define KVLEN 41
+#define ALIGNSIZE 256 
 #define TEXTBLOCK 220
 
 #include <functional>

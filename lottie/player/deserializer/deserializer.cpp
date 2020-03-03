@@ -600,7 +600,7 @@ int checkCharacter(char& currentChar) {
 			kvState = Value;
 			previousScopeClosure = false;
 			break;
-		case '\'':
+		case '"':
 			justStartedArray = false;
 			colonEncountered = false;
 
