@@ -1,5 +1,3 @@
-#define KVLEN 21
-
 enum Phase {
 		_maxX,
 		_minX,
