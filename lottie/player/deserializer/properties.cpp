@@ -186,6 +186,8 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	//struct ArrayOfVertex* nextVertex = NULL;
 	struct ArrayOfVertex* lastIntermediate = NULL;
 
+	float oneTcube, oneTsquare, Tcube, Tsquare, oneT;
+
 	while (! exhausted) {
 		if (		
 				(
@@ -223,6 +225,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 						passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
 						passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
 						EM_ASM({console.log("non-bezier ");});
+						startedCycling = true;
 						continue;
 				} else {
 					passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
@@ -265,23 +268,56 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 
 		float segSize = 0.10;
 		float segments = 1 / segSize;
-		float segNow = 1;
+		//float segNow = segSize;
+		float segNow = segSize;
 
+		while (segNow < 1) {
+			intermediate = new ArrayOfVertex;
+			intermediate->vertex = new Vertex;
+			
+			//intermediate->vertex->x = ( (((pt2->x - pt1->x) / segments) * segNow) + pt1->x );
+			//intermediate->vertex->y = ( (((pt2->y - pt1->y) / segments) * segNow) + pt1->y );
+
+			oneT = 1 - segNow;
+			Tcube = pow(segNow, 3);
+			Tsquare = pow(segNow, 2);
+			oneTcube = pow(oneT, 3);
+			oneTsquare = pow(oneT, 2);
+
+			intermediate->vertex->x = (oneTcube * o1->vertex->x) + (3 * oneTsquare * segNow * p1->vertex->x) + (3 * oneT * Tsquare * p2->vertex->x) + (Tcube * o2->vertex->x);
+			intermediate->vertex->y = (oneTcube * o1->vertex->y) + (3 * oneTsquare * segNow * p1->vertex->y) + (3 * oneT * Tsquare * p2->vertex->y) + (Tcube * o2->vertex->y);
+			EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
+			intermediate->vertex->z = 0;
+			intermediate->vertex->a = 1;
+
+			intermediate->bezier = true;
+
+			intermediate->start = passedPropertiesShapeProp->v->start;
+			if (lastIntermediate == NULL) {
+				intermediate->prev = passedPropertiesShapeProp->v->prev;
+				passedPropertiesShapeProp->v->prev->next = intermediate;
+				passedPropertiesShapeProp->v->prev = intermediate;
+			} else {
+				intermediate->prev = lastIntermediate;
+				lastIntermediate->next = intermediate;
+				passedPropertiesShapeProp->v->prev = intermediate;
+			}
+			intermediate->next = passedPropertiesShapeProp->v;
+			lastIntermediate = intermediate;
+
+			//passedPropertiesShapeProp->v = intermediate;
+			segNow = segNow + segSize;
+			passedPropertiesShapeProp->v_count++;
+			passedPropertiesShapeProp->bezier_count++;
+		}
+
+		/*
 		op1x = p1->vertex->x - o1->vertex->x;
 		op1y = p1->vertex->y - o1->vertex->y;
 		op2x = p2->vertex->x - o2->vertex->x;
 		op2y = p2->vertex->y - o2->vertex->y;
 		oox = p2->vertex->x - p1->vertex->x;
 		ooy = p2->vertex->y - p1->vertex->y;
-
-		/*
-		op1x = o1->vertex->x - p1->vertex->x;
-		op1y = o1->vertex->y - p1->vertex->y;
-		op2x = o2->vertex->x - p2->vertex->x;
-		op2y = o2->vertex->y - p2->vertex->y;
-		oox = p1->vertex->x - p2->vertex->x;
-		ooy = p1->vertex->y - p2->vertex->y;
-		*/
 
 		op1xs = op1x / segments;
 		op1ys = op1y / segments;
@@ -300,13 +336,6 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			ps3->x = (op2xs * segNow) + p1->vertex->x;
 			ps3->y = (op2ys * segNow) + p1->vertex->y;
 
-			/*
-			pt1->x = ( ((ps2->x - ps1->x) / segments) * segNow) + ps1->x;
-			pt1->y = ( ((ps2->y - ps1->y) / segments) * segNow) + ps1->y;
-			pt2->x = ( ((ps3->x - ps2->x) / segments) * segNow) + ps2->x;
-			pt2->y = ( ((ps3->y - ps2->y) / segments) * segNow) + ps2->y;
-			*/
-	
 			pt1->x = ( ((ps2->x - ps1->x) / segments) * segNow) + ps1->x;
 			pt1->y = ( ((ps2->y - ps1->y) / segments) * segNow) + ps1->y;
 			pt2->x = ( ((ps3->x - ps2->x) / segments) * segNow) + ps2->x;
@@ -335,16 +364,6 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			intermediate->next = passedPropertiesShapeProp->v;
 			lastIntermediate = intermediate;
 
-			/*
-			intermediate->start = passedPropertiesShapeProp->v->start;
-
-			intermediate->prev = passedPropertiesShapeProp->v;
-			intermediate->next = passedPropertiesShapeProp->v->next;
-
-			passedPropertiesShapeProp->v->next = intermediate;
-			intermediate->next->prev = intermediate;
-			*/
-
 			//passedPropertiesShapeProp->v = intermediate;
 
 			//EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0);}, intermediate);
@@ -352,17 +371,8 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->v_count++;
 			passedPropertiesShapeProp->bezier_count++;
 		}
-
-		/*
-		o1->vertex->x = o1->vertex->x - xoff;
-		o1->vertex->y = o1->vertex->y - yoff;
-		o2->vertex->x = o2->vertex->x - xoff;
-		o2->vertex->y = o2->vertex->y - yoff;
-		p1->vertex->x = p1->vertex->x - xoff;
-		p1->vertex->y = p1->vertex->y - yoff;
-		p2->vertex->x = p2->vertex->x - xoff;
-		p2->vertex->y = p2->vertex->y - yoff;
 		*/
+
 
 		//EM_ASM({console.log("[[[[[[[[[[[[[========================> segment added ----");});
 	}
