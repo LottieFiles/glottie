@@ -95,7 +95,8 @@ int associateKeyValues() {
 			createEllipse(currentLayers->shapes);
 		}
 	} else if (theScope->scope == _s) {
-		if (strcmp(theScope->currentTy, "el") == 0) {
+		if (strcmp(theScope->prev->currentTy, "el") == 0) {
+			EM_ASM({console.log("//----------------> filling multidim");});
 			fillPropertiesMultiDimensional(currentLayers->shapes->s);
 		}
 	} else if (theScope->scope == _a) {
@@ -103,9 +104,10 @@ int associateKeyValues() {
 			fillPropertiesMultiDimensional(currentLayers->shapes->a);
 		}
 	} else if (theScope->scope == _p) {
-		if (		strcmp(theScope->currentTy, "tr") == 0 ||
-				strcmp(theScope->currentTy, "el") == 0
+		if (		strcmp(theScope->currentTy, "tr") == 0 || 
+				strcmp(theScope->prev->currentTy, "el") == 0
 			) {
+			EM_ASM({console.log("//----------------> filling multidim");});
 			fillPropertiesMultiDimensional(currentLayers->shapes->p);
 		}
 	} else if (theScope->scope == _r) {
@@ -288,12 +290,10 @@ int prepareContainer(bool arrayOfObjects) {
 	} else if (theScope->scope == _s) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
 			currentLayers->shapes->s = newPropertiesMultiDimensional();
+		} else if (strcmp(theScope->prev->currentTy, "el") == 0) {
+			currentLayers->shapes->s = newPropertiesMultiDimensional();
 		} else if ((theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _shapes) || (theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _it)) { // PropertiesShapePropKeyframe
 			currentLayers->shapes->ks->keyframe->s = newPropertiesShapeProp(currentLayers->shapes->ks, currentLayers->shapes->ks->keyframe->s, true);
-		}
-	} else if (theScope->scope == _s) {
-		if (strcmp(theScope->currentTy, "el") == 0) {
-			currentLayers->shapes->a = newPropertiesMultiDimensional();
 		}
 	} else if (theScope->scope == _a) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
@@ -301,7 +301,7 @@ int prepareContainer(bool arrayOfObjects) {
 		}
 	} else if (theScope->scope == _p) {
 		if (		strcmp(theScope->currentTy, "tr") == 0 ||
-				strcmp(theScope->currentTy, "el") == 0
+				strcmp(theScope->prev->currentTy, "el") == 0
 			) {
 			currentLayers->shapes->p = newPropertiesMultiDimensional();
 		}

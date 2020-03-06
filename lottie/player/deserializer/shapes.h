@@ -73,6 +73,7 @@ struct alignas(ALIGNSIZE) ShapesItem {
 	int order = 0;
 
 	bool isKeyframed = false;
+	bool basicShapeGenerated = false;
 	
 } *currentShapesItem;
 

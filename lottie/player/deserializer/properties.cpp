@@ -269,8 +269,8 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 
 		op1x = p1->vertex->x - o1->vertex->x;
 		op1y = p1->vertex->y - o1->vertex->y;
-		op2x = o2->vertex->x - p2->vertex->x;
-		op2y = o2->vertex->y - p2->vertex->y;
+		op2x = p2->vertex->x - o2->vertex->x;
+		op2y = p2->vertex->y - o2->vertex->y;
 		oox = p2->vertex->x - p1->vertex->x;
 		ooy = p2->vertex->y - p1->vertex->y;
 
@@ -295,8 +295,8 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			intermediate->vertex = new Vertex;
 			ps1->x = (op1xs * segNow) + o1->vertex->x;
 			ps1->y = (op1ys * segNow) + o1->vertex->y;
-			ps2->x = (ooxs * segNow) + p2->vertex->x;
-			ps2->y = (ooys * segNow) + p2->vertex->y;
+			ps2->x = (ooxs * segNow) + o2->vertex->x;
+			ps2->y = (ooys * segNow) + o2->vertex->y;
 			ps3->x = (op2xs * segNow) + p1->vertex->x;
 			ps3->y = (op2ys * segNow) + p1->vertex->y;
 
@@ -456,6 +456,16 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 }
 
 void createEllipse(struct ShapesItem* passedShapesItem) {
+	return;
+	if (passedShapesItem->basicShapeGenerated == true) {
+		return;
+	}
+	if (passedShapesItem->p == NULL || passedShapesItem->s == NULL) {
+		EM_ASM({console.log("===&&&&&&&&&&===> no multidim object");});
+		return;
+	}
+	passedShapesItem->basicShapeGenerated = true;
+
 	passedShapesItem->ks = newPropertiesShape(passedShapesItem->ks);
 	passedShapesItem->ks->k = newPropertiesShapeProp(passedShapesItem->ks, passedShapesItem->ks->k, false);
 	//passedShapesItem->p -- position (PropertiesMultiDimensional*)
