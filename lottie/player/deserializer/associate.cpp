@@ -96,7 +96,7 @@ int associateKeyValues() {
 		}
 	} else if (theScope->scope == _s) {
 		if (strcmp(theScope->prev->currentTy, "el") == 0) {
-			EM_ASM({console.log("//----------------> filling multidim");});
+			//EM_ASM({console.log("//----------------> filling multidim");});
 			fillPropertiesMultiDimensional(currentLayers->shapes->s);
 		}
 	} else if (theScope->scope == _a) {
@@ -107,7 +107,7 @@ int associateKeyValues() {
 		if (		strcmp(theScope->currentTy, "tr") == 0 || 
 				strcmp(theScope->prev->currentTy, "el") == 0
 			) {
-			EM_ASM({console.log("//----------------> filling multidim");});
+			//EM_ASM({console.log("//----------------> filling multidim");});
 			fillPropertiesMultiDimensional(currentLayers->shapes->p);
 		}
 	} else if (theScope->scope == _r) {
@@ -273,6 +273,9 @@ int prepareContainer(bool arrayOfObjects) {
 		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _it) { // PropertiesShape
 			//EM_ASM({console.log("-----------------> ks within it within shapes");});
 			currentLayers->shapes->ks = newPropertiesShape(currentLayers->shapes->ks);
+		} else if (theScope->prev->scope == _layers) { // PropertiesShape
+			//EM_ASM({console.log("-----------------> ks within it within shapes");});
+			currentLayers->ks = newPropertiesShape(currentLayers->shapes->ks);
 		}
 	} else if (theScope->scope == _k) {
 		if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {

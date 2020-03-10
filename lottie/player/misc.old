@@ -669,7 +669,7 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 	if (passedVertex == NULL) {
 		//EM_ASM({console.log("found an empty vertex");};);
 		passedVertex = new ArrayOfVertex;
-		passedVertex->start = passedVertex;
+		//passedVertex->start = passedVertex;
 	} else {
 		//EM_ASM({console.log("found a non-empty vertex");};);
 		//bool exhausted = false;
@@ -681,9 +681,9 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 			}
 		}*/
 		tempAOV = new ArrayOfVertex;
-		tempAOV->prev = passedVertex;
-		passedVertex->next = tempAOV;
-		tempAOV->start = passedVertex->start;
+		tempAOV->next = passedVertex;
+		passedVertex->prev = tempAOV;
+		//tempAOV->start = passedVertex->start;
 		passedVertex = tempAOV;
 	}
 
@@ -822,14 +822,16 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 		}
 		float vertex[4] = {xval, yval, 0.0f, 1.0f};
 		targetVertex = pushVertex(targetVertex, vertex);
+		/*
 		if (xval < passedPropertiesShapeProp->lowestX) {
 			passedPropertiesShapeProp->lowestX = xval;
 		}
 		if (yval < passedPropertiesShapeProp->lowestY) {
 			passedPropertiesShapeProp->lowestY = yval;
 		}
+		*/
 
-		//EM_ASM_({console.log("**** populating values " + $0 + " " + $1);}, xval, yval);
+		EM_ASM_({console.log("**** populating values " + $0 + " " + $1);}, xval, yval);
 
 		if (baseVector->next == NULL) {	
 			exhausted = true;
@@ -837,6 +839,36 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 			baseVector = baseVector->next;
 		}
 	}
+	/*
+	struct ArrayOfVertex* tempVertex;
+	exhausted = false;
+	while (! exhausted) {
+		if (tempVertex == NULL) {
+			tempVertex = new ArrayOfVertex;
+			tempVertex->start = tempVertex;
+		} else {
+			tempVertex->next = new ArrayOfVertex;
+			tempVertex->next->prev = tempVertex;
+			tempVertex->next->start = tempVertex->start;
+			tempVertex = tempVertex->next;
+		}
+
+		if (targetVertex->prev == NULL) {
+			delete targetVertex;
+			exhausted = true;
+		} else {
+			targetVertex = targetVertex->prev;
+			delete targetVertex->next;
+		}
+	}
+	targetVertex = tempVertex;
+	*/
+	targetVertex->start = targetVertex;
+	while (targetVertex->next != NULL) {
+		targetVertex = targetVertex->next;
+		targetVertex->start = targetVertex->prev->start;
+	}
+
 	targetVertex->next = targetVertex->start;
 	targetVertex->start->prev = targetVertex;
 	if (targetVertex != NULL) {

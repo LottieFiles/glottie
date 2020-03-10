@@ -1,24 +1,24 @@
 // functions
 
 struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem) {
-	EM_ASM({console.log("========================> shapes entered");});
+	//EM_ASM({console.log("========================> shapes entered");});
 	if (passedShapesItem == NULL) {
 		passedShapesItem = new ShapesItem;
 		passedShapesItem->start = passedShapesItem;
 	} else {
-		EM_ASM({console.log("========================> shapes entered 2.0");});
+		//EM_ASM({console.log("========================> shapes entered 2.0");});
 		passedShapesItem->next = new ShapesItem;
-		EM_ASM({console.log("========================> shapes entered 2.1");});
+		//EM_ASM({console.log("========================> shapes entered 2.1");});
 		passedShapesItem->next->start = passedShapesItem->start;
-		EM_ASM({console.log("========================> shapes entered 2.2");});
+		//EM_ASM({console.log("========================> shapes entered 2.2");});
 		passedShapesItem->next->prev = passedShapesItem;
-		EM_ASM({console.log("========================> shapes entered 2.3");});
+		//EM_ASM({console.log("========================> shapes entered 2.3");});
 		passedShapesItem = passedShapesItem->next;
 	}
 	currentOrderIndex++;
 	passedShapesItem->order = currentOrderIndex;
 	currentShapesItem = passedShapesItem;
-	EM_ASM({console.log("========================> shapes exit");});
+	//EM_ASM({console.log("========================> shapes exit");});
 	return passedShapesItem;
 }
 
