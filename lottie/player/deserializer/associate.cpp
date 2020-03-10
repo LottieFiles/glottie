@@ -53,6 +53,7 @@ int associateKeyValues() {
 		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _layers) { // PropertiesShape
 		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _shapes) { // PropertiesShape
 		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _it) { // PropertiesShape
+		} else if (theScope->prev->scope == _layers) { // PropertiesShape
 		}
 	} else if (theScope->scope == _k) {
 		if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
@@ -98,10 +99,14 @@ int associateKeyValues() {
 		if (strcmp(theScope->prev->currentTy, "el") == 0) {
 			//EM_ASM({console.log("//----------------> filling multidim");});
 			fillPropertiesMultiDimensional(currentLayers->shapes->s);
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			fillPropertiesMultiDimensional(currentLayers->ks->s);
 		}
 	} else if (theScope->scope == _a) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
 			fillPropertiesMultiDimensional(currentLayers->shapes->a);
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			fillPropertiesMultiDimensional(currentLayers->ks->a);
 		}
 	} else if (theScope->scope == _p) {
 		if (		strcmp(theScope->currentTy, "tr") == 0 || 
@@ -109,22 +114,44 @@ int associateKeyValues() {
 			) {
 			//EM_ASM({console.log("//----------------> filling multidim");});
 			fillPropertiesMultiDimensional(currentLayers->shapes->p);
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			fillPropertiesMultiDimensional(currentLayers->ks->p);
 		}
 	} else if (theScope->scope == _r) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
 			//fillPropertiesMultiDimensional(currentLayers->shapes->r);
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			fillPropertiesValue(currentLayers->ks->r);
 		}
 	} else if (theScope->scope == _o) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
 			//fillPropertiesMultiDimensional(currentLayers->shapes->o);
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			fillPropertiesValue(currentLayers->ks->o);
 		}
 	} else if (theScope->scope == _sk) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
 			//fillPropertiesMultiDimensional(currentLayers->shapes->sk);
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			fillPropertiesValue(currentLayers->ks->sk);
 		}
 	} else if (theScope->scope == _sa) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
 			//fillPropertiesMultiDimensional(currentLayers->shapes->sa);
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			fillPropertiesValue(currentLayers->ks->sa);
+		}
+	} else if (theScope->scope == _px) {
+		if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			fillPropertiesValue(currentLayers->ks->px);
+		}
+	} else if (theScope->scope == _py) {
+		if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			fillPropertiesValue(currentLayers->ks->py);
+		}
+	} else if (theScope->scope == _pz) {
+		if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			fillPropertiesValue(currentLayers->ks->pz);
 		}
 	} else if (theScope->scope == _c) {
 		if (theScope->prev->scope == _shapes) {
@@ -259,36 +286,27 @@ int prepareContainer(bool arrayOfObjects) {
 	} else if (theScope->scope == _ty) {
 	} else if (theScope->scope == _ks) {
 		if (theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) { // PropertiesShape
-			//EM_ASM({console.log("-----------------> ks within shapes within layers");});
 			currentLayers->shapes->ks = newPropertiesShape(currentLayers->shapes->ks);
 		} else if (theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) {
-			//EM_ASM({console.log("-----------------> ks within shapes within layers");});
 			currentLayers->shapes->ks = newPropertiesShape(currentLayers->shapes->ks);
 		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _layers) { // PropertiesShape
-			//EM_ASM({console.log("-----------------> ks within it within layers");});
 			currentLayers->shapes->ks = newPropertiesShape(currentLayers->shapes->ks);
 		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _shapes) { // PropertiesShape
-			//EM_ASM({console.log("-----------------> ks within it within shapes");});
 			currentLayers->shapes->ks = newPropertiesShape(currentLayers->shapes->ks);
 		} else if (theScope->prev->scope == _it && theScope->prev->prev->scope == _it) { // PropertiesShape
-			//EM_ASM({console.log("-----------------> ks within it within shapes");});
 			currentLayers->shapes->ks = newPropertiesShape(currentLayers->shapes->ks);
 		} else if (theScope->prev->scope == _layers) { // PropertiesShape
-			//EM_ASM({console.log("-----------------> ks within it within shapes");});
-			currentLayers->ks = newPropertiesShape(currentLayers->shapes->ks);
+			currentLayers->ks = newHelpersTransform(currentLayers->ks);
 		}
 	} else if (theScope->scope == _k) {
 		if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
-			//EM_ASM({console.log("-----------------> k within ks within shapes");});
 			currentLayers->shapes->ks->k = newPropertiesShapeProp(currentLayers->shapes->ks, currentLayers->shapes->ks->k, false);
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _it)) { // PropertiesShapeProp
-			//EM_ASM({console.log("-----------------> k within ks within it");});
 			currentLayers->shapes->ks->k = newPropertiesShapeProp(currentLayers->shapes->ks, currentLayers->shapes->ks->k, false);
 		}
 	} else if (theScope->scope == _e) {
 		if ((theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _shapes) || (theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _it)) { // PropertiesShapePropKeyframe
 			currentLayers->shapes->ks->keyframe->e = newPropertiesShapeProp(currentLayers->shapes->ks, currentLayers->shapes->ks->keyframe->e, true);
-			//currentShapesItem->ks->keyframe->e = newPropertiesShapeProp(currentShapesItem->ks, currentShapesItem->ks->keyframe->e, true);
 		}
 	} else if (theScope->scope == _s) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
@@ -297,34 +315,59 @@ int prepareContainer(bool arrayOfObjects) {
 			currentLayers->shapes->s = newPropertiesMultiDimensional();
 		} else if ((theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _shapes) || (theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _it)) { // PropertiesShapePropKeyframe
 			currentLayers->shapes->ks->keyframe->s = newPropertiesShapeProp(currentLayers->shapes->ks, currentLayers->shapes->ks->keyframe->s, true);
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			currentLayers->ks->s = newPropertiesMultiDimensional();
 		}
 	} else if (theScope->scope == _a) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
 			currentLayers->shapes->a = newPropertiesMultiDimensional();
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			currentLayers->ks->a = newPropertiesMultiDimensional();
 		}
 	} else if (theScope->scope == _p) {
 		if (		strcmp(theScope->currentTy, "tr") == 0 ||
-				strcmp(theScope->prev->currentTy, "el") == 0
+				strcmp(theScope->prev->currentTy, "el") == 0 
 			) {
 			currentLayers->shapes->p = newPropertiesMultiDimensional();
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			currentLayers->ks->p = newPropertiesMultiDimensional();
 		}
 	} else if (theScope->scope == _r) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
 			//currentLayers->shapes->r = newPropertiesMultiDimensional();
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			currentLayers->ks->r = newPropertiesValue();
 		}
 	} else if (theScope->scope == _o) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
 			//currentLayers->shapes->o = newPropertiesMultiDimensional();
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			currentLayers->ks->o = newPropertiesValue();
 		}
 	} else if (theScope->scope == _sk) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
 			//currentLayers->shapes->sk = newPropertiesMultiDimensional();
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			currentLayers->ks->sk = newPropertiesValue();
 		}
 	} else if (theScope->scope == _sa) {
 		if (strcmp(theScope->currentTy, "tr") == 0) {
 			//currentLayers->shapes->sa = newPropertiesMultiDimensional();
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			currentLayers->ks->sa = newPropertiesValue();
 		}
-	} else if (theScope->scope == _sa) {
+	} else if (theScope->scope == _px) {
+		if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			currentLayers->ks->px = newPropertiesValue();
+		}
+	} else if (theScope->scope == _py) {
+		if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			currentLayers->ks->py = newPropertiesValue();
+		}
+	} else if (theScope->scope == _pz) {
+		if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			currentLayers->ks->pz = newPropertiesValue();
+		}
 	
 	} else if (theScope->scope == _c) {
 		//EM_ASM({console.log("-----------------> c ");});

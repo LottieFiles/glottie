@@ -846,6 +846,23 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 	}
 }
 
+float populateFloat(char* tempStr) {
+	string xvals(tempStr);
+	
+	float xval = 0;
+	if (xvals.length() < 1) {
+		xval = 0;
+	} else {
+	if (! xvals.empty()) {
+			xval = stof(xvals);
+		} else {
+			xval = 0;
+		}
+	}
+
+	return xval;
+}
+
 struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValue, bool positive) {
 	struct ValuesVector* baseVector;
 	struct FloatArrayReturn* tempFloatArray;

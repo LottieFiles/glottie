@@ -22,7 +22,10 @@ enum Scopes {
 	_o = 15,
 	_sk = 16,
 	_sa = 17,
-	_c = 18
+	_c = 18,
+	_px = 19,
+	_py = 20,
+	_pz = 21
 	};
 
 enum States {

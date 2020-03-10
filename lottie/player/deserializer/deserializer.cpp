@@ -244,6 +244,7 @@ int removeArray() {
 #include "properties.cpp"
 #include "layers.cpp"
 #include "shapes.cpp"
+#include "helpers.cpp"
 #include "associate.cpp"
 
 struct ScopeTrail* lastScopeBeforeThis(struct ScopeTrail* tempScopeTrail) {
@@ -324,6 +325,12 @@ int checkScope() {
 	} else if (keyIs("c")) {
 		//EM_ASM({console.log("-/--> found c");});
 		addScope(_c);
+	} else if (keyIs("px")) {
+		addScope(_px);
+	} else if (keyIs("py")) {
+		addScope(_py);
+	} else if (keyIs("pz")) {
+		addScope(_pz);
 
 
 

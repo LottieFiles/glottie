@@ -66,7 +66,7 @@ struct alignas(ALIGNSIZE) ShapesItem {
 	struct HelpersLineJoin* lj = NULL; // line join
 	int ml; // miter limit
 	int mm; // merge mode
-	struct HelpersTransform* tr = NULL; // transform
+	//struct HelpersTransform* tr = NULL; // transform
 	
 	struct ShapesItem* it = NULL;
 

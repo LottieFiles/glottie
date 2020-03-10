@@ -5,11 +5,11 @@ struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
 	float s; //start
 	float t; //time
 
-	struct XY* i; // bezier curve interpolation in value
+	struct Vertex* i; // bezier curve interpolation in value
 } *currentPropertiesValueKeyframe;
 
 struct alignas(ALIGNSIZE) PropertiesValue {
-	float* k;
+	float k;
 	int k_count;
 	//string ix; //property index
 	int a; // animated

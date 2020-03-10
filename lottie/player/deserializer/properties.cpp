@@ -45,6 +45,12 @@ struct PropertiesShapePropKeyframe* newPropertiesShapePropKeyframe() {
 	return tempPropertiesShapePropKeyframe;
 }
 
+struct PropertiesValue* newPropertiesValue() {
+	struct PropertiesValue* tempPropertiesValue;
+	tempPropertiesValue = new PropertiesValue;
+	return tempPropertiesValue;
+}
+
 //////////////////// assign values
 
 
@@ -507,6 +513,52 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 	}
 	return 1;
 }
+
+int fillPropertiesValue(struct PropertiesValue* passedPropertiesValue) {
+	//EM_ASM({console.log("========================> entered");});
+	bool exhausted = false;
+	struct KeyValue* tempKeyValue;
+	struct FloatArrayReturn* tempFloatArray = NULL;
+	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
+	struct ArrayOfString* tempArrayValue; 
+	while (! exhausted) {
+		if (tempKeyValue) {
+			//EM_ASM({console.log("========================> iteration 99");});
+		}
+		if (strlen(tempKeyValue->key) == 0) {
+			//EM_ASM({console.log("========================> empty");});
+			if (tempKeyValue->next == NULL) {
+				exhausted = true;
+			} else {
+				tempKeyValue = tempKeyValue->next;
+			}
+			continue;
+		}
+
+		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "k") == 0) {
+			//EM_ASM({console.log("========================> found k in c");});
+			if (strlen(tempKeyValue->value) > 0) {
+				passedPropertiesValue->k = populateFloat(tempKeyValue->value);
+			}
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "x") == 0) {
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ix") == 0) {
+		}
+		
+
+		if (tempFloatArray != NULL) {
+			delete tempFloatArray;
+			tempFloatArray = NULL;
+		}
+
+		if (tempKeyValue->next == NULL) {
+			exhausted = true;
+		} else {
+			tempKeyValue = tempKeyValue->next;
+		}
+	}
+	return 1;
+}
+
 
 void createEllipse(struct ShapesItem* passedShapesItem) {
 	return;
