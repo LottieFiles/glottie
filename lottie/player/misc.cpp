@@ -492,6 +492,9 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 	struct KeyValue* createdKeyValue = NULL;
 
 	if (strcmp(key, "ty") == 0) {
+		if (strcmp(value, "tr") == 0) {
+			EM_ASM({console.log("transform KV");});	
+		}
 		strcat(input->currentTy, value);
 		strcat(theScope->currentTy, value);
 	}

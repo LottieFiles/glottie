@@ -108,9 +108,10 @@ int fillShapesItem(struct ShapesItem* passedShapesItem) {
 
 		if (strlen(tempKeyValue->key) > 0) {
 			if (strcmp(tempKeyValue->key, "ty") == 0) {
-				//EM_ASM({console.log("==========-------------========> shape type recorded " + $0 + " " + String.fromCharCode($1));}, passedShapesItem->ty, tempKeyValue->value[0]);
 				passedShapesItem->ty = getShapesTy(tempKeyValue->value);
-			} else if (strcmp(tempKeyValue->key, "tr") == 0) {
+				//EM_ASM({console.log("==========-------------========> shape type recorded " + $0 + " " + String.fromCharCode($1));}, passedShapesItem->ty, tempKeyValue->value[0]);
+			} else if (strcmp(tempKeyValue->key, "nm") == 0) {
+				
 			}
 		}
 

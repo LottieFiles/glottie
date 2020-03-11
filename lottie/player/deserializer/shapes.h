@@ -70,6 +70,8 @@ struct alignas(ALIGNSIZE) ShapesItem {
 	
 	struct ShapesItem* it = NULL;
 
+	struct ShapesItem* baseTransform = NULL;
+
 	int order = 0;
 
 	bool isKeyframed = false;

@@ -125,4 +125,8 @@ struct alignas(ALIGNSIZE) ScopeBefore {
 	long objectCount = 0;
 };
 
+struct MainOffset {
+	float x = 0;
+	float y = 0;
+} layersPosition, layersAnchor, shapesPosition, shapesAnchor;
 
