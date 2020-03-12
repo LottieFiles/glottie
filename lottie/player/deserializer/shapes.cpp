@@ -75,6 +75,7 @@ enum ShapesTy getShapesTy(char* passedTy) {
 	} else if (strcmp(passedTy, "rp") == 0) {
 		tempShapesTy = _repeater;
 	} else if (strcmp(passedTy, "tr") == 0) {
+		EM_ASM({console.log("==========> transform");});
 		tempShapesTy = _transform;
 	} else {
 		tempShapesTy = _noshape;
@@ -109,7 +110,7 @@ int fillShapesItem(struct ShapesItem* passedShapesItem) {
 		if (strlen(tempKeyValue->key) > 0) {
 			if (strcmp(tempKeyValue->key, "ty") == 0) {
 				passedShapesItem->ty = getShapesTy(tempKeyValue->value);
-				//EM_ASM({console.log("==========-------------========> shape type recorded " + $0 + " " + String.fromCharCode($1));}, passedShapesItem->ty, tempKeyValue->value[0]);
+				EM_ASM({console.log("==========-------------========> shape type recorded " + $0 + " " + String.fromCharCode($1) + String.fromCharCode($2));}, passedShapesItem->ty, tempKeyValue->value[0], tempKeyValue->value[1]);
 			} else if (strcmp(tempKeyValue->key, "nm") == 0) {
 				
 			}

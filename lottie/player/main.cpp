@@ -1,4 +1,4 @@
-#define KVLEN 41
+#define KVLEN 128
 #define ALIGNSIZE 256 
 #define TEXTBLOCK 220
 
