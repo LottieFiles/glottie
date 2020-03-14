@@ -1,11 +1,15 @@
 // functions
 
-struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem) {
+struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem, bool shapesGroup) {
 	//EM_ASM({console.log("========================> shapes entered");});
 	if (passedShapesItem == NULL) {
 		passedShapesItem = new ShapesItem;
 		passedShapesItem->start = passedShapesItem;
 	} else {
+		if (shapesGroup && passedShapesItem->parent == NULL) {
+			passedShapesItem->it = new ShapesItem;
+			passedShapesItem->it->parent = passedShapesItem;
+		}
 		//EM_ASM({console.log("========================> shapes entered 2.0");});
 		passedShapesItem->next = new ShapesItem;
 		//EM_ASM({console.log("========================> shapes entered 2.1");});
@@ -14,6 +18,9 @@ struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem) {
 		passedShapesItem->next->prev = passedShapesItem;
 		//EM_ASM({console.log("========================> shapes entered 2.3");});
 		passedShapesItem = passedShapesItem->next;
+	}
+	if (passedShapesItem->prev != NULL) {
+		passedShapesItem->parent = passedShapesItem->prev->parent;
 	}
 	currentOrderIndex++;
 	passedShapesItem->order = currentOrderIndex;
@@ -109,8 +116,9 @@ int fillShapesItem(struct ShapesItem* passedShapesItem) {
 
 		if (strlen(tempKeyValue->key) > 0) {
 			if (strcmp(tempKeyValue->key, "ty") == 0) {
+				enum ShapesTy tempTy = passedShapesItem->ty;
 				passedShapesItem->ty = getShapesTy(tempKeyValue->value);
-				EM_ASM({console.log("==========-------------========> shape type recorded " + $0 + " " + String.fromCharCode($1) + String.fromCharCode($2));}, passedShapesItem->ty, tempKeyValue->value[0], tempKeyValue->value[1]);
+				EM_ASM({console.log("==========-------------========> shape type recorded " + $0 + " " + String.fromCharCode($1) + String.fromCharCode($2) + " " + $3);}, passedShapesItem->ty, tempKeyValue->value[0], tempKeyValue->value[1], tempTy);
 			} else if (strcmp(tempKeyValue->key, "nm") == 0) {
 				
 			}
@@ -129,6 +137,14 @@ int fillShapesItem(struct ShapesItem* passedShapesItem) {
 	////////// fill this ShapesItem only if an external handler isn't found
 	if (! foundExternalHandler) {
 	}
+
+	/*
+	if (passedShapesItem->parent == NULL) {
+		passedShapesItem = currentLayers->shapes;
+	} else {
+		passedShapesItem = passedShapesItem->parent;
+	}
+	*/
 
 	return 1;
 }
