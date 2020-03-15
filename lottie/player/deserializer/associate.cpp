@@ -86,6 +86,12 @@ int associateKeyValues() {
 		if (strcmp(theScope->prev->currentTy, "el") == 0) {
 			createEllipse(currentShapesItem);
 		}
+		if (strcmp(theScope->currentTy, "gr") == 0) {
+			if (currentShapesItem->parent != NULL) {
+				currentShapesItem = currentShapesItem->parent;
+				grClosed = true;
+			}
+		}
 	} else if (theScope->scope == _shapes) {
 		if (theScope->prev->scope == _layers) {
 			fillShapesItem(currentShapesItem);
@@ -96,6 +102,12 @@ int associateKeyValues() {
 		}
 		if (strcmp(theScope->prev->currentTy, "el") == 0) {
 			createEllipse(currentShapesItem);
+		}
+		if (strcmp(theScope->currentTy, "gr") == 0) {
+			if (currentShapesItem->parent != NULL) {
+				currentShapesItem = currentShapesItem->parent;
+				grClosed = true;
+			}
 		}
 	} else if (theScope->scope == _s) {
 		if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
@@ -245,6 +257,7 @@ int prepareContainer(bool arrayOfObjects) {
 			}*/
 			theAnimation->assets->precomps = newLayers(theAnimation->assets->precomps);
 			currentLayers = theAnimation->assets->precomps;
+			currentShapesItem = NULL;
 		} else if (theScope->prev->scope == _animation) {
 			//EM_ASM({console.log("-----------------> layers");});
 			/*if (preSwitch[0] == 1) {
@@ -259,15 +272,12 @@ int prepareContainer(bool arrayOfObjects) {
 			}*/
 			theAnimation->layers = newLayers(theAnimation->layers);
 			currentLayers = theAnimation->layers;
+			currentShapesItem = NULL;
 		}
 	} else if (theScope->scope == _it) {
 		//EM_ASM({console.log("----------------------------------------------------> it");});
+
 		if (theScope->prev->scope == _layers) {
-			//EM_ASM({console.log("-----------------> it within layers");});
-			/*if (preSwitch[1] != 1) {
-				preSwitch[1] = 1;
-				currentShapesItem = NULL;
-			}*/
 			currentShapesItem = newShapesItem(currentShapesItem, true);
 		} else if (theScope->prev->scope == _shapes) {
 			currentShapesItem = newShapesItem(currentShapesItem, true);
@@ -277,58 +287,23 @@ int prepareContainer(bool arrayOfObjects) {
 	} else if (theScope->scope == _shapes) {
 		//EM_ASM({console.log("----------------------------------------------------> shapes");});
 		if (theScope->prev->scope == _layers) {
-			//EM_ASM({console.log("-----------------> shapes in layers");});
-			//if (currentLayers->shapes == NULL) {
-				if (currentShapesItem != NULL) {
-					if (currentShapesItem->parent != NULL) {
-						currentShapesItem = currentShapesItem->parent;
-						currentShapesItem = newShapesItem(currentShapesItem, false);
-					} else {
-						currentLayers->shapes = NULL;
-						currentShapesItem = NULL;
-						currentLayers->shapes = newShapesItem(currentShapesItem, false);
-					}
-				} else {
-					currentLayers->shapes = newShapesItem(currentShapesItem, false);
-				}
-			/*} else {
+			if (currentShapesItem != NULL) {
 				currentShapesItem = newShapesItem(currentShapesItem, false);
-			}*/
+			} else {
+				currentLayers->shapes = newShapesItem(currentShapesItem, false);
+			}
 		} else if (theScope->prev->scope == _k) {
-			//EM_ASM({console.log("-----------------> shapes in k");});
-			//if (currentLayers->shapes == NULL) {
-				if (currentShapesItem != NULL) {
-					if (currentShapesItem->parent != NULL) {
-						currentShapesItem = currentShapesItem->parent;
-						currentShapesItem = newShapesItem(currentShapesItem, false);
-					} else {
-						currentLayers->shapes = NULL;
-						currentShapesItem = NULL;
-						currentLayers->shapes = newShapesItem(currentShapesItem, false);
-					}
-				} else {
-					currentLayers->shapes = newShapesItem(currentShapesItem, false);
-				}
-			/*} else {
+			if (currentShapesItem != NULL) {
 				currentShapesItem = newShapesItem(currentShapesItem, false);
-			}*/
+			} else {
+				currentLayers->shapes = newShapesItem(currentShapesItem, false);
+			}
 		} else if (theScope->prev->scope == _it) {
-			//if (currentLayers->shapes == NULL) {
-				if (currentShapesItem != NULL) {
-					if (currentShapesItem->parent != NULL) {
-						currentShapesItem = currentShapesItem->parent;
-						currentShapesItem = newShapesItem(currentShapesItem, false);
-					} else {
-						currentLayers->shapes = NULL;
-						currentShapesItem = NULL;
-						currentLayers->shapes = newShapesItem(currentShapesItem, false);
-					}
-				} else {
-					currentLayers->shapes = newShapesItem(currentShapesItem, false);
-				}
-			/*} else {
-				currentShapesItem = newShapesItem(currentShapesItem, true);
-			}*/
+			if (currentShapesItem != NULL) {
+				currentShapesItem = newShapesItem(currentShapesItem, false);
+			} else {
+				currentLayers->shapes = newShapesItem(currentShapesItem, false);
+			}
 		}
 	} else if (theScope->scope == _ty) {
 	} else if (theScope->scope == _ks) {

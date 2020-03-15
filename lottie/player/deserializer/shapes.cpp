@@ -6,18 +6,18 @@ struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem, bool shape
 		passedShapesItem = new ShapesItem;
 		passedShapesItem->start = passedShapesItem;
 	} else {
-		if (shapesGroup && passedShapesItem->parent == NULL) {
+		if (shapesGroup && (passedShapesItem->parent == NULL || grClosed)) {
+			grClosed = false;
 			passedShapesItem->it = new ShapesItem;
 			passedShapesItem->it->parent = passedShapesItem;
+			passedShapesItem->it->start = passedShapesItem->it;
+			passedShapesItem = passedShapesItem->it;
+		} else {
+			passedShapesItem->next = new ShapesItem;
+			passedShapesItem->next->start = passedShapesItem->start;
+			passedShapesItem->next->prev = passedShapesItem;
+			passedShapesItem = passedShapesItem->next;
 		}
-		//EM_ASM({console.log("========================> shapes entered 2.0");});
-		passedShapesItem->next = new ShapesItem;
-		//EM_ASM({console.log("========================> shapes entered 2.1");});
-		passedShapesItem->next->start = passedShapesItem->start;
-		//EM_ASM({console.log("========================> shapes entered 2.2");});
-		passedShapesItem->next->prev = passedShapesItem;
-		//EM_ASM({console.log("========================> shapes entered 2.3");});
-		passedShapesItem = passedShapesItem->next;
 	}
 	if (passedShapesItem->prev != NULL) {
 		passedShapesItem->parent = passedShapesItem->prev->parent;

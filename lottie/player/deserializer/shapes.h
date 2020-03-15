@@ -1,5 +1,7 @@
 //// shapes
 
+bool grClosed = false;
+
 enum ShapesTy {
 		_group = 0, //gr
 		_shape = 1, //sh
