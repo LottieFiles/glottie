@@ -3,7 +3,7 @@
 bool grClosed = false;
 
 enum ShapesTy {
-		_group = 0, //gr
+		_group = 100, //gr
 		_shape = 1, //sh
 		_ellipse = 2, //el
 		_rect = 3, //rc

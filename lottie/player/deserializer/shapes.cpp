@@ -6,21 +6,28 @@ struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem, bool shape
 		passedShapesItem = new ShapesItem;
 		passedShapesItem->start = passedShapesItem;
 	} else {
-		if (shapesGroup && (passedShapesItem->parent == NULL || grClosed)) {
-			grClosed = false;
-			passedShapesItem->it = new ShapesItem;
-			passedShapesItem->it->parent = passedShapesItem;
-			passedShapesItem->it->start = passedShapesItem->it;
-			passedShapesItem = passedShapesItem->it;
+		if (shapesGroup) {
+			if (passedShapesItem->parent == NULL || grClosed) {
+				grClosed = false;
+				passedShapesItem->it = new ShapesItem;
+				passedShapesItem->it->parent = passedShapesItem;
+				passedShapesItem->it->start = passedShapesItem->it;
+				passedShapesItem = passedShapesItem->it;
+				EM_ASM({console.log("=========> new shape group");});
+			} else {
+				passedShapesItem->next = new ShapesItem;
+				passedShapesItem->next->start = passedShapesItem->start;
+				passedShapesItem->next->prev = passedShapesItem;
+				passedShapesItem->next->parent = passedShapesItem->parent;
+				passedShapesItem = passedShapesItem->next;
+			}
 		} else {
-			passedShapesItem->next = new ShapesItem;
-			passedShapesItem->next->start = passedShapesItem->start;
-			passedShapesItem->next->prev = passedShapesItem;
-			passedShapesItem = passedShapesItem->next;
+				passedShapesItem->next = new ShapesItem;
+				passedShapesItem->next->start = passedShapesItem->start;
+				passedShapesItem->next->prev = passedShapesItem;
+				//passedShapesItem->next->parent = passedShapesItem->parent;
+				passedShapesItem = passedShapesItem->next;
 		}
-	}
-	if (passedShapesItem->prev != NULL) {
-		passedShapesItem->parent = passedShapesItem->prev->parent;
 	}
 	currentOrderIndex++;
 	passedShapesItem->order = currentOrderIndex;

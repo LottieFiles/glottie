@@ -89,6 +89,7 @@ int associateKeyValues() {
 		if (strcmp(theScope->currentTy, "gr") == 0) {
 			if (currentShapesItem->parent != NULL) {
 				currentShapesItem = currentShapesItem->parent;
+				EM_ASM({console.log("//-------> shape group unwrapped");});
 				grClosed = true;
 			}
 		}
@@ -107,6 +108,7 @@ int associateKeyValues() {
 			if (currentShapesItem->parent != NULL) {
 				currentShapesItem = currentShapesItem->parent;
 				grClosed = true;
+				EM_ASM({console.log("//----------------> group closed");});
 			}
 		}
 	} else if (theScope->scope == _s) {
@@ -244,45 +246,26 @@ int prepareContainer(bool arrayOfObjects) {
 	} else if (theScope->scope == _layers) {
 		preSwitch[1] = 0;
 		if (theScope->prev->scope == _assets) {
-			//EM_ASM({console.log("-----------------> layers within assets");});
-			/*if (preSwitch[0] == 2) {
-				tempAnimationLayers = theAnimation->layers;
-				currentLayers = tempAssetsLayers;
-				currentShapesItem = NULL;
-				preSwitch[0] = 1;
-			} else if (preSwitch[0] != 1) {
-				currentLayers = NULL;
-				currentShapesItem = NULL;
-				preSwitch[0] = 1;
-			}*/
 			theAnimation->assets->precomps = newLayers(theAnimation->assets->precomps);
 			currentLayers = theAnimation->assets->precomps;
 			currentShapesItem = NULL;
 		} else if (theScope->prev->scope == _animation) {
-			//EM_ASM({console.log("-----------------> layers");});
-			/*if (preSwitch[0] == 1) {
-				tempAssetsLayers = theAnimation->assets->precomps;
-				currentLayers = tempAnimationLayers;
-				currentShapesItem = NULL;
-				preSwitch[0] = 2;
-			} else if (preSwitch[0] != 2) {
-				currentLayers = NULL;
-				currentShapesItem = NULL;
-				preSwitch[0] = 2;
-			}*/
 			theAnimation->layers = newLayers(theAnimation->layers);
 			currentLayers = theAnimation->layers;
 			currentShapesItem = NULL;
 		}
 	} else if (theScope->scope == _it) {
 		//EM_ASM({console.log("----------------------------------------------------> it");});
-
+		bool inGroup = false;
+		if (strcmp(theScope->prev->currentTy, "gr") == 0) {
+			inGroup = true;
+		}
 		if (theScope->prev->scope == _layers) {
-			currentShapesItem = newShapesItem(currentShapesItem, true);
+			currentShapesItem = newShapesItem(currentShapesItem, inGroup);
 		} else if (theScope->prev->scope == _shapes) {
-			currentShapesItem = newShapesItem(currentShapesItem, true);
+			currentShapesItem = newShapesItem(currentShapesItem, inGroup);
 		} else if (theScope->prev->scope == _it) {
-			currentShapesItem = newShapesItem(currentShapesItem, true);
+			currentShapesItem = newShapesItem(currentShapesItem, inGroup);
 		}
 	} else if (theScope->scope == _shapes) {
 		//EM_ASM({console.log("----------------------------------------------------> shapes");});

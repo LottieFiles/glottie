@@ -112,6 +112,9 @@ bool colonEncountered = false;
 bool previousScopeNotArray = false;
 int currentOrderIndex = 0;
 
+enum States lastClosedScope;
+int closuresCount;
+
 struct alignas(ALIGNSIZE) ArrayTrail {
 	struct ArrayTrail* start = NULL;
 	struct ArrayTrail* prev = NULL;
