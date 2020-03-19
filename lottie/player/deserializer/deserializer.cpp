@@ -412,7 +412,6 @@ int checkCharacter(char& currentChar) {
 	//EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $1 + " ] " + String.fromCharCode($0) + " " + $2 + " - " + $3 + " " + $4);}, currentChar, readingArray,theScope->currentKeyValueTrail, colonEncountered, justStartedArray);
 	switch (currentChar) {
 		case '{':
-			closureCount > 0 : closureCount--;
 			colonEncountered = false;
 			//EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
@@ -481,7 +480,6 @@ int checkCharacter(char& currentChar) {
 			previousScopeClosure = false;
 			break;
 		case '}':
-			closureCount++;
 			justStartedArray = false;
 			colonEncountered = false;
 
@@ -522,7 +520,6 @@ int checkCharacter(char& currentChar) {
 			previousScopeClosure = true;
 			break;
 		case '[':
-			closureCount > 0 : closureCount--;
 			if (colonEncountered) {
 				justStartedArray = true;
 			} else {
@@ -559,7 +556,6 @@ int checkCharacter(char& currentChar) {
 
 			break;
 		case ']':
-			closureCount++;
 			//EM_ASM_({console.log("[CLOSING array " + $0);}, theState->stateNow);
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			if (! justStartedArray) {

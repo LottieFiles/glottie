@@ -198,18 +198,10 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	while (! exhausted) {
 		if (		
 				(
-					//passedPropertiesShapeProp->v->next == passedPropertiesShapeProp->v->start ||
 					passedPropertiesShapeProp->v == passedPropertiesShapeProp->v->start
 				)
 				&& startedCycling == true
 			) {
-			//passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
-			//passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
-			//if (nextVertex != NULL) {
-			//	passedPropertiesShapeProp->v = nextVertex;
-			//} else {
-			//	passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
-			//}
 			break;
 			exhausted = true;
 			continue;
@@ -315,17 +307,6 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			intermediate->bezier = true;
 
 			
-			/*
-			if (lastIntermediate == NULL) {
-				intermediate->prev = passedPropertiesShapeProp->v->prev;
-				passedPropertiesShapeProp->v->prev->next = intermediate;
-				passedPropertiesShapeProp->v->prev = intermediate;
-			} else {
-				intermediate->prev = lastIntermediate;
-				lastIntermediate->next = intermediate;
-				passedPropertiesShapeProp->v->prev = intermediate;
-			}
-			*/
 			if (lastIntermediate != NULL) {
 				lastIntermediate->next = intermediate;
 				intermediate->prev = lastIntermediate;
@@ -340,18 +321,6 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 				intermediateStart = intermediate;
 			}
 		}
-		/*
-		bool subEx = false;
-		lastIntermediate = intermediateStart;
-		while (! subEx) {
-			//EM_ASM_({console.log("===**********===========> adding intermediate " + $0 + " " + $1);}, lastIntermediate->vertex->x, lastIntermediate->vertex->y);
-			if (lastIntermediate->next == NULL) {
-				subEx = true;
-			} else {
-				lastIntermediate = lastIntermediate->next;
-			}
-		}
-		*/
 		if (intermediateStart != NULL) {
 			intermediateStart->prev = o1;
 			o1->next = intermediateStart;

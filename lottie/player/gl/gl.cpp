@@ -129,6 +129,10 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 				//EM_ASM({console.log("glDraw 1.1");});
 				bool exhausted = false;
 				//struct Buffers* tempBuffers = lastBuffersCreated->start;
+				if (lastBuffersCreated == NULL) {
+					EM_ASM({console.log("no buffers!");});
+					return;
+				}
 				struct Buffers* tempBuffers = lastBuffersCreated->start->prev;
 
 				bool firstCycleDone = false;

@@ -17,7 +17,7 @@ enum ShapesTy {
 		_roundedCorners = 11, //rd
 		_repeater = 12, // rp
 		_transform = 13, // tr
-		_noshape = 20
+		_noshape = 200
 	};
 
 struct alignas(ALIGNSIZE) ShapesItem {

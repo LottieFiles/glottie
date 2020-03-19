@@ -125,7 +125,7 @@ int fillShapesItem(struct ShapesItem* passedShapesItem) {
 			if (strcmp(tempKeyValue->key, "ty") == 0) {
 				enum ShapesTy tempTy = passedShapesItem->ty;
 				passedShapesItem->ty = getShapesTy(tempKeyValue->value);
-				EM_ASM({console.log("==========-------------========> shape type recorded " + $0 + " " + String.fromCharCode($1) + String.fromCharCode($2) + " " + $3);}, passedShapesItem->ty, tempKeyValue->value[0], tempKeyValue->value[1], tempTy);
+				EM_ASM({console.log("==========-------------========> shape type recorded " + $0 + " " + String.fromCharCode($1) + String.fromCharCode($2) + " " + $3 + " [" + $4 + "]");}, passedShapesItem->ty, tempKeyValue->value[0], tempKeyValue->value[1], tempTy, closureCount);
 			} else if (strcmp(tempKeyValue->key, "nm") == 0) {
 				
 			}

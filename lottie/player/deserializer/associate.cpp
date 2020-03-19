@@ -86,8 +86,10 @@ int associateKeyValues() {
 		if (strcmp(theScope->prev->currentTy, "el") == 0) {
 			createEllipse(currentShapesItem);
 		}
-		if (strcmp(theScope->currentTy, "gr") == 0) {
-			if (currentShapesItem->parent != NULL) {
+		if (currentShapesItem->parent != NULL) {
+			closureCount++;
+			if (closureCount > 1) {
+				//closureCount = 0;
 				currentShapesItem = currentShapesItem->parent;
 				EM_ASM({console.log("//-------> shape group unwrapped");});
 				grClosed = true;
@@ -104,11 +106,20 @@ int associateKeyValues() {
 		if (strcmp(theScope->prev->currentTy, "el") == 0) {
 			createEllipse(currentShapesItem);
 		}
-		if (strcmp(theScope->currentTy, "gr") == 0) {
+		/*if (strcmp(theScope->currentTy, "gr") == 0) {
 			if (currentShapesItem->parent != NULL) {
 				currentShapesItem = currentShapesItem->parent;
 				grClosed = true;
 				EM_ASM({console.log("//----------------> group closed");});
+			}
+		}*/
+		if (currentShapesItem->parent != NULL) {
+			closureCount++;
+			if (closureCount > 1) {
+				//closureCount = 0;
+				currentShapesItem = currentShapesItem->parent;
+				EM_ASM({console.log("//-------> shape group unwrapped");});
+				grClosed = true;
 			}
 		}
 	} else if (theScope->scope == _s) {
@@ -256,16 +267,20 @@ int prepareContainer(bool arrayOfObjects) {
 		}
 	} else if (theScope->scope == _it) {
 		//EM_ASM({console.log("----------------------------------------------------> it");});
-		bool inGroup = false;
-		if (strcmp(theScope->prev->currentTy, "gr") == 0) {
+		/*bool inGroup = false;
+		if (strcmp(theScope->prev->currentTy, "gr") == 0 || currentShapesItem->) {
 			inGroup = true;
-		}
+		}*/
+		bool inGroup = true;
 		if (theScope->prev->scope == _layers) {
 			currentShapesItem = newShapesItem(currentShapesItem, inGroup);
 		} else if (theScope->prev->scope == _shapes) {
 			currentShapesItem = newShapesItem(currentShapesItem, inGroup);
 		} else if (theScope->prev->scope == _it) {
 			currentShapesItem = newShapesItem(currentShapesItem, inGroup);
+		}
+		if (closureCount > 0) {
+			closureCount--;
 		}
 	} else if (theScope->scope == _shapes) {
 		//EM_ASM({console.log("----------------------------------------------------> shapes");});
@@ -287,6 +302,9 @@ int prepareContainer(bool arrayOfObjects) {
 			} else {
 				currentLayers->shapes = newShapesItem(currentShapesItem, false);
 			}
+		}
+		if (closureCount > 0) {
+			closureCount--;
 		}
 	} else if (theScope->scope == _ty) {
 	} else if (theScope->scope == _ks) {

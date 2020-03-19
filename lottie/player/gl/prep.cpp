@@ -277,6 +277,7 @@ int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape, struct Sh
 }
 
 struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
+	EM_ASM({console.log("///// entering findShapesTransform ");});
 	bool exhausted = false;
 	passedShapesItem = passedShapesItem->start;
 	while (! exhausted) {
@@ -296,12 +297,14 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 			passedShapesItem = passedShapesItem->next;
 		}
 	}
+	EM_ASM({console.log("///// exiting findShapesTransform ");});
 
 	return NULL;
 }
 
 int prepShapesItem(struct ShapesItem* passedShapesItem) {
 	//EM_ASM({console.log("SHAPESITEM found pre 1.0");});
+	EM_ASM({console.log("----- entering prepShapesItem ");});
 	if (passedShapesItem == NULL) {
 		return 0;
 	}
@@ -313,10 +316,9 @@ int prepShapesItem(struct ShapesItem* passedShapesItem) {
 		//EM_ASM({console.log("SHAPESITEM found");});
 		if (passedShapesItem->ty == _group) {
 			prepShapesItem(passedShapesItem->it);
-		} else {
-			if (passedShapesItem->ks != NULL) {
-				prepPropertiesShape(passedShapesItem->ks, passedShapesItem);
-			}
+		}
+		if (passedShapesItem->ks != NULL) {
+			prepPropertiesShape(passedShapesItem->ks, passedShapesItem);
 		}
 
 		passedShapesItem->baseTransform = tempBaseTransform;
@@ -327,6 +329,7 @@ int prepShapesItem(struct ShapesItem* passedShapesItem) {
 			passedShapesItem = passedShapesItem->next;
 		}
 	}
+	EM_ASM({console.log("----- exiting prepShapesItem ");});
 
 	return 1;
 }
