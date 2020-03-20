@@ -440,6 +440,7 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			passedPropertiesMultiDimensional->k = tempFloatArray->floatArray;
 			passedPropertiesMultiDimensional->k_count = tempFloatArray->count;
+			EM_ASM_({console.log("========================> found k " + $0 + " " + $1);}, passedPropertiesMultiDimensional->k[0], passedPropertiesMultiDimensional->k[1]);
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ti") == 0) {
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, false);
 			passedPropertiesMultiDimensional->ti = tempFloatArray->floatArray;

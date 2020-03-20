@@ -20,6 +20,7 @@ struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem, bool shape
 				passedShapesItem->next->prev = passedShapesItem;
 				passedShapesItem->next->parent = passedShapesItem->parent;
 				passedShapesItem = passedShapesItem->next;
+				EM_ASM({console.log("=========> added within shape group " + $0);}, passedShapesItem->parent);
 			}
 		} else {
 				passedShapesItem->next = new ShapesItem;
@@ -27,6 +28,7 @@ struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem, bool shape
 				passedShapesItem->next->prev = passedShapesItem;
 				//passedShapesItem->next->parent = passedShapesItem->parent;
 				passedShapesItem = passedShapesItem->next;
+				EM_ASM({console.log("---> ungrouped - regular");});
 		}
 	}
 	currentOrderIndex++;
@@ -35,9 +37,6 @@ struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem, bool shape
 	//EM_ASM({console.log("========================> shapes exit");});
 	return passedShapesItem;
 }
-
-
-
 	
 
 int updateShapesItemType(enum ShapesTy passedTy, struct ShapesItem* passedShapesItem) {

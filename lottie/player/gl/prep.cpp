@@ -284,10 +284,14 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 		EM_ASM({console.log("shape type " + $0);}, passedShapesItem->ty);
 		if (passedShapesItem->ty == _transform) {
 			EM_ASM({console.log("SHAPEPROP TRANSFORM found");});
-			shapesPosition.x = passedShapesItem->p->k[0];
-			shapesPosition.y = passedShapesItem->p->k[1];
-			shapesAnchor.x = passedShapesItem->a->k[0];
-			shapesAnchor.y = passedShapesItem->a->k[1];
+			//shapesPosition.x = shapesPositionpassedShapesItem->p->k[0];
+			//shapesPosition.y = passedShapesItem->p->k[1];
+			//shapesAnchor.x = passedShapesItem->a->k[0];
+			//shapesAnchor.y = passedShapesItem->a->k[1];
+			shapesPosition.x = shapesPosition.x + passedShapesItem->p->k[0];
+			shapesPosition.y = shapesPosition.y + passedShapesItem->p->k[1];
+			shapesAnchor.x = shapesAnchor.x + passedShapesItem->a->k[0];
+			shapesAnchor.y = shapesAnchor.y + passedShapesItem->a->k[1];
 			EM_ASM({console.log("SHAPE TRANSFORM found " + $0 + " " + $1 + " " + $2 + " " + $3);}, shapesPosition.x, shapesPosition.y, shapesAnchor.x, shapesAnchor.y);
 			return passedShapesItem;
 		}
@@ -312,10 +316,19 @@ int prepShapesItem(struct ShapesItem* passedShapesItem) {
 	struct ShapesItem* tempBaseTransform = findShapesTransform(passedShapesItem);
 	
 	passedShapesItem = passedShapesItem->start;
+	float currentShapesPosX, currentShapesPosY, currentShapesAncX, currentShapesAncY;
 	while (! exhausted) {
 		//EM_ASM({console.log("SHAPESITEM found");});
-		if (passedShapesItem->ty == _group) {
+		if (passedShapesItem->it != NULL) {
+			currentShapesPosX = shapesPosition.x;
+			currentShapesPosY = shapesPosition.y;
+			currentShapesAncX = shapesAnchor.x;
+			currentShapesAncY = shapesAnchor.y;
 			prepShapesItem(passedShapesItem->it);
+			shapesPosition.x = currentShapesPosX;
+			shapesPosition.y = currentShapesPosY;
+			shapesAnchor.x = currentShapesAncX;
+			shapesAnchor.y = currentShapesAncY;
 		}
 		if (passedShapesItem->ks != NULL) {
 			prepPropertiesShape(passedShapesItem->ks, passedShapesItem);
@@ -340,11 +353,23 @@ int prepLayers(struct Layers* passedLayers) {
 		return 0;
 	}
 	//EM_ASM({console.log("LAYERS found pre 1.1");});
+	layersPosition.x = 0;
+	layersPosition.y = 0;
+	layersAnchor.x = 0;
+	layersAnchor.y = 0;
+	shapesPosition.x = 0;
+	shapesPosition.y = 0;
+	shapesAnchor.x = 0;
+	shapesAnchor.y = 0;
 	if (passedLayers->ks != NULL) {
-		layersPosition.x = passedLayers->ks->p->k[0];
-		layersPosition.y = passedLayers->ks->p->k[1];
-		layersAnchor.x = passedLayers->ks->a->k[0];
-		layersAnchor.y = passedLayers->ks->a->k[1];
+		if (passedLayers->ks->p != NULL) {
+			layersPosition.x = passedLayers->ks->p->k[0];
+			layersPosition.y = passedLayers->ks->p->k[1];
+		}
+		if (passedLayers->ks->a != NULL) {
+			layersAnchor.x = passedLayers->ks->a->k[0];
+			layersAnchor.y = passedLayers->ks->a->k[1];
+		}
 	}
 	//EM_ASM_({console.log("offsets " + $0 + " " + $1 + " " + $2 + " " + $3);}, layersOffset.x, layersOffset.y, layersAnchor.x, layersAnchor.y);
 

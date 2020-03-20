@@ -76,6 +76,7 @@ int associateKeyValues() {
 			fillPropertiesMultiDimensional(currentShapesItem->s);
 		}
 	} else if (theScope->scope == _it) {
+
 		if (theScope->prev->scope == _layers) {
 			fillShapesItem(currentShapesItem);
 		} else if (theScope->prev->scope == _shapes) {
@@ -86,16 +87,18 @@ int associateKeyValues() {
 		if (strcmp(theScope->prev->currentTy, "el") == 0) {
 			createEllipse(currentShapesItem);
 		}
+
 		if (currentShapesItem->parent != NULL) {
 			closureCount++;
 			if (closureCount > 1) {
 				//closureCount = 0;
+				EM_ASM_({console.log("//-------> shape group unwrapped " + $0);}, currentShapesItem->ty);
 				currentShapesItem = currentShapesItem->parent;
-				EM_ASM({console.log("//-------> shape group unwrapped");});
 				grClosed = true;
 			}
 		}
 	} else if (theScope->scope == _shapes) {
+
 		if (theScope->prev->scope == _layers) {
 			fillShapesItem(currentShapesItem);
 		} else if (theScope->prev->scope == _k) {
@@ -113,12 +116,13 @@ int associateKeyValues() {
 				EM_ASM({console.log("//----------------> group closed");});
 			}
 		}*/
+
 		if (currentShapesItem->parent != NULL) {
 			closureCount++;
 			if (closureCount > 1) {
 				//closureCount = 0;
+				EM_ASM_({console.log("//-------> shape group unwrapped " + $0);}, currentShapesItem->ty);
 				currentShapesItem = currentShapesItem->parent;
-				EM_ASM({console.log("//-------> shape group unwrapped");});
 				grClosed = true;
 			}
 		}
@@ -273,11 +277,26 @@ int prepareContainer(bool arrayOfObjects) {
 		}*/
 		bool inGroup = true;
 		if (theScope->prev->scope == _layers) {
-			currentShapesItem = newShapesItem(currentShapesItem, inGroup);
+			//currentShapesItem = newShapesItem(currentShapesItem, inGroup);
+			if (currentShapesItem != NULL) {
+				currentShapesItem = newShapesItem(currentShapesItem, inGroup);
+			} else {
+				currentLayers->shapes = newShapesItem(currentShapesItem, false);
+			}
 		} else if (theScope->prev->scope == _shapes) {
-			currentShapesItem = newShapesItem(currentShapesItem, inGroup);
+			if (currentShapesItem != NULL) {
+				currentShapesItem = newShapesItem(currentShapesItem, inGroup);
+			} else {
+				currentLayers->shapes = newShapesItem(currentShapesItem, false);
+			}
+			//currentShapesItem = newShapesItem(currentShapesItem, inGroup);
 		} else if (theScope->prev->scope == _it) {
-			currentShapesItem = newShapesItem(currentShapesItem, inGroup);
+			if (currentShapesItem != NULL) {
+				currentShapesItem = newShapesItem(currentShapesItem, inGroup);
+			} else {
+				currentLayers->shapes = newShapesItem(currentShapesItem, false);
+			}
+			//currentShapesItem = newShapesItem(currentShapesItem, inGroup);
 		}
 		if (closureCount > 0) {
 			closureCount--;

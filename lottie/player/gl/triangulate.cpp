@@ -309,6 +309,8 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	float halfH = theAnimation->w / 2;
 	float currentXPosition = layersPosition.x + shapesPosition.x;
 	float currentYPosition = layersPosition.y + shapesPosition.y;
+	//float currentXPosition = shapesPosition.x;
+	//float currentYPosition = shapesPosition.y;
 	while (! exhausted) {
 		/*
 		*(passedProp->gl_v + ((Bcounter * 4) + 0)) = ((2 * passedArray->vertex->x) / theAnimation->w);
@@ -326,6 +328,8 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		//EM_ASM_({console.log("adding regulars 1 " + $0 + " " + $1 + " " + $2);}, passedArray->vertex->x, layersOffset.x, layersOffset.y);
 		passedProp->gl_v.push_back((2 * ((passedArray->vertex->x + currentXPosition) - halfW)) / theAnimation->w);
 		passedProp->gl_v.push_back(((2 * ((passedArray->vertex->y + currentYPosition) - halfH)) / theAnimation->h) * -1);
+		//passedProp->gl_v.push_back((2 * ((passedArray->vertex->x + currentXPosition))) / theAnimation->w);
+		//passedProp->gl_v.push_back(((2 * ((passedArray->vertex->y + currentYPosition))) / theAnimation->h) * -1);
 		if (passedArray->vertex->z == 0) {
 			passedProp->gl_v.push_back(1 - ((float)order / 100000));
 		} else {
@@ -394,6 +398,8 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 			//EM_ASM({console.log("adding regulars 2 " + $0);}, reserve->arrayItem->vertex->x);
 			passedProp->gl_v.push_back((2 * ((reserve->arrayItem->vertex->x + currentXPosition) - halfW)) / theAnimation->w);
 			passedProp->gl_v.push_back(((2 * ((reserve->arrayItem->vertex->y + currentYPosition) - halfH)) / theAnimation->h) * -1);
+			//passedProp->gl_v.push_back((2 * ((reserve->arrayItem->vertex->x + currentXPosition))) / theAnimation->w);
+			//passedProp->gl_v.push_back(((2 * ((reserve->arrayItem->vertex->y + currentYPosition))) / theAnimation->h) * -1);
 			//passedProp->gl_v.push_back((2 * (reserve->arrayItem->vertex->x + layersOffset.x)) / theAnimation->w);
 			//passedProp->gl_v.push_back(((2 * (reserve->arrayItem->vertex->y + layersOffset.y)) / theAnimation->h) * -1);
 			if (passedArray->vertex->z == 0) {
