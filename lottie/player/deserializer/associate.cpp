@@ -1,3 +1,18 @@
+
+void unwrapShape() {
+	closureCount++;
+	if (currentShapesItem->parent != NULL) {
+		if (closureCount > 1) {
+			//closureCount = 0;
+			EM_ASM_({console.log("//-------> shape group unwrapped " + $0);}, currentShapesItem->ty);
+			currentShapesItem = currentShapesItem->parent;
+			grClosed = true;
+			closureCount--;
+		}
+		//closureCount++;
+	}
+}
+
 int associateKeyValues() {
 	/*
 	switch (theScope->scope) {
@@ -76,34 +91,30 @@ int associateKeyValues() {
 			fillPropertiesMultiDimensional(currentShapesItem->s);
 		}
 	} else if (theScope->scope == _it) {
-
 		if (theScope->prev->scope == _layers) {
+			unwrapShape();
 			fillShapesItem(currentShapesItem);
 		} else if (theScope->prev->scope == _shapes) {
+			unwrapShape();
 			fillShapesItem(currentShapesItem);
 		} else if (theScope->prev->scope == _it) {
+			unwrapShape();
 			fillShapesItem(currentShapesItem);
 		}
 		if (strcmp(theScope->prev->currentTy, "el") == 0) {
 			createEllipse(currentShapesItem);
 		}
 
-		if (currentShapesItem->parent != NULL) {
-			closureCount++;
-			if (closureCount > 1) {
-				//closureCount = 0;
-				EM_ASM_({console.log("//-------> shape group unwrapped " + $0);}, currentShapesItem->ty);
-				currentShapesItem = currentShapesItem->parent;
-				grClosed = true;
-			}
-		}
-	} else if (theScope->scope == _shapes) {
 
+	} else if (theScope->scope == _shapes) {
 		if (theScope->prev->scope == _layers) {
+			unwrapShape();
 			fillShapesItem(currentShapesItem);
 		} else if (theScope->prev->scope == _k) {
+			unwrapShape();
 			fillShapesItem(currentShapesItem);
 		} else if (theScope->prev->scope == _it) {
+			unwrapShape();
 			fillShapesItem(currentShapesItem);
 		}
 		if (strcmp(theScope->prev->currentTy, "el") == 0) {
@@ -117,15 +128,7 @@ int associateKeyValues() {
 			}
 		}*/
 
-		if (currentShapesItem->parent != NULL) {
-			closureCount++;
-			if (closureCount > 1) {
-				//closureCount = 0;
-				EM_ASM_({console.log("//-------> shape group unwrapped " + $0);}, currentShapesItem->ty);
-				currentShapesItem = currentShapesItem->parent;
-				grClosed = true;
-			}
-		}
+
 	} else if (theScope->scope == _s) {
 		if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
 			fillPropertiesMultiDimensional(currentLayers->ks->s);
@@ -246,6 +249,17 @@ int readingDone() {
 struct Layers* tempAssetsLayers = NULL;
 struct Layers* tempAnimationLayers = NULL;
 
+void wrapShape(bool inGroup) {
+	if (closureCount > 0) {
+		closureCount--;
+	}
+	if (currentShapesItem != NULL) {
+		currentShapesItem = newShapesItem(currentShapesItem, inGroup);
+	} else {
+		currentLayers->shapes = newShapesItem(currentShapesItem, false);
+	}
+}
+
 int prepareContainer(bool arrayOfObjects) {
 	
 	if (theScope->scope == _animation) {
@@ -270,61 +284,40 @@ int prepareContainer(bool arrayOfObjects) {
 			currentShapesItem = NULL;
 		}
 	} else if (theScope->scope == _it) {
+
 		//EM_ASM({console.log("----------------------------------------------------> it");});
 		/*bool inGroup = false;
 		if (strcmp(theScope->prev->currentTy, "gr") == 0 || currentShapesItem->) {
 			inGroup = true;
 		}*/
-		bool inGroup = true;
 		if (theScope->prev->scope == _layers) {
 			//currentShapesItem = newShapesItem(currentShapesItem, inGroup);
-			if (currentShapesItem != NULL) {
-				currentShapesItem = newShapesItem(currentShapesItem, inGroup);
-			} else {
-				currentLayers->shapes = newShapesItem(currentShapesItem, false);
-			}
+			wrapShape(true);
 		} else if (theScope->prev->scope == _shapes) {
-			if (currentShapesItem != NULL) {
-				currentShapesItem = newShapesItem(currentShapesItem, inGroup);
-			} else {
-				currentLayers->shapes = newShapesItem(currentShapesItem, false);
-			}
 			//currentShapesItem = newShapesItem(currentShapesItem, inGroup);
+			wrapShape(true);
 		} else if (theScope->prev->scope == _it) {
-			if (currentShapesItem != NULL) {
-				currentShapesItem = newShapesItem(currentShapesItem, inGroup);
-			} else {
-				currentLayers->shapes = newShapesItem(currentShapesItem, false);
-			}
 			//currentShapesItem = newShapesItem(currentShapesItem, inGroup);
+			wrapShape(true);
 		}
+		/*if (closureCount > 0) {
+			closureCount--;
+		}*/
+	} else if (theScope->scope == _shapes) {
 		if (closureCount > 0) {
 			closureCount--;
 		}
-	} else if (theScope->scope == _shapes) {
 		//EM_ASM({console.log("----------------------------------------------------> shapes");});
 		if (theScope->prev->scope == _layers) {
-			if (currentShapesItem != NULL) {
-				currentShapesItem = newShapesItem(currentShapesItem, false);
-			} else {
-				currentLayers->shapes = newShapesItem(currentShapesItem, false);
-			}
+			wrapShape(false);
 		} else if (theScope->prev->scope == _k) {
-			if (currentShapesItem != NULL) {
-				currentShapesItem = newShapesItem(currentShapesItem, false);
-			} else {
-				currentLayers->shapes = newShapesItem(currentShapesItem, false);
-			}
+			wrapShape(false);
 		} else if (theScope->prev->scope == _it) {
-			if (currentShapesItem != NULL) {
-				currentShapesItem = newShapesItem(currentShapesItem, false);
-			} else {
-				currentLayers->shapes = newShapesItem(currentShapesItem, false);
-			}
+			wrapShape(false);
 		}
-		if (closureCount > 0) {
+		/*if (closureCount > 0) {
 			closureCount--;
-		}
+		}*/
 	} else if (theScope->scope == _ty) {
 	} else if (theScope->scope == _ks) {
 		if (theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) { // PropertiesShape

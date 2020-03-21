@@ -596,6 +596,9 @@ int checkCharacter(char& currentChar) {
 			//EM_ASM_({console.log("[CLOSED array " + $0);}, theState->stateNow);
 			previousScopeClosure = false;
 			justStartedArray = false;
+			/*if (currentShapesItem != NULL && currentShapesItem->parent != NULL) {
+				currentShapesItem = currentShapesItem->parent;
+			}*/
 			break;
 		case ':':
 			colonEncountered = true;

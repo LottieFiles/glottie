@@ -113,7 +113,7 @@ bool previousScopeNotArray = false;
 int currentOrderIndex = 0;
 
 enum States lastClosedScope;
-int closureCount;
+int closureCount = 0;
 
 struct alignas(ALIGNSIZE) ArrayTrail {
 	struct ArrayTrail* start = NULL;
