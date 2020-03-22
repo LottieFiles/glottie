@@ -19,7 +19,7 @@ struct alignas(ALIGNSIZE) Layers {
         int op; // out point
         int ip; // in point
 
-        struct HelpersTransform* ks; //transform
+        struct HelpersTransform* ks = NULL; //transform
         int ao; //auto-orient
         int bm; //blendmode
         int ddd;

@@ -1,6 +1,5 @@
 
 void unwrapShape() {
-	closureCount++;
 	if (currentShapesItem->parent != NULL) {
 		if (closureCount > 1) {
 			//closureCount = 0;
@@ -8,8 +7,9 @@ void unwrapShape() {
 			currentShapesItem = currentShapesItem->parent;
 			grClosed = true;
 			closureCount--;
+		} else {
+			closureCount++;
 		}
-		//closureCount++;
 	}
 }
 
@@ -251,7 +251,7 @@ struct Layers* tempAnimationLayers = NULL;
 
 void wrapShape(bool inGroup) {
 	if (closureCount > 0) {
-		closureCount--;
+		closureCount = 0;
 	}
 	if (currentShapesItem != NULL) {
 		currentShapesItem = newShapesItem(currentShapesItem, inGroup);

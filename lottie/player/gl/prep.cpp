@@ -292,6 +292,10 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 			shapesPosition.y = shapesPosition.y + passedShapesItem->p->k[1];
 			shapesAnchor.x = shapesAnchor.x + passedShapesItem->a->k[0];
 			shapesAnchor.y = shapesAnchor.y + passedShapesItem->a->k[1];
+			/*shapesPosition.x = passedShapesItem->p->k[0];
+			shapesPosition.y = passedShapesItem->p->k[1];
+			shapesAnchor.x = passedShapesItem->a->k[0];
+			shapesAnchor.y = passedShapesItem->a->k[1];*/
 			EM_ASM({console.log("SHAPE TRANSFORM found " + $0 + " " + $1 + " " + $2 + " " + $3);}, shapesPosition.x, shapesPosition.y, shapesAnchor.x, shapesAnchor.y);
 			return passedShapesItem;
 		}
@@ -349,35 +353,38 @@ int prepShapesItem(struct ShapesItem* passedShapesItem) {
 
 int prepLayers(struct Layers* passedLayers) {
 	//EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- LAYERS found pre 1.0");});
-	if (passedLayers->shapes == NULL || passedLayers == NULL) {
+	if (passedLayers == NULL || passedLayers->shapes == NULL) {
 		return 0;
 	}
-	//EM_ASM({console.log("LAYERS found pre 1.1");});
-	layersPosition.x = 0;
-	layersPosition.y = 0;
-	layersAnchor.x = 0;
-	layersAnchor.y = 0;
-	shapesPosition.x = 0;
-	shapesPosition.y = 0;
-	shapesAnchor.x = 0;
-	shapesAnchor.y = 0;
-	if (passedLayers->ks != NULL) {
-		if (passedLayers->ks->p != NULL) {
-			layersPosition.x = passedLayers->ks->p->k[0];
-			layersPosition.y = passedLayers->ks->p->k[1];
-		}
-		if (passedLayers->ks->a != NULL) {
-			layersAnchor.x = passedLayers->ks->a->k[0];
-			layersAnchor.y = passedLayers->ks->a->k[1];
-		}
-	}
+	EM_ASM({console.log("LAYERS found pre 1.1");});
+
+
 	//EM_ASM_({console.log("offsets " + $0 + " " + $1 + " " + $2 + " " + $3);}, layersOffset.x, layersOffset.y, layersAnchor.x, layersAnchor.y);
 
 	passedLayers = passedLayers->start;
 	bool exhausted = false;
 	while (! exhausted) {
+		layersPosition.x = 0;
+		layersPosition.y = 0;
+		layersAnchor.x = 0;
+		layersAnchor.y = 0;
+		shapesPosition.x = 0;
+		shapesPosition.y = 0;
+		shapesAnchor.x = 0;
+		shapesAnchor.y = 0;
+		EM_ASM({console.log("LAYERS found 1.0.1");});
+		if (passedLayers != NULL && passedLayers->ks != NULL) {
+			if (passedLayers->ks->p != NULL && passedLayers->ks->p->k != NULL) {
+				layersPosition.x = passedLayers->ks->p->k[0];
+				layersPosition.y = passedLayers->ks->p->k[1];
+			}
+			if (passedLayers->ks->a != NULL && passedLayers->ks->a->k != NULL) {
+				layersAnchor.x = passedLayers->ks->a->k[0];
+				layersAnchor.y = passedLayers->ks->a->k[1];
+			}
+		}
+		EM_ASM({console.log("LAYERS found 1.0.2");});
 		if (passedLayers->shapes != NULL) {
-			//EM_ASM({console.log("LAYERS found 1.0");});
 			prepShapesItem(passedLayers->shapes);
 		}
 		if (passedLayers->next == NULL) {
@@ -387,7 +394,7 @@ int prepLayers(struct Layers* passedLayers) {
 			passedLayers = passedLayers->next;
 		}
 	}
-	//EM_ASM({console.log("LAYERS found 1.2");});
+	EM_ASM({console.log("LAYERS found 1.2");});
 
 	return 1;
 }

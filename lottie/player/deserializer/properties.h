@@ -28,7 +28,7 @@ struct alignas(ALIGNSIZE) PropertiesMultiDimensionalKeyframe {
 } *currentPropertiesMultiDimensionalKeyframe;
 
 struct alignas(ALIGNSIZE) PropertiesMultiDimensional {
-	float* k;
+	float* k = NULL;
 	int k_count;
 	string x; // property expression - AE expression that modifies the value
 	string ix; // property index - used for expression
