@@ -44,8 +44,36 @@ alignas(256) GLint* posAttrib[1024];
 #include "gl/gl.cpp"
 #include "gl/prep.cpp"
 
-
 extern "C" {
+
+EMSCRIPTEN_KEEPALIVE
+void loadJson(char* buffer, int theLength) {
+	deserializeChar(buffer, theLength);
+	EM_ASM({console.log("////> init done");});
+	glInit();
+	EM_ASM({console.log("////> gl init done");});
+
+	glInitShaders(0);
+	EM_ASM({console.log("////> start of prepping shapes");});
+	prepShapes();
+	EM_ASM({console.log("////> done prepping shapes");});
+	redrawRequired = true;
+
+	struct Buffers* buffersToRender;
+/*	if (lastBuffersCreated != NULL) {
+		buffersToRender = lastBuffersCreated->start->next->next;
+		buffersToRender->start = buffersToRender;
+		buffersToRender->next = NULL;
+		//glDraw(NULL, NULL);
+	}*/
+	glDraw(NULL, NULL);
+
+
+	EM_ASM({console.log("////> done drawing " + $0 + " " + $1);}, theAnimation->w, theAnimation->h);
+
+}
+
+
 
 int simpleFunction(int someInt) {
 	return someInt + someInt;
@@ -96,6 +124,6 @@ int doMain(char someChar[]) {
 
 int main(int argc, char *argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
-	doMain(NULL);
+	//doMain(NULL);
 }
 

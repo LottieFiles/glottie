@@ -1,14 +1,16 @@
 
 void unwrapShape() {
+	grClosed = false;
+	closureCount++;
 	if (currentShapesItem->parent != NULL) {
 		if (closureCount > 1) {
 			//closureCount = 0;
 			EM_ASM_({console.log("//-------> shape group unwrapped " + $0);}, currentShapesItem->ty);
 			currentShapesItem = currentShapesItem->parent;
 			grClosed = true;
-			closureCount--;
-		} else {
-			closureCount++;
+			if (closureCount > 0) {
+				closureCount--;
+			}
 		}
 	}
 }
@@ -209,50 +211,20 @@ int associateBack(void* object) {
 }
 
 int associateType() {
-	/*
-	switch (theScope->prev->scope) {
-		case assets_layers_shapes: //LayersShapes in assets
-			currentShapesItem->ty = currentReadValue;
-			newShapesShape();
-			break;
-		case layers_shapes: //LayersShapes
-		default:
-			break;
-
-	}
-	*/
 
 	return 1;
 }
 
-/* // now defined in main.cpp
-int readingDone() {
-	switch (theScope->scope) {
-		case assets_layers_shapes_ty:
-			associateType();
-			break;
-		case layers_shapes_ty:
-			associateType();
-			break;
-		default:
-			theScope->currentKeyValue->key = currentReadKey;
-			theScope->currentKeyValue->value = currentReadValue;
 
-			break;
-	}
-
-	return 1;
-}
-*/
 
 
 struct Layers* tempAssetsLayers = NULL;
 struct Layers* tempAnimationLayers = NULL;
 
 void wrapShape(bool inGroup) {
-	if (closureCount > 0) {
-		closureCount = 0;
-	}
+		if (closureCount > 0) {
+			closureCount--;
+		}
 	if (currentShapesItem != NULL) {
 		currentShapesItem = newShapesItem(currentShapesItem, inGroup);
 	} else {

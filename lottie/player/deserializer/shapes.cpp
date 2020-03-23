@@ -7,7 +7,7 @@ struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem, bool shape
 		passedShapesItem->start = passedShapesItem;
 	} else {
 		if (shapesGroup) {
-			if (passedShapesItem->parent == NULL || grClosed) {
+			if (passedShapesItem->parent == NULL) {
 				grClosed = false;
 				passedShapesItem->it = new ShapesItem;
 				passedShapesItem->it->parent = passedShapesItem;

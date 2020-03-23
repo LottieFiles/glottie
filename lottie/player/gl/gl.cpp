@@ -73,6 +73,7 @@ void glInit() {
 	//int* someInt = new int[5000000]();
 	//delete[] someInt;
 	//wnd = new SDL_Window;
+	SDL_Init(SDL_INIT_EVERYTHING);
 
 	int scaledWidth = theAnimation->w * theAnimation->scaleFactor;
 	int scaledHeight = theAnimation->h * theAnimation->scaleFactor;
@@ -84,6 +85,19 @@ void glInit() {
 	//wnd = new SDL_Window();
 	wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
 
+
+	/*SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);*/
+
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32);
+
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
+
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1); 
+
 	//EM_ASM({console.log("glinit 1.1");});
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 	//EM_ASM({console.log("glinit 1.2");});
@@ -93,8 +107,8 @@ void glInit() {
 	//EM_ASM({console.log("glinit 1.4");});
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	//EM_ASM({console.log("glinit 1.5");});
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
+	//glEnable(GL_MULTISAMPLE);
 	//EM_ASM({console.log("glinit 1.6 " + $0);}, wnd);
 	glc = SDL_GL_CreateContext(wnd);
 

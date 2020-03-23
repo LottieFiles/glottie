@@ -727,3 +727,35 @@ int deserialize() {
 }
 
 
+int deserializeChar(char* theString, int theLength) {
+	//struct ScopeTrail* theScope;
+	//struct StateTrail* theState;
+	theScope = new ScopeTrail;
+	theState = new StateTrail;
+	theScope->prev = NULL;
+	theScope->next = NULL;
+	theScope->scope = _noscope;
+	theScope->start = theScope;
+			struct KeyValueTrail* tempKeyValueTrail;
+			tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
+			theScope->currentKeyValueTrail = tempKeyValueTrail;
+			currentKeyValueTrail = theScope->currentKeyValueTrail;
+
+
+	theState->stateNow = Start;
+	theState->start = theState;
+	kvState = Key;
+	input = new CurrentValues;
+	//EM_ASM_({console.log("start state " + $0 + " " + $1);}, theState, theLength);
+
+
+	for(int i = 0; i < theLength; i++) {
+		//EM_ASM_({console.log("deserializing" + String.fromCharCode($0));}, theString[i]);
+
+		checkCharacter(theString[i]);
+		
+	}
+	return 1;
+}
+
+
