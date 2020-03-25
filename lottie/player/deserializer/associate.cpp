@@ -1,9 +1,8 @@
 
 void unwrapShape() {
 	grClosed = false;
-	closureCount++;
-	if (currentShapesItem->parent != NULL) {
-		if (closureCount > 1) {
+	//if (currentShapesItem->parent != NULL) {
+		/*if (closureCount > 1) {
 			//closureCount = 0;
 			EM_ASM_({console.log("//-------> shape group unwrapped " + $0);}, currentShapesItem->ty);
 			currentShapesItem = currentShapesItem->parent;
@@ -11,8 +10,9 @@ void unwrapShape() {
 			if (closureCount > 0) {
 				closureCount--;
 			}
-		}
-	}
+		}*/
+		closureCount++;
+	//}
 }
 
 int associateKeyValues() {
@@ -222,13 +222,39 @@ struct Layers* tempAssetsLayers = NULL;
 struct Layers* tempAnimationLayers = NULL;
 
 void wrapShape(bool inGroup) {
-		if (closureCount > 0) {
-			closureCount--;
+	/*if (currentShapesItem != NULL) {
+		if (closureCount > 1) {
 		}
-	if (currentShapesItem != NULL) {
-		currentShapesItem = newShapesItem(currentShapesItem, inGroup);
 	} else {
+		closureCount = 0;
+		currentLayers->shapes = newShapesItem(currentShapesItem, true);
+	}*/
+	if (currentShapesItem != NULL) {
+		if (! inGroup) {
+			if (currentShapesItem->parent != NULL || closureCount > 1) {
+				currentShapesItem = currentShapesItem->parent;
+
+			}
+		} else {
+			if (closureCount > 1) {
+				if (currentShapesItem->parent != NULL) {
+					currentShapesItem = currentShapesItem->parent;
+				}
+			}
+		}
+			
+		//if (strcmp(theScope->prev->currentTy, "gr") == 0) {
+		//	currentLayers->shapes = newShapesItem(currentShapesItem, true);
+		//} else {
+			currentLayers->shapes = newShapesItem(currentShapesItem, inGroup);
+		//}
+
+	} else {
+		closureCount = 0;
 		currentLayers->shapes = newShapesItem(currentShapesItem, false);
+	}
+	if (closureCount > 0) {
+		closureCount--;
 	}
 }
 

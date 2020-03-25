@@ -6,7 +6,7 @@ struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem, bool shape
 		passedShapesItem = new ShapesItem;
 		passedShapesItem->start = passedShapesItem;
 	} else {
-		if (shapesGroup) {
+		if (shapesGroup || passedShapesItem->parent != NULL) {
 			if (passedShapesItem->parent == NULL) {
 				grClosed = false;
 				passedShapesItem->it = new ShapesItem;
@@ -26,7 +26,7 @@ struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem, bool shape
 				passedShapesItem->next = new ShapesItem;
 				passedShapesItem->next->start = passedShapesItem->start;
 				passedShapesItem->next->prev = passedShapesItem;
-				//passedShapesItem->next->parent = passedShapesItem->parent;
+				passedShapesItem->next->parent = passedShapesItem->parent;
 				passedShapesItem = passedShapesItem->next;
 				EM_ASM({console.log("---> ungrouped - regular");});
 		}

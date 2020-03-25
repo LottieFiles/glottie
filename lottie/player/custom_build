@@ -27,3 +27,6 @@ else
     #~/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -o player.js 
 fi
 
+cp player.js ./www
+cp player.wasm ./www
+

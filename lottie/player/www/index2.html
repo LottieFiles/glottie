@@ -9,6 +9,10 @@
 <body>
     
     <script type='text/javascript'>
+	function customLoad() {
+		loadJson('https://assets4.lottiefiles.com/packages/lf20_KO70yq.json')
+	}
+
 	function loadJson(passedURL) {
 		let url
 		if (passedURL.length <= 0) {
@@ -58,12 +62,13 @@
 		if (error) throw error
 	}
 
-	//window.onLoad="loadJson('https://assets4.lottiefiles.com/packages/lf20_KO70yq.json')"
+	setTimeout(customLoad, 1000)
+	//window.document.onLoad=function(){loadJson('https://assets4.lottiefiles.com/packages/lf20_KO70yq.json')}
     </script>
 
 	<div style='display:inline-block; float: left;'>
     <h1>URL here</h1>
-    <input type='text' id='theurl' onChange='loadJson()'></input>
+    <input type='text' id='theurl' onChange='loadJson("")'></input>
     <br />
     <br />
     <h1>Raw JSON here:</h1>

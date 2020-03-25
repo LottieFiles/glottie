@@ -284,10 +284,10 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 		EM_ASM({console.log("shape type " + $0);}, passedShapesItem->ty);
 		if (passedShapesItem->ty == _transform) {
 			EM_ASM({console.log("SHAPEPROP TRANSFORM found");});
-			//shapesPosition.x = shapesPositionpassedShapesItem->p->k[0];
-			//shapesPosition.y = passedShapesItem->p->k[1];
-			//shapesAnchor.x = passedShapesItem->a->k[0];
-			//shapesAnchor.y = passedShapesItem->a->k[1];
+			/*shapesPosition.x = passedShapesItem->p->k[0];
+			shapesPosition.y = passedShapesItem->p->k[1];
+			shapesAnchor.x = passedShapesItem->a->k[0];
+			shapesAnchor.y = passedShapesItem->a->k[1];*/
 			shapesPosition.x = shapesPosition.x + passedShapesItem->p->k[0];
 			shapesPosition.y = shapesPosition.y + passedShapesItem->p->k[1];
 			shapesAnchor.x = shapesAnchor.x + passedShapesItem->a->k[0];
