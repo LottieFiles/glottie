@@ -564,6 +564,9 @@ int checkCharacter(char& currentChar) {
 					//readingDone();
 					removeReadStates();
 				}
+				/*if (currentShapesItem != NULL && currentShapesItem->parent != NULL) {
+					closureCount++;
+				}*/
 			} else {
 				/*
 				if (theScope->currentKeyValueTrail->keyValue->arrayValue->vector != NULL) {

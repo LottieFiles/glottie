@@ -1,6 +1,11 @@
+void unwrapShape(bool inGroup) {
+	if (inGroup && currentShapesItem != NULL &&  currentShapesItem->parent != NULL) {
+		closureCount++;
+	}
+	/*grClosed = false;
+	if (closureCount > 1) {
 
-void unwrapShape() {
-	grClosed = false;
+	}*/
 	//if (currentShapesItem->parent != NULL) {
 		/*if (closureCount > 1) {
 			//closureCount = 0;
@@ -11,7 +16,7 @@ void unwrapShape() {
 				closureCount--;
 			}
 		}*/
-		closureCount++;
+		//closureCount++;
 	//}
 }
 
@@ -94,13 +99,13 @@ int associateKeyValues() {
 		}
 	} else if (theScope->scope == _it) {
 		if (theScope->prev->scope == _layers) {
-			unwrapShape();
+			unwrapShape(true);
 			fillShapesItem(currentShapesItem);
 		} else if (theScope->prev->scope == _shapes) {
-			unwrapShape();
+			unwrapShape(true);
 			fillShapesItem(currentShapesItem);
 		} else if (theScope->prev->scope == _it) {
-			unwrapShape();
+			unwrapShape(true);
 			fillShapesItem(currentShapesItem);
 		}
 		if (strcmp(theScope->prev->currentTy, "el") == 0) {
@@ -110,13 +115,13 @@ int associateKeyValues() {
 
 	} else if (theScope->scope == _shapes) {
 		if (theScope->prev->scope == _layers) {
-			unwrapShape();
+			unwrapShape(false);
 			fillShapesItem(currentShapesItem);
 		} else if (theScope->prev->scope == _k) {
-			unwrapShape();
+			unwrapShape(false);
 			fillShapesItem(currentShapesItem);
 		} else if (theScope->prev->scope == _it) {
-			unwrapShape();
+			unwrapShape(false);
 			fillShapesItem(currentShapesItem);
 		}
 		if (strcmp(theScope->prev->currentTy, "el") == 0) {
@@ -222,39 +227,24 @@ struct Layers* tempAssetsLayers = NULL;
 struct Layers* tempAnimationLayers = NULL;
 
 void wrapShape(bool inGroup) {
-	/*if (currentShapesItem != NULL) {
+	if (currentShapesItem != NULL && currentLayers->shapes != NULL) {
 		if (closureCount > 1) {
+			currentShapesItem = currentShapesItem->parent;
 		}
+		if (closureCount > 0) {
+			closureCount--;
+		}
+		currentShapesItem = newShapesItem(currentShapesItem, inGroup);
 	} else {
-		closureCount = 0;
-		currentLayers->shapes = newShapesItem(currentShapesItem, true);
-	}*/
-	if (currentShapesItem != NULL) {
-		if (! inGroup) {
-			if (currentShapesItem->parent != NULL || closureCount > 1) {
-				currentShapesItem = currentShapesItem->parent;
-
+		if (currentShapesItem != NULL) {
+			if (inGroup) {
+				currentShapesItem = newShapesItem(currentShapesItem, inGroup);
+			} else {
+				currentShapesItem = newShapesItem(currentShapesItem, false);
 			}
 		} else {
-			if (closureCount > 1) {
-				if (currentShapesItem->parent != NULL) {
-					currentShapesItem = currentShapesItem->parent;
-				}
-			}
+			currentLayers->shapes = newShapesItem(currentShapesItem, false);
 		}
-			
-		//if (strcmp(theScope->prev->currentTy, "gr") == 0) {
-		//	currentLayers->shapes = newShapesItem(currentShapesItem, true);
-		//} else {
-			currentLayers->shapes = newShapesItem(currentShapesItem, inGroup);
-		//}
-
-	} else {
-		closureCount = 0;
-		currentLayers->shapes = newShapesItem(currentShapesItem, false);
-	}
-	if (closureCount > 0) {
-		closureCount--;
 	}
 }
 
