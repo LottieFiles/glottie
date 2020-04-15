@@ -480,6 +480,9 @@ int checkCharacter(char& currentChar) {
 			previousScopeClosure = false;
 			break;
 		case '}':
+			/*if (currentShapesItem != NULL && currentShapesItem->parent != NULL) {
+				closureCount++;
+			}*/
 			justStartedArray = false;
 			colonEncountered = false;
 
@@ -564,9 +567,13 @@ int checkCharacter(char& currentChar) {
 					//readingDone();
 					removeReadStates();
 				}
-				/*if (currentShapesItem != NULL && currentShapesItem->parent != NULL) {
-					closureCount++;
-				}*/
+				if (currentShapesItem != NULL && currentShapesItem->parent != NULL && closureCount > 0) {
+					//closureCount++;
+					currentShapesItem = currentShapesItem->parent;
+					EM_ASM({console.log("UNWRAPPED array");});
+					closureCount--;
+				}
+				//closedArray = true;
 			} else {
 				/*
 				if (theScope->currentKeyValueTrail->keyValue->arrayValue->vector != NULL) {

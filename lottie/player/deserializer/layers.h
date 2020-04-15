@@ -4,14 +4,26 @@ struct alignas(ALIGNSIZE) Layers {
         struct Layers* start = NULL;
         struct Layers* prev = NULL;
         struct Layers* next = NULL;
+      
+	struct Mask* maskProperties = NULL;
+        //struct Index* ef = NULL; // effects
+        struct Effects* ef = NULL; // effects
 
-	bool created; // internal flag to indicate this object has already been created
         struct ShapesItem* shapes = NULL;
-	int shapesItemCount = 0; // internal use - amount of shapesItems in this object
-        int ind; // index
+
+        struct LayersText* text;
+
+        struct HelpersTransform* ks = NULL; //transform
+
+	struct BoundingBox* currentBB;
+
         string cl; //class
         string ln; //layer html id
         string nm; //name
+
+	int shapesItemCount = 0; // internal use - amount of shapesItems in this object
+        int ind; // index
+
         int sr = 1; //stretch
         int hasMask; // has masks
         int parent; //parent
@@ -19,17 +31,15 @@ struct alignas(ALIGNSIZE) Layers {
         int op; // out point
         int ip; // in point
 
-        struct HelpersTransform* ks = NULL; //transform
         int ao; //auto-orient
         int bm; //blendmode
         int ddd;
-        struct Mask* maskProperties = NULL;
-        //struct Index* ef = NULL; // effects
-        struct Effects* ef = NULL; // effects
+
       
 	int id;
 
-        struct LayersText* text;
+
+	bool created; // internal flag to indicate this object has already been created
 } *currentLayers;
 
 struct LayersSolid {

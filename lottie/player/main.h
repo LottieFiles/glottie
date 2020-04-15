@@ -111,6 +111,7 @@ bool justStartedArray = false;
 bool colonEncountered = false;
 bool previousScopeNotArray = false;
 int currentOrderIndex = 0;
+bool closedArray = false;
 
 enum States lastClosedScope;
 int closureCount = 0;

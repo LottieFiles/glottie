@@ -9,13 +9,13 @@
 <body>
     
     <script type='text/javascript'>
-	function loadJson(passedURL) {
+	function loadJson() {
 		let url
-		if (passedURL.length <= 0) {
+		//if (typeof passedURL !== 'undefined' || passedURL.length <= 0) {
 			url = document.getElementById("theurl").value;
-		} else {
-			url = passedURL
-		}
+		//} else {
+		//	url = passedURL
+		//}
 		http=new XMLHttpRequest();
 		//if(params!=null) {
 		//	http.open("POST", url, true);

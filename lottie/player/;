@@ -950,21 +950,19 @@ float distanceBetweenPoints(struct Vertex* pointA, struct Vertex* pointB) {
 	return distance;
 }
 
-void getBBArray (struct ArrayOfVertex* passedAOV, struct BoundingBox* currentBB) {
+struct BoundingBox* getBBArray (struct ArrayOfVertex* passedAOV, struct BoundingBox* currentBB) {
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedAOV->vertex != NULL) {
 			//if ((passedAOV->vertex->x - currentBB->initX) > currentBB->w)
 			if (passedAOV->vertex->x > currentBB->w) {
-				EM_ASM_({console.log("-------------------------------------------------->> new maxW " + $0);}, currentBB->w);
 				currentBB->w = passedAOV->vertex->x;
 			}
 			if (passedAOV->vertex->y > currentBB->w) {
-				EM_ASM_({console.log("-------------------------------------------------->> new maxH " + $0);}, currentBB->h);
-				currentBB->h = passedAOV->vertex->y;
+				currentBB->h = passedAOV->vertex->h;
 			}
 		}
-		if (passedAOV->next == passedAOV->start) {
+		if (passedAOV->next == NULL) {
 			exhausted = true;
 		} else {
 			passedAOV = passedAOV->next;
@@ -972,42 +970,28 @@ void getBBArray (struct ArrayOfVertex* passedAOV, struct BoundingBox* currentBB)
 	}
 }
 
-void getBBProp (struct PropertiesShapeProp* passedPropertiesShapeProp, struct BoundingBox* currentBB) {
+struct BoundingBox* getBBProp (struct PropertiesShape* passedPropertiesShape, struct BoundingBox* currentBB) {
 	bool exhausted = false;
 	while (! exhausted) {
-		if (passedPropertiesShapeProp->v != NULL) {
-			getBBArray(passedPropertiesShapeProp->v->start, currentBB);
+		if (passedShapesItem->k != NULL) {
+			getBBArray(passedShapesItem->k->start, currentBB);
 		}
-		if (passedPropertiesShapeProp->next == NULL) {
+		if (passedPropetiesShape->next == NULL) {
 			exhausted = true;
 		} else {
-			passedPropertiesShapeProp = passedPropertiesShapeProp->next;
+			passedPropertiesShape = passedPropetiesShape->next;
 		}
 	}
 }
 
-void getBBPropShape (struct PropertiesShape* passedPropertiesShape, struct BoundingBox* currentBB) {
-	bool exhausted = false;
-	while (! exhausted) {
-		if (passedPropertiesShape->k != NULL) {
-			getBBProp(passedPropertiesShape->k->start, currentBB);
-		}
-		if (passedPropertiesShape->next == NULL) {
-			exhausted = true;
-		} else {
-			passedPropertiesShape = passedPropertiesShape->next;
-		}
-	}
-}
-
-void getBoundingBox(struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB) {
+struct BoundingBox* getBoundingBox(struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB) {
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedShapesItem->it != NULL) {
 			getBoundingBox(passedShapesItem->it->start, currentBB);
 		}
 		if (passedShapesItem->ks != NULL) {
-			getBBPropShape(passedShapesItem->ks, currentBB);
+			getBBProp(passedShapesItem->ks);
 		}
 		if (passedShapesItem->next == NULL) {
 			exhausted = true;
@@ -1015,6 +999,5 @@ void getBoundingBox(struct ShapesItem* passedShapesItem, struct BoundingBox* cur
 			passedShapesItem = passedShapesItem->next;
 		}
 	}
-	//return currentBB;
 }
 

@@ -75,8 +75,8 @@ void glInit() {
 	//wnd = new SDL_Window;
 	SDL_Init(SDL_INIT_EVERYTHING);
 
-	int scaledWidth = theAnimation->w * theAnimation->scaleFactor;
-	int scaledHeight = theAnimation->h * theAnimation->scaleFactor;
+	int scaledWidth = theAnimation->w;
+	int scaledHeight = theAnimation->h;
     
 	//EM_ASM_({console.log("glinit 1.0 " + $0 + " " + $1);}, scaledWidth, scaledHeight);
 

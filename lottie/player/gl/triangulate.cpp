@@ -127,7 +127,7 @@ struct ArrayOfArrayOfVertex* newReserve(struct ArrayOfArrayOfVertex* tempReserve
 	return tempReserve;
 }
  
-void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill, int order, struct PropertiesShapeProp* passedProp) {
+void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill, int order, struct PropertiesShapeProp* passedProp, struct BoundingBox* currentBB) {
 //struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill, int order, struct PropertiesShapeProp* passedProp) {
 
 	//struct TriangulateReturn* tempTriangulateReturn;
@@ -307,8 +307,10 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	int Icounter = 0;
 	float halfW = theAnimation->w / 2;
 	float halfH = theAnimation->w / 2;
-	float currentXPosition = layersPosition.x + shapesPosition.x;
-	float currentYPosition = layersPosition.y + shapesPosition.y;
+	//float currentXPosition = (2 * ((layersPosition.x + shapesPosition.x) - halfW)) / theAnimation->w;
+	//float currentYPosition = ((2 * ((layersPosition.y + shapesPosition.y) - halfH)) / theAnimation->h) * -1;
+	float currentXPosition = (layersPosition.x - (currentBB->w / 2)) + shapesPosition.x;
+	float currentYPosition = (layersPosition.y - (currentBB->h / 2)) + shapesPosition.y;
 	//float currentXPosition = shapesPosition.x;
 	//float currentYPosition = shapesPosition.y;
 	while (! exhausted) {
@@ -326,8 +328,10 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		//passedProp->gl_v.resize((Bcounter + 1) * 4);
 
 		//EM_ASM_({console.log("adding regulars 1 " + $0 + " " + $1 + " " + $2);}, passedArray->vertex->x, layersOffset.x, layersOffset.y);
-		passedProp->gl_v.push_back((2 * ((passedArray->vertex->x + currentXPosition) - halfW)) / theAnimation->w);
-		passedProp->gl_v.push_back(((2 * ((passedArray->vertex->y + currentYPosition) - halfH)) / theAnimation->h) * -1);
+		//passedProp->gl_v.push_back(((2 * ((passedArray->vertex->x) - halfW)) / theAnimation->w) + currentXPosition);
+		//passedProp->gl_v.push_back((((2 * ((passedArray->vertex->y) - halfH)) / theAnimation->h) * -1) + currentYPosition);
+		passedProp->gl_v.push_back(((passedArray->vertex->x + currentXPosition) / theAnimation->w) - 0.5);
+		passedProp->gl_v.push_back((((passedArray->vertex->y + currentYPosition) / theAnimation->h) - 0.5) * -1);
 		//passedProp->gl_v.push_back((2 * ((passedArray->vertex->x + currentXPosition))) / theAnimation->w);
 		//passedProp->gl_v.push_back(((2 * ((passedArray->vertex->y + currentYPosition))) / theAnimation->h) * -1);
 		if (passedArray->vertex->z == 0) {
@@ -396,8 +400,10 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 			//passedProp->gl_v.resize((Bcounter + 1) * 4);
 
 			//EM_ASM({console.log("adding regulars 2 " + $0);}, reserve->arrayItem->vertex->x);
-			passedProp->gl_v.push_back((2 * ((reserve->arrayItem->vertex->x + currentXPosition) - halfW)) / theAnimation->w);
-			passedProp->gl_v.push_back(((2 * ((reserve->arrayItem->vertex->y + currentYPosition) - halfH)) / theAnimation->h) * -1);
+			//passedProp->gl_v.push_back(((2 * ((reserve->arrayItem->vertex->x) - halfW)) / theAnimation->w) + currentXPosition);
+			//passedProp->gl_v.push_back((((2 * ((reserve->arrayItem->vertex->y) - halfH)) / theAnimation->h) * -1) + currentYPosition);
+			passedProp->gl_v.push_back(((reserve->arrayItem->vertex->x + currentXPosition) / theAnimation->w) - 0.5);
+			passedProp->gl_v.push_back((((reserve->arrayItem->vertex->y + currentYPosition) / theAnimation->h) - 0.5) * -1);
 			//passedProp->gl_v.push_back((2 * ((reserve->arrayItem->vertex->x + currentXPosition))) / theAnimation->w);
 			//passedProp->gl_v.push_back(((2 * ((reserve->arrayItem->vertex->y + currentYPosition))) / theAnimation->h) * -1);
 			//passedProp->gl_v.push_back((2 * (reserve->arrayItem->vertex->x + layersOffset.x)) / theAnimation->w);

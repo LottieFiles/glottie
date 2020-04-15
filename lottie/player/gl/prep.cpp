@@ -157,7 +157,7 @@ struct Buffers* newBuffers() {
 	return lastBuffersCreated;
 }
 
-int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapeProp, struct ShapesItem* passedShapesItem) {
+int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapeProp, struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB) {
 	if (passedPropertiesShapeProp == NULL) {
 		return 0;
 	}
@@ -214,7 +214,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->buffers_v = newBuffers();
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
 			//EM_ASM({console.log("looping 1.1 v");});
-			prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, passedShapesItem->order, passedPropertiesShapeProp);
+			prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, passedShapesItem->order, passedPropertiesShapeProp, currentBB);
 			//EM_ASM({console.log("looping 1.1.0 v");});
 			//if (tempTriangulateReturn == NULL) {return 0;}
 			
@@ -252,7 +252,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	return 1;
 }
 
-int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape, struct ShapesItem* passedShapesItem) {
+int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape, struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB) {
 	if (passedPropertiesShape == NULL) {
 		return 0;
 	}
@@ -261,11 +261,11 @@ int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape, struct Sh
 	while (! exhausted) {
 		if (passedPropertiesShape->isKeyframe) {
 			//EM_ASM({console.log("SHAPEPROPKEYFRAME found");});
-			prepPropertiesShapeProp(passedPropertiesShape->keyframe->s, passedShapesItem);
-			prepPropertiesShapeProp(passedPropertiesShape->keyframe->e, passedShapesItem);
+			prepPropertiesShapeProp(passedPropertiesShape->keyframe->s, passedShapesItem, currentBB);
+			prepPropertiesShapeProp(passedPropertiesShape->keyframe->e, passedShapesItem, currentBB);
 		} else {
 			//EM_ASM({console.log("SHAPEPROP found");});
-			prepPropertiesShapeProp(passedPropertiesShape->k, passedShapesItem);
+			prepPropertiesShapeProp(passedPropertiesShape->k, passedShapesItem, currentBB);
 		}
 		if (passedPropertiesShape->next == NULL) {
 			exhausted = true;
@@ -284,14 +284,17 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 		EM_ASM({console.log("shape type " + $0);}, passedShapesItem->ty);
 		if (passedShapesItem->ty == _transform) {
 			EM_ASM({console.log("SHAPEPROP TRANSFORM found");});
+
 			/*shapesPosition.x = passedShapesItem->p->k[0];
 			shapesPosition.y = passedShapesItem->p->k[1];
 			shapesAnchor.x = passedShapesItem->a->k[0];
 			shapesAnchor.y = passedShapesItem->a->k[1];*/
+
 			shapesPosition.x = shapesPosition.x + passedShapesItem->p->k[0];
 			shapesPosition.y = shapesPosition.y + passedShapesItem->p->k[1];
 			shapesAnchor.x = shapesAnchor.x + passedShapesItem->a->k[0];
 			shapesAnchor.y = shapesAnchor.y + passedShapesItem->a->k[1];
+
 			/*shapesPosition.x = passedShapesItem->p->k[0];
 			shapesPosition.y = passedShapesItem->p->k[1];
 			shapesAnchor.x = passedShapesItem->a->k[0];
@@ -310,14 +313,26 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 	return NULL;
 }
 
-int prepShapesItem(struct ShapesItem* passedShapesItem) {
+int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempBaseTransform, bool freshStart, struct BoundingBox* currentBB) {
 	//EM_ASM({console.log("SHAPESITEM found pre 1.0");});
 	EM_ASM({console.log("----- entering prepShapesItem ");});
 	if (passedShapesItem == NULL) {
+		EM_ASM({console.log("----- exiting NULL prepShapesItem ");});
 		return 0;
 	}
 	bool exhausted = false;
-	struct ShapesItem* tempBaseTransform = findShapesTransform(passedShapesItem);
+
+	if (freshStart) {
+			shapesPosition.x = 0;
+			shapesPosition.y = 0;
+			shapesAnchor.x = 0;
+			shapesAnchor.y = 0;
+			freshStart = false;
+	}
+
+	EM_ASM({console.log("LAYERS found 1.0.2");});
+
+	struct ShapesItem* currentBaseTransform = findShapesTransform(passedShapesItem);
 	
 	passedShapesItem = passedShapesItem->start;
 	float currentShapesPosX, currentShapesPosY, currentShapesAncX, currentShapesAncY;
@@ -328,17 +343,22 @@ int prepShapesItem(struct ShapesItem* passedShapesItem) {
 			currentShapesPosY = shapesPosition.y;
 			currentShapesAncX = shapesAnchor.x;
 			currentShapesAncY = shapesAnchor.y;
-			prepShapesItem(passedShapesItem->it);
+			/*shapesPosition.x = 0;
+			shapesPosition.y = 0;
+			shapesAnchor.x = 0;
+			shapesAnchor.y = 0;
+			*/
+			prepShapesItem(passedShapesItem->it, currentBaseTransform, freshStart, currentBB);
 			shapesPosition.x = currentShapesPosX;
 			shapesPosition.y = currentShapesPosY;
 			shapesAnchor.x = currentShapesAncX;
 			shapesAnchor.y = currentShapesAncY;
 		}
 		if (passedShapesItem->ks != NULL) {
-			prepPropertiesShape(passedShapesItem->ks, passedShapesItem);
+			prepPropertiesShape(passedShapesItem->ks, passedShapesItem, currentBB);
 		}
 
-		passedShapesItem->baseTransform = tempBaseTransform;
+		passedShapesItem->baseTransform = currentBaseTransform;
 
 		if (passedShapesItem->next == NULL) {
 			exhausted = true;
@@ -351,8 +371,38 @@ int prepShapesItem(struct ShapesItem* passedShapesItem) {
 	return 1;
 }
 
+
+void findLayersTransform(struct Layers* passedLayers) {
+	//bool exhausted = false;
+	//while (! exhausted) {
+		if (passedLayers != NULL && passedLayers->ks != NULL) {
+			if (passedLayers->ks->p != NULL && passedLayers->ks->p->k != NULL) {
+				layersPosition.x = passedLayers->ks->p->k[0];
+				layersPosition.y = passedLayers->ks->p->k[1];
+				passedLayers->currentBB->initX = passedLayers->ks->p->k[0];
+				passedLayers->currentBB->initY = passedLayers->ks->p->k[1];
+				EM_ASM({console.log("TRANSFORM LAYERS found 1.0.1");});
+			}
+			if (passedLayers->ks->a != NULL && passedLayers->ks->a->k != NULL) {
+				layersAnchor.x = passedLayers->ks->a->k[0];
+				layersAnchor.y = passedLayers->ks->a->k[1];
+				passedLayers->currentBB->anchorX = passedLayers->ks->a->k[0];
+				passedLayers->currentBB->anchorY = passedLayers->ks->a->k[1];
+			}
+		}
+	/*
+		if (passedLayers->next == NULL) {
+			exhausted = true;
+		} else {
+			//EM_ASM({console.log("LAYERS found 1.1");});
+			passedLayers = passedLayers->next;
+		}
+	}*/
+}
+
 int prepLayers(struct Layers* passedLayers) {
 	//EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- LAYERS found pre 1.0");});
+
 	if (passedLayers == NULL || passedLayers->shapes == NULL) {
 		return 0;
 	}
@@ -368,24 +418,28 @@ int prepLayers(struct Layers* passedLayers) {
 		layersPosition.y = 0;
 		layersAnchor.x = 0;
 		layersAnchor.y = 0;
-		shapesPosition.x = 0;
-		shapesPosition.y = 0;
-		shapesAnchor.x = 0;
-		shapesAnchor.y = 0;
-		EM_ASM({console.log("LAYERS found 1.0.1");});
-		if (passedLayers != NULL && passedLayers->ks != NULL) {
-			if (passedLayers->ks->p != NULL && passedLayers->ks->p->k != NULL) {
-				layersPosition.x = passedLayers->ks->p->k[0];
-				layersPosition.y = passedLayers->ks->p->k[1];
-			}
-			if (passedLayers->ks->a != NULL && passedLayers->ks->a->k != NULL) {
-				layersAnchor.x = passedLayers->ks->a->k[0];
-				layersAnchor.y = passedLayers->ks->a->k[1];
-			}
+		if (passedLayers->currentBB == NULL) {
+			passedLayers->currentBB = new BoundingBox;
+			passedLayers->currentBB->w = 0;
+			passedLayers->currentBB->h = 0;
+			passedLayers->currentBB->initX = 0;
+			passedLayers->currentBB->initY = 0;
 		}
-		EM_ASM({console.log("LAYERS found 1.0.2");});
+		if (passedLayers->ks != NULL) {
+			findLayersTransform(passedLayers);
+		}
+
 		if (passedLayers->shapes != NULL) {
-			prepShapesItem(passedLayers->shapes);
+			/*shapesPosition.x = 0;
+			shapesPosition.y = 0;
+			shapesAnchor.x = 0;
+			shapesAnchor.y = 0;*/
+
+
+			//currentBB->initX = passedLayers->initX;
+			//currentBB->initY = passedLayers->initY;
+			getBoundingBox(passedLayers->shapes->start, passedLayers->currentBB);
+			prepShapesItem(passedLayers->shapes->start, NULL, true, passedLayers->currentBB);
 		}
 		if (passedLayers->next == NULL) {
 			exhausted = true;
@@ -394,7 +448,7 @@ int prepLayers(struct Layers* passedLayers) {
 			passedLayers = passedLayers->next;
 		}
 	}
-	EM_ASM({console.log("LAYERS found 1.2");});
+	EM_ASM({console.log("LAYERS found 1.2 " + $0 +  " " + $1);}, passedLayers->currentBB->w, passedLayers->currentBB->h);
 
 	return 1;
 }

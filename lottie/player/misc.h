@@ -166,3 +166,12 @@ struct alignas(ALIGNSIZE) IndexArray {
 	int z;
 };
 
+struct alignas(ALIGNSIZE) BoundingBox {
+	float w;
+	float h;
+	float initX;
+	float initY;
+	float anchorX;
+	float anchorY;
+};
+
