@@ -152,9 +152,9 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	struct ArrayOfArrayOfVertex* reserve = NULL;
 	struct ArrayOfArrayOfVertex* reserveEnd = NULL;
 	//passedArray = dimensions->topVertex;
-	struct ArrayOfVertex* startPoint = passedArray->start;
+	struct ArrayOfVertex* startPoint = passedArray->start->prev;
 	struct ArrayOfVertex* lastPassedArray;
-	struct ArrayOfVertex* actualStartPoint = passedArray->start;
+	struct ArrayOfVertex* actualStartPoint = passedArray->start->prev;
 	struct ArrayOfVertex* reservePrevArray;
 	struct ArrayOfVertex* reserveNextArray;
 	passedArray = startPoint;
@@ -309,10 +309,20 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	float halfH = theAnimation->w / 2;
 	//float currentXPosition = (2 * ((layersPosition.x + shapesPosition.x) - halfW)) / theAnimation->w;
 	//float currentYPosition = ((2 * ((layersPosition.y + shapesPosition.y) - halfH)) / theAnimation->h) * -1;
-	float currentXPosition = (layersPosition.x - (currentBB->w / 2)) + shapesPosition.x;
-	float currentYPosition = (layersPosition.y - (currentBB->h / 2)) + shapesPosition.y;
-	//float currentXPosition = shapesPosition.x;
-	//float currentYPosition = shapesPosition.y;
+	//float currentXPosition = (layersPosition.x - (currentBB->w / 2)) + shapesPosition.x;
+	//float currentYPosition = (layersPosition.y - (currentBB->h / 2)) + shapesPosition.y;
+	//float currentXPosition = (layersPosition.x - (currentBB->w / 2) - currentBB->anchorX) + shapesPosition.x;
+	//float currentYPosition = (layersPosition.y - (currentBB->h / 2) - currentBB->anchorY) + shapesPosition.y;
+	float currentXPosition, currentYPosition;
+	if (currentBB->anchorX != 0) {
+		currentXPosition = (layersPosition.x - currentBB->anchorX) + shapesPosition.x;
+		currentYPosition = (layersPosition.y - currentBB->anchorY) + shapesPosition.y;
+	} else {
+		currentXPosition = (layersPosition.x - (currentBB->w / 2)) + shapesPosition.x;
+		currentYPosition = (layersPosition.y - (currentBB->h / 2)) + shapesPosition.y;
+	}
+	//float currentXPosition = layersPosition.x + shapesPosition.x;
+	//float currentYPosition = layersPosition.y + shapesPosition.y;
 	while (! exhausted) {
 		/*
 		*(passedProp->gl_v + ((Bcounter * 4) + 0)) = ((2 * passedArray->vertex->x) / theAnimation->w);

@@ -952,9 +952,11 @@ float distanceBetweenPoints(struct Vertex* pointA, struct Vertex* pointB) {
 
 void getBBArray (struct ArrayOfVertex* passedAOV, struct BoundingBox* currentBB) {
 	bool exhausted = false;
+	int count = 0;
 	while (! exhausted) {
 		if (passedAOV->vertex != NULL) {
 			//if ((passedAOV->vertex->x - currentBB->initX) > currentBB->w)
+			count++;
 			if (passedAOV->vertex->x > currentBB->w) {
 				EM_ASM_({console.log("-------------------------------------------------->> new maxW " + $0);}, currentBB->w);
 				currentBB->w = passedAOV->vertex->x;
