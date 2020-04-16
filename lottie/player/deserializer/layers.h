@@ -106,7 +106,8 @@ struct alignas(ALIGNSIZE) Animation {
         int h; // height
 	int z; // depth
 
-	int scaleFactor = 1;
+	float scaleFactorX = 1;
+	float scaleFactorY = 1;
 
         bool ddd = false; // is 3D? (1 = yes, 0 = no)
 

@@ -115,6 +115,9 @@ void glInit() {
 	//EM_ASM({console.log("glinit 1.7");});
 	//rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
 	rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED);
+	SDL_SetWindowSize(wnd, theAnimation->w * theAnimation->scaleFactorX, theAnimation->h * theAnimation->scaleFactorY);
+	SDL_RenderSetLogicalSize(rdr, theAnimation->w * theAnimation->scaleFactorX, theAnimation->h * theAnimation->scaleFactorY);
+	SDL_RenderSetScale(rdr, theAnimation->scaleFactorX, theAnimation->scaleFactorY);
 	//EM_ASM({console.log("glinit 1.8");});
 }
 
