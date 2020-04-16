@@ -202,10 +202,11 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 				)
 				&& startedCycling == true
 			) {
-			//break;
-			passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
+			break;
+			/*passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
 			passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
 			passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
+			*/
 			exhausted = true;
 			//continue;
 		} else {

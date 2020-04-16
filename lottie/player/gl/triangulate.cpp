@@ -320,9 +320,10 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	} else {
 		currentXPosition = (layersPosition.x - (currentBB->w / 2)) + shapesPosition.x;
 		currentYPosition = (layersPosition.y - (currentBB->h / 2)) + shapesPosition.y;
+		//currentXPosition = layersPosition.x + shapesPosition.x;
+		//currentYPosition = layersPosition.y + shapesPosition.y;
 	}
-	//float currentXPosition = layersPosition.x + shapesPosition.x;
-	//float currentYPosition = layersPosition.y + shapesPosition.y;
+
 	while (! exhausted) {
 		/*
 		*(passedProp->gl_v + ((Bcounter * 4) + 0)) = ((2 * passedArray->vertex->x) / theAnimation->w);
