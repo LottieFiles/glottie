@@ -136,7 +136,8 @@ int associateKeyValues() {
 		} else if (theScope->prev->scope == _it) {
 			unwrapShape(true);
 		}
-		if (strcmp(theScope->prev->currentTy, "el") == 0) {
+		if (currentShapesItem != NULL && strcmp(theScope->currentTy, "el") == 0) {
+			EM_ASM({console.log("//----------------> creating ellipse");});
 			createEllipse(currentShapesItem);
 		}
 
@@ -149,7 +150,8 @@ int associateKeyValues() {
 		} else if (theScope->prev->scope == _it) {
 			unwrapShape(false);
 		}
-		if (strcmp(theScope->prev->currentTy, "el") == 0) {
+		if (currentShapesItem != NULL && strcmp(theScope->currentTy, "el") == 0) {
+			EM_ASM({console.log("//----------------> creating ellipse");});
 			createEllipse(currentShapesItem);
 		}
 		/*if (strcmp(theScope->currentTy, "gr") == 0) {

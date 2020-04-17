@@ -188,6 +188,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	*/
 
 	bool startedCycling = false;
+	struct ArrayOfVertex* startPoint = passedPropertiesShapeProp->v->start;
 	//struct ArrayOfVertex* nextVertex = NULL;
 	struct ArrayOfVertex* lastIntermediate = NULL;
 	struct ArrayOfVertex* intermediate = NULL;
@@ -196,19 +197,31 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	float oneTcube, oneTsquare, Tcube, Tsquare, oneT;
 
 	while (! exhausted) {
-		if (		
-				(
-					passedPropertiesShapeProp->v == passedPropertiesShapeProp->v->start
-				)
-				&& startedCycling == true
-			) {
-			break;
-			/*passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
-			passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
-			passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
-			*/
-			exhausted = true;
+		if (passedPropertiesShapeProp->v == startPoint && startedCycling == true) {
+						break;
 			//continue;
+				if (
+						(
+							passedPropertiesShapeProp->i->vertex->x == 0 && 
+							passedPropertiesShapeProp->i->vertex->y == 0 &&
+							passedPropertiesShapeProp->o->vertex->x == 0 &&
+							passedPropertiesShapeProp->o->vertex->y == 0
+						) &&
+						(
+							passedPropertiesShapeProp->i->prev->vertex->x == 0 && 
+							passedPropertiesShapeProp->i->prev->vertex->y == 0 &&
+							passedPropertiesShapeProp->o->prev->vertex->x == 0 &&
+							passedPropertiesShapeProp->o->prev->vertex->y == 0
+						)
+					) {
+						break;
+				} else {
+					passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
+					passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
+					passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
+					//EM_ASM({console.log("breakout ");});
+					exhausted = true;
+				}
 		} else {
 				if (
 						(
@@ -550,7 +563,6 @@ void createEllipse(struct ShapesItem* passedShapesItem) {
 		return;
 	}
 	if (passedShapesItem->p == NULL || passedShapesItem->s == NULL) {
-		//EM_ASM({console.log("===&&&&&&&&&&===> no multidim object");});
 		return;
 	}
 	passedShapesItem->basicShapeGenerated = true;
@@ -593,6 +605,7 @@ void createEllipse(struct ShapesItem* passedShapesItem) {
 	struct ArrayOfVertex* start = NULL;
 
 	for (int i = 1; i < 30; i++) {
+		//EM_ASM({console.log("===&&&&&&&&&&===> ellipse");});
 		angle = angleDelta * i;
 		radius = xy / ( (xx * pow(sin(angle), 2)) + (yy * pow(cos(angle),2)) );
 

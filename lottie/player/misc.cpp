@@ -958,11 +958,11 @@ void getBBArray (struct ArrayOfVertex* passedAOV, struct BoundingBox* currentBB)
 			//if ((passedAOV->vertex->x - currentBB->initX) > currentBB->w)
 			count++;
 			if (passedAOV->vertex->x > currentBB->w) {
-				EM_ASM_({console.log("-------------------------------------------------->> new maxW " + $0);}, currentBB->w);
+				//EM_ASM_({console.log("-------------------------------------------------->> new maxW " + $0);}, currentBB->w);
 				currentBB->w = passedAOV->vertex->x;
 			}
 			if (passedAOV->vertex->y > currentBB->w) {
-				EM_ASM_({console.log("-------------------------------------------------->> new maxH " + $0);}, currentBB->h);
+				//EM_ASM_({console.log("-------------------------------------------------->> new maxH " + $0);}, currentBB->h);
 				currentBB->h = passedAOV->vertex->y;
 			}
 		}

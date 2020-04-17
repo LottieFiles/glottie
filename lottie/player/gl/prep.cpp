@@ -157,7 +157,7 @@ struct Buffers* newBuffers() {
 	return lastBuffersCreated;
 }
 
-int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapeProp, struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB) {
+int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapeProp, struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB, struct BoundingBox* currentShapesBB) {
 	if (passedPropertiesShapeProp == NULL) {
 		return 0;
 	}
@@ -214,7 +214,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->buffers_v = newBuffers();
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
 			//EM_ASM({console.log("looping 1.1 v");});
-			prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, passedShapesItem->order, passedPropertiesShapeProp, currentBB);
+			prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, passedShapesItem->order, passedPropertiesShapeProp, currentBB, currentShapesBB);
 			//EM_ASM({console.log("looping 1.1.0 v");});
 			//if (tempTriangulateReturn == NULL) {return 0;}
 			
@@ -252,7 +252,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	return 1;
 }
 
-int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape, struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB) {
+int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape, struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB, struct BoundingBox* currentShapesBB) {
 	if (passedPropertiesShape == NULL) {
 		return 0;
 	}
@@ -261,11 +261,11 @@ int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape, struct Sh
 	while (! exhausted) {
 		if (passedPropertiesShape->isKeyframe) {
 			//EM_ASM({console.log("SHAPEPROPKEYFRAME found");});
-			prepPropertiesShapeProp(passedPropertiesShape->keyframe->s, passedShapesItem, currentBB);
-			prepPropertiesShapeProp(passedPropertiesShape->keyframe->e, passedShapesItem, currentBB);
+			prepPropertiesShapeProp(passedPropertiesShape->keyframe->s, passedShapesItem, currentBB, currentShapesBB);
+			prepPropertiesShapeProp(passedPropertiesShape->keyframe->e, passedShapesItem, currentBB, currentShapesBB);
 		} else {
 			//EM_ASM({console.log("SHAPEPROP found");});
-			prepPropertiesShapeProp(passedPropertiesShape->k, passedShapesItem, currentBB);
+			prepPropertiesShapeProp(passedPropertiesShape->k, passedShapesItem, currentBB, currentShapesBB);
 		}
 		if (passedPropertiesShape->next == NULL) {
 			exhausted = true;
@@ -291,12 +291,14 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 			shapesAnchor.y = passedShapesItem->a->k[1];*/
 
 			if (passedShapesItem->p != NULL && passedShapesItem->p->k != NULL) {
-				shapesPosition.x = shapesPosition.x + passedShapesItem->p->k[0];
-				shapesPosition.y = shapesPosition.y + passedShapesItem->p->k[1];
+				//shapesPosition.x = shapesPosition.x + passedShapesItem->p->k[0];
+				//shapesPosition.y = shapesPosition.y + passedShapesItem->p->k[1];
+				shapesPosition.x = passedShapesItem->p->k[0];
+				shapesPosition.y = passedShapesItem->p->k[1];
 			}
 			if (passedShapesItem->a != NULL && passedShapesItem->a->k != NULL) {
-				shapesAnchor.x = shapesAnchor.x + passedShapesItem->a->k[0];
-				shapesAnchor.y = shapesAnchor.y + passedShapesItem->a->k[1];
+				shapesAnchor.x = passedShapesItem->a->k[0];
+				shapesAnchor.y = passedShapesItem->a->k[1];
 			}
 
 			/*shapesPosition.x = passedShapesItem->p->k[0];
@@ -359,7 +361,11 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			shapesAnchor.y = currentShapesAncY;
 		}
 		if (passedShapesItem->ks != NULL) {
-			prepPropertiesShape(passedShapesItem->ks, passedShapesItem, currentBB);
+			if (passedShapesItem->currentBB == NULL) {
+				passedShapesItem->currentBB = new BoundingBox;
+			}
+			getBBPropShape(passedShapesItem->ks, passedShapesItem->currentBB);
+			prepPropertiesShape(passedShapesItem->ks, passedShapesItem, currentBB, passedShapesItem->currentBB);
 		}
 
 		passedShapesItem->baseTransform = currentBaseTransform;

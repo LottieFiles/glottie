@@ -127,7 +127,7 @@ struct ArrayOfArrayOfVertex* newReserve(struct ArrayOfArrayOfVertex* tempReserve
 	return tempReserve;
 }
  
-void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill, int order, struct PropertiesShapeProp* passedProp, struct BoundingBox* currentBB) {
+void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill, int order, struct PropertiesShapeProp* passedProp, struct BoundingBox* currentBB, struct BoundingBox* currentShapesBB) {
 //struct TriangulateReturn* prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVertex* passedArray, float* defaultFill, int order, struct PropertiesShapeProp* passedProp) {
 
 	//struct TriangulateReturn* tempTriangulateReturn;
@@ -314,12 +314,26 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	//float currentXPosition = (layersPosition.x - (currentBB->w / 2) - currentBB->anchorX) + shapesPosition.x;
 	//float currentYPosition = (layersPosition.y - (currentBB->h / 2) - currentBB->anchorY) + shapesPosition.y;
 	float currentXPosition, currentYPosition;
-	if (currentBB->anchorX != 0) {
-		currentXPosition = (layersPosition.x - currentBB->anchorX) + shapesPosition.x;
-		currentYPosition = (layersPosition.y - currentBB->anchorY) + shapesPosition.y;
+	if (currentBB->anchorX != 0 || currentBB->anchorY != 0) {
+		if (shapesAnchor.x != 0 || shapesAnchor.y != 0) {
+			currentXPosition = (layersPosition.x - currentBB->anchorX) + (shapesPosition.x - shapesAnchor.x);
+			currentYPosition = (layersPosition.y - currentBB->anchorY) + (shapesPosition.y - shapesAnchor.y);
+		} else {
+			currentXPosition = (layersPosition.x - currentBB->anchorX) + shapesPosition.x;
+			currentYPosition = (layersPosition.y - currentBB->anchorY) + shapesPosition.y;
+			//currentXPosition = (layersPosition.x - currentBB->anchorX) + (shapesPosition.x - (currentShapesBB->w / 2));
+			//currentYPosition = (layersPosition.y - currentBB->anchorY) + (shapesPosition.y - (currentShapesBB->h / 2));
+		}
 	} else {
-		currentXPosition = (layersPosition.x - (currentBB->w / 2)) + shapesPosition.x;
-		currentYPosition = (layersPosition.y - (currentBB->h / 2)) + shapesPosition.y;
+		if (shapesAnchor.x != 0 || shapesAnchor.y != 0) {
+			currentXPosition = (layersPosition.x - (currentBB->w / 2)) + (shapesPosition.x - shapesAnchor.x);
+			currentYPosition = (layersPosition.y - (currentBB->h / 2)) + (shapesPosition.y - shapesAnchor.y);
+		} else {
+			currentXPosition = (layersPosition.x - (currentBB->w / 2)) + shapesPosition.x;
+			currentYPosition = (layersPosition.y - (currentBB->h / 2)) + shapesPosition.y;
+			//currentXPosition = (layersPosition.x - (currentBB->w / 2)) + (shapesPosition.x - (currentShapesBB->w / 2));
+			//currentYPosition = (layersPosition.y - (currentBB->h / 2)) + (shapesPosition.y - (currentShapesBB->h / 2));
+		}
 		//currentXPosition = layersPosition.x + shapesPosition.x;
 		//currentYPosition = layersPosition.y + shapesPosition.y;
 	}

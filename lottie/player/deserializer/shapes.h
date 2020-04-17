@@ -70,9 +70,9 @@ struct alignas(ALIGNSIZE) ShapesItem {
 
 	struct ShapesItem* baseTransform = NULL;
 
-	void* item;
+	struct BoundingBox* currentBB;
 
-	enum ShapesTy ty;
+	void* item;
 
 	void* g = NULL; // gradient colors - to be researched further
 
@@ -83,6 +83,8 @@ struct alignas(ALIGNSIZE) ShapesItem {
 	int mm; // merge mode
 
 	int order = 0;
+
+	enum ShapesTy ty;
 
 	bool isKeyframed = false;
 	bool basicShapeGenerated = false;
