@@ -277,13 +277,13 @@ int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape, struct Sh
 }
 
 struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
-	EM_ASM({console.log("///// entering findShapesTransform ");});
+	//EM_ASM({console.log("///// entering findShapesTransform ");});
 	bool exhausted = false;
 	passedShapesItem = passedShapesItem->start;
 	while (! exhausted) {
-		EM_ASM({console.log("shape type " + $0);}, passedShapesItem->ty);
+		//EM_ASM({console.log("shape type " + $0);}, passedShapesItem->ty);
 		if (passedShapesItem->ty == _transform) {
-			EM_ASM({console.log("SHAPEPROP TRANSFORM found");});
+			//EM_ASM({console.log("SHAPEPROP TRANSFORM found");});
 
 			/*shapesPosition.x = passedShapesItem->p->k[0];
 			shapesPosition.y = passedShapesItem->p->k[1];
@@ -305,7 +305,7 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 			shapesPosition.y = passedShapesItem->p->k[1];
 			shapesAnchor.x = passedShapesItem->a->k[0];
 			shapesAnchor.y = passedShapesItem->a->k[1];*/
-			EM_ASM({console.log("SHAPE TRANSFORM found " + $0 + " " + $1 + " " + $2 + " " + $3);}, shapesPosition.x, shapesPosition.y, shapesAnchor.x, shapesAnchor.y);
+			//EM_ASM({console.log("SHAPE TRANSFORM found " + $0 + " " + $1 + " " + $2 + " " + $3);}, shapesPosition.x, shapesPosition.y, shapesAnchor.x, shapesAnchor.y);
 			return passedShapesItem;
 		}
 		if (passedShapesItem->next == NULL) {
@@ -314,16 +314,16 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 			passedShapesItem = passedShapesItem->next;
 		}
 	}
-	EM_ASM({console.log("///// exiting findShapesTransform ");});
+	//EM_ASM({console.log("///// exiting findShapesTransform ");});
 
 	return NULL;
 }
 
 int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempBaseTransform, bool freshStart, struct BoundingBox* currentBB) {
 	//EM_ASM({console.log("SHAPESITEM found pre 1.0");});
-	EM_ASM({console.log("----- entering prepShapesItem ");});
+	//EM_ASM({console.log("----- entering prepShapesItem ");});
 	if (passedShapesItem == NULL) {
-		EM_ASM({console.log("----- exiting NULL prepShapesItem ");});
+		//EM_ASM({console.log("----- exiting NULL prepShapesItem ");});
 		return 0;
 	}
 	bool exhausted = false;
@@ -336,7 +336,7 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			freshStart = false;
 	}
 
-	EM_ASM({console.log("LAYERS found 1.0.2");});
+	//EM_ASM({console.log("LAYERS found 1.0.2");});
 
 	struct ShapesItem* currentBaseTransform = findShapesTransform(passedShapesItem);
 	
@@ -376,7 +376,7 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			passedShapesItem = passedShapesItem->next;
 		}
 	}
-	EM_ASM({console.log("----- exiting prepShapesItem ");});
+	//EM_ASM({console.log("----- exiting prepShapesItem ");});
 
 	return 1;
 }
@@ -391,7 +391,7 @@ void findLayersTransform(struct Layers* passedLayers) {
 				layersPosition.y = passedLayers->ks->p->k[1];
 				passedLayers->currentBB->initX = passedLayers->ks->p->k[0];
 				passedLayers->currentBB->initY = passedLayers->ks->p->k[1];
-				EM_ASM({console.log("TRANSFORM LAYERS found 1.0.1");});
+				//EM_ASM({console.log("TRANSFORM LAYERS found 1.0.1");});
 			}
 			if (passedLayers->ks->a != NULL && passedLayers->ks->a->k != NULL) {
 				layersAnchor.x = passedLayers->ks->a->k[0];
@@ -416,7 +416,7 @@ int prepLayers(struct Layers* passedLayers) {
 	if (passedLayers == NULL || passedLayers->shapes == NULL) {
 		return 0;
 	}
-	EM_ASM({console.log("LAYERS found pre 1.1");});
+	//EM_ASM({console.log("LAYERS found pre 1.1");});
 
 
 	//EM_ASM_({console.log("offsets " + $0 + " " + $1 + " " + $2 + " " + $3);}, layersOffset.x, layersOffset.y, layersAnchor.x, layersAnchor.y);
@@ -458,7 +458,7 @@ int prepLayers(struct Layers* passedLayers) {
 			passedLayers = passedLayers->next;
 		}
 	}
-	EM_ASM({console.log("LAYERS found 1.2 " + $0 +  " " + $1);}, passedLayers->currentBB->w, passedLayers->currentBB->h);
+	//EM_ASM({console.log("LAYERS found 1.2 " + $0 +  " " + $1);}, passedLayers->currentBB->w, passedLayers->currentBB->h);
 
 	return 1;
 }

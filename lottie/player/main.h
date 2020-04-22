@@ -25,7 +25,9 @@ enum Scopes {
 	_c = 18,
 	_px = 19,
 	_py = 20,
-	_pz = 21
+	_pz = 21,
+	_i = 22,
+	_o = 23
 	};
 
 enum States {
@@ -112,6 +114,7 @@ bool colonEncountered = false;
 bool previousScopeNotArray = false;
 int currentOrderIndex = 0;
 bool closedArray = false;
+int encounteredKeyframe = 0;
 
 enum States lastClosedScope;
 int closureCount = 0;

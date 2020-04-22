@@ -20,6 +20,15 @@ struct alignas(ALIGNSIZE) PropertiesValue {
 	struct PropertiesValueKeyframe* keyframe;
 } *currentPropertiesValue;
 
+struct alignas(ALIGNSIZE) PropertiesOffsetKeyframe {
+	struct BezierCurve* i;
+	struct BezierCurve* o;
+	float* s;
+	float t; // start time 
+	float* ti;
+	float* to;
+};
+
 struct alignas(ALIGNSIZE) PropertiesMultiDimensionalKeyframe {
 	float* e; // end - array of numbers
 	int e_count;
@@ -28,6 +37,8 @@ struct alignas(ALIGNSIZE) PropertiesMultiDimensionalKeyframe {
 } *currentPropertiesMultiDimensionalKeyframe;
 
 struct alignas(ALIGNSIZE) PropertiesMultiDimensional {
+	struct PropertiesOffsetKeyframe* keyframe = NULL;
+
 	float* k = NULL;
 	int k_count;
 	string x; // property expression - AE expression that modifies the value
@@ -38,7 +49,7 @@ struct alignas(ALIGNSIZE) PropertiesMultiDimensional {
 	int to_count; // out tangent
 	int a;
 
-	struct PropertiesMultiDimensionalKeyframe* keyframe=NULL;
+	//struct PropertiesMultiDimensionalKeyframe* keyframe=NULL;
 } *currentPropertiesMultiDimensional;
 
 struct alignas(ALIGNSIZE) PropertiesShapeKeyframed {

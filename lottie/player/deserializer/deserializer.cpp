@@ -331,6 +331,10 @@ int checkScope() {
 		addScope(_py);
 	} else if (keyIs("pz")) {
 		addScope(_pz);
+	} else if (keyIs("i")) {
+		addScope(_i);
+	} else if (keyIs("o")) {
+		addScope(_o);
 
 
 

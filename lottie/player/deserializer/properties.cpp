@@ -51,6 +51,18 @@ struct PropertiesValue* newPropertiesValue() {
 	return tempPropertiesValue;
 }
 
+struct PropertiesOffsetKeyframe* newPropertiesOffsetKeyframe() {
+	struct PropertiesOffsetKeyframe* tempPropertiesOffsetKeyframe;
+	tempPropertiesOffsetKeyframe = new PropertiesOffsetKeyframe;
+	return tempPropertiesOffsetKeyframe;
+}
+
+struct BezierCurve* newBezierCurve() {
+	struct BezierCurve* tempBeizerCurve;
+	tempBezierCurve = new BezierCurve;
+	return tempBezierCurve;
+}
+
 //////////////////// assign values
 
 
@@ -556,6 +568,11 @@ int fillPropertiesValue(struct PropertiesValue* passedPropertiesValue) {
 	return 1;
 }
 
+int fillPropertiesOffsetKeyframe(struct PropertiesOffsetKeyframe* passedPropertiesOffsetKeyframe) {
+}
+
+int fillBezierCurve(struct BezierCurve* passedBezierCurve) {
+}
 
 void createEllipse(struct ShapesItem* passedShapesItem) {
 	return;
@@ -677,4 +694,5 @@ void createEllipse(struct ShapesItem* passedShapesItem) {
 
 	passedShapesItem->ks->k->v = q1->start;
 }
+
 

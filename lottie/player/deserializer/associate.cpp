@@ -7,17 +7,17 @@ void unwrapShape(bool inGroup) {
 	if (currentShapesItem != NULL && currentShapesItem->parent != NULL) {
 		if (closureCount > 1) {
 			currentShapesItem = currentShapesItem->parent;
-			EM_ASM({console.log("-***----> unwrapped to parent " + $0);}, closureCount);
+			//EM_ASM({console.log("-***----> unwrapped to parent " + $0);}, closureCount);
 			closureCount--;
 		} else {
 			/*if (closedArray) {
 				currentShapesItem = currentShapesItem->parent;
-				EM_ASM({console.log("-***----> unwrapped to parent_| " + $0);}, closureCount);
+				//EM_ASM({console.log("-***----> unwrapped to parent_| " + $0);}, closureCount);
 				closureCount--;
 			} else {*/
 				if (! inGroup) {
 					currentShapesItem = currentShapesItem->parent;
-					EM_ASM({console.log("-//***----> unwrapped to parent_ " + $0);}, closureCount);
+					//EM_ASM({console.log("-//***----> unwrapped to parent_ " + $0);}, closureCount);
 				}
 			//}
 		}
@@ -40,7 +40,7 @@ void unwrapShape(bool inGroup) {
 	//if (currentShapesItem->parent != NULL) {
 		/*if (closureCount > 1) {
 			//closureCount = 0;
-			EM_ASM_({console.log("//-------> shape group unwrapped " + $0);}, currentShapesItem->ty);
+			//EM_ASM_({console.log("//-------> shape group unwrapped " + $0);}, currentShapesItem->ty);
 			currentShapesItem = currentShapesItem->parent;
 			grClosed = true;
 			if (closureCount > 0) {
@@ -109,12 +109,29 @@ int associateKeyValues() {
 		} else if (theScope->prev->scope == _layers) { // PropertiesShape
 		}
 	} else if (theScope->scope == _k) {
+		if (theScope->prev->scope == _a && strcmp(theScope->prev->prev->currentTy, "tr") == 0) {
+			fillPropertiesOffsetKeyframe(currentShapesItem->a->keyframe);
+		} else if (theScope->prev->scope == _a && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _layers) {
+			fillPropertiesOffsetKeyframe(currentLayers->ks->a->keyframe);
+
 		if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
 			//EM_ASM({console.log("//---------------> k within ks within shapes");});
 			fillPropertiesShapeProp(currentShapesItem->ks->k);
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _it)) { // PropertiesShapeProp
 			//EM_ASM({console.log("//----------------> k within ks within it");});
 			fillPropertiesShapeProp(currentShapesItem->ks->k);
+		}
+	} else if (theScope->scope == _i) {
+		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0) {
+			fillBezierCurve(currentShapesItem->a->keyframe->i);
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
+			fillBezierCurve(currentLayers->ks->a->keyframe->i);
+		}
+	} else if (theScope->scope == _o) {
+		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0) {
+			fillBezierCurve(currentShapesItem->a->keyframe->o);
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
+			fillBezierCurve(currentLayers->ks->a->keyframe->o);
 		}
 	} else if (theScope->scope == _e) {
 		if ((theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _shapes) || (theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _it)) { // PropertiesShapePropKeyframe
@@ -137,7 +154,7 @@ int associateKeyValues() {
 			unwrapShape(true);
 		}
 		if (currentShapesItem != NULL && strcmp(theScope->currentTy, "el") == 0) {
-			EM_ASM({console.log("//----------------> creating ellipse");});
+			//EM_ASM({console.log("//----------------> creating ellipse");});
 			createEllipse(currentShapesItem);
 		}
 
@@ -151,14 +168,14 @@ int associateKeyValues() {
 			unwrapShape(false);
 		}
 		if (currentShapesItem != NULL && strcmp(theScope->currentTy, "el") == 0) {
-			EM_ASM({console.log("//----------------> creating ellipse");});
+			//EM_ASM({console.log("//----------------> creating ellipse");});
 			createEllipse(currentShapesItem);
 		}
 		/*if (strcmp(theScope->currentTy, "gr") == 0) {
 			if (currentShapesItem->parent != NULL) {
 				currentShapesItem = currentShapesItem->parent;
 				grClosed = true;
-				EM_ASM({console.log("//----------------> group closed");});
+				//EM_ASM({console.log("//----------------> group closed");});
 			}
 		}*/
 
@@ -171,7 +188,9 @@ int associateKeyValues() {
 			fillPropertiesMultiDimensional(currentShapesItem->s);
 		}
 	} else if (theScope->scope == _a) {
-		if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+
+
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
 			fillPropertiesMultiDimensional(currentLayers->ks->a);
 		} else if (strcmp(theScope->prev->currentTy, "tr") == 0) {
 			fillPropertiesMultiDimensional(currentShapesItem->a);
@@ -263,13 +282,13 @@ void wrapShape(bool inGroup) {
 		} else {
 			closureCount = 0;
 			currentShapesItem = currentShapesItem->parent;
-			EM_ASM({console.log("-//***----> unwrapped to parent_ _ _ " + $0);}, closureCount);
+			//EM_ASM({console.log("-//***----> unwrapped to parent_ _ _ " + $0);}, closureCount);
 			currentShapesItem = newShapesItem(currentShapesItem, false);
 		}
 	} else {
 		if (currentShapesItem != NULL) {
 			if (currentShapesItem->parent == NULL) {
-				EM_ASM({console.log("-//*****************************----> reset closureCount " + $0);}, closureCount);
+				//EM_ASM({console.log("-//*****************************----> reset closureCount " + $0);}, closureCount);
 				closureCount = 0;
 			}
 			if (inGroup) {
@@ -344,13 +363,13 @@ int prepareContainer(bool arrayOfObjects) {
 		if (theScope->prev->scope == _layers) {
 			if (currentShapesItem != NULL && currentShapesItem->parent != NULL) {
 				currentShapesItem = currentShapesItem->parent;
-				EM_ASM({console.log("-//***----> unwrapped to parent_ _ _ _ " + $0);}, closureCount);
+				//EM_ASM({console.log("-//***----> unwrapped to parent_ _ _ _ " + $0);}, closureCount);
 			}
 			wrapShape(false);
 		} else if (theScope->prev->scope == _k) {
 			if (currentShapesItem != NULL && currentShapesItem->parent != NULL) {
 				currentShapesItem = currentShapesItem->parent;
-				EM_ASM({console.log("-//***----> unwrapped to parent_ _ _ _ _ " + $0);}, closureCount);
+				//EM_ASM({console.log("-//***----> unwrapped to parent_ _ _ _ _ " + $0);}, closureCount);
 			}
 			wrapShape(true);
 		} else if (theScope->prev->scope == _it) {
@@ -375,10 +394,27 @@ int prepareContainer(bool arrayOfObjects) {
 			currentLayers->ks = newHelpersTransform(currentLayers->ks);
 		}
 	} else if (theScope->scope == _k) {
-		if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
+		if (theScope->prev->scope == _a && strcmp(theScope->prev->prev->currentTy, "tr") == 0) {
+			currentShapesItem->a->keyframe = newPropertiesOffsetKeyframe();
+		} else if (theScope->prev->scope == _a && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _layers) {
+			currentLayers->ks->a->keyframe = newPropertiesOffsetKeyframe();
+
+		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
 			currentShapesItem->ks->k = newPropertiesShapeProp(currentShapesItem->ks, currentShapesItem->ks->k, false);
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _it)) { // PropertiesShapeProp
 			currentShapesItem->ks->k = newPropertiesShapeProp(currentShapesItem->ks, currentShapesItem->ks->k, false);
+		}
+	} else if (theScope->scope == _i) {
+		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0) {
+			currentShapesItem->a->keyframe->i = newBezierCurve();
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
+			currentLayers->ks->a->keyframe->i = newBezierCurve();
+		}
+	} else if (theScope->scope == _o) {
+		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0) {
+			currentShapesItem->a->keyframe->o = newBezierCurve();
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
+			currentLayers->ks->a->keyframe->o = newBezierCurve();
 		}
 	} else if (theScope->scope == _e) {
 		if ((theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _shapes) || (theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _it)) { // PropertiesShapePropKeyframe
@@ -463,13 +499,13 @@ int prepareContainer(bool arrayOfObjects) {
 		}
 	}
 	if (shapesItemRelated == 1) {
-		EM_ASM({console.log("-//********************-------------------------------------------> SHAPE IN GROUP " + $0);}, closureCount);
+		//EM_ASM({console.log("-//********************-------------------------------------------> SHAPE IN GROUP " + $0);}, closureCount);
 	} else if (shapesItemRelated == 2) {
-		EM_ASM({console.log("-//********************-------------------------------------------> SHAPE " + $0);}, closureCount);
+		//EM_ASM({console.log("-//********************-------------------------------------------> SHAPE " + $0);}, closureCount);
 	} else if (shapesItemRelated == 3) {
-		EM_ASM({console.log("-//********************-------------------------------------------> NEW SHAPE - LAYER " + $0);}, closureCount);
+		//EM_ASM({console.log("-//********************-------------------------------------------> NEW SHAPE - LAYER " + $0);}, closureCount);
 	} else {
-		EM_ASM({console.log("-//********************-------------------------------------------> NOT shapesitem related " + $0);}, closureCount);
+		//EM_ASM({console.log("-//********************-------------------------------------------> NOT shapesitem related " + $0);}, closureCount);
 	}
 	
 	return 1;
