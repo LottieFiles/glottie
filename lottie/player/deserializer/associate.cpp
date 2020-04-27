@@ -127,12 +127,6 @@ int associateKeyValues() {
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
 			fillBezierCurve(currentLayers->ks->a->keyframe->i);
 		}
-	} else if (theScope->scope == _o) {
-		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0) {
-			fillBezierCurve(currentShapesItem->a->keyframe->o);
-		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
-			fillBezierCurve(currentLayers->ks->a->keyframe->o);
-		}
 	} else if (theScope->scope == _e) {
 		if ((theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _shapes) || (theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _it)) { // PropertiesShapePropKeyframe
 			fillPropertiesShapeProp(currentShapesItem->ks->keyframe->e);
@@ -211,7 +205,11 @@ int associateKeyValues() {
 			fillPropertiesValue(currentShapesItem->r);
 		}
 	} else if (theScope->scope == _o) {
-		if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0) {
+			fillBezierCurve(currentShapesItem->a->keyframe->o);
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
+			fillBezierCurve(currentLayers->ks->a->keyframe->o);
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
 			fillPropertiesValue(currentLayers->ks->o);
 		} else if (currentShapesItem != NULL && strcmp(theScope->prev->currentTy, "tr") == 0) {
 			fillPropertiesValue(currentShapesItem->o);
@@ -410,12 +408,6 @@ int prepareContainer(bool arrayOfObjects) {
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
 			currentLayers->ks->a->keyframe->i = newBezierCurve();
 		}
-	} else if (theScope->scope == _o) {
-		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0) {
-			currentShapesItem->a->keyframe->o = newBezierCurve();
-		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
-			currentLayers->ks->a->keyframe->o = newBezierCurve();
-		}
 	} else if (theScope->scope == _e) {
 		if ((theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _shapes) || (theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _it)) { // PropertiesShapePropKeyframe
 			currentShapesItem->ks->keyframe->e = newPropertiesShapeProp(currentShapesItem->ks, currentShapesItem->ks->keyframe->e, true);
@@ -455,7 +447,11 @@ int prepareContainer(bool arrayOfObjects) {
 		}
 	} else if (theScope->scope == _o) {
 		//EM_ASM_({console.log("-----------------> p found " + String.fromCharCode($0) + String.fromCharCode($1));}, theScope->prev->currentTy[0], theScope->prev->currentTy[1]);
-		if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0) {
+			currentShapesItem->a->keyframe->o = newBezierCurve();
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
+			currentLayers->ks->a->keyframe->o = newBezierCurve();
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
 			currentLayers->ks->o = newPropertiesValue();
 		} else if (currentShapesItem != NULL && strcmp(theScope->prev->currentTy, "tr") == 0) {
 			currentShapesItem->o = newPropertiesValue();

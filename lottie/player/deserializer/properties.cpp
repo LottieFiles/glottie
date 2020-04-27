@@ -58,7 +58,7 @@ struct PropertiesOffsetKeyframe* newPropertiesOffsetKeyframe() {
 }
 
 struct BezierCurve* newBezierCurve() {
-	struct BezierCurve* tempBeizerCurve;
+	struct BezierCurve* tempBezierCurve;
 	tempBezierCurve = new BezierCurve;
 	return tempBezierCurve;
 }
@@ -268,31 +268,6 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		o2 = passedPropertiesShapeProp->v;
 		p1 = passedPropertiesShapeProp->o->prev;
 		p2 = passedPropertiesShapeProp->i;
-		//nextVertex = passedPropertiesShapeProp->v;
-
-		//EM_ASM_({console.log("[[[[[[[[[[[[[========================> starting " + $0 + " , " + $1 + " : " + $2 + " , " + $3 + " : " + $4 + " , " + $5 + " : " + $6 + " , " + $7);}, o1->vertex->x, o1->vertex->y, p1->vertex->x, p1->vertex->y, o2->vertex->x, o2->vertex->y, p2->vertex->x, p2->vertex->y);
-
-		/*
-		o1->vertex->x = o1->vertex->x + xoff;
-		o1->vertex->y = o1->vertex->y + yoff;
-		o2->vertex->x = o2->vertex->x + xoff;
-		o2->vertex->y = o2->vertex->y + yoff;
-		p1->vertex->x = p1->vertex->x + xoff;
-		p1->vertex->y = p1->vertex->y + yoff;
-		p2->vertex->x = p2->vertex->x + xoff;
-		p2->vertex->y = p2->vertex->y + yoff;
-		*/
-
-		/*
-		float odist = distanceBetweenPoints(o1->vertex, o2->vertex) / 2;
-		if (odist < 0) {
-			odist = odist * -1;
-		}
-
-		if (p1->vertex->x > odist) {
-			
-		}
-		*/
 
 		float segSize = 0.10;
 		float segments = 1 / segSize;
@@ -356,68 +331,6 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			intermediate->next = o2;
 			o2->prev = intermediate;
 		}
-
-		/*
-		op1x = p1->vertex->x - o1->vertex->x;
-		op1y = p1->vertex->y - o1->vertex->y;
-		op2x = p2->vertex->x - o2->vertex->x;
-		op2y = p2->vertex->y - o2->vertex->y;
-		oox = p2->vertex->x - p1->vertex->x;
-		ooy = p2->vertex->y - p1->vertex->y;
-
-		op1xs = op1x / segments;
-		op1ys = op1y / segments;
-		op2xs = op2x / segments;
-		op2ys = op2y / segments;
-		ooxs = oox / segments;
-		ooys = ooy / segments;
-
-		while (segNow < segments) {
-			intermediate = new ArrayOfVertex;
-			intermediate->vertex = new Vertex;
-			ps1->x = (op1xs * segNow) + o1->vertex->x;
-			ps1->y = (op1ys * segNow) + o1->vertex->y;
-			ps2->x = (ooxs * segNow) + o2->vertex->x;
-			ps2->y = (ooys * segNow) + o2->vertex->y;
-			ps3->x = (op2xs * segNow) + p1->vertex->x;
-			ps3->y = (op2ys * segNow) + p1->vertex->y;
-
-			pt1->x = ( ((ps2->x - ps1->x) / segments) * segNow) + ps1->x;
-			pt1->y = ( ((ps2->y - ps1->y) / segments) * segNow) + ps1->y;
-			pt2->x = ( ((ps3->x - ps2->x) / segments) * segNow) + ps2->x;
-			pt2->y = ( ((ps3->y - ps2->y) / segments) * segNow) + ps2->y;
-
-			//intermediate->vertex->x = ( (((pt2->x - pt1->x) / segments) * segNow) + pt1->x ) - xoff;
-			//intermediate->vertex->y = ( (((pt2->y - pt1->y) / segments) * segNow) + pt1->y ) - yoff;
-			intermediate->vertex->x = ( (((pt2->x - pt1->x) / segments) * segNow) + pt1->x );
-			intermediate->vertex->y = ( (((pt2->y - pt1->y) / segments) * segNow) + pt1->y );
-			//EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
-			intermediate->vertex->z = 0;
-			intermediate->vertex->a = 1;
-
-			intermediate->bezier = true;
-
-			intermediate->start = passedPropertiesShapeProp->v->start;
-			if (lastIntermediate == NULL) {
-				intermediate->prev = passedPropertiesShapeProp->v->prev;
-				passedPropertiesShapeProp->v->prev->next = intermediate;
-				passedPropertiesShapeProp->v->prev = intermediate;
-			} else {
-				intermediate->prev = lastIntermediate;
-				lastIntermediate->next = intermediate;
-				passedPropertiesShapeProp->v->prev = intermediate;
-			}
-			intermediate->next = passedPropertiesShapeProp->v;
-			lastIntermediate = intermediate;
-
-			//passedPropertiesShapeProp->v = intermediate;
-
-			//EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0);}, intermediate);
-			segNow++;
-			passedPropertiesShapeProp->v_count++;
-			passedPropertiesShapeProp->bezier_count++;
-		}
-		*/
 
 
 		//EM_ASM({console.log("[[[[[[[[[[[[[========================> segment added ----");});
@@ -486,6 +399,7 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 			}
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "a") == 0) {
 			passedPropertiesMultiDimensional->a = stringToInt(tempKeyValue->value);
+		/*
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "e") == 0) {
 			if (passedPropertiesMultiDimensional->keyframe == NULL) {
 				passedPropertiesMultiDimensional->keyframe = new PropertiesMultiDimensionalKeyframe;
@@ -506,6 +420,7 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 			}
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "x") == 0) {
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ix") == 0) {
+		*/
 		}
 		
 
@@ -569,9 +484,114 @@ int fillPropertiesValue(struct PropertiesValue* passedPropertiesValue) {
 }
 
 int fillPropertiesOffsetKeyframe(struct PropertiesOffsetKeyframe* passedPropertiesOffsetKeyframe) {
+	bool exhausted = false;
+	struct KeyValue* tempKeyValue;
+	struct FloatArrayReturn* tempFloatArray = NULL;
+	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
+	struct ArrayOfString* tempArrayValue; 
+	while (! exhausted) {
+		if (tempKeyValue) {
+			//EM_ASM({console.log("========================> iteration 99");});
+		}
+		if (strlen(tempKeyValue->key) == 0) {
+			//EM_ASM({console.log("========================> empty");});
+			if (tempKeyValue->next == NULL) {
+				exhausted = true;
+			} else {
+				tempKeyValue = tempKeyValue->next;
+			}
+			continue;
+		}
+
+		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "s") == 0) {
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
+			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
+				passedPropertiesOffsetKeyframe->s = tempFloatArray->floatArray;
+			}
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "t") == 0) {
+			if (strlen(tempKeyValue->value) > 0) {
+				passedPropertiesOffsetKeyframe->t = populateFloat(tempKeyValue->value);
+			}
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ti") == 0) {
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
+			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
+				passedPropertiesOffsetKeyframe->ti = tempFloatArray->floatArray;
+			}
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "to") == 0) {
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
+			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
+				passedPropertiesOffsetKeyframe->to = tempFloatArray->floatArray;
+			}
+		}
+		
+
+		if (tempFloatArray != NULL) {
+			delete tempFloatArray;
+			tempFloatArray = NULL;
+		}
+
+		if (tempKeyValue->next == NULL) {
+			exhausted = true;
+		} else {
+			tempKeyValue = tempKeyValue->next;
+		}
+	}
+	return 1;
 }
 
 int fillBezierCurve(struct BezierCurve* passedBezierCurve) {
+	bool exhausted = false;
+	struct KeyValue* tempKeyValue;
+	struct FloatArrayReturn* tempFloatArray = NULL;
+	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
+	struct ArrayOfString* tempArrayValue; 
+	while (! exhausted) {
+		if (tempKeyValue) {
+			//EM_ASM({console.log("========================> iteration 99");});
+		}
+		if (strlen(tempKeyValue->key) == 0) {
+			//EM_ASM({console.log("========================> empty");});
+			if (tempKeyValue->next == NULL) {
+				exhausted = true;
+			} else {
+				tempKeyValue = tempKeyValue->next;
+			}
+			continue;
+		}
+
+		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "x") == 0) {
+			if (tempKeyValue->arrayValue != NULL) {
+				tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, false);
+				if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
+					passedBezierCurve->x = tempFloatArray->floatArray;
+				}
+			} else if (strlen(tempKeyValue->value) > 0) {
+				passedBezierCurve->x[0] = populateFloat(tempKeyValue->value);
+			}
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "y") == 0) {
+			if (tempKeyValue->arrayValue != NULL) {
+				tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, false);
+				if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
+					passedBezierCurve->y = tempFloatArray->floatArray;
+				}
+			} else if (strlen(tempKeyValue->value) > 0) {
+				passedBezierCurve->y[0] = populateFloat(tempKeyValue->value);
+			}
+		}
+		
+
+		if (tempFloatArray != NULL) {
+			delete tempFloatArray;
+			tempFloatArray = NULL;
+		}
+
+		if (tempKeyValue->next == NULL) {
+			exhausted = true;
+		} else {
+			tempKeyValue = tempKeyValue->next;
+		}
+	}
+	return 1;
 }
 
 void createEllipse(struct ShapesItem* passedShapesItem) {
