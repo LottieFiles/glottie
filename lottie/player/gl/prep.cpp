@@ -171,44 +171,6 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	while (! exhausted) {
 		elementCount++;
 
-		/*
-		//EM_ASM({console.log("tracing 1 ");});
-		//EM_ASM({console.log("looping 1");});
-		if (passedPropertiesShapeProp->i != NULL) {
-			passedPropertiesShapeProp->buffers_i = newBuffers();
-			//passedPropertiesShapeProp->gl_i = vertexToGLfloat(passedPropertiesShapeProp->i, passedPropertiesShapeProp->i_count);
-			//EM_ASM({console.log("looping 1.1 i");});
-			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->i_count, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i, defaultFill, passedShapesItem->order);
-			if (tempTriangulateReturn == NULL) {return 0;}
-			passedPropertiesShapeProp->gl_i = tempTriangulateReturn->vbo;
-			passedPropertiesShapeProp->gl_i_fill = tempTriangulateReturn->cbo;
-			passedPropertiesShapeProp->gl_i_idx = tempTriangulateReturn->index;
-			//EM_ASM({console.log("looping 1.1.1 i");});
-			prepVAO(passedPropertiesShapeProp->gl_i, passedPropertiesShapeProp->gl_i_idx, passedPropertiesShapeProp->gl_i_fill, NULL, passedPropertiesShapeProp->buffers_i, passedPropertiesShapeProp->i_count, tempTriangulateReturn->idxCount);
-			//EM_ASM({console.log("looping 1.1.2 i");});
-			//EM_ASM({console.log("---------> stats " + $0 + " " + $1 + " " + $2 + " " + $3);}, *(tempTriangulateReturn->vbo + 0), *(tempTriangulateReturn->cbo + 0), *(tempTriangulateReturn->index + 0), tempTriangulateReturn->idxCount);
-			delete tempTriangulateReturn;
-		}
-
-		//EM_ASM({console.log("tracing 2 ");});
-		if (passedPropertiesShapeProp->o != NULL) {
-			passedPropertiesShapeProp->buffers_o = newBuffers();
-			//passedPropertiesShapeProp->gl_o = vertexToGLfloat(passedPropertiesShapeProp->o, passedPropertiesShapeProp->o_count);
-			//EM_ASM({console.log("looping 1.1 o");});
-			tempTriangulateReturn = prepTriangulate(passedPropertiesShapeProp->o_count, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o, defaultFill, passedShapesItem->order);
-			if (tempTriangulateReturn == NULL) {return 0;}
-			passedPropertiesShapeProp->gl_o = tempTriangulateReturn->vbo;
-			passedPropertiesShapeProp->gl_o_fill = tempTriangulateReturn->cbo;
-			passedPropertiesShapeProp->gl_o_idx = tempTriangulateReturn->index;
-			//EM_ASM({console.log("looping 1.1.1 o");});
-			//EM_ASM({console.log("looping 1.2 o");});
-			prepVAO(passedPropertiesShapeProp->gl_o, passedPropertiesShapeProp->gl_o_idx, passedPropertiesShapeProp->gl_o_fill, NULL, passedPropertiesShapeProp->buffers_o, passedPropertiesShapeProp->o_count, tempTriangulateReturn->idxCount);
-			//EM_ASM({console.log("looping 1.1.2 o");});
-			//EM_ASM({console.log("---------> stats " + $0 + " " + $1 + " " + $2 + " " + $3);}, *(tempTriangulateReturn->vbo + 0), *(tempTriangulateReturn->cbo + 0), *(tempTriangulateReturn->index + 0), tempTriangulateReturn->idxCount);
-			delete tempTriangulateReturn;
-		}
-		*/
-
 		//EM_ASM({console.log("tracing 3 ");});
 		if (passedPropertiesShapeProp->v != NULL) {
 			passedPropertiesShapeProp->buffers_v = newBuffers();
@@ -228,18 +190,6 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//delete tempTriangulateReturn;
 		}
 
-		//bezierNode = passedPropertiesShapeProp->gl_v;
-
-			
-		//if (elementCount == 1 || passedPropertiesShapeProp->next == NULL) {
-//			//EM_ASM({console.log("---------> stats " + $0 + " " + $1 + " " + $2 + " " + $3);}, *(tempTriangulateReturn->vbo + 0), *(tempTriangulateReturn->cbo + 0), *(tempTriangulateReturn->index + 0), tempTriangulateReturn->idxCount);
-		//}
-		//delete tempTriangulateReturn->vbo;
-		//delete tempTriangulateReturn->cbo;
-		//delete tempTriangulateReturn->index;
-		//EM_ASM({console.log("looping 1.4");});
-
-		//EM_ASM({console.log("tracing 4 ");});
 		if (passedPropertiesShapeProp->next == NULL) {
 			exhausted = true;
 		} else {

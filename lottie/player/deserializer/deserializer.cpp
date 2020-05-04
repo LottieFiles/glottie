@@ -574,7 +574,7 @@ int checkCharacter(char& currentChar) {
 				if (currentShapesItem != NULL && currentShapesItem->parent != NULL && closureCount > 0) {
 					//closureCount++;
 					currentShapesItem = currentShapesItem->parent;
-					EM_ASM({console.log("UNWRAPPED array");});
+					//EM_ASM({console.log("UNWRAPPED array");});
 					closureCount--;
 				}
 				//closedArray = true;

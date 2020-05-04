@@ -41,7 +41,7 @@ alignas(256) GLint* posAttrib[1024];
 //#include "emscripten/emscripten.cpp"
 #include "misc.cpp"
 #include "deserializer/deserializer.cpp"
-#include "gl/prep_anim.cpp"
+#include "animate/prep_anim.cpp"
 #include "gl/gl.cpp"
 #include "gl/prep.cpp"
 

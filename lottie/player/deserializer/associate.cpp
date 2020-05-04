@@ -114,7 +114,7 @@ int associateKeyValues() {
 		} else if (theScope->prev->scope == _a && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _layers) {
 			fillPropertiesOffsetKeyframe(currentLayers->ks->a->keyframe);
 
-		if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
+		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
 			//EM_ASM({console.log("//---------------> k within ks within shapes");});
 			fillPropertiesShapeProp(currentShapesItem->ks->k);
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _it)) { // PropertiesShapeProp

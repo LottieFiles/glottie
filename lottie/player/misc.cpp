@@ -1020,3 +1020,149 @@ void getBoundingBox(struct ShapesItem* passedShapesItem, struct BoundingBox* cur
 	//return currentBB;
 }
 
+
+// related to animating
+void BezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float segSize) {
+	bool exhausted = false;
+	v = v->start;
+	i = i->start;
+	o = o->start;
+	
+	struct ArrayOfVertex *o1, *o2, *p1, *p2;
+
+	bool startedCycling = false;
+	struct ArrayOfVertex* startPoint = v->start;
+	//struct ArrayOfVertex* nextVertex = NULL;
+	struct ArrayOfVertex* lastIntermediate = NULL;
+	struct ArrayOfVertex* intermediate = NULL;
+	struct ArrayOfVertex* intermediateStart = NULL;
+
+	float oneTcube, oneTsquare, Tcube, Tsquare, oneT;
+
+	while (! exhausted) {
+		if (v == startPoint && startedCycling == true) {
+						break;
+			//continue;
+				if (
+						(
+							i->vertex->x == 0 && 
+							i->vertex->y == 0 &&
+							o->vertex->x == 0 &&
+							o->vertex->y == 0
+						) &&
+						(
+							i->prev->vertex->x == 0 && 
+							i->prev->vertex->y == 0 &&
+							o->prev->vertex->x == 0 &&
+							o->prev->vertex->y == 0
+						)
+					) {
+						break;
+				} else {
+					i = i->next;
+					o = o->next;
+					v = v->next;
+					//EM_ASM({console.log("breakout ");});
+					exhausted = true;
+				}
+		} else {
+				if (
+						(
+							i->vertex->x == 0 && 
+							i->vertex->y == 0 &&
+							o->vertex->x == 0 &&
+							o->vertex->y == 0
+						) &&
+						(
+							i->prev->vertex->x == 0 && 
+							i->prev->vertex->y == 0 &&
+							o->prev->vertex->x == 0 &&
+							o->prev->vertex->y == 0
+						)
+					) {
+						i = i->next;
+						o = o->next;
+						v = v->next;
+						//EM_ASM({console.log("non-bezier ");});
+						startedCycling = true;
+						continue;
+				} else {
+					i = i->next;
+					o = o->next;
+					v = v->next;
+					//EM_ASM({console.log("breakout ");});
+				}
+
+		}
+		startedCycling = true;
+		o1 = v->prev;
+		o2 = v;
+		p1 = o->prev;
+		p2 = i;
+
+		//float segSize = 0.10;
+		float segments = 1 / segSize;
+		//float segNow = segSize;
+		float segNow = segSize;
+
+		float p1x = p1->vertex->x + o1->vertex->x;
+		float p2x = p2->vertex->x + o2->vertex->x;
+		float p1y = p1->vertex->y + o1->vertex->y;
+		float p2y = p2->vertex->y + o2->vertex->y;
+
+		intermediateStart = NULL;
+		lastIntermediate = NULL;
+		while (segNow < 1) {
+			intermediate = new ArrayOfVertex;
+			intermediate->vertex = new Vertex;
+			intermediate->start = o1->start;
+
+			//intermediate->vertex->x = ( (((pt2->x - pt1->x) / segments) * segNow) + pt1->x );
+			//intermediate->vertex->y = ( (((pt2->y - pt1->y) / segments) * segNow) + pt1->y );
+
+			oneT = 1 - segNow;
+			Tcube = pow(segNow, 3);
+			Tsquare = pow(segNow, 2);
+			oneTcube = pow(oneT, 3);
+			oneTsquare = pow(oneT, 2);
+
+			intermediate->vertex->x = 	(oneTcube * 			o1->vertex->x) + 
+							(3 * oneTsquare * segNow * 	p1x) + 
+							(3 * oneT * Tsquare * 		p2x) + 
+							(Tcube * 			o2->vertex->x);
+
+			intermediate->vertex->y = 	(oneTcube * 			o1->vertex->y) + 
+							(3 * oneTsquare * segNow * 	p1y) + 
+							(3 * oneT * Tsquare * 		p2y) + 
+							(Tcube * 			o2->vertex->y);
+			//EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
+			intermediate->vertex->z = 0;
+			intermediate->vertex->a = 1;
+
+			intermediate->bezier = true;
+
+			
+			if (lastIntermediate != NULL) {
+				lastIntermediate->next = intermediate;
+				intermediate->prev = lastIntermediate;
+			}
+			lastIntermediate = intermediate;
+
+			//passedPropertiesShapeProp->v = intermediate;
+			segNow = segNow + segSize;
+			v_count++;
+			bezier_count++;
+			if (intermediateStart == NULL) {
+				intermediateStart = intermediate;
+			}
+		}
+		/*if (intermediateStart != NULL) {
+			intermediateStart->prev = o1;
+			o1->next = intermediateStart;
+			intermediate->next = o2;
+			o2->prev = intermediate;
+		}*/
+		return intermediate;
+	}
+}
+
