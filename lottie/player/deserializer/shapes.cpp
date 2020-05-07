@@ -13,14 +13,14 @@ struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem, bool shape
 				passedShapesItem->it->parent = passedShapesItem;
 				passedShapesItem->it->start = passedShapesItem->it;
 				passedShapesItem = passedShapesItem->it;
-				EM_ASM({console.log("=========> new shape group");});
+				//EM_ASM({console.log("=========> new shape group");});
 			} else {
 				passedShapesItem->next = new ShapesItem;
 				passedShapesItem->next->start = passedShapesItem->start;
 				passedShapesItem->next->prev = passedShapesItem;
 				passedShapesItem->next->parent = passedShapesItem->parent;
 				passedShapesItem = passedShapesItem->next;
-				EM_ASM({console.log("=========> added within shape group " + $0);}, passedShapesItem->parent);
+				//EM_ASM({console.log("=========> added within shape group " + $0);}, passedShapesItem->parent);
 			}
 		} else {
 				passedShapesItem->next = new ShapesItem;
@@ -28,7 +28,7 @@ struct ShapesItem* newShapesItem(struct ShapesItem* passedShapesItem, bool shape
 				passedShapesItem->next->prev = passedShapesItem;
 				//passedShapesItem->next->parent = passedShapesItem->parent;
 				passedShapesItem = passedShapesItem->next;
-				EM_ASM({console.log("---> ungrouped - regular");});
+				//EM_ASM({console.log("---> ungrouped - regular");});
 		}
 	}
 	currentOrderIndex++;
@@ -88,7 +88,7 @@ enum ShapesTy getShapesTy(char* passedTy) {
 	} else if (strcmp(passedTy, "rp") == 0) {
 		tempShapesTy = _repeater;
 	} else if (strcmp(passedTy, "tr") == 0) {
-		EM_ASM({console.log("==========> transform");});
+		//EM_ASM({console.log("==========> transform");});
 		tempShapesTy = _transform;
 	} else {
 		tempShapesTy = _noshape;
@@ -124,7 +124,7 @@ int fillShapesItem(struct ShapesItem* passedShapesItem) {
 			if (strcmp(tempKeyValue->key, "ty") == 0) {
 				enum ShapesTy tempTy = passedShapesItem->ty;
 				passedShapesItem->ty = getShapesTy(tempKeyValue->value);
-				EM_ASM({console.log("==========-------------========> shape type recorded " + $0 + " " + String.fromCharCode($1) + String.fromCharCode($2) + " " + $3 + " [" + $4 + "]");}, passedShapesItem->ty, tempKeyValue->value[0], tempKeyValue->value[1], tempTy, closureCount);
+				//EM_ASM({console.log("==========-------------========> shape type recorded " + $0 + " " + String.fromCharCode($1) + String.fromCharCode($2) + " " + $3 + " [" + $4 + "]");}, passedShapesItem->ty, tempKeyValue->value[0], tempKeyValue->value[1], tempTy, closureCount);
 			} else if (strcmp(tempKeyValue->key, "nm") == 0) {
 				
 			}

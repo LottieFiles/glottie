@@ -333,12 +333,6 @@ int checkScope() {
 		addScope(_pz);
 	} else if (keyIs("i")) {
 		addScope(_i);
-	} else if (keyIs("o")) {
-		addScope(_o);
-
-
-
-
 	} else {
 		addScope(_object);
 		scopeChanged = false;	

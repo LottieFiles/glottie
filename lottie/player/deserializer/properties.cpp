@@ -57,6 +57,12 @@ struct PropertiesOffsetKeyframe* newPropertiesOffsetKeyframe() {
 	return tempPropertiesOffsetKeyframe;
 }
 
+struct PropertiesValueKeyframe* newPropertiesValueKeyframe() {
+	struct PropertiesValueKeyframe* tempPropertiesValueKeyframe;
+	tempPropertiesValueKeyframe = new PropertiesValueKeyframe;
+	return tempPropertiesValueKeyframe;
+}
+
 struct BezierCurve* newBezierCurve() {
 	struct BezierCurve* tempBezierCurve;
 	tempBezierCurve = new BezierCurve;
@@ -383,7 +389,7 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesMultiDimensional->k = tempFloatArray->floatArray;
 				passedPropertiesMultiDimensional->k_count = tempFloatArray->count;
-				EM_ASM_({console.log("========================> found k " + $0 + " " + $1);}, passedPropertiesMultiDimensional->k[0], passedPropertiesMultiDimensional->k[1]);
+				//EM_ASM_({console.log("========================> found k " + $0 + " " + $1);}, passedPropertiesMultiDimensional->k[0], passedPropertiesMultiDimensional->k[1]);
 			}
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ti") == 0) {
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, false);
@@ -490,8 +496,8 @@ int fillPropertiesOffsetKeyframe(struct PropertiesOffsetKeyframe* passedProperti
 	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
 	struct ArrayOfString* tempArrayValue; 
 	while (! exhausted) {
-		if (tempKeyValue) {
-			//EM_ASM({console.log("========================> iteration 99");});
+		if (tempKeyValue != NULL) {
+			EM_ASM({console.log("========================> OffsetKeyframe " + String.fromCharCode($0));}, tempKeyValue->value[0]);
 		}
 		if (strlen(tempKeyValue->key) == 0) {
 			//EM_ASM({console.log("========================> empty");});
@@ -539,7 +545,66 @@ int fillPropertiesOffsetKeyframe(struct PropertiesOffsetKeyframe* passedProperti
 	return 1;
 }
 
+int fillPropertiesValueKeyframe(struct PropertiesValueKeyframe* passedPropertiesValueKeyframe) {
+	bool exhausted = false;
+	struct KeyValue* tempKeyValue;
+	struct FloatArrayReturn* tempFloatArray = NULL;
+	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
+	struct ArrayOfString* tempArrayValue; 
+	while (! exhausted) {
+		if (tempKeyValue != NULL) {
+			EM_ASM({console.log("========================> OffsetKeyframe " + String.fromCharCode($0));}, tempKeyValue->value[0]);
+		}
+		if (strlen(tempKeyValue->key) == 0) {
+			//EM_ASM({console.log("========================> empty");});
+			if (tempKeyValue->next == NULL) {
+				exhausted = true;
+			} else {
+				tempKeyValue = tempKeyValue->next;
+			}
+			continue;
+		}
+
+		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "s") == 0) {
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
+			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
+				passedPropertiesValueKeyframe->s = tempFloatArray->floatArray;
+			}
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "t") == 0) {
+			if (strlen(tempKeyValue->value) > 0) {
+				passedPropertiesValueKeyframe->t = populateFloat(tempKeyValue->value);
+			}
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ti") == 0) {
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
+			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
+				passedPropertiesValueKeyframe->ti = tempFloatArray->floatArray;
+			}
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "to") == 0) {
+			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
+			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
+				passedPropertiesValueKeyframe->to = tempFloatArray->floatArray;
+			}
+		}
+		
+
+		if (tempFloatArray != NULL) {
+			delete tempFloatArray;
+			tempFloatArray = NULL;
+		}
+
+		if (tempKeyValue->next == NULL) {
+			exhausted = true;
+		} else {
+			tempKeyValue = tempKeyValue->next;
+		}
+	}
+	return 1;
+}
+
 int fillBezierCurve(struct BezierCurve* passedBezierCurve) {
+	if (passedBezierCurve == NULL) {
+		passedBezierCurve = new BezierCurve;
+	}
 	bool exhausted = false;
 	struct KeyValue* tempKeyValue;
 	struct FloatArrayReturn* tempFloatArray = NULL;
@@ -566,7 +631,8 @@ int fillBezierCurve(struct BezierCurve* passedBezierCurve) {
 					passedBezierCurve->x = tempFloatArray->floatArray;
 				}
 			} else if (strlen(tempKeyValue->value) > 0) {
-				passedBezierCurve->x[0] = populateFloat(tempKeyValue->value);
+				passedBezierCurve->x = new float[1];
+				*(passedBezierCurve->x + 0) = populateFloat(tempKeyValue->value);
 			}
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "y") == 0) {
 			if (tempKeyValue->arrayValue != NULL) {
@@ -575,7 +641,8 @@ int fillBezierCurve(struct BezierCurve* passedBezierCurve) {
 					passedBezierCurve->y = tempFloatArray->floatArray;
 				}
 			} else if (strlen(tempKeyValue->value) > 0) {
-				passedBezierCurve->y[0] = populateFloat(tempKeyValue->value);
+				passedBezierCurve->y = new float[1];
+				*(passedBezierCurve->y + 0) = populateFloat(tempKeyValue->value);
 			}
 		}
 		

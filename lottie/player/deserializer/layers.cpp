@@ -61,6 +61,14 @@ int fillAnimation() {
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "h") == 0) {
 			string height(tempKeyValue->value);
 			theAnimation->h = stoi(height);
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ip") == 0) {
+			theAnimation->ip = stringToFloat(tempKeyValue->value);
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "op") == 0) {
+			theAnimation->op = stringToFloat(tempKeyValue->value);
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "fr") == 0) {
+			theAnimation->fr = stringToFloat(tempKeyValue->value);
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "z") == 0) {
+			theAnimation->z = stringToInt(tempKeyValue->value);
 			//EM_ASM_({console.log("========================> fill 80.1 " + $0);}, theAnimation->h);
 
 		}

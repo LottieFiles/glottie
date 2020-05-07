@@ -1,5 +1,6 @@
 //// properties
 
+/*
 struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
 	float e; //end
 	float s; //start
@@ -7,6 +8,15 @@ struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
 
 	struct Vertex* i; // bezier curve interpolation in value
 } *currentPropertiesValueKeyframe;
+*/
+struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
+	struct BezierCurve* i = NULL;
+	struct BezierCurve* o = NULL;
+	float* s;
+	float t; // start time 
+	float* ti;
+	float* to;
+};
 
 struct alignas(ALIGNSIZE) PropertiesValue {
 	float k;
@@ -21,8 +31,8 @@ struct alignas(ALIGNSIZE) PropertiesValue {
 } *currentPropertiesValue;
 
 struct alignas(ALIGNSIZE) PropertiesOffsetKeyframe {
-	struct BezierCurve* i;
-	struct BezierCurve* o;
+	struct BezierCurve* i = NULL;
+	struct BezierCurve* o = NULL;
 	float* s;
 	float t; // start time 
 	float* ti;

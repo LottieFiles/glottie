@@ -99,11 +99,11 @@ struct alignas(ALIGNSIZE) Animation {
         struct Char* chars = NULL;
         struct Player* players = NULL;
         struct Font* fonts = NULL;
-        int ip; // entry frame number
-        int op; // exit frame number
-        int fr; // frame rate
-        int w; // width
-        int h; // height
+        float ip; // entry frame number
+        float op; // exit frame number
+        float fr; // frame rate
+        float w; // width
+        float h; // height
 	int z; // depth
 
 	float scaleFactorX = 1;

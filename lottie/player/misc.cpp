@@ -1162,7 +1162,7 @@ void BezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 			intermediate->next = o2;
 			o2->prev = intermediate;
 		}*/
-		return intermediate;
+		//return intermediate;
 	}
 }
 
