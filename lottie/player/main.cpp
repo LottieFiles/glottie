@@ -16,6 +16,7 @@
 #include <vector>
 #include <sstream>
 #include <cmath>
+#include <sys/time.h>
 
 using namespace std;
 
@@ -59,6 +60,10 @@ void loadJson(char* buffer, int theLength) {
 	prepShapes();
 	EM_ASM({console.log("////> done prepping shapes");});
 	redrawRequired = true;
+
+	gettimeofday(&timeRef, NULL);
+	double currentTime = (double)timeRef.tv_sec + ((double)timeRef.tv_usec / 1000000);
+	EM_ASM({console.log("////> TIME " + $0 + " ");}, currentTime);
 
 	struct Buffers* buffersToRender;
 /*	if (lastBuffersCreated != NULL) {
@@ -104,6 +109,7 @@ int doMain(char someChar[]) {
 	EM_ASM({console.log("////> start of prepping shapes");});
 	prepShapes();
 	EM_ASM({console.log("////> done prepping shapes");});
+
 	redrawRequired = true;
 
 	struct Buffers* buffersToRender;
@@ -114,6 +120,7 @@ int doMain(char someChar[]) {
 		//glDraw(NULL, NULL);
 	}*/
 	glDraw(NULL, NULL);
+
 
 
 	EM_ASM({console.log("////> done drawing " + $0 + " " + $1);}, theAnimation->w, theAnimation->h);

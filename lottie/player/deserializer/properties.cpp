@@ -497,7 +497,7 @@ int fillPropertiesOffsetKeyframe(struct PropertiesOffsetKeyframe* passedProperti
 	struct ArrayOfString* tempArrayValue; 
 	while (! exhausted) {
 		if (tempKeyValue != NULL) {
-			EM_ASM({console.log("========================> OffsetKeyframe " + String.fromCharCode($0));}, tempKeyValue->value[0]);
+			//EM_ASM({console.log("========================> OffsetKeyframe " + String.fromCharCode($0));}, tempKeyValue->value[0]);
 		}
 		if (strlen(tempKeyValue->key) == 0) {
 			//EM_ASM({console.log("========================> empty");});
@@ -553,7 +553,7 @@ int fillPropertiesValueKeyframe(struct PropertiesValueKeyframe* passedProperties
 	struct ArrayOfString* tempArrayValue; 
 	while (! exhausted) {
 		if (tempKeyValue != NULL) {
-			EM_ASM({console.log("========================> OffsetKeyframe " + String.fromCharCode($0));}, tempKeyValue->value[0]);
+			//EM_ASM({console.log("========================> OffsetKeyframe " + String.fromCharCode($0));}, tempKeyValue->value[0]);
 		}
 		if (strlen(tempKeyValue->key) == 0) {
 			//EM_ASM({console.log("========================> empty");});

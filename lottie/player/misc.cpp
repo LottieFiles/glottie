@@ -1166,3 +1166,10 @@ void BezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 	}
 }
 
+double seconds() {
+	struct timeval tempRef;
+	gettimeofday(&tempRef, NULL);
+
+	return (double)tempRef.tv_sec + ((double)tempRef.tv_usec / 1000000);
+}
+

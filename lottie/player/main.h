@@ -118,6 +118,8 @@ int encounteredKeyframe = 0;
 enum States lastClosedScope;
 int closureCount = 0;
 
+struct timeval timeRef;
+
 struct alignas(ALIGNSIZE) ArrayTrail {
 	struct ArrayTrail* start = NULL;
 	struct ArrayTrail* prev = NULL;

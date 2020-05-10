@@ -81,7 +81,10 @@ int fillAnimation() {
 			tempKeyValue = tempKeyValue->next;
 		}
 	}
-	EM_ASM_({console.log("========================> fill 80.1 " + $0);}, theAnimation->h);
+
+	theAnimation->frameTime = (1 / (theAnimation->fr * theAnimation->frMultiplier));
+
+	//EM_ASM_({console.log("========================> fill 80.1 " + $0);}, theAnimation->h);
 	//deleteKeyValues(theScope->currentKeyValueTrail);
 
 	return 1;

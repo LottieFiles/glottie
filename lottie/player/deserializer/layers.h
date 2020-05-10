@@ -109,6 +109,9 @@ struct alignas(ALIGNSIZE) Animation {
 	float scaleFactorX = 1;
 	float scaleFactorY = 1;
 
+	float frMultiplier = 2;
+	float frameTime; // in seconds
+
         bool ddd = false; // is 3D? (1 = yes, 0 = no)
 
 } *theAnimation;

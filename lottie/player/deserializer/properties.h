@@ -10,6 +10,10 @@ struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
 } *currentPropertiesValueKeyframe;
 */
 struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
+	struct PropertiesValueKeyframe* start = NULL;
+	struct PropertiesValueKeyframe* next = NULL;
+	struct PropertiesValueKeyframe* prev = NULL;
+
 	struct BezierCurve* i = NULL;
 	struct BezierCurve* o = NULL;
 	float* s;
@@ -31,6 +35,10 @@ struct alignas(ALIGNSIZE) PropertiesValue {
 } *currentPropertiesValue;
 
 struct alignas(ALIGNSIZE) PropertiesOffsetKeyframe {
+	struct PropertiesOffsetKeyframe* start = NULL;
+	struct PropertiesOffsetKeyframe* next = NULL;
+	struct PropertiesOffsetKeyframe* prev = NULL;
+
 	struct BezierCurve* i = NULL;
 	struct BezierCurve* o = NULL;
 	float* s;
