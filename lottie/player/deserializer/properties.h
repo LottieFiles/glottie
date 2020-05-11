@@ -17,9 +17,12 @@ struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
 	struct BezierCurve* i = NULL;
 	struct BezierCurve* o = NULL;
 	float* s;
+	int s_count;
 	float t; // start time 
 	float* ti;
+	int ti_count;
 	float* to;
+	int to_count;
 };
 
 struct alignas(ALIGNSIZE) PropertiesValue {
@@ -42,9 +45,12 @@ struct alignas(ALIGNSIZE) PropertiesOffsetKeyframe {
 	struct BezierCurve* i = NULL;
 	struct BezierCurve* o = NULL;
 	float* s;
+	int s_count;
 	float t; // start time 
 	float* ti;
+	int ti_count;
 	float* to;
+	int to_count;
 };
 
 struct alignas(ALIGNSIZE) PropertiesMultiDimensionalKeyframe {

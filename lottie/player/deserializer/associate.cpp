@@ -128,7 +128,9 @@ int associateKeyValues() {
 			//EM_ASM({console.log("-//***----> fill ValueKeyframe in r");});
 			fillPropertiesValueKeyframe(currentShapesItem->r->keyframe);
 
-
+		} else if (theScope->prev->scope == _s && strcmp(theScope->prev->prev->currentTy, "el") == 0) {
+			//EM_ASM({console.log("-//***----> fill ValueKeyframe in r");});
+			fillPropertiesOffsetKeyframe(currentShapesItem->s->keyframe);
 
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
 			//EM_ASM({console.log("//---------------> k within ks within shapes");});
@@ -170,6 +172,8 @@ int associateKeyValues() {
 			fillPropertiesShapeProp(currentShapesItem->ks->keyframe->s);
 		} else if (strcmp(theScope->prev->currentTy, "tr") == 0) {
 			fillPropertiesMultiDimensional(currentShapesItem->s);
+		} else if (strcmp(theScope->prev->currentTy, "el") == 0) {
+			fillPropertiesMultiDimensional(currentShapesItem->s);
 		}
 	} else if (theScope->scope == _it) {
 		if (theScope->prev->scope == _layers) {
@@ -182,6 +186,9 @@ int associateKeyValues() {
 		if (currentShapesItem != NULL && strcmp(theScope->currentTy, "el") == 0) {
 			//EM_ASM({console.log("//----------------> creating ellipse");});
 			createEllipse(currentShapesItem);
+		}
+		if (currentShapesItem != NULL && strcmp(theScope->currentTy, "el") == 0) {
+			fillTransform(currentShapesItem);
 		}
 
 
@@ -196,6 +203,9 @@ int associateKeyValues() {
 		if (currentShapesItem != NULL && strcmp(theScope->currentTy, "el") == 0) {
 			//EM_ASM({console.log("//----------------> creating ellipse");});
 			createEllipse(currentShapesItem);
+		}
+		if (currentShapesItem != NULL && strcmp(theScope->currentTy, "el") == 0) {
+			fillTransform(currentShapesItem);
 		}
 		/*if (strcmp(theScope->currentTy, "gr") == 0) {
 			if (currentShapesItem->parent != NULL) {
@@ -227,7 +237,7 @@ int associateKeyValues() {
 		} else if (strcmp(theScope->prev->currentTy, "tr") == 0) {
 			//EM_ASM({console.log("//----------------> filling multidim p");});
 			fillPropertiesMultiDimensional(currentShapesItem->p);
-		} else if (strcmp(theScope->currentTy, "el") == 0) {
+		} else if (strcmp(theScope->prev->currentTy, "el") == 0) {
 			fillPropertiesMultiDimensional(currentShapesItem->p);
 		}
 	} else if (theScope->scope == _r) {
@@ -454,6 +464,9 @@ int prepareContainer(bool arrayOfObjects) {
 			//EM_ASM({console.log("-//***----> ValueKeyframe in r");});
 			currentShapesItem->r->keyframe = newPropertiesValueKeyframe();
 
+		} else if (theScope->prev->scope == _s && strcmp(theScope->prev->prev->currentTy, "el") == 0) {
+			//EM_ASM({console.log("-//***----> ValueKeyframe in r");});
+			currentLayers->ks->s->keyframe = newPropertiesOffsetKeyframe();
 
 
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {

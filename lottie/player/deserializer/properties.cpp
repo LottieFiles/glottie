@@ -513,6 +513,7 @@ int fillPropertiesOffsetKeyframe(struct PropertiesOffsetKeyframe* passedProperti
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesOffsetKeyframe->s = tempFloatArray->floatArray;
+				passedPropertiesOffsetKeyframe->s_count = tempFloatArray->count;
 			}
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "t") == 0) {
 			if (strlen(tempKeyValue->value) > 0) {
@@ -522,11 +523,13 @@ int fillPropertiesOffsetKeyframe(struct PropertiesOffsetKeyframe* passedProperti
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesOffsetKeyframe->ti = tempFloatArray->floatArray;
+				passedPropertiesOffsetKeyframe->ti_count = tempFloatArray->count;
 			}
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "to") == 0) {
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesOffsetKeyframe->to = tempFloatArray->floatArray;
+				passedPropertiesOffsetKeyframe->to_count = tempFloatArray->count;
 			}
 		}
 		
@@ -569,6 +572,7 @@ int fillPropertiesValueKeyframe(struct PropertiesValueKeyframe* passedProperties
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesValueKeyframe->s = tempFloatArray->floatArray;
+				passedPropertiesValueKeyframe->s_count = tempFloatArray->count;
 			}
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "t") == 0) {
 			if (strlen(tempKeyValue->value) > 0) {
@@ -578,11 +582,13 @@ int fillPropertiesValueKeyframe(struct PropertiesValueKeyframe* passedProperties
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesValueKeyframe->ti = tempFloatArray->floatArray;
+				passedPropertiesValueKeyframe->ti_count = tempFloatArray->count;
 			}
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "to") == 0) {
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesValueKeyframe->to = tempFloatArray->floatArray;
+				passedPropertiesValueKeyframe->to_count = tempFloatArray->count;
 			}
 		}
 		
@@ -662,7 +668,6 @@ int fillBezierCurve(struct BezierCurve* passedBezierCurve) {
 }
 
 void createEllipse(struct ShapesItem* passedShapesItem) {
-	return;
 	if (passedShapesItem->basicShapeGenerated == true) {
 		return;
 	}
@@ -681,6 +686,9 @@ void createEllipse(struct ShapesItem* passedShapesItem) {
 
 	float xsize = *(passedShapesItem->s->k + 0);
 	float ysize = *(passedShapesItem->s->k + 1);
+	if (ysize == 0) {
+		ysize = xsize;
+	}
 
 	int segments = 30;
 	float angleDelta = 90/segments;
@@ -718,6 +726,7 @@ void createEllipse(struct ShapesItem* passedShapesItem) {
 
 		q1PrevArray = q1;
 		q1 = new ArrayOfVertex;
+		q1->vertex = new Vertex;
 		q1->prev = q1PrevArray;
 		if (q1PrevArray != NULL) {
 			q1PrevArray->next = q1;
@@ -731,6 +740,7 @@ void createEllipse(struct ShapesItem* passedShapesItem) {
 	
 		q2PrevArray = q2;
 		q2 = new ArrayOfVertex;
+		q2->vertex = new Vertex;
 		q2->next = q2PrevArray;
 		if (q2PrevArray != NULL) {
 			q2PrevArray->prev = q2;
@@ -743,6 +753,7 @@ void createEllipse(struct ShapesItem* passedShapesItem) {
 	
 		q3PrevArray = q3;
 		q3 = new ArrayOfVertex;
+		q3->vertex = new Vertex;
 		q3->next = q3PrevArray;
 		if (q3PrevArray != NULL) {
 			q3PrevArray->prev = q3;
@@ -755,6 +766,7 @@ void createEllipse(struct ShapesItem* passedShapesItem) {
 	
 		q4PrevArray = q4;
 		q4 = new ArrayOfVertex;
+		q4->vertex = new Vertex;
 		q4->prev = q4PrevArray;
 		if (q4PrevArray != NULL) {
 			q4PrevArray->next = q4;
