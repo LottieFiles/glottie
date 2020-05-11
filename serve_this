@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ "$1" == "1" ]; then
+	cp ../player.js ./
+	cp ../player.wasm ./
+fi
+
+if [ "$(uname)" == "Linux" ]; then
+	python3.6 -m http.server 8082
+else
+	python3.5 -m http.server 8082
+fi
