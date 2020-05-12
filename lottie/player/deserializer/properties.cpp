@@ -32,6 +32,7 @@ struct PropertiesShapeProp* newPropertiesShapeProp(struct PropertiesShape* passe
 }
 
 struct PropertiesMultiDimensional* newPropertiesMultiDimensional() {
+	currentPropertiesOffsetKeyframe = NULL;
 	struct PropertiesMultiDimensional* tempPropertiesMultiDimensional;
 	tempPropertiesMultiDimensional = new PropertiesMultiDimensional;
 	return tempPropertiesMultiDimensional;
@@ -46,21 +47,38 @@ struct PropertiesShapePropKeyframe* newPropertiesShapePropKeyframe() {
 }
 
 struct PropertiesValue* newPropertiesValue() {
+	currentPropertiesValueKeyframe = NULL;
 	struct PropertiesValue* tempPropertiesValue;
 	tempPropertiesValue = new PropertiesValue;
 	return tempPropertiesValue;
 }
 
 struct PropertiesOffsetKeyframe* newPropertiesOffsetKeyframe() {
-	struct PropertiesOffsetKeyframe* tempPropertiesOffsetKeyframe;
-	tempPropertiesOffsetKeyframe = new PropertiesOffsetKeyframe;
-	return tempPropertiesOffsetKeyframe;
+	//struct PropertiesOffsetKeyframe* tempPropertiesOffsetKeyframe;
+	if (currentPropertiesOffsetKeyframe == NULL) {
+		currentPropertiesOffsetKeyframe = new PropertiesOffsetKeyframe;
+		currentPropertiesOffsetKeyframe->start = currentPropertiesOffsetKeyframe;
+	} else {
+		currentPropertiesOffsetKeyframe->next = new PropertiesOffsetKeyframe;
+		currentPropertiesOffsetKeyframe->next->start = currentPropertiesOffsetKeyframe->start;
+		currentPropertiesOffsetKeyframe->next->prev = currentPropertiesOffsetKeyframe;
+		currentPropertiesOffsetKeyframe = currentPropertiesOffsetKeyframe->next;
+	}
+	return currentPropertiesOffsetKeyframe;
 }
 
 struct PropertiesValueKeyframe* newPropertiesValueKeyframe() {
-	struct PropertiesValueKeyframe* tempPropertiesValueKeyframe;
-	tempPropertiesValueKeyframe = new PropertiesValueKeyframe;
-	return tempPropertiesValueKeyframe;
+	//struct PropertiesValueKeyframe* tempPropertiesValueKeyframe;
+	if (currentPropertiesValueKeyframe == NULL) {
+		currentPropertiesValueKeyframe = new PropertiesValueKeyframe;
+		currentPropertiesValueKeyframe->start = currentPropertiesValueKeyframe;
+	} else {
+		currentPropertiesValueKeyframe->next = new PropertiesValueKeyframe;
+		currentPropertiesValueKeyframe->next->start = currentPropertiesValueKeyframe->start;
+		currentPropertiesValueKeyframe->next->prev = currentPropertiesValueKeyframe;
+		currentPropertiesValueKeyframe = currentPropertiesValueKeyframe->next;
+	}
+	return currentPropertiesValueKeyframe;
 }
 
 struct BezierCurve* newBezierCurve() {

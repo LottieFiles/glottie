@@ -72,6 +72,8 @@ struct alignas(ALIGNSIZE) ShapesItem {
 
 	struct BoundingBox* currentBB;
 
+	struct Transform* transform;
+
 	void* item;
 
 	void* g = NULL; // gradient colors - to be researched further
@@ -90,6 +92,11 @@ struct alignas(ALIGNSIZE) ShapesItem {
 	bool basicShapeGenerated = false;
 	
 } *currentShapesItem;
+
+struct alignas(ALIGNSIZE) Transform {
+	struct ArrayOfVertex* p = NULL;
+
+};
 
 /*
 struct alignas(ALIGNSIZE) ShapesGroup {

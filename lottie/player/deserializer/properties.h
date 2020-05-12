@@ -16,25 +16,26 @@ struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
 
 	struct BezierCurve* i = NULL;
 	struct BezierCurve* o = NULL;
-	float* s;
+	float* s; // start value
 	int s_count;
 	float t; // start time 
 	float* ti;
 	int ti_count;
 	float* to;
 	int to_count;
-};
+} *currentPropertiesValueKeyframe;
 
 struct alignas(ALIGNSIZE) PropertiesValue {
+	struct PropertiesValueKeyframe* keyframe;
+
+	struct textBlock* ix;
+	struct textBlock* x;
+
 	float k;
 	int k_count;
 	//string ix; //property index
 	int a; // animated
 	//string x; //expression
-	struct textBlock* ix;
-	struct textBlock* x;
-
-	struct PropertiesValueKeyframe* keyframe;
 } *currentPropertiesValue;
 
 struct alignas(ALIGNSIZE) PropertiesOffsetKeyframe {
@@ -44,14 +45,14 @@ struct alignas(ALIGNSIZE) PropertiesOffsetKeyframe {
 
 	struct BezierCurve* i = NULL;
 	struct BezierCurve* o = NULL;
-	float* s;
+	float* s; // start value
 	int s_count;
 	float t; // start time 
 	float* ti;
 	int ti_count;
 	float* to;
 	int to_count;
-};
+} *currentPropertiesOffsetKeyframe;
 
 struct alignas(ALIGNSIZE) PropertiesMultiDimensionalKeyframe {
 	float* e; // end - array of numbers

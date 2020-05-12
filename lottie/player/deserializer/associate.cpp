@@ -187,7 +187,7 @@ int associateKeyValues() {
 			//EM_ASM({console.log("//----------------> creating ellipse");});
 			createEllipse(currentShapesItem);
 		}
-		if (currentShapesItem != NULL && strcmp(theScope->currentTy, "el") == 0) {
+		if (currentShapesItem != NULL && strcmp(theScope->currentTy, "tr") == 0) {
 			fillTransform(currentShapesItem);
 		}
 
@@ -204,7 +204,7 @@ int associateKeyValues() {
 			//EM_ASM({console.log("//----------------> creating ellipse");});
 			createEllipse(currentShapesItem);
 		}
-		if (currentShapesItem != NULL && strcmp(theScope->currentTy, "el") == 0) {
+		if (currentShapesItem != NULL && strcmp(theScope->currentTy, "tr") == 0) {
 			fillTransform(currentShapesItem);
 		}
 		/*if (strcmp(theScope->currentTy, "gr") == 0) {
