@@ -15,9 +15,9 @@ struct XY {
 };
 
 struct alignas(ALIGNSIZE) BezierCurve {
-	float* x;
-	float* y;
-	float* z;
+	float* x = 0;
+	float* y = 0;
+	float* z = 0;
 };
 
 //struct alignas(alignof(struct Vertex*)) Vertex {

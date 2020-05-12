@@ -1022,7 +1022,7 @@ void getBoundingBox(struct ShapesItem* passedShapesItem, struct BoundingBox* cur
 
 
 // related to animating
-void BezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float segSize) {
+void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed) {
 	bool exhausted = false;
 	v = v->start;
 	i = i->start;
@@ -1038,7 +1038,9 @@ void BezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 	struct ArrayOfVertex* intermediateStart = NULL;
 
 	float oneTcube, oneTsquare, Tcube, Tsquare, oneT;
+	float segSize;
 
+	int segCounter = 0;
 	while (! exhausted) {
 		if (v == startPoint && startedCycling == true) {
 						break;
@@ -1085,6 +1087,7 @@ void BezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 						v = v->next;
 						//EM_ASM({console.log("non-bezier ");});
 						startedCycling = true;
+						segCounter++;
 						continue;
 				} else {
 					i = i->next;
@@ -1101,6 +1104,8 @@ void BezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 		p2 = i;
 
 		//float segSize = 0.10;
+		segCounter++;
+		segSize = *(segSizePassed + segCounter);
 		float segments = 1 / segSize;
 		//float segNow = segSize;
 		float segNow = segSize;

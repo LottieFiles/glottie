@@ -83,7 +83,7 @@ int fillAnimation() {
 	}
 
 	theAnimation->frameTime = (1 / (theAnimation->fr * theAnimation->frMultiplier));
-
+	theAnimation->totalTime = theAnimation->op * theAnimation->frameTime;
 	//EM_ASM_({console.log("========================> fill 80.1 " + $0);}, theAnimation->h);
 	//deleteKeyValues(theScope->currentKeyValueTrail);
 
