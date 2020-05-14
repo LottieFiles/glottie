@@ -233,6 +233,7 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 	while (! exhausted) {
 		//EM_ASM({console.log("shape type " + $0);}, passedShapesItem->ty);
 		if (passedShapesItem->ty == _transform) {
+			fillTransform(passedShapesItem);
 			//EM_ASM({console.log("SHAPEPROP TRANSFORM found");});
 
 			/*shapesPosition.x = passedShapesItem->p->k[0];

@@ -338,6 +338,8 @@ int checkScope() {
 		scopeChanged = false;	
 	}
 
+	//EM_ASM({console.log("-/--> NEW SCOPE " + $0);}, theScope->currentState->stateNow);
+
 	return 1;
 }
 
@@ -430,6 +432,9 @@ int checkCharacter(char& currentChar) {
 			if (theState->stateNow == ArrayOpen && theState->reservedKeySet) {
 				input->currentReadKey[0] = '\0';
 				strcat(input->currentReadKey, theState->reservedKey);
+				if (strcmp(input->currentReadKey, "k") == 0) {
+					EM_ASM({console.log("                     k in readkey");});
+				}
 			}
 
 			if (theState->stateNow == ArrayOpen) {
@@ -545,11 +550,13 @@ int checkCharacter(char& currentChar) {
 				theState->reservedKey[0] = '\0';
 				strcat(theState->reservedKey, input->currentReadKey);
 				theState->reservedKeySet = true;
+				EM_ASM({console.log("[ KEY SET ");});
 			} else {
 				if (theState->prev->reservedKeySet) {
 					theState->reservedKey[0] = '\0';
 					strcat(theState->reservedKey, theState->prev->reservedKey);
 					theState->reservedKeySet = true;
+					EM_ASM({console.log("[ KEY SET ");});
 				}
 			}
 

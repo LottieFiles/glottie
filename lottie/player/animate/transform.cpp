@@ -20,6 +20,8 @@ struct TransformAOV* createSegmentMultiDimensional(struct PropertiesOffsetKeyfra
 	struct TransformAOV* tempAOV = NULL;
 	tempAOV = new TransformAOV;
 	float previousTime = 0;
+	tempAOV->frames = new float[passedKeyframe->s_count];
+	tempAOV->segSize = new float[passedKeyframe->s_count];
 	while (! exhausted) {
 
 		if (passedKeyframe->s != NULL) {
@@ -38,6 +40,7 @@ struct TransformAOV* createSegmentMultiDimensional(struct PropertiesOffsetKeyfra
 			pushVertex(tempAOV->v, currentList);
 		}
 		tempAOV->v_count++;
+		EM_ASM_({console.log("----> " + $0);}, *(passedKeyframe->s + 0));
 
 		if (passedKeyframe->i != NULL) {
 			float currentList[4] = {*(passedKeyframe->i->x + 0), *(passedKeyframe->i->y + 0), 0, 1};
@@ -70,9 +73,15 @@ struct TransformAOV* createSegmentMultiDimensional(struct PropertiesOffsetKeyfra
 
 void fillTransform(struct ShapesItem* passedShapesItem) {
 	struct TransformAOV* tempAOV = NULL;
+	if (passedShapesItem->transform == NULL) {
+		passedShapesItem->transform = new Transform;
+	}
 	if (passedShapesItem->p != NULL && passedShapesItem->p->keyframe != NULL) {
+		EM_ASM_({console.log("=================================TRANSFORM BEGINS ");});
 		tempAOV = createSegmentMultiDimensional(passedShapesItem->p->keyframe->start);
 		bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize);
+		passedShapesItem->transform->p = tempAOV;
 	}
+	EM_ASM_({console.log("=================================TRANSFORM ENDS ");});
 }
 

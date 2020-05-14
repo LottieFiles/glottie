@@ -72,7 +72,7 @@ struct alignas(ALIGNSIZE) ShapesItem {
 
 	struct BoundingBox* currentBB;
 
-	struct Transform* transform;
+	struct Transform* transform = NULL;
 
 	void* item;
 
@@ -94,8 +94,7 @@ struct alignas(ALIGNSIZE) ShapesItem {
 } *currentShapesItem;
 
 struct alignas(ALIGNSIZE) Transform {
-	struct ArrayOfVertex* p = NULL;
-
+	struct TransformAOV* p;
 };
 
 /*
