@@ -6,12 +6,14 @@
 int assignReadValue() {
 	input->currentReadValue[0] = '\0';
 	strcat(input->currentReadValue, input->currentValue);
+	input->currentValue[0] = '\0';
 	return 1;
 }
 
 int assignReadKey() {
 	input->currentReadKey[0] = '\0';
 	strcat(input->currentReadKey, input->currentValue);
+	input->currentValue[0] = '\0';
 	return 1;
 }
 
@@ -429,7 +431,7 @@ int checkCharacter(char& currentChar) {
 				//EM_ASM_({console.log("DONE adding new key value trail in array " + $0);}, currentKeyValueTrail);
 			//}
 
-			if (theState->stateNow == ArrayOpen && theState->reservedKeySet) {
+			if (theState->reservedKeySet && theState->stateNow == ArrayOpen) {
 				input->currentReadKey[0] = '\0';
 				strcat(input->currentReadKey, theState->reservedKey);
 				if (strcmp(input->currentReadKey, "k") == 0) {
@@ -439,6 +441,7 @@ int checkCharacter(char& currentChar) {
 
 			if (theState->stateNow == ArrayOpen) {
 				addState(ScopeOpenInArray); //// ADD STATE
+				//EM_ASM({console.log(" IN ARRAY ");});
 			} else {
 				addState(ScopeOpen); //// ADD STATE
 			}
@@ -550,13 +553,11 @@ int checkCharacter(char& currentChar) {
 				theState->reservedKey[0] = '\0';
 				strcat(theState->reservedKey, input->currentReadKey);
 				theState->reservedKeySet = true;
-				EM_ASM({console.log("[ KEY SET ");});
 			} else {
 				if (theState->prev->reservedKeySet) {
 					theState->reservedKey[0] = '\0';
 					strcat(theState->reservedKey, theState->prev->reservedKey);
 					theState->reservedKeySet = true;
-					EM_ASM({console.log("[ KEY SET ");});
 				}
 			}
 
@@ -652,8 +653,8 @@ int checkCharacter(char& currentChar) {
 			if (isReadingDone()) {
 				//readingDone();
 				//readingDone();
+				removeReadStates();
 			}
-			removeReadStates();
 
 			//EM_ASM_({console.log("handling comma 1 " + $0);}, theState->stateNow);
 			//if (lastStateBeforeReading() == ArrayOpen || readingArray) {

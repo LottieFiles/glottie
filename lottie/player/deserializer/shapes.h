@@ -93,9 +93,7 @@ struct alignas(ALIGNSIZE) ShapesItem {
 	
 } *currentShapesItem;
 
-struct alignas(ALIGNSIZE) Transform {
-	struct TransformAOV* p;
-};
+
 
 /*
 struct alignas(ALIGNSIZE) ShapesGroup {
