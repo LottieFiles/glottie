@@ -1043,7 +1043,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 	int segCounter = 0;
 	while (! exhausted) {
 		if (v == startPoint && startedCycling == true) {
-						break;
+			break;
 			//continue;
 				if (
 						(
@@ -1085,6 +1085,9 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 						i = i->next;
 						o = o->next;
 						v = v->next;
+						if (v == startPoint && startedCycling == true) {
+							break;
+						}
 						//EM_ASM({console.log("non-bezier ");});
 						startedCycling = true;
 						segCounter++;

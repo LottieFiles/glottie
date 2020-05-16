@@ -121,7 +121,7 @@ void glInit() {
 	//EM_ASM({console.log("glinit 1.8");});
 }
 
-void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersToRender, int frame) {
+void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersToRender) {
 	loop = [&]
 	{
 		/*

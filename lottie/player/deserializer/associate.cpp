@@ -117,10 +117,10 @@ int associateKeyValues() {
 			fillPropertiesOffsetKeyframe(currentLayers->ks->a->keyframe);
 
 		} else if (theScope->prev->scope == _p && strcmp(theScope->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->scope != _layers) {
-			EM_ASM({console.log("-//***----> fill OffsetKeyframe in p");});
+			//EM_ASM({console.log("-//***----> fill OffsetKeyframe in p");});
 			fillPropertiesOffsetKeyframe(currentShapesItem->p->keyframe);
 		} else if (theScope->prev->scope == _p && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _layers) {
-			EM_ASM({console.log("-//***----> fill OffsetKeyframe in p in layers");});
+			//EM_ASM({console.log("-//***----> fill OffsetKeyframe in p in layers");});
 			fillPropertiesOffsetKeyframe(currentLayers->ks->p->keyframe);
 
 		} else if (theScope->prev->scope == _r && strcmp(theScope->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->scope != _layers) {
@@ -152,10 +152,10 @@ int associateKeyValues() {
 			fillBezierCurve(currentLayers->ks->a->keyframe->i);
 
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _p && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
-			EM_ASM({console.log("-//***----> fill BexierCurve in i in p");});
+			//EM_ASM({console.log("-//***----> fill BexierCurve in i in p");});
 			fillBezierCurve(currentShapesItem->p->keyframe->i);
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _p && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
-			EM_ASM({console.log("-//***----> fill BexierCurve in i in p in layers");});
+			//EM_ASM({console.log("-//***----> fill BexierCurve in i in p in layers");});
 			fillBezierCurve(currentLayers->ks->p->keyframe->i);
 
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _r && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
@@ -234,10 +234,10 @@ int associateKeyValues() {
 		}
 	} else if (theScope->scope == _p) {
 		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
-			EM_ASM({console.log("//----------------> filling multidim p");});
+			//EM_ASM({console.log("//----------------> filling multidim p");});
 			fillPropertiesMultiDimensional(currentShapesItem->p);
 		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
-			EM_ASM({console.log("//----------------> filling multidim p in layer");});
+			//EM_ASM({console.log("//----------------> filling multidim p in layer");});
 			fillPropertiesMultiDimensional(currentLayers->ks->p);
 
 		} else if (strcmp(theScope->prev->currentTy, "el") == 0) {
@@ -454,7 +454,7 @@ int prepareContainer(bool arrayOfObjects) {
 		}
 	} else if (theScope->scope == _k) {
 
-		EM_ASM({console.log("-//***----> k discovered " + $0);}, theScope->prev->scope);
+		//EM_ASM({console.log("-//***----> k discovered " + $0);}, theScope->prev->scope);
 		if (theScope->prev->scope == _a && strcmp(theScope->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->scope != _layers) {
 			//EM_ASM({console.log("-//***----> OffsetKeyframe in a");});
 			currentShapesItem->a->keyframe = newPropertiesOffsetKeyframe();
@@ -463,10 +463,10 @@ int prepareContainer(bool arrayOfObjects) {
 			currentLayers->ks->a->keyframe = newPropertiesOffsetKeyframe();
 
 		} else if (theScope->prev->scope == _p && strcmp(theScope->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->scope != _layers) {
-			EM_ASM({console.log("-//***----> OffsetKeyframe in p");});
+			//EM_ASM({console.log("-//***----> OffsetKeyframe in p");});
 			currentShapesItem->p->keyframe = newPropertiesOffsetKeyframe();
 		} else if (theScope->prev->scope == _p && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _layers) {
-			EM_ASM({console.log("-//***----> OffsetKeyframe in p in layers ");});
+			//EM_ASM({console.log("-//***----> OffsetKeyframe in p in layers ");});
 			currentLayers->ks->p->keyframe = newPropertiesOffsetKeyframe();
 
 		} else if (theScope->prev->scope == _r && strcmp(theScope->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->scope != _layers) {
@@ -497,10 +497,10 @@ int prepareContainer(bool arrayOfObjects) {
 			currentLayers->ks->a->keyframe->i = newBezierCurve();
 
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _p && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
-			EM_ASM({console.log("-//***----> BezierCurve i in k in p");});
+			//EM_ASM({console.log("-//***----> BezierCurve i in k in p");});
 			currentShapesItem->p->keyframe->i = newBezierCurve();
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _p && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
-			EM_ASM({console.log("-//***----> BezierCurve i in k in p in layers");});
+			//EM_ASM({console.log("-//***----> BezierCurve i in k in p in layers");});
 			currentLayers->ks->p->keyframe->i = newBezierCurve();
 
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _r && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
@@ -536,10 +536,10 @@ int prepareContainer(bool arrayOfObjects) {
 	} else if (theScope->scope == _p) {
 			//EM_ASM_({console.log("-----------------> p found " + String.fromCharCode($0) + String.fromCharCode($1));}, input->currentTy[0], input->currentTy[1]);
 		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
-			EM_ASM({console.log("-----------------> TRANSFORM p");});
+			//EM_ASM({console.log("-----------------> TRANSFORM p");});
 			currentShapesItem->p = newPropertiesMultiDimensional();
 		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
-			EM_ASM({console.log("-----------------> TRANSFORM p in LAYER");});
+			//EM_ASM({console.log("-----------------> TRANSFORM p in LAYER");});
 			currentLayers->ks->p = newPropertiesMultiDimensional();
 
 		} else if (strcmp(theScope->prev->currentTy, "el") == 0) {

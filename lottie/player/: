@@ -38,15 +38,27 @@ int addState(enum States statePassed) {
 	if (theState->stateNow == KVReading && statePassed == KVReading) {
 		return 0;
 	}
+	//EM_ASM_({console.log("adding tempState->prev 1.0 " + $0);}, theState);
 	struct StateTrail* tempState = NULL;
 	delete tempState;
+	//EM_ASM_({console.log("adding tempState->prev 1.1 " + $0);}, theState);
 	tempState = new StateTrail;
+	//EM_ASM_({console.log("adding tempState->prev 1.2 " + $0);}, theState);
+	/*if (theState == NULL) {
+		theState = tempState;
+		theState->start = theState;
+		theState->stateNow = NoState;
+		return 1;
+	}*/
 	tempState->prev = theState;
 
+	//EM_ASM_({console.log("adding theState->next 1.1 " + $0);}, tempState);
 	theState->next = tempState;
+	//EM_ASM_({console.log("adding theState->start 1.1 " + $0);}, theState->start);
 	tempState->start = theState->start;
 	tempState->stateNow = statePassed;
 	theState = tempState;
+	//EM_ASM_({console.log("adding theState->start 1.5 " + $0);}, theState->start);
 
 	return 1;
 }
@@ -323,7 +335,7 @@ int checkScope() {
 		addScope(_pz);
 	} else if (keyIs("i")) {
 		addScope(_i);
-		//EM_ASM({console.log("-/--> found i");});
+		EM_ASM({console.log("-/--> found i");});
 	} else {
 		addScope(_object);
 		scopeChanged = false;	
@@ -403,7 +415,7 @@ int checkCharacter(char& currentChar) {
 	//EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $1 + " ] " + String.fromCharCode($0) + " " + $2 + " - " + $3 + " " + $4);}, currentChar, readingArray,theScope->currentKeyValueTrail, colonEncountered, justStartedArray);
 	switch (currentChar) {
 		case '{':
-			//EM_ASM_({console.log("__________________======================================__________OPENING object " + $0 + " " + String.fromCharCode($1));}, theState->stateNow, theState->reservedKey[0]);
+			EM_ASM_({console.log("__________________======================================__________OPENING object " + $0 + " " + String.fromCharCode($1));}, theState->stateNow, theState->reservedKey[0]);
 			colonEncountered = false;
 			//EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
@@ -412,8 +424,9 @@ int checkCharacter(char& currentChar) {
 				removeReadStates();
 			}
 
-			kvState = Key;
-			readingArray = false;
+
+
+
 			//if (justStartedArray == true) {
 
 				//EM_ASM_({console.log("DONE adding new key value trail in array " + $0);}, currentKeyValueTrail);
@@ -423,7 +436,7 @@ int checkCharacter(char& currentChar) {
 				input->currentReadKey[0] = '\0';
 				strcat(input->currentReadKey, theState->reservedKey);
 				if (strcmp(input->currentReadKey, "k") == 0) {
-					//EM_ASM({console.log("                     k in readkey");});
+					EM_ASM({console.log("                     k in readkey");});
 				}
 			}
 
@@ -434,6 +447,8 @@ int checkCharacter(char& currentChar) {
 				addState(ScopeOpen); //// ADD STATE
 			}
 
+			kvState = Key;
+			readingArray = false;
 			checkScope();
 
 			if (theState->stateNow == ScopeOpenInArray) {
@@ -513,7 +528,7 @@ int checkCharacter(char& currentChar) {
 				*/
 				//theScope->currentKeyValueTrail->keyValue->arrayValue = gotoParentArray(theScope->currentKeyValueTrail->keyValue);
 
-			//EM_ASM_({console.log("___________________________________________________________________CLOSED object " + $0 + " " + String.fromCharCode($1));}, theState->stateNow, theState->reservedKey[0]);
+			EM_ASM_({console.log("___________________________________________________________________CLOSED object " + $0 + " " + String.fromCharCode($1));}, theState->stateNow, theState->reservedKey[0]);
 			previousScopeClosure = true;
 			break;
 		case '[':

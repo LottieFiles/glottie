@@ -233,7 +233,7 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 	while (! exhausted) {
 		//EM_ASM({console.log("shape type " + $0);}, passedShapesItem->ty);
 		if (passedShapesItem->ty == _transform) {
-			fillTransform(passedShapesItem);
+			fillTransformShapes(passedShapesItem);
 			//EM_ASM({console.log("SHAPEPROP TRANSFORM found");});
 
 			/*shapesPosition.x = passedShapesItem->p->k[0];
@@ -350,6 +350,7 @@ void findLayersTransform(struct Layers* passedLayers) {
 				passedLayers->currentBB->anchorX = passedLayers->ks->a->k[0];
 				passedLayers->currentBB->anchorY = passedLayers->ks->a->k[1];
 			}
+			fillTransformLayers(passedLayers);
 		}
 	/*
 		if (passedLayers->next == NULL) {

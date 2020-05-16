@@ -17,6 +17,8 @@ struct alignas(ALIGNSIZE) Layers {
 
 	struct BoundingBox* currentBB;
 
+	struct Transform* transform = NULL;
+
         string cl; //class
         string ln; //layer html id
         string nm; //name
@@ -109,7 +111,7 @@ struct alignas(ALIGNSIZE) Animation {
 	float scaleFactorX = 1;
 	float scaleFactorY = 1;
 
-	float frMultiplier = 2;
+	float frMultiplier = 1;
 	float frameTime; // in seconds
 	float totalTime; // in seconds
 

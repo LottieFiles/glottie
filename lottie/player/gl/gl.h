@@ -39,6 +39,9 @@ struct alignas(ALIGNSIZE) Buffers {
 	std::vector<unsigned int> idx; // array of triangulation data
 	int idxCount;
 
+	struct Transform* shapesTransform = NULL;
+	struct Transform* layersTransform;
+
 	GLint* posAttrib = NULL;
 	GLint* colAttrib = NULL;
 	bool changed = false;

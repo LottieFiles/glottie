@@ -276,6 +276,9 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 						passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
 						passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
 						passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
+						if (passedPropertiesShapeProp->v == startPoint && startedCycling == true) {
+							break;
+						}
 						//EM_ASM({console.log("non-bezier ");});
 						startedCycling = true;
 						continue;

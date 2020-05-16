@@ -62,9 +62,9 @@ void loadJson(char* buffer, int theLength) {
 	EM_ASM({console.log("////> done prepping shapes");});
 	redrawRequired = true;
 
-	gettimeofday(&timeRef, NULL);
-	double currentTime = (double)timeRef.tv_sec + ((double)timeRef.tv_usec / 1000000);
-	EM_ASM({console.log("////> TIME " + $0 + " ");}, currentTime);
+	//gettimeofday(&timeRef, NULL);
+	//double currentTime = (double)timeRef.tv_sec + ((double)timeRef.tv_usec / 1000000);
+	//EM_ASM({console.log("////> TIME " + $0 + " ");}, currentTime);
 
 	struct Buffers* buffersToRender;
 /*	if (lastBuffersCreated != NULL) {
@@ -73,7 +73,23 @@ void loadJson(char* buffer, int theLength) {
 		buffersToRender->next = NULL;
 		//glDraw(NULL, NULL);
 	}*/
-	glDraw(NULL, NULL);
+
+	double lastTime = seconds();
+	double currentTime = 0;
+	int currentFrame = 0;
+	while (1) {
+		if (currentTime == 0) {
+			glDraw(NULL, NULL, currentFrame);
+		} else if (currentTime - lastTime > theAnimation->frameTime) {
+			glDraw(NULL, NULL, currentFrame);
+			currentFrame++;
+			lastTime = currentTime;
+		}
+		if (currentFrame > theAnimation->op) {
+			currentFrame = 0;
+		}
+		currentTime = seconds();
+	}
 
 
 	EM_ASM({console.log("////> done drawing " + $0 + " " + $1);}, theAnimation->w, theAnimation->h);
@@ -120,7 +136,6 @@ int doMain(char someChar[]) {
 		buffersToRender->next = NULL;
 		//glDraw(NULL, NULL);
 	}*/
-	glDraw(NULL, NULL);
 
 
 
