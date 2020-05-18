@@ -106,7 +106,7 @@ struct alignas(ALIGNSIZE) Animation {
         float fr; // frame rate
         float w; // width
         float h; // height
-	int z; // depth
+	float z; // depth
 
 	float scaleFactorX = 1;
 	float scaleFactorY = 1;
@@ -114,6 +114,7 @@ struct alignas(ALIGNSIZE) Animation {
 	float frMultiplier = 1;
 	float frameTime; // in seconds
 	float totalTime; // in seconds
+	float frameTimeMS;
 
         bool ddd = false; // is 3D? (1 = yes, 0 = no)
 

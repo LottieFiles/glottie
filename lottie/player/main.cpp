@@ -5,12 +5,22 @@
 #include <functional>
 
 #include <emscripten.h> // emscripten
+#include <emscripten/html5.h> // emscripten
 #include <SDL2/SDL.h> // emscripten
 //#include <SDL2/SDL.h>
 
 #define GL_GLEXT_PROTOTYPES 1
 #include <SDL_opengles2.h> // empscripten
+//#include <glm/glm.hpp>
+#include </usr/include/glm/glm.hpp> // glm::vec3
+//#include </usr/include/glm/vec3.hpp> // glm::vec3
+//#include </usr/include/glm/vec4.hpp> // glm::vec4
+#include </usr/include/glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
+#include </usr/include/glm/gtc/type_ptr.hpp> // glm::mat4
 //#include <GLES2/gl2.h>
+//#include <GL/gl.h>
+//#include <GL/glu.h>
+//#include <GL/glut.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -50,6 +60,24 @@ alignas(256) GLint* posAttrib[1024];
 extern "C" {
 
 EMSCRIPTEN_KEEPALIVE
+
+/*
+EM_BOOL mainloop(double time, void* userData) {
+
+	glDraw(NULL, NULL, (int)userData);
+	return 1;
+}
+*/
+int currentFrame = 0;
+void mainloop() {
+	if (currentFrame >= theAnimation->op) {
+		currentFrame = 0;
+	}
+	glDraw(NULL, NULL, currentFrame);
+	//EM_ASM({console.log("////> init done");});
+	currentFrame++;
+}
+
 void loadJson(char* buffer, int theLength) {
 	deserializeChar(buffer, theLength);
 	EM_ASM({console.log("////> init done");});
@@ -59,7 +87,7 @@ void loadJson(char* buffer, int theLength) {
 	glInitShaders(0);
 	EM_ASM({console.log("////> start of prepping shapes");});
 	prepShapes();
-	EM_ASM({console.log("////> done prepping shapes");});
+	EM_ASM({console.log("////> done prepping shapes " + $0);}, theAnimation->frameTimeMS);
 	redrawRequired = true;
 
 	//gettimeofday(&timeRef, NULL);
@@ -73,28 +101,26 @@ void loadJson(char* buffer, int theLength) {
 		buffersToRender->next = NULL;
 		//glDraw(NULL, NULL);
 	}*/
+	//emscripten_set_main_loop(mainloop, 0, 1);
 
-	double lastTime = seconds();
-	double currentTime = 0;
+	//emscripten_request_animation_frame_loop(mainloop, 0);
+	//double currentTime = 0;
+	/*
 	int currentFrame = 0;
 	while (1) {
-		if (currentTime == 0) {
-			glDraw(NULL, NULL, currentFrame);
-		} else if (currentTime - lastTime > theAnimation->frameTime) {
-			glDraw(NULL, NULL, currentFrame);
-			currentFrame++;
-			lastTime = currentTime;
-		}
-		if (currentFrame > theAnimation->op) {
+		if (currentFrame >= theAnimation->op) {
 			currentFrame = 0;
 		}
-		currentTime = seconds();
+		double lastTime = seconds();
+		mainloop(lastTime, (void *)currentFrame);
+		//SDL_Delay(theAnimation->frameTimeMS);
+		SDL_Delay(1000);
+		currentFrame++;
 	}
-
-
-	EM_ASM({console.log("////> done drawing " + $0 + " " + $1);}, theAnimation->w, theAnimation->h);
-
+	*/
+	emscripten_set_main_loop(mainloop, theAnimation->fr, 0);
 }
+
 
 
 

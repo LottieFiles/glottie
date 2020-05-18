@@ -493,7 +493,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 
 	if (strcmp(key, "ty") == 0) {
 		/*if (strcmp(value, "tr") == 0) {
-			EM_ASM({console.log("transform KV");});	
+			//EM_ASM({console.log("transform KV");});	
 		}*/
 		memset(input->currentTy, 0, sizeof(input->currentTy));
 		strcat(input->currentTy, value);
@@ -1065,6 +1065,9 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 					o = o->next;
 					v = v->next;
 					//EM_ASM({console.log("breakout ");});
+					if (v == startPoint && startedCycling == true) {
+						break;
+					}
 					exhausted = true;
 				}
 		} else {
@@ -1096,6 +1099,9 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 					i = i->next;
 					o = o->next;
 					v = v->next;
+					if (v == startPoint && startedCycling == true) {
+						break;
+					}
 					//EM_ASM({console.log("breakout ");});
 				}
 
@@ -1109,9 +1115,13 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 		//float segSize = 0.10;
 		segCounter++;
 		segSize = *(segSizePassed + segCounter);
+		if (segSize == 0) {
+			continue;
+		}
 		float segments = 1 / segSize;
 		//float segNow = segSize;
 		float segNow = segSize;
+		//EM_ASM_({console.log("segnow and segsize " + $0 + " " + $1);}, segNow, segSize);
 
 		float p1x = p1->vertex->x + o1->vertex->x;
 		float p2x = p2->vertex->x + o2->vertex->x;
@@ -1143,7 +1153,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 							(3 * oneTsquare * segNow * 	p1y) + 
 							(3 * oneT * Tsquare * 		p2y) + 
 							(Tcube * 			o2->vertex->y);
-			EM_ASM_({console.log("[[[[[[[[[[[[[==========> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
+			//EM_ASM_({console.log("[[[[[[[[[[[[[==========> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
 			intermediate->vertex->z = 0;
 			intermediate->vertex->a = 1;
 

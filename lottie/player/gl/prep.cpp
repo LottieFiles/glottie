@@ -69,6 +69,9 @@ void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 	*(passedBuffers->ibo) = tibo;
 	*(passedBuffers->cbo) = tcbo;
 
+	passedBuffers->shapesTransform = currentShapesTransform;
+	passedBuffers->layersTransform = currentLayersTransform;
+
 	//EM_ASM_({console.log("--......--> done loading buffers " + $0 + " " + $1);}, idxCount, indices.size());
 
 	//passedBuffers->vao = tvao;
@@ -233,7 +236,7 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 	while (! exhausted) {
 		//EM_ASM({console.log("shape type " + $0);}, passedShapesItem->ty);
 		if (passedShapesItem->ty == _transform) {
-			fillTransformShapes(passedShapesItem);
+			currentShapesTransform = fillTransformShapes(passedShapesItem);
 			//EM_ASM({console.log("SHAPEPROP TRANSFORM found");});
 
 			/*shapesPosition.x = passedShapesItem->p->k[0];
@@ -271,6 +274,7 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 }
 
 int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempBaseTransform, bool freshStart, struct BoundingBox* currentBB) {
+	currentShapesTransform = NULL;
 	//EM_ASM({console.log("SHAPESITEM found pre 1.0");});
 	//EM_ASM({console.log("----- entering prepShapesItem ");});
 	if (passedShapesItem == NULL) {
@@ -350,7 +354,7 @@ void findLayersTransform(struct Layers* passedLayers) {
 				passedLayers->currentBB->anchorX = passedLayers->ks->a->k[0];
 				passedLayers->currentBB->anchorY = passedLayers->ks->a->k[1];
 			}
-			fillTransformLayers(passedLayers);
+			currentLayersTransform = fillTransformLayers(passedLayers);
 		}
 	/*
 		if (passedLayers->next == NULL) {
@@ -364,6 +368,7 @@ void findLayersTransform(struct Layers* passedLayers) {
 
 int prepLayers(struct Layers* passedLayers) {
 	//EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- LAYERS found pre 1.0");});
+	currentLayersTransform = NULL;
 
 	if (passedLayers == NULL || passedLayers->shapes == NULL) {
 		return 0;

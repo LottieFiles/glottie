@@ -9,6 +9,9 @@ GLuint mainShader;
 bool redrawRequired = false;
 //GLuint* shaderProgram;
 
+struct Transform* currentShapesTransform = NULL;
+struct Transform* currentLayersTransform = NULL;
+
 struct alignas(ALIGNSIZE) RedrawBuffers {
 	struct RedrawBuffers* start;
 	struct RedrawBuffers* next;
@@ -32,15 +35,15 @@ struct alignas(ALIGNSIZE) Buffers {
 
 	struct Dimensions* dimensions = NULL;
 
+	struct Transform* shapesTransform = NULL;
+	struct Transform* layersTransform = NULL;
+
 	GLuint* vao = NULL;
 	GLuint* vbo = NULL;
 	GLuint* cbo = NULL;
 	GLuint* ibo = NULL;
 	std::vector<unsigned int> idx; // array of triangulation data
 	int idxCount;
-
-	struct Transform* shapesTransform = NULL;
-	struct Transform* layersTransform;
 
 	GLint* posAttrib = NULL;
 	GLint* colAttrib = NULL;

@@ -182,5 +182,5 @@ struct alignas(ALIGNSIZE) BoundingBox {
 };
 
 struct alignas(ALIGNSIZE) Transform {
-	struct TransformAOV* p;
+	struct TransformAOV* p = NULL;
 };
