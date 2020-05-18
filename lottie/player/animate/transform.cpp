@@ -5,8 +5,8 @@ struct alignas(ALIGNSIZE) TransformAOV {
 	struct ArrayOfVertex* o = NULL;
 	std::vector<Vertex *> vertex;
 
-	float startTime = -1;
-	float endTime = -1;
+	int startTime = -1;
+	int endTime = -1;
 	float* frames;
 	float* segSize;
 	int v_count = 0;
@@ -27,7 +27,7 @@ struct TransformAOV* createSegmentMultiDimensional(struct PropertiesOffsetKeyfra
 	tempAOV->frames = new float[passedKeyframe->s_count];
 	tempAOV->segSize = new float[passedKeyframe->s_count];
 	tempAOV->startTime = passedKeyframe->t * theAnimation->frMultiplier;
-	EM_ASM_({console.log("1---> " + $0 + " " + $1);}, passedKeyframe->t, passedKeyframe->s_count);
+	//EM_ASM_({console.log("1---> " + $0 + " " + $1);}, passedKeyframe->t, passedKeyframe->s_count);
 	float w, h, z;
 	w = theAnimation->w;
 	h = theAnimation->h;
@@ -90,7 +90,7 @@ struct TransformAOV* createSegmentMultiDimensional(struct PropertiesOffsetKeyfra
 			*(tempAOV->frames + (tempAOV->v_count - 1)) = 1;
 			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 0;
 		}
-		EM_ASM_({console.log("----> " + $0 + " " + $1 + " -- frames: " + $2 + ", segsize: " + $3);}, tempAOV->v->vertex->x, tempAOV->v->vertex->y, *(tempAOV->frames + (tempAOV->v_count - 1)), *(tempAOV->segSize + (tempAOV->v_count - 1)));
+		EM_ASM_({console.log("----> " + $0 + " " + $1 + " -- frames: " + $2 + ", segsize: " + $3 + " -- start " + $4);}, tempAOV->v->vertex->x, tempAOV->v->vertex->y, *(tempAOV->frames + (tempAOV->v_count - 1)), *(tempAOV->segSize + (tempAOV->v_count - 1)), tempAOV->startTime);
 		previousTime = passedKeyframe->t;
 
 		if (passedKeyframe->next == NULL) {
@@ -105,6 +105,7 @@ struct TransformAOV* createSegmentMultiDimensional(struct PropertiesOffsetKeyfra
 	tempAOV->v->start->prev = tempAOV->v;
 	tempAOV->i->start->prev = tempAOV->i;
 	tempAOV->o->start->prev = tempAOV->o;
+	EM_ASM_({console.log("1----------------> " + $0 + " " + $1);}, passedKeyframe->t, passedKeyframe->s_count);
 
 	if (tempAOV->startTime > previousTime || tempAOV->v_count == 1) {
 		tempAOV->endTime = tempAOV->startTime;
@@ -139,16 +140,16 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem) {
 		passedShapesItem->transform = new Transform;
 	}
 	if (passedShapesItem->p != NULL && passedShapesItem->p->keyframe != NULL) {
-		//EM_ASM_({console.log("=================================TRANSFORM BEGINS ");});
+		EM_ASM_({console.log("---------------===================TRANSFORM BEGINS ");});
 		tempAOV = createSegmentMultiDimensional(passedShapesItem->p->keyframe->start);
 		passedShapesItem->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize);
 		}
-		fillAnimationVector(passedShapesItem->transform->p);
+		//fillAnimationVector(passedShapesItem->transform->p);
+		EM_ASM_({console.log("---------------===================TRANSFORM ENDS ");});
 	}
 
-	//EM_ASM_({console.log("=================================TRANSFORM ENDS ");});
 	return passedShapesItem->transform;
 }
 
@@ -158,17 +159,17 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers) {
 		passedLayers->transform = new Transform;
 	}
 	if (passedLayers->ks != NULL && passedLayers->ks->p != NULL && passedLayers->ks->p->keyframe != NULL) {
-		//EM_ASM_({console.log("=================================LAYERS TRANSFORM BEGINS ");});
+		EM_ASM_({console.log("=================================LAYERS TRANSFORM BEGINS ");});
 		tempAOV = createSegmentMultiDimensional(passedLayers->ks->p->keyframe->start);
 		passedLayers->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize);
 		}
-		fillAnimationVector(passedLayers->transform->p);
+		//fillAnimationVector(passedLayers->transform->p);
+		EM_ASM_({console.log("=================================LAYERS TRANSFORM ENDS ");});
 	}
 
 
-	//EM_ASM_({console.log("=================================LAYERS TRANSFORM ENDS ");});
 	return passedLayers->transform;
 }
 

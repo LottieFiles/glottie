@@ -260,6 +260,14 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 			shapesAnchor.x = passedShapesItem->a->k[0];
 			shapesAnchor.y = passedShapesItem->a->k[1];*/
 			//EM_ASM({console.log("SHAPE TRANSFORM found " + $0 + " " + $1 + " " + $2 + " " + $3);}, shapesPosition.x, shapesPosition.y, shapesAnchor.x, shapesAnchor.y);
+			if (currentShapesTransform != NULL && currentShapesTransform->p != NULL) {
+				EM_ASM({console.log("///// exiting findShapesTransform ");});
+				if (currentShapesTransform->p->startTime == 0) {
+				EM_ASM({console.log("///// exiting findShapesTransform2 ");});
+				shapesPosition.x = shapesPosition.x + currentShapesTransform->p->v->start->vertex->x;
+				shapesPosition.y = shapesPosition.y + currentShapesTransform->p->v->start->vertex->y;
+				}
+			}
 			return passedShapesItem;
 		}
 		if (passedShapesItem->next == NULL) {
@@ -355,6 +363,13 @@ void findLayersTransform(struct Layers* passedLayers) {
 				passedLayers->currentBB->anchorY = passedLayers->ks->a->k[1];
 			}
 			currentLayersTransform = fillTransformLayers(passedLayers);
+		}
+		if (currentLayersTransform != NULL && currentLayersTransform->p != NULL && currentLayersTransform->p->startTime == 0) {
+				EM_ASM({console.log("///// layer transform applied ");});
+			layersPosition.x = layersPosition.x + currentLayersTransform->p->v->start->vertex->x;
+			layersPosition.y = layersPosition.y + currentLayersTransform->p->v->start->vertex->y;
+			//layersPosition.x = layersPosition.x + currentLayersTransform->p->vertex.at(0)->x;
+			//layersPosition.y = layersPosition.y + currentLayersTransform->p->vertex.at(0)->y;
 		}
 	/*
 		if (passedLayers->next == NULL) {

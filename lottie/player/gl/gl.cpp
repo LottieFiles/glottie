@@ -176,9 +176,16 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						}
 						if (tempBuffers->shapesTransform != NULL && tempBuffers->shapesTransform->p != NULL && tempBuffers->shapesTransform->p->startTime <= frame && tempBuffers->shapesTransform->p->endTime >= frame) {
 							if (tempBuffers->shapesTransform->p != NULL) {
-								_xPos = (tempBuffers->shapesTransform->p->vertex.at(tempBuffers->shapesTransform->p->startTime - frame))->x;
+								/*_xPos = (tempBuffers->shapesTransform->p->vertex.at(tempBuffers->shapesTransform->p->startTime - frame))->x;
 								_yPos = (tempBuffers->shapesTransform->p->vertex.at(tempBuffers->shapesTransform->p->startTime - frame))->y;
-								_zPos = (tempBuffers->shapesTransform->p->vertex.at(tempBuffers->shapesTransform->p->startTime - frame))->z;
+								_zPos = (tempBuffers->shapesTransform->p->vertex.at(tempBuffers->shapesTransform->p->startTime - frame))->z;*/
+								tempBuffers->shapesTransform->p->v = tempBuffers->shapesTransform->p->v->start;
+								for (int i=0; i <= frame; i++) {
+									tempBuffers->shapesTransform->p->v = tempBuffers->shapesTransform->p->v->next;
+								}
+								_xPos = tempBuffers->shapesTransform->p->v->vertex->x;
+								_yPos = tempBuffers->shapesTransform->p->v->vertex->y;
+								_zPos = tempBuffers->shapesTransform->p->v->vertex->z;
 								_translation = true;
 							}
 						}
@@ -186,13 +193,17 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						if (tempBuffers->layersTransform != NULL) {
 							//EM_ASM({console.log("glDraw 1.2.2.1 ");});
 							if (tempBuffers->layersTransform->p != NULL && tempBuffers->layersTransform->p->startTime <= frame && tempBuffers->layersTransform->p->endTime >= frame) {
-									//EM_ASM({console.log("glDraw 1.3.1");});
-									_xPos = _xPos + (tempBuffers->layersTransform->p->vertex.at(tempBuffers->layersTransform->p->startTime - frame))->x;
-									//EM_ASM({console.log("glDraw 1.3.2");});
-									_yPos = _yPos + (tempBuffers->layersTransform->p->vertex.at(tempBuffers->layersTransform->p->startTime - frame))->y;
-									//EM_ASM({console.log("glDraw 1.3.3");});
-									_zPos = _zPos + (tempBuffers->layersTransform->p->vertex.at(tempBuffers->layersTransform->p->startTime - frame))->z;
-									_translation = true;
+								/*_xPos = _xPos + (tempBuffers->layersTransform->p->vertex.at(tempBuffers->layersTransform->p->startTime - frame))->x;
+								_yPos = _yPos + (tempBuffers->layersTransform->p->vertex.at(tempBuffers->layersTransform->p->startTime - frame))->y;
+								_zPos = _zPos + (tempBuffers->layersTransform->p->vertex.at(tempBuffers->layersTransform->p->startTime - frame))->z;*/
+								tempBuffers->layersTransform->p->v = tempBuffers->layersTransform->p->v->start;
+								for (int i=0; i <= frame; i++) {
+									tempBuffers->layersTransform->p->v = tempBuffers->layersTransform->p->v->next;
+								}
+								_xPos = _xPos + tempBuffers->layersTransform->p->v->vertex->x;
+								_yPos = _yPos + tempBuffers->layersTransform->p->v->vertex->y;
+								_zPos = _zPos + tempBuffers->layersTransform->p->v->vertex->z;
+								_translation = true;
 							}
 						}
 						//EM_ASM({console.log("glDraw 1.3");});
