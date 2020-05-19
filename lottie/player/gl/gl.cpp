@@ -7,7 +7,7 @@ const GLchar* vertexSource =
     "void main() \n"
     "{ \n"
     "  vcolors = color; \n"
-    "  gl_Position = position * transform; \n"
+    "  gl_Position = transform * position; \n"
     "} \n";
 
 const GLchar* fragmentSource =
@@ -174,28 +174,43 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						} else {
 							glUseProgram(*(passedShaderProgram->shader));
 						}
+
+						glm::mat4 trans = glm::mat4(1.0f);
+
+						_translation = false;
 						if (tempBuffers->shapesTransform != NULL && tempBuffers->shapesTransform->p != NULL && tempBuffers->shapesTransform->p->startTime <= frame && tempBuffers->shapesTransform->p->endTime >= frame) {
-							if (tempBuffers->shapesTransform->p != NULL) {
-								/*_xPos = (tempBuffers->shapesTransform->p->vertex.at(tempBuffers->shapesTransform->p->startTime - frame))->x;
-								_yPos = (tempBuffers->shapesTransform->p->vertex.at(tempBuffers->shapesTransform->p->startTime - frame))->y;
-								_zPos = (tempBuffers->shapesTransform->p->vertex.at(tempBuffers->shapesTransform->p->startTime - frame))->z;*/
-								tempBuffers->shapesTransform->p->v = tempBuffers->shapesTransform->p->v->start;
-								for (int i=0; i <= frame; i++) {
-									tempBuffers->shapesTransform->p->v = tempBuffers->shapesTransform->p->v->next;
+								tempBuffers->shapesTransform->p->transformMatrix = tempBuffers->shapesTransform->p->transformMatrix->start;
+								for (int i=1; i <= frame; i++) {
+									if (tempBuffers->shapesTransform->p->transformMatrix->next != NULL) {
+										tempBuffers->shapesTransform->p->transformMatrix = tempBuffers->shapesTransform->p->transformMatrix->next;
+									}
 								}
+								trans = tempBuffers->shapesTransform->p->transformMatrix->transform;
+								/*
 								_xPos = tempBuffers->shapesTransform->p->v->vertex->x;
 								_yPos = tempBuffers->shapesTransform->p->v->vertex->y;
 								_zPos = tempBuffers->shapesTransform->p->v->vertex->z;
+								*/
 								_translation = true;
-							}
+						}
+						if (tempBuffers->layersTransform != NULL && tempBuffers->layersTransform->p != NULL && tempBuffers->layersTransform->p->startTime <= frame && tempBuffers->layersTransform->p->endTime >= frame) {
+								tempBuffers->layersTransform->p->v = tempBuffers->layersTransform->p->v->start;
+								for (int i=1; i <= frame; i++) {
+									if (tempBuffers->layersTransform->p->v->next != NULL) {
+										tempBuffers->layersTransform->p->v = tempBuffers->layersTransform->p->v->next;
+									}
+								}
+								trans = tempBuffers->layersTransform->p->transformMatrix->transform;
+								/*
+								_xPos = tempBuffers->layersTransform->p->v->vertex->x;
+								_yPos = tempBuffers->layersTransform->p->v->vertex->y;
+								_zPos = tempBuffers->layersTransform->p->v->vertex->z;
+								*/
+								_translation = true;
 						}
 						//EM_ASM({console.log("glDraw 1.2.2");});
-						if (tempBuffers->layersTransform != NULL) {
-							//EM_ASM({console.log("glDraw 1.2.2.1 ");});
-							if (tempBuffers->layersTransform->p != NULL && tempBuffers->layersTransform->p->startTime <= frame && tempBuffers->layersTransform->p->endTime >= frame) {
-								/*_xPos = _xPos + (tempBuffers->layersTransform->p->vertex.at(tempBuffers->layersTransform->p->startTime - frame))->x;
-								_yPos = _yPos + (tempBuffers->layersTransform->p->vertex.at(tempBuffers->layersTransform->p->startTime - frame))->y;
-								_zPos = _zPos + (tempBuffers->layersTransform->p->vertex.at(tempBuffers->layersTransform->p->startTime - frame))->z;*/
+								/*
+						if (tempBuffers->layersTransform != NULL && tempBuffers->layersTransform->p != NULL && tempBuffers->layersTransform->p->startTime <= frame && tempBuffers->layersTransform->p->endTime >= frame) {
 								tempBuffers->layersTransform->p->v = tempBuffers->layersTransform->p->v->start;
 								for (int i=0; i <= frame; i++) {
 									tempBuffers->layersTransform->p->v = tempBuffers->layersTransform->p->v->next;
@@ -206,16 +221,25 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 								_translation = true;
 							}
 						}
+								*/
 						//EM_ASM({console.log("glDraw 1.3");});
 						//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-						glm::mat4 trans = glm::mat4(1.0f);
-						if (_translation) {
+						if (! _translation) {
 							//glTranslatef((GLfloat)_xPos, (GLfloat)_yPos, (GLfloat)_zPos);
 							//trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(_xPos, _yPos, _zPos));
-							trans = glm::translate(trans, glm::vec3(_xPos, _yPos, _zPos));
+							//trans = glm::translate(trans, glm::vec3(_xPos, _yPos, _zPos));
+							//} else {
+							trans = glm::mat4(1.0f);
 						}
+
+
+
+
 						unsigned int transformLoc = glGetUniformLocation(mainShader, "transform");
 						glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+
+
 
 						glBindVertexArrayOES(*(tempBuffers->vao));
 						//glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vbo));

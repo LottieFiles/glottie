@@ -181,6 +181,3 @@ struct alignas(ALIGNSIZE) BoundingBox {
 	float anchorY;
 };
 
-struct alignas(ALIGNSIZE) Transform {
-	struct TransformAOV* p = NULL;
-};

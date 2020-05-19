@@ -1,9 +1,23 @@
+struct alignas(ALIGNSIZE) TransformMatrix {
+	struct TransformMatrix* start;
+	struct TransformMatrix* prev;
+	struct TransformMatrix* next; 
+	
+	glm::mat4 transform;
+};
+
+struct alignas(ALIGNSIZE) Transform {
+	struct TransformAOV* p = NULL;
+	struct TransformAOV* r = NULL;
+	struct TransformAOV* s = NULL;
+};
 
 struct alignas(ALIGNSIZE) TransformAOV {
 	struct ArrayOfVertex* v = NULL;
 	struct ArrayOfVertex* i = NULL;
 	struct ArrayOfVertex* o = NULL;
-	std::vector<Vertex *> vertex;
+
+	struct TransformMatrix* transformMatrix = NULL;
 
 	int startTime = -1;
 	int endTime = -1;
@@ -19,7 +33,7 @@ struct TransformAOV* createSegment() {
 struct TransformAOV* createSegmentValue(struct PropertiesValueKeyframe* passedKeyframe) {
 }
 
-struct TransformAOV* createSegmentMultiDimensional(struct PropertiesOffsetKeyframe* passedKeyframe) {
+struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyframe) {
 	bool exhausted = false;
 	struct TransformAOV* tempAOV = NULL;
 	tempAOV = new TransformAOV;
@@ -115,17 +129,39 @@ struct TransformAOV* createSegmentMultiDimensional(struct PropertiesOffsetKeyfra
 	return tempAOV;
 }
 
-void fillAnimationVector(struct TransformAOV* passedAOV) {
-	if (passedAOV == NULL || passedAOV->v == NULL) {
-		passedAOV->vertex.reserve(1);
-		passedAOV->vertex.push_back(new Vertex);
-		return;
+struct TransformMatrix* newTransformMatrix(struct TransformMatrix* passedTransformMatrix) {
+	if (passedTransformMatrix == NULL) {
+		passedTransformMatrix = new TransformMatrix;
+		passedTransformMatrix->start = passedTransformMatrix;
+	} else {
+		passedTransformMatrix->next = new TransformMatrix;
+		passedTransformMatrix->next->prev = passedTransformMatrix;
+		passedTransformMatrix->next->start = passedTransformMatrix->start;
+		passedTransformMatrix = passedTransformMatrix->next;
 	}
-	passedAOV->vertex.reserve(passedAOV->v_count + 2);
-	bool exhausted = false;
+	return passedTransformMatrix;
+}
+
+void fillAnimationVector(struct TransformAOV* passedAOV) {
 	passedAOV->v = passedAOV->v->start;
+	bool exhausted = false;
+	int currentIndex = 0;
 	while (! exhausted) {
-		passedAOV->vertex.push_back(passedAOV->v->vertex);
+		passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
+		passedAOV->transformMatrix->transform = glm::mat4(1.0f);
+		/*if (currentLayersTransform != NULL && currentIndex > 0) {
+			currentLayersTransform->p->v = currentLayersTransform->p->v->start;
+			for (int i = 1; i <= currentIndex; i++) {
+				if (currentLayersTransform->p->v->next != NULL) {
+					currentLayersTransform->p->v = currentLayersTransform->p->v->next;
+				}
+			}
+			passedAOV->transformMatrix->transform = glm::translate(passedAOV->transformMatrix->transform, glm::vec3(passedAOV->v->vertex->x + currentLayersTransform->p->v->vertex->x, passedAOV->v->vertex->y + currentLayersTransform->p->v->vertex->y, passedAOV->v->vertex->z + currentLayersTransform->p->v->vertex->z));
+		} else {
+		}
+		*/
+		passedAOV->transformMatrix->transform = glm::translate(passedAOV->transformMatrix->transform, glm::vec3(passedAOV->v->vertex->x, passedAOV->v->vertex->y, passedAOV->v->vertex->z));
+		currentIndex++;
 		if (passedAOV->v->next == passedAOV->v->start) {
 			exhausted = true;
 		} else {
@@ -141,12 +177,12 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem) {
 	}
 	if (passedShapesItem->p != NULL && passedShapesItem->p->keyframe != NULL) {
 		EM_ASM_({console.log("---------------===================TRANSFORM BEGINS ");});
-		tempAOV = createSegmentMultiDimensional(passedShapesItem->p->keyframe->start);
+		tempAOV = createSegmentP(passedShapesItem->p->keyframe->start);
 		passedShapesItem->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize);
+			fillAnimationVector(passedShapesItem->transform->p);
 		}
-		//fillAnimationVector(passedShapesItem->transform->p);
 		EM_ASM_({console.log("---------------===================TRANSFORM ENDS ");});
 	}
 
@@ -160,12 +196,12 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers) {
 	}
 	if (passedLayers->ks != NULL && passedLayers->ks->p != NULL && passedLayers->ks->p->keyframe != NULL) {
 		EM_ASM_({console.log("=================================LAYERS TRANSFORM BEGINS ");});
-		tempAOV = createSegmentMultiDimensional(passedLayers->ks->p->keyframe->start);
+		tempAOV = createSegmentP(passedLayers->ks->p->keyframe->start);
 		passedLayers->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize);
+			fillAnimationVector(passedLayers->transform->p);
 		}
-		//fillAnimationVector(passedLayers->transform->p);
 		EM_ASM_({console.log("=================================LAYERS TRANSFORM ENDS ");});
 	}
 
