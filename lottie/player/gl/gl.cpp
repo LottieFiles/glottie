@@ -127,6 +127,8 @@ float _yPos = 0;
 float _zPos = 0;
 float _translation = false;
 float _rotation = false;
+int deltaFrame = 0;
+
 void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersToRender, int frame) {
 
 	//loop = [&]
@@ -179,9 +181,10 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 						_translation = false;
 						if (tempBuffers->shapesTransform != NULL && tempBuffers->shapesTransform->p != NULL && tempBuffers->shapesTransform->p->startTime <= frame && tempBuffers->shapesTransform->p->endTime >= frame) {
+								deltaFrame = frame - tempBuffers->shapesTransform->p->startTime;
 								tempBuffers->shapesTransform->p->transformMatrix = tempBuffers->shapesTransform->p->transformMatrix->start;
-								for (int i=1; i <= frame; i++) {
-									if (tempBuffers->shapesTransform->p->transformMatrix->next != NULL) {
+								for (int i=1; i <= deltaFrame; i++) {
+									if (tempBuffers->shapesTransform->p->transformMatrix != NULL && tempBuffers->shapesTransform->p->transformMatrix->next != NULL) {
 										tempBuffers->shapesTransform->p->transformMatrix = tempBuffers->shapesTransform->p->transformMatrix->next;
 									}
 								}
@@ -193,11 +196,12 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 								*/
 								_translation = true;
 						}
-						if (tempBuffers->layersTransform != NULL && tempBuffers->layersTransform->p != NULL && tempBuffers->layersTransform->p->startTime <= frame && tempBuffers->layersTransform->p->endTime >= frame) {
-								tempBuffers->layersTransform->p->v = tempBuffers->layersTransform->p->v->start;
-								for (int i=1; i <= frame; i++) {
-									if (tempBuffers->layersTransform->p->v->next != NULL) {
-										tempBuffers->layersTransform->p->v = tempBuffers->layersTransform->p->v->next;
+						if (tempBuffers->layersTransform != NULL && tempBuffers->layersTransform->p != NULL && tempBuffers->layersTransform->p->startTime <= frame && tempBuffers->layersTransform->p->endTime >= frame && tempBuffers->layersTransform->p->transformMatrix != NULL) {
+								deltaFrame = frame - tempBuffers->layersTransform->p->startTime;
+								tempBuffers->layersTransform->p->transformMatrix = tempBuffers->layersTransform->p->transformMatrix->start;
+								for (int i=1; i <= deltaFrame; i++) {
+									if (tempBuffers->layersTransform->p->transformMatrix != NULL && tempBuffers->layersTransform->p->transformMatrix->next != NULL) {
+										tempBuffers->layersTransform->p->transformMatrix = tempBuffers->layersTransform->p->transformMatrix->next;
 									}
 								}
 								trans = tempBuffers->layersTransform->p->transformMatrix->transform;

@@ -1,7 +1,7 @@
 struct alignas(ALIGNSIZE) TransformMatrix {
-	struct TransformMatrix* start;
-	struct TransformMatrix* prev;
-	struct TransformMatrix* next; 
+	struct TransformMatrix* start = NULL;
+	struct TransformMatrix* prev = NULL;
+	struct TransformMatrix* next = NULL; 
 	
 	glm::mat4 transform;
 };
@@ -10,6 +10,7 @@ struct alignas(ALIGNSIZE) Transform {
 	struct TransformAOV* p = NULL;
 	struct TransformAOV* r = NULL;
 	struct TransformAOV* s = NULL;
+
 };
 
 struct alignas(ALIGNSIZE) TransformAOV {
@@ -142,7 +143,7 @@ struct TransformMatrix* newTransformMatrix(struct TransformMatrix* passedTransfo
 	return passedTransformMatrix;
 }
 
-void fillAnimationVector(struct TransformAOV* passedAOV) {
+void fillAnimationTranslate(struct TransformAOV* passedAOV) {
 	passedAOV->v = passedAOV->v->start;
 	bool exhausted = false;
 	int currentIndex = 0;
@@ -160,6 +161,7 @@ void fillAnimationVector(struct TransformAOV* passedAOV) {
 		} else {
 		}
 		*/
+		EM_ASM_({console.log("=*******=======transformMatrix ");});
 		passedAOV->transformMatrix->transform = glm::translate(passedAOV->transformMatrix->transform, glm::vec3(passedAOV->v->vertex->x, passedAOV->v->vertex->y, passedAOV->v->vertex->z));
 		currentIndex++;
 		if (passedAOV->v->next == passedAOV->v->start) {
@@ -181,8 +183,8 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem) {
 		passedShapesItem->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize);
-			fillAnimationVector(passedShapesItem->transform->p);
 		}
+		fillAnimationTranslate(passedShapesItem->transform->p);
 		EM_ASM_({console.log("---------------===================TRANSFORM ENDS ");});
 	}
 
@@ -200,8 +202,8 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers) {
 		passedLayers->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize);
-			fillAnimationVector(passedLayers->transform->p);
 		}
+		fillAnimationTranslate(passedLayers->transform->p);
 		EM_ASM_({console.log("=================================LAYERS TRANSFORM ENDS ");});
 	}
 
