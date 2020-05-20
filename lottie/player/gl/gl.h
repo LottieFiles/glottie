@@ -38,6 +38,11 @@ struct alignas(ALIGNSIZE) Buffers {
 	struct Transform* shapesTransform = NULL;
 	struct Transform* layersTransform = NULL;
 
+	glm::mat4 lastTrans;
+
+	GLint* posAttrib = NULL;
+	GLint* colAttrib = NULL;
+
 	GLuint* vao = NULL;
 	GLuint* vbo = NULL;
 	GLuint* cbo = NULL;
@@ -46,8 +51,8 @@ struct alignas(ALIGNSIZE) Buffers {
 	int idxCount;
 	bool firstFrameRendered = false;
 
-	GLint* posAttrib = NULL;
-	GLint* colAttrib = NULL;
+	bool lastTransSet = false;
+
 	bool changed = false;
 	bool clockwise;
 } *lastBuffersCreated;

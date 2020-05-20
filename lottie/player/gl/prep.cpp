@@ -312,11 +312,10 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			currentShapesPosY = shapesPosition.y;
 			currentShapesAncX = shapesAnchor.x;
 			currentShapesAncY = shapesAnchor.y;
-			/*shapesPosition.x = 0;
+			shapesPosition.x = 0;
 			shapesPosition.y = 0;
 			shapesAnchor.x = 0;
 			shapesAnchor.y = 0;
-			*/
 			prepShapesItem(passedShapesItem->it, currentBaseTransform, freshStart, currentBB);
 			shapesPosition.x = currentShapesPosX;
 			shapesPosition.y = currentShapesPosY;

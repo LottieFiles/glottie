@@ -128,6 +128,7 @@ float _zPos = 0;
 float _translation = false;
 float _rotation = false;
 int deltaFrame = 0;
+glm::mat4 trans;
 
 void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersToRender, int frame) {
 
@@ -165,6 +166,9 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 				bool firstCycleDone = false;
 
 				while (!exhausted) {
+					if (frame == 0) {
+						tempBuffers->lastTransSet = false;
+					}
 					_xPos = 0;
 					_yPos = 0;
 					_zPos = 0;
@@ -177,7 +181,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							glUseProgram(*(passedShaderProgram->shader));
 						}
 
-						glm::mat4 trans = glm::mat4(1.0f);
+
 
 						_translation = false;
 						if (tempBuffers->shapesTransform != NULL && tempBuffers->shapesTransform->p != NULL && tempBuffers->shapesTransform->p->startTime <= frame && tempBuffers->shapesTransform->p->endTime >= frame) {
@@ -233,7 +237,14 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							//trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(_xPos, _yPos, _zPos));
 							//trans = glm::translate(trans, glm::vec3(_xPos, _yPos, _zPos));
 							//} else {
-							trans = glm::mat4(1.0f);
+							if (tempBuffers->lastTransSet) {
+								trans = tempBuffers->lastTrans;
+							} else {
+								trans = glm::mat4(1.0f);
+							}
+						} else {
+							tempBuffers->lastTrans = trans;
+							tempBuffers->lastTransSet = true;
 						}
 
 

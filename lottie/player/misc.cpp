@@ -1020,9 +1020,40 @@ void getBoundingBox(struct ShapesItem* passedShapesItem, struct BoundingBox* cur
 	//return currentBB;
 }
 
+struct ArrayOfVertex* bezierFillNulls(struct ArrayOfVertex* startV, struct ArrayOfVertex* endV, int segSize, int* v_count, int* bezier_count) {
+	float vStepX = (endV->vertex->x - startV->vertex->x) / segSize; 
+	float vStepY = (endV->vertex->y - startV->vertex->y) / segSize;
+	struct ArrayOfVertex* intermediate;
+	struct ArrayOfVertex* lastIntermediate = NULL;
+	for (int i = 0; i < segSize; i++) {
+		intermediate = new ArrayOfVertex;
+		intermediate->vertex = new Vertex;
+		if (lastIntermediate == NULL) {
+			startV->next = intermediate;
+			intermediate->prev = startV;
+		} else {
+			lastIntermediate->next = intermediate;
+			intermediate->prev = lastIntermediate;
+		}
+		intermediate->start = startV->start;
+
+		intermediate->vertex->x = startV->vertex->x + vStepX;
+		intermediate->vertex->y = startV->vertex->y + vStepY;
+
+		intermediate->bezier = true;
+		intermediate->vertex->z = 0;
+		intermediate->vertex->a = 1;
+
+		lastIntermediate = intermediate;
+		v_count++;
+		bezier_count++;
+	}
+	lastIntermediate->next = endV;
+	endV->prev = lastIntermediate;
+}
 
 // related to animating
-void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed) {
+void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed, bool fillNulls) {
 	bool exhausted = false;
 	v = v->start;
 	i = i->start;
@@ -1085,15 +1116,18 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 							o->prev->vertex->y == 0
 						)
 					) {
+						startedCycling = true;
+						segCounter++;
+						if (fillNulls) {
+							//bezierFillNulls(v->prev, v, *(segSizePassed + segCounter), v_count, bezier_count);
+						}
 						i = i->next;
 						o = o->next;
 						v = v->next;
+						//EM_ASM({console.log("non-bezier ");});
 						if (v == startPoint && startedCycling == true) {
 							break;
 						}
-						//EM_ASM({console.log("non-bezier ");});
-						startedCycling = true;
-						segCounter++;
 						continue;
 				} else {
 					i = i->next;

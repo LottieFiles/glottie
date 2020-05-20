@@ -182,7 +182,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem) {
 		tempAOV = createSegmentP(passedShapesItem->p->keyframe->start);
 		passedShapesItem->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
-			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize);
+			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true);
 		}
 		fillAnimationTranslate(passedShapesItem->transform->p);
 		EM_ASM_({console.log("---------------===================TRANSFORM ENDS ");});
@@ -201,7 +201,7 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers) {
 		tempAOV = createSegmentP(passedLayers->ks->p->keyframe->start);
 		passedLayers->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
-			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize);
+			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true);
 		}
 		fillAnimationTranslate(passedLayers->transform->p);
 		EM_ASM_({console.log("=================================LAYERS TRANSFORM ENDS ");});
