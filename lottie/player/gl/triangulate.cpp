@@ -314,6 +314,52 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	//float currentXPosition = (layersPosition.x - (currentBB->w / 2) - currentBB->anchorX) + shapesPosition.x;
 	//float currentYPosition = (layersPosition.y - (currentBB->h / 2) - currentBB->anchorY) + shapesPosition.y;
 	float currentXPosition, currentYPosition;
+			//currentXPosition = (layersPosition.x - (currentBB->w / 2)) + shapesPosition.x;
+			//currentYPosition = (layersPosition.y - (currentBB->h / 2)) + shapesPosition.y;
+	
+	/*if (currentBB->anchorX != 0 || currentBB->anchorY != 0) {
+			currentXPosition = (layersPosition.x - ((currentBB->w / 2) + currentBB->anchorX)) + shapesPosition.x;
+			currentYPosition = (layersPosition.y - ((currentBB->h / 2) + currentBB->anchorY)) + shapesPosition.y;
+	} else {*/
+			//currentXPosition = (layersPosition.x - (currentBB->w / 2)) + (shapesPosition.x - shapesAnchor.x);
+			//currentYPosition = (layersPosition.y - (currentBB->h / 2)) + (shapesPosition.y - shapesAnchor.y);
+	//}
+	float tempShapesX = 0;
+	float tempShapesY = 0;
+	float tempLayersX = 0;
+	float tempLayersY = 0;
+
+	if (shapesPosition.x != 0 || shapesPosition.y != 0) {
+		if (shapesAnchor.x != 0 || shapesAnchor.y != 0) {
+			tempShapesX = shapesPosition.x - shapesAnchor.x;
+			tempShapesY = shapesPosition.y - shapesAnchor.y;
+		} else {
+			tempShapesX = shapesPosition.x - (currentBB->w / 2);
+			tempShapesY = shapesPosition.y - (currentBB->h / 2);
+		}
+	}
+	if (layersPosition.x != 0 || layersPosition.y != 0) {
+		if (currentBB->anchorX != 0 || currentBB->anchorY != 0) {
+			tempLayersX = layersPosition.x - currentBB->anchorX;
+			tempLayersY = layersPosition.y - currentBB->anchorX;
+		} else {
+			tempLayersX = layersPosition.x - (currentBB->w / 2);
+			tempLayersY = layersPosition.y - (currentBB->h / 2);
+		}
+	}
+	currentXPosition = tempLayersX + tempShapesX;
+	currentYPosition = tempLayersY + tempShapesY;
+	/*
+		if (currentBB->anchorX != 0 || currentBB->anchorY != 0) {
+			currentXPosition = (layersPosition.x - currentBB->anchorX) + shapesPosition.x;
+			currentYPosition = (layersPosition.y - currentBB->anchorY) + shapesPosition.y;
+		} else {
+			currentXPosition = layersPosition.x + shapesPosition.x;
+			currentYPosition = layersPosition.y + shapesPosition.y;
+		}
+	*/
+
+	/*
 	if (currentBB->anchorX != 0 || currentBB->anchorY != 0) {
 		if (shapesAnchor.x != 0 || shapesAnchor.y != 0) {
 			currentXPosition = (layersPosition.x - currentBB->anchorX) + (shapesPosition.x - shapesAnchor.x);
@@ -321,8 +367,6 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		} else {
 			currentXPosition = (layersPosition.x - currentBB->anchorX) + shapesPosition.x;
 			currentYPosition = (layersPosition.y - currentBB->anchorY) + shapesPosition.y;
-			//currentXPosition = (layersPosition.x - currentBB->anchorX) + (shapesPosition.x - (currentShapesBB->w / 2));
-			//currentYPosition = (layersPosition.y - currentBB->anchorY) + (shapesPosition.y - (currentShapesBB->h / 2));
 		}
 	} else {
 		if (shapesAnchor.x != 0 || shapesAnchor.y != 0) {
@@ -331,12 +375,9 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		} else {
 			currentXPosition = (layersPosition.x - (currentBB->w / 2)) + shapesPosition.x;
 			currentYPosition = (layersPosition.y - (currentBB->h / 2)) + shapesPosition.y;
-			//currentXPosition = (layersPosition.x - (currentBB->w / 2)) + (shapesPosition.x - (currentShapesBB->w / 2));
-			//currentYPosition = (layersPosition.y - (currentBB->h / 2)) + (shapesPosition.y - (currentShapesBB->h / 2));
 		}
-		//currentXPosition = layersPosition.x + shapesPosition.x;
-		//currentYPosition = layersPosition.y + shapesPosition.y;
 	}
+	*/
 
 	while (! exhausted) {
 		/*
@@ -355,14 +396,14 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		//EM_ASM_({console.log("adding regulars 1 " + $0 + " " + $1 + " " + $2);}, passedArray->vertex->x, layersOffset.x, layersOffset.y);
 		//passedProp->gl_v.push_back(((2 * ((passedArray->vertex->x) - halfW)) / theAnimation->w) + currentXPosition);
 		//passedProp->gl_v.push_back((((2 * ((passedArray->vertex->y) - halfH)) / theAnimation->h) * -1) + currentYPosition);
-		passedProp->gl_v.push_back(((passedArray->vertex->x + currentXPosition) / theAnimation->w) - 0.5);
-		passedProp->gl_v.push_back((((passedArray->vertex->y + currentYPosition) / theAnimation->h) - 0.5) * -1);
+		passedProp->gl_v.push_back(((passedArray->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w) - 0.5);
+		passedProp->gl_v.push_back((((passedArray->vertex->y + currentYPosition) * theAnimation->scaleFactorY / theAnimation->h) - 0.5) * -1);
 		//passedProp->gl_v.push_back((2 * ((passedArray->vertex->x + currentXPosition))) / theAnimation->w);
 		//passedProp->gl_v.push_back(((2 * ((passedArray->vertex->y + currentYPosition))) / theAnimation->h) * -1);
 		if (passedArray->vertex->z == 0) {
 			passedProp->gl_v.push_back(1 - ((float)order / 100000));
 		} else {
-			passedProp->gl_v.push_back(passedArray->vertex->z);
+			passedProp->gl_v.push_back(passedArray->vertex->z * theAnimation->scaleFactorZ);
 		}
 		passedProp->gl_v.push_back(1);
 
@@ -427,8 +468,8 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 			//EM_ASM({console.log("adding regulars 2 " + $0);}, reserve->arrayItem->vertex->x);
 			//passedProp->gl_v.push_back(((2 * ((reserve->arrayItem->vertex->x) - halfW)) / theAnimation->w) + currentXPosition);
 			//passedProp->gl_v.push_back((((2 * ((reserve->arrayItem->vertex->y) - halfH)) / theAnimation->h) * -1) + currentYPosition);
-			passedProp->gl_v.push_back(((reserve->arrayItem->vertex->x + currentXPosition) / theAnimation->w) - 0.5);
-			passedProp->gl_v.push_back((((reserve->arrayItem->vertex->y + currentYPosition) / theAnimation->h) - 0.5) * -1);
+			passedProp->gl_v.push_back(((reserve->arrayItem->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w) - 0.5);
+			passedProp->gl_v.push_back((((reserve->arrayItem->vertex->y + currentYPosition) * theAnimation->scaleFactorY / theAnimation->h) - 0.5) * -1);
 			//passedProp->gl_v.push_back((2 * ((reserve->arrayItem->vertex->x + currentXPosition))) / theAnimation->w);
 			//passedProp->gl_v.push_back(((2 * ((reserve->arrayItem->vertex->y + currentYPosition))) / theAnimation->h) * -1);
 			//passedProp->gl_v.push_back((2 * (reserve->arrayItem->vertex->x + layersOffset.x)) / theAnimation->w);
@@ -436,7 +477,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 			if (passedArray->vertex->z == 0) {
 				passedProp->gl_v.push_back(1 - ((float)order / 100000));
 			} else {
-				passedProp->gl_v.push_back(reserve->arrayItem->vertex->z);
+				passedProp->gl_v.push_back(reserve->arrayItem->vertex->z * theAnimation->scaleFactorZ);
 			}
 			passedProp->gl_v.push_back(1);
 

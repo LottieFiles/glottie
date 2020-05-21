@@ -312,10 +312,12 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			currentShapesPosY = shapesPosition.y;
 			currentShapesAncX = shapesAnchor.x;
 			currentShapesAncY = shapesAnchor.y;
+			/*
 			shapesPosition.x = 0;
 			shapesPosition.y = 0;
 			shapesAnchor.x = 0;
 			shapesAnchor.y = 0;
+			*/
 			prepShapesItem(passedShapesItem->it, currentBaseTransform, freshStart, currentBB);
 			shapesPosition.x = currentShapesPosX;
 			shapesPosition.y = currentShapesPosY;
@@ -326,7 +328,9 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			if (passedShapesItem->currentBB == NULL) {
 				passedShapesItem->currentBB = new BoundingBox;
 			}
-			getBBPropShape(passedShapesItem->ks, passedShapesItem->currentBB);
+			getBBPropShape(passedShapesItem->ks->start, passedShapesItem->currentBB);
+			passedShapesItem->currentBB->anchorX = shapesAnchor.x;
+			passedShapesItem->currentBB->anchorY = shapesAnchor.y;
 			prepPropertiesShape(passedShapesItem->ks, passedShapesItem, currentBB, passedShapesItem->currentBB);
 		}
 

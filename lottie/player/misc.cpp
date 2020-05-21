@@ -1016,6 +1016,7 @@ void getBoundingBox(struct ShapesItem* passedShapesItem, struct BoundingBox* cur
 		} else {
 			passedShapesItem = passedShapesItem->next;
 		}
+
 	}
 	//return currentBB;
 }
@@ -1052,6 +1053,9 @@ struct ArrayOfVertex* bezierFillNulls(struct ArrayOfVertex* startV, struct Array
 	endV->prev = lastIntermediate;
 }
 
+void adjustScale(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o) {
+}
+
 // related to animating
 void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed, bool fillNulls) {
 	bool exhausted = false;
@@ -1076,6 +1080,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 		if (v == startPoint && startedCycling == true) {
 			break;
 			//continue;
+			/*
 				if (
 						(
 							i->vertex->x == 0 && 
@@ -1101,6 +1106,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 					}
 					exhausted = true;
 				}
+			*/
 		} else {
 				if (
 						(

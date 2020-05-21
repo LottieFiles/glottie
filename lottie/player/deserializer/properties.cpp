@@ -590,6 +590,7 @@ int fillPropertiesValueKeyframe(struct PropertiesValueKeyframe* passedProperties
 		}
 
 		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "s") == 0) {
+			//*(passedPropertiesValueKeyframe->s + 0) = stringToFloat(tempKeyValue->value);
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesValueKeyframe->s = tempFloatArray->floatArray;

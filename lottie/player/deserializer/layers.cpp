@@ -89,6 +89,15 @@ int fillAnimation() {
 	theAnimation->frameTimeMS = theAnimation->frameTime * 1000;
 
 	theAnimation->totalTime = theAnimation->op * theAnimation->frameTime;
+
+	if (theAnimation->customWidth > 0) {
+		theAnimation->w = theAnimation->customWidth;
+	}
+	if (theAnimation->customHeight > 0) {
+		theAnimation->h = theAnimation->customHeight;
+	}
+	theAnimation->halfW = theAnimation->w / 2;
+	theAnimation->halfH = theAnimation->h / 2;
 	//EM_ASM_({console.log("========================> fill 80.1 " + $0);}, theAnimation->h);
 	//deleteKeyValues(theScope->currentKeyValueTrail);
 

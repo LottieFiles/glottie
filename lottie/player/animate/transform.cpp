@@ -54,22 +54,22 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 	while (! exhausted) {
 		
 		if (passedKeyframe->s_count == 1) {
-			float _1 = ((*(passedKeyframe->s + 0) / w) - 0.5);
+			float _1 = (((*(passedKeyframe->s + 0) * theAnimation->scaleFactorX) / w) - 0.5);
 			//float currentList[4] = {((*(passedKeyframe->s + 0) / w) - 0.5), 0, 0, 1};
 			float currentList[4] = {_1, 0, 0, 1};
 			tempAOV->v = pushVertex(tempAOV->v, currentList);
 			//EM_ASM_({console.log("1---> " + $0 + " " + $1);}, *(passedKeyframe->s + 0), passedKeyframe->s_count);
 		} else if (passedKeyframe->s_count == 2) {
-			float _1 = ((*(passedKeyframe->s + 0) / w) - 0.5);
-			float _2 = ((*(passedKeyframe->s + 1) / h) - 0.5) * -1;
+			float _1 = (((*(passedKeyframe->s + 0) * theAnimation->scaleFactorX) / w) - 0.5);
+			float _2 = (((*(passedKeyframe->s + 1) * theAnimation->scaleFactorY) / h) - 0.5) * -1;
 			float currentList[4] = {_1, _2, 0, 1};
 			//float currentList[4] = {((*(passedKeyframe->s + 0) / w) - 0.5), (((*(passedKeyframe->s + 1) / h) - 0.5) * -1), 0, 1};
 			tempAOV->v = pushVertex(tempAOV->v, currentList);
 			//EM_ASM_({console.log("2---> " + $0 + " " + $1);}, *(passedKeyframe->s + 0), passedKeyframe->s_count);
 		} else if (passedKeyframe->s_count == 3) {
-			float _1 = ((*(passedKeyframe->s + 0) / w) - 0.5);
-			float _2 = ((*(passedKeyframe->s + 1) / h) - 0.5) * -1;
-			float _3 = (*(passedKeyframe->s + 3) / z);
+			float _1 = (((*(passedKeyframe->s + 0) * theAnimation->scaleFactorX) / w) - 0.5);
+			float _2 = (((*(passedKeyframe->s + 1) * theAnimation->scaleFactorY) / h) - 0.5) * -1;
+			float _3 = ((*(passedKeyframe->s + 3) * theAnimation->scaleFactorZ) / z);
 			float currentList[4] = {_1, _2, _3, 1};
 			//float currentList[4] = {((*(passedKeyframe->s + 0) / w) - 0.5), (((*(passedKeyframe->s + 1) / h) - 0.5) * -1), ((*(passedKeyframe->s + 2) / z) - 0.5), 0, 1};
 			tempAOV->v = pushVertex(tempAOV->v, currentList);
@@ -150,19 +150,10 @@ void fillAnimationTranslate(struct TransformAOV* passedAOV) {
 	while (! exhausted) {
 		passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
 		passedAOV->transformMatrix->transform = glm::mat4(1.0f);
-		/*if (currentLayersTransform != NULL && currentIndex > 0) {
-			currentLayersTransform->p->v = currentLayersTransform->p->v->start;
-			for (int i = 1; i <= currentIndex; i++) {
-				if (currentLayersTransform->p->v->next != NULL) {
-					currentLayersTransform->p->v = currentLayersTransform->p->v->next;
-				}
-			}
-			passedAOV->transformMatrix->transform = glm::translate(passedAOV->transformMatrix->transform, glm::vec3(passedAOV->v->vertex->x + currentLayersTransform->p->v->vertex->x, passedAOV->v->vertex->y + currentLayersTransform->p->v->vertex->y, passedAOV->v->vertex->z + currentLayersTransform->p->v->vertex->z));
-		} else {
-		}
-		*/
-		EM_ASM_({console.log("=*******=======transformMatrix ");});
+
+
 		passedAOV->transformMatrix->transform = glm::translate(passedAOV->transformMatrix->transform, glm::vec3(passedAOV->v->vertex->x, passedAOV->v->vertex->y, passedAOV->v->vertex->z));
+
 		currentIndex++;
 		if (passedAOV->v->next == passedAOV->v->start) {
 			exhausted = true;
