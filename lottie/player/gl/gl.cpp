@@ -131,6 +131,7 @@ int deltaFrame = 0;
 glm::mat4 trans;
 glm::mat4 transP;
 glm::mat4 transS;
+glm::mat4 transL;
 
 void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersToRender, int frame) {
 
@@ -183,9 +184,14 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							glUseProgram(*(passedShaderProgram->shader));
 						}
 
+
 						transP = glm::mat4(1.0f);
 						transS = glm::mat4(1.0f);
-						
+					
+
+
+	
+						/*
 						_translation = false;
 						if (tempBuffers->shapesTransform != NULL && tempBuffers->shapesTransform->p != NULL && tempBuffers->shapesTransform->p->startTime <= frame && tempBuffers->shapesTransform->p->endTime >= frame) {
 								deltaFrame = frame - tempBuffers->shapesTransform->p->startTime;
@@ -233,6 +239,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 								_translation = true;
 						}
 
+						*/	
+
 						//EM_ASM({console.log("glDraw 1.2.2");});
 								/*
 						if (tempBuffers->layersTransform != NULL && tempBuffers->layersTransform->p != NULL && tempBuffers->layersTransform->p->startTime <= frame && tempBuffers->layersTransform->p->endTime >= frame) {
@@ -249,11 +257,48 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 								*/
 						//EM_ASM({console.log("glDraw 1.3");});
 						//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+						_translation = false;
+						if (tempBuffers->shapesTransform != NULL && tempBuffers->shapesTransform->startTime <= frame && tempBuffers->shapesTransform->endTime >= frame) {
+							if (tempBuffers->shapesTransform->startTime == frame) {
+								tempBuffers->shapesTransform->composite = tempBuffers->shapesTransform->composite->start;
+							} else {
+								if (tempBuffers->shapesTransform->composite->next != NULL) {
+									tempBuffers->shapesTransform->composite = tempBuffers->shapesTransform->composite->next;
+								}
+							}
+							if (tempBuffers->shapesTransform->composite != NULL) {
+								_translation = true;
+								if (tempBuffers->shapesTransform->composite->position != NULL) {
+									transP = transP * tempBuffers->shapesTransform->composite->position->transform;
+								}
+								if (tempBuffers->shapesTransform->composite->scale != NULL) {
+									transS = transS * tempBuffers->shapesTransform->composite->scale->transform;
+								}
+							}
+						}
+
+						if (tempBuffers->layersTransform != NULL && tempBuffers->layersTransform->startTime <= frame && tempBuffers->layersTransform->endTime >= frame) {
+							if (tempBuffers->layersTransform->startTime == frame) {
+								tempBuffers->layersTransform->composite = tempBuffers->layersTransform->composite->start;
+							} else {
+								if (tempBuffers->layersTransform->composite->next != NULL) {
+									tempBuffers->layersTransform->composite = tempBuffers->layersTransform->composite->next;
+								}
+							}
+							if (tempBuffers->layersTransform->composite != NULL) {
+								_translation = true;
+								if (tempBuffers->layersTransform->composite->position != NULL) {
+									transP = transP * tempBuffers->layersTransform->composite->position->transform;
+								}
+								if (tempBuffers->layersTransform->composite->scale != NULL) {
+									transS = transS * tempBuffers->layersTransform->composite->scale->transform;
+								}
+							}
+						}
+
 						if (! _translation) {
-							//glTranslatef((GLfloat)_xPos, (GLfloat)_yPos, (GLfloat)_zPos);
-							//trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(_xPos, _yPos, _zPos));
-							//trans = glm::translate(trans, glm::vec3(_xPos, _yPos, _zPos));
-							//} else {
 							if (tempBuffers->lastTransSet) {
 								trans = tempBuffers->lastTrans;
 							} else {
@@ -264,6 +309,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							tempBuffers->lastTrans = trans;
 							tempBuffers->lastTransSet = true;
 						}
+
+						
 
 
 

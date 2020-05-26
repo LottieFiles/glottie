@@ -277,9 +277,14 @@ int associateKeyValues() {
 
 		}
 	} else if (theScope->scope == _o) {
-
+		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
+			//EM_ASM({console.log("//----------------> filling multidim p");});
+			fillPropertiesValue(currentShapesItem->o);
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			//EM_ASM({console.log("//----------------> filling multidim p in layer");});
+			fillPropertiesValue(currentLayers->ks->o);
 	
-		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
 			fillBezierCurve(currentShapesItem->a->keyframe->o);
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
 			fillBezierCurve(currentLayers->ks->a->keyframe->o);
@@ -304,12 +309,6 @@ int associateKeyValues() {
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _o && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
 			fillBezierCurve(currentLayers->ks->o->keyframe->o);
 
-		} else if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
-			//EM_ASM({console.log("//----------------> filling multidim p");});
-			fillPropertiesValue(currentShapesItem->o);
-		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
-			//EM_ASM({console.log("//----------------> filling multidim p in layer");});
-			fillPropertiesValue(currentLayers->ks->o);
 
 
 		/*
@@ -635,9 +634,15 @@ int prepareContainer(bool arrayOfObjects) {
 
 		}
 	} else if (theScope->scope == _o) {
+		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
+			//EM_ASM({console.log("-----------------> TRANSFORM p");});
+			currentShapesItem->o = newPropertiesValue();
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			//EM_ASM({console.log("-----------------> TRANSFORM p in LAYER");});
+			currentLayers->ks->o = newPropertiesValue();
+		//EM_ASM_({console.log("-----------------> p found " + String.fromCharCode($0) + String.fromCharCode($1));}, theScope->prev->currentTy[0], theScope->prev->currentTy[1]);
 
-
-		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
 			currentShapesItem->a->keyframe->o = newBezierCurve();
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
 			currentLayers->ks->a->keyframe->o = newBezierCurve();
@@ -662,13 +667,6 @@ int prepareContainer(bool arrayOfObjects) {
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _o && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
 			currentLayers->ks->o->keyframe->o = newBezierCurve();
 
-		} else if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
-			//EM_ASM({console.log("-----------------> TRANSFORM p");});
-			currentShapesItem->o = newPropertiesValue();
-		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
-			//EM_ASM({console.log("-----------------> TRANSFORM p in LAYER");});
-			currentLayers->ks->o = newPropertiesValue();
-		//EM_ASM_({console.log("-----------------> p found " + String.fromCharCode($0) + String.fromCharCode($1));}, theScope->prev->currentTy[0], theScope->prev->currentTy[1]);
 
 
 		/*
