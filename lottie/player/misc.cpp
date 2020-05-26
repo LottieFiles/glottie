@@ -1231,3 +1231,33 @@ double seconds() {
 	return (double)tempRef.tv_sec + ((double)tempRef.tv_usec / 1000000);
 }
 
+struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct BoundingBox* currentShapesBB) {
+	struct ReturnPosition* temp = new ReturnPosition;
+	temp->layers = new Vertex;
+	temp->shapes = new Vertex;
+			temp->layers->x = layersPosition.x - currentBB->anchorX + shapesPosition.x;
+			temp->layers->y = layersPosition.y - currentBB->anchorY + shapesPosition.y;
+	/*
+	if (shapesPosition.x != 0 || shapesPosition.y != 0) {
+		if (shapesAnchor.x != 0 || shapesAnchor.y != 0) {
+			temp->shapes->x = shapesPosition.x - shapesAnchor.x;
+			temp->shapes->y = shapesPosition.y - shapesAnchor.y;
+		} else {
+			if (currentShapesBB != NULL) {
+				temp->shapes->x = shapesPosition.x - (currentShapesBB->w / 2);
+				temp->shapes->y = shapesPosition.y - (currentShapesBB->h / 2);
+			}
+		}
+	}
+	if (layersPosition.x != 0 || layersPosition.y != 0) {
+		if (currentBB->anchorX != 0 || currentBB->anchorY != 0) {
+			temp->layers->x = layersPosition.x - currentBB->anchorX;
+			temp->layers->y = layersPosition.y - currentBB->anchorX;
+		} else {
+			temp->layers->x = layersPosition.x - (currentBB->w / 2);
+			temp->layers->y = layersPosition.y - (currentBB->h / 2);
+		}
+	}
+	*/
+	return temp;
+}

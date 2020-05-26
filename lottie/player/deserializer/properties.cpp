@@ -690,6 +690,7 @@ int fillBezierCurve(struct BezierCurve* passedBezierCurve) {
 }
 
 void createEllipse(struct ShapesItem* passedShapesItem) {
+	return;
 	if (passedShapesItem->basicShapeGenerated == true) {
 		return;
 	}

@@ -3,13 +3,14 @@ struct alignas(ALIGNSIZE) TransformMatrix {
 	struct TransformMatrix* prev = NULL;
 	struct TransformMatrix* next = NULL; 
 	
-	glm::mat4 transform;
+	glm::mat4 transform = glm::mat4(1.0f);
 };
 
 struct alignas(ALIGNSIZE) Transform {
 	struct TransformAOV* p = NULL;
 	struct TransformAOV* r = NULL;
 	struct TransformAOV* s = NULL;
+	struct TransformAOV* o = NULL;
 
 };
 
@@ -26,6 +27,7 @@ struct alignas(ALIGNSIZE) TransformAOV {
 	float* segSize;
 	int v_count = 0;
 	int bezier_count = 0;
+	int s_count;
 };
 
 struct TransformAOV* createSegment() {
@@ -34,7 +36,7 @@ struct TransformAOV* createSegment() {
 struct TransformAOV* createSegmentValue(struct PropertiesValueKeyframe* passedKeyframe) {
 }
 
-struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyframe) {
+struct TransformAOV* createSegment(struct PropertiesOffsetKeyframe* passedKeyframe, struct BoundingBox* currentBB, int type) {
 	bool exhausted = false;
 	struct TransformAOV* tempAOV = NULL;
 	tempAOV = new TransformAOV;
@@ -51,34 +53,62 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 	} else {
 		z = 1;
 	}
+	struct ReturnPosition* tempPos = getRelativePosition(currentBB, NULL);
+	float tempX = tempPos->layers->x;
+	float tempY = tempPos->layers->y;
+	float tempZ = tempPos->layers->z;
+	float _1, _2, _3, _4;
 	while (! exhausted) {
-		
+		_4 = 1.0f;
 		if (passedKeyframe->s_count == 1) {
-			float _1 = (((*(passedKeyframe->s + 0) * theAnimation->scaleFactorX) / w) - 0.5);
-			//float currentList[4] = {((*(passedKeyframe->s + 0) / w) - 0.5), 0, 0, 1};
-			float currentList[4] = {_1, 0, 0, 1};
-			tempAOV->v = pushVertex(tempAOV->v, currentList);
-			//EM_ASM_({console.log("1---> " + $0 + " " + $1);}, *(passedKeyframe->s + 0), passedKeyframe->s_count);
+			if (type == 1) {
+				_1 = ((((*(passedKeyframe->s + 0) + tempX) * theAnimation->scaleFactorX) / w) - 0.5);
+			} else if (type == 2) {
+				_1 = *(passedKeyframe->s + 0) / 100;
+			} else if (type == 3) {
+				_1 = 1.0f;
+				_2 = 1.0f;
+				_3 = 1.0f;
+				_4 = *(passedKeyframe->s + 0) / 100;
+			}
 		} else if (passedKeyframe->s_count == 2) {
-			float _1 = (((*(passedKeyframe->s + 0) * theAnimation->scaleFactorX) / w) - 0.5);
-			float _2 = (((*(passedKeyframe->s + 1) * theAnimation->scaleFactorY) / h) - 0.5) * -1;
-			float currentList[4] = {_1, _2, 0, 1};
-			//float currentList[4] = {((*(passedKeyframe->s + 0) / w) - 0.5), (((*(passedKeyframe->s + 1) / h) - 0.5) * -1), 0, 1};
-			tempAOV->v = pushVertex(tempAOV->v, currentList);
-			//EM_ASM_({console.log("2---> " + $0 + " " + $1);}, *(passedKeyframe->s + 0), passedKeyframe->s_count);
+			if (type == 1) {
+				_1 = ((((*(passedKeyframe->s + 0) + tempX) * theAnimation->scaleFactorX) / w) - 0.5);
+				_2 = ((((*(passedKeyframe->s + 1) + tempY) * theAnimation->scaleFactorY) / h) - 0.5) * -1;
+			} else if (type == 2) {
+				_1 = *(passedKeyframe->s + 0) / 100;
+				_2 = *(passedKeyframe->s + 1) / 100;
+			} else if (type == 3) {
+				_1 = 1.0f;
+				_2 = 1.0f;
+				_3 = 1.0f;
+				_4 = *(passedKeyframe->s + 0) / 100;
+			}
 		} else if (passedKeyframe->s_count == 3) {
-			float _1 = (((*(passedKeyframe->s + 0) * theAnimation->scaleFactorX) / w) - 0.5);
-			float _2 = (((*(passedKeyframe->s + 1) * theAnimation->scaleFactorY) / h) - 0.5) * -1;
-			float _3 = ((*(passedKeyframe->s + 3) * theAnimation->scaleFactorZ) / z);
-			float currentList[4] = {_1, _2, _3, 1};
-			//float currentList[4] = {((*(passedKeyframe->s + 0) / w) - 0.5), (((*(passedKeyframe->s + 1) / h) - 0.5) * -1), ((*(passedKeyframe->s + 2) / z) - 0.5), 0, 1};
-			tempAOV->v = pushVertex(tempAOV->v, currentList);
-			//EM_ASM_({console.log("3---> " + $0 + " " + $1);}, *(passedKeyframe->s + 0), passedKeyframe->s_count);
+			if (type == 1) {
+				_1 = ((((*(passedKeyframe->s + 0) + tempX) * theAnimation->scaleFactorX) / w) - 0.5);
+				_2 = ((((*(passedKeyframe->s + 1) + tempY) * theAnimation->scaleFactorY) / h) - 0.5) * -1;
+				_3 = (((*(passedKeyframe->s + 3) + tempZ) * theAnimation->scaleFactorZ) / z);
+			} else if (type == 2) {
+				_1 = *(passedKeyframe->s + 0) / 100;
+				_2 = *(passedKeyframe->s + 1) / 100;
+				_3 = *(passedKeyframe->s + 2) / 100;
+			} else if (type == 3) {
+				_1 = 1.0f;
+				_2 = 1.0f;
+				_3 = 1.0f;
+				_4 = *(passedKeyframe->s + 0) / 100;
+			}
 		} else {
-			float currentList[4] = {0, 0, 0, 1};
-			tempAOV->v = pushVertex(tempAOV->v, currentList);
+			if (type == 1) {
+				float currentList[4] = {1.0f, 1.0f, 1.0f, _4};
+			} else {
+				float currentList[4] = {1.0f, 1.0f, 1.0f, _4};
+			}
 			//EM_ASM_({console.log("4---> " + $0 + " " + $1);}, *(passedKeyframe->s + 0), passedKeyframe->s_count);
 		}
+		float currentList[4] = {_1, _2, _3, _4};
+		tempAOV->v = pushVertex(tempAOV->v, currentList);
 
 		tempAOV->v_count++;
 
@@ -114,6 +144,7 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 			passedKeyframe = passedKeyframe->next;
 		}
 	}
+	tempAOV->s_count = passedKeyframe->s_count;
 	tempAOV->v->next = tempAOV->v->start;
 	tempAOV->i->next = tempAOV->i->start;
 	tempAOV->o->next = tempAOV->o->start;
@@ -143,16 +174,48 @@ struct TransformMatrix* newTransformMatrix(struct TransformMatrix* passedTransfo
 	return passedTransformMatrix;
 }
 
-void fillAnimationTranslate(struct TransformAOV* passedAOV) {
+glm::mat4 generateMatrix(glm::mat4 identity, int type, float X, float Y, float Z, float angle) {
+	switch (type) {
+		case 1:
+			return glm::translate(identity, glm::vec3(X, Y, Z));
+			break;
+		case 2:
+			return glm::scale(identity, glm::vec3(X, Y, Z));
+			break;
+		case 3:
+			return glm::translate(identity, glm::vec3(X, Y, Z));
+			break;
+	}
+}
+
+void fillAnimation(struct TransformAOV* passedAOV, int type) {
 	passedAOV->v = passedAOV->v->start;
 	bool exhausted = false;
 	int currentIndex = 0;
-	while (! exhausted) {
-		passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
+	/*if (type == 1) {
 		passedAOV->transformMatrix->transform = glm::mat4(1.0f);
+	}*/
+	while (! exhausted) {
 
-
-		passedAOV->transformMatrix->transform = glm::translate(passedAOV->transformMatrix->transform, glm::vec3(passedAOV->v->vertex->x, passedAOV->v->vertex->y, passedAOV->v->vertex->z));
+		switch (type) {
+			case 1:
+				if (passedAOV->s_count >= 2) {
+					passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
+					passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, passedAOV->v->vertex->x, passedAOV->v->vertex->y, passedAOV->v->vertex->z, 0);
+				}
+				break;
+			case 2:
+				if (passedAOV->s_count >= 2) {
+					passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
+					passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, passedAOV->v->vertex->x, passedAOV->v->vertex->y, passedAOV->v->vertex->z, 0);
+				}
+			case 3:
+				if (passedAOV->s_count >= 1) {
+					passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
+					passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, passedAOV->v->vertex->x, passedAOV->v->vertex->y, passedAOV->v->vertex->z, 0);
+				}
+				break;
+		}
 
 		currentIndex++;
 		if (passedAOV->v->next == passedAOV->v->start) {
@@ -163,38 +226,76 @@ void fillAnimationTranslate(struct TransformAOV* passedAOV) {
 	}
 }
 
-struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem) {
+/*
+	transform type,
+		1: position
+		2: scale
+		3: rotate
+		4: opacity
+*/
+
+struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB) {
 	struct TransformAOV* tempAOV = NULL;
 	if (passedShapesItem->transform == NULL) {
 		passedShapesItem->transform = new Transform;
 	}
 	if (passedShapesItem->p != NULL && passedShapesItem->p->keyframe != NULL) {
 		EM_ASM_({console.log("---------------===================TRANSFORM BEGINS ");});
-		tempAOV = createSegmentP(passedShapesItem->p->keyframe->start);
+		tempAOV = createSegment(passedShapesItem->p->keyframe->start, currentBB, 1);
 		passedShapesItem->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true);
 		}
-		fillAnimationTranslate(passedShapesItem->transform->p);
+		fillAnimation(passedShapesItem->transform->p, 1);
+		EM_ASM_({console.log("---------------===================TRANSFORM ENDS ");});
+	}
+	if (passedShapesItem->s != NULL && passedShapesItem->s->keyframe != NULL) {
+		EM_ASM_({console.log("---------------===================TRANSFORM BEGINS ");});
+		tempAOV = createSegment(passedShapesItem->s->keyframe->start, currentBB, 2);
+		passedShapesItem->transform->s = tempAOV;
+		if (tempAOV->v_count > 1) {
+			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true);
+		}
+		fillAnimation(passedShapesItem->transform->s, 2);
+		EM_ASM_({console.log("---------------===================TRANSFORM ENDS ");});
+	}
+	if (passedShapesItem->o != NULL && passedShapesItem->o->keyframe != NULL) {
+		EM_ASM_({console.log("---------------===================TRANSFORM BEGINS ");});
+		tempAOV = createSegment(passedShapesItem->s->keyframe->start, currentBB, 2);
+		passedShapesItem->transform->o = tempAOV;
+		if (tempAOV->v_count > 1) {
+			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true);
+		}
+		fillAnimation(passedShapesItem->transform->s, 2);
 		EM_ASM_({console.log("---------------===================TRANSFORM ENDS ");});
 	}
 
 	return passedShapesItem->transform;
 }
 
-struct Transform* fillTransformLayers(struct Layers* passedLayers) {
+struct Transform* fillTransformLayers(struct Layers* passedLayers, struct BoundingBox* currentBB) {
 	struct TransformAOV* tempAOV = NULL;
 	if (passedLayers->transform == NULL) {
 		passedLayers->transform = new Transform;
 	}
 	if (passedLayers->ks != NULL && passedLayers->ks->p != NULL && passedLayers->ks->p->keyframe != NULL) {
 		EM_ASM_({console.log("=================================LAYERS TRANSFORM BEGINS ");});
-		tempAOV = createSegmentP(passedLayers->ks->p->keyframe->start);
+		tempAOV = createSegment(passedLayers->ks->p->keyframe->start, currentBB, 1);
 		passedLayers->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true);
 		}
-		fillAnimationTranslate(passedLayers->transform->p);
+		fillAnimation(passedLayers->transform->p, 1);
+		EM_ASM_({console.log("=================================LAYERS TRANSFORM ENDS ");});
+	}
+	if (passedLayers->ks != NULL && passedLayers->ks->s != NULL && passedLayers->ks->s->keyframe != NULL) {
+		EM_ASM_({console.log("=================================LAYERS TRANSFORM BEGINS ");});
+		tempAOV = createSegment(passedLayers->ks->s->keyframe->start, currentBB, 2);
+		passedLayers->transform->s = tempAOV;
+		if (tempAOV->v_count > 1) {
+			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true);
+		}
+		fillAnimation(passedLayers->transform->s, 2);
 		EM_ASM_({console.log("=================================LAYERS TRANSFORM ENDS ");});
 	}
 

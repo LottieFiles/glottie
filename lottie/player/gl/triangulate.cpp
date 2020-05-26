@@ -329,6 +329,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	float tempLayersX = 0;
 	float tempLayersY = 0;
 
+	/*
 	if (shapesPosition.x != 0 || shapesPosition.y != 0) {
 		if (shapesAnchor.x != 0 || shapesAnchor.y != 0) {
 			tempShapesX = shapesPosition.x - shapesAnchor.x;
@@ -347,8 +348,15 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 			tempLayersY = layersPosition.y - (currentBB->h / 2);
 		}
 	}
-	currentXPosition = tempLayersX + tempShapesX;
-	currentYPosition = tempLayersY + tempShapesY;
+	*/
+	//currentXPosition = tempLayersX + tempShapesX;
+	//currentYPosition = tempLayersY + tempShapesY;
+
+	struct ReturnPosition* tempPos = getRelativePosition(currentBB, currentShapesBB);
+
+	currentXPosition = tempPos->layers->x + tempPos->shapes->x;
+	currentYPosition = tempPos->layers->y + tempPos->shapes->y;
+
 	/*
 		if (currentBB->anchorX != 0 || currentBB->anchorY != 0) {
 			currentXPosition = (layersPosition.x - currentBB->anchorX) + shapesPosition.x;

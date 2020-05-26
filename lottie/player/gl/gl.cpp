@@ -129,6 +129,8 @@ float _translation = false;
 float _rotation = false;
 int deltaFrame = 0;
 glm::mat4 trans;
+glm::mat4 transP;
+glm::mat4 transS;
 
 void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersToRender, int frame) {
 
@@ -181,8 +183,9 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							glUseProgram(*(passedShaderProgram->shader));
 						}
 
-
-
+						transP = glm::mat4(1.0f);
+						transS = glm::mat4(1.0f);
+						
 						_translation = false;
 						if (tempBuffers->shapesTransform != NULL && tempBuffers->shapesTransform->p != NULL && tempBuffers->shapesTransform->p->startTime <= frame && tempBuffers->shapesTransform->p->endTime >= frame) {
 								deltaFrame = frame - tempBuffers->shapesTransform->p->startTime;
@@ -192,14 +195,21 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 										tempBuffers->shapesTransform->p->transformMatrix = tempBuffers->shapesTransform->p->transformMatrix->next;
 									}
 								}
-								trans = tempBuffers->shapesTransform->p->transformMatrix->transform;
-								/*
-								_xPos = tempBuffers->shapesTransform->p->v->vertex->x;
-								_yPos = tempBuffers->shapesTransform->p->v->vertex->y;
-								_zPos = tempBuffers->shapesTransform->p->v->vertex->z;
-								*/
+								transP = tempBuffers->shapesTransform->p->transformMatrix->transform;
 								_translation = true;
 						}
+						if (tempBuffers->shapesTransform != NULL && tempBuffers->shapesTransform->s != NULL && tempBuffers->shapesTransform->s->startTime <= frame && tempBuffers->shapesTransform->s->endTime >= frame) {
+								deltaFrame = frame - tempBuffers->shapesTransform->s->startTime;
+								tempBuffers->shapesTransform->s->transformMatrix = tempBuffers->shapesTransform->s->transformMatrix->start;
+								for (int i=1; i <= deltaFrame; i++) {
+									if (tempBuffers->shapesTransform->s->transformMatrix != NULL && tempBuffers->shapesTransform->s->transformMatrix->next != NULL) {
+										tempBuffers->shapesTransform->s->transformMatrix = tempBuffers->shapesTransform->s->transformMatrix->next;
+									}
+								}
+								transS = tempBuffers->shapesTransform->s->transformMatrix->transform;
+								_translation = true;
+						}
+
 						if (tempBuffers->layersTransform != NULL && tempBuffers->layersTransform->p != NULL && tempBuffers->layersTransform->p->startTime <= frame && tempBuffers->layersTransform->p->endTime >= frame && tempBuffers->layersTransform->p->transformMatrix != NULL) {
 								deltaFrame = frame - tempBuffers->layersTransform->p->startTime;
 								tempBuffers->layersTransform->p->transformMatrix = tempBuffers->layersTransform->p->transformMatrix->start;
@@ -208,14 +218,21 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 										tempBuffers->layersTransform->p->transformMatrix = tempBuffers->layersTransform->p->transformMatrix->next;
 									}
 								}
-								trans = tempBuffers->layersTransform->p->transformMatrix->transform;
-								/*
-								_xPos = tempBuffers->layersTransform->p->v->vertex->x;
-								_yPos = tempBuffers->layersTransform->p->v->vertex->y;
-								_zPos = tempBuffers->layersTransform->p->v->vertex->z;
-								*/
+								transP = tempBuffers->layersTransform->p->transformMatrix->transform;
 								_translation = true;
 						}
+						if (tempBuffers->layersTransform != NULL && tempBuffers->layersTransform->s != NULL && tempBuffers->layersTransform->s->startTime <= frame && tempBuffers->layersTransform->s->endTime >= frame && tempBuffers->layersTransform->s->transformMatrix != NULL) {
+								deltaFrame = frame - tempBuffers->layersTransform->s->startTime;
+								tempBuffers->layersTransform->s->transformMatrix = tempBuffers->layersTransform->s->transformMatrix->start;
+								for (int i=1; i <= deltaFrame; i++) {
+									if (tempBuffers->layersTransform->s->transformMatrix != NULL && tempBuffers->layersTransform->s->transformMatrix->next != NULL) {
+										tempBuffers->layersTransform->s->transformMatrix = tempBuffers->layersTransform->s->transformMatrix->next;
+									}
+								}
+								transS = tempBuffers->layersTransform->s->transformMatrix->transform;
+								_translation = true;
+						}
+
 						//EM_ASM({console.log("glDraw 1.2.2");});
 								/*
 						if (tempBuffers->layersTransform != NULL && tempBuffers->layersTransform->p != NULL && tempBuffers->layersTransform->p->startTime <= frame && tempBuffers->layersTransform->p->endTime >= frame) {
@@ -243,6 +260,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 								trans = glm::mat4(1.0f);
 							}
 						} else {
+							trans = transS * transP;
 							tempBuffers->lastTrans = trans;
 							tempBuffers->lastTransSet = true;
 						}

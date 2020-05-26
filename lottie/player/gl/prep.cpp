@@ -229,14 +229,13 @@ int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape, struct Sh
 	return 1;
 }
 
-struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
+struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB) {
 	//EM_ASM({console.log("///// entering findShapesTransform ");});
 	bool exhausted = false;
 	passedShapesItem = passedShapesItem->start;
 	while (! exhausted) {
 		//EM_ASM({console.log("shape type " + $0);}, passedShapesItem->ty);
 		if (passedShapesItem->ty == _transform) {
-			currentShapesTransform = fillTransformShapes(passedShapesItem);
 			//EM_ASM({console.log("SHAPEPROP TRANSFORM found");});
 
 			/*shapesPosition.x = passedShapesItem->p->k[0];
@@ -254,6 +253,8 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem) {
 				shapesAnchor.x = passedShapesItem->a->k[0];
 				shapesAnchor.y = passedShapesItem->a->k[1];
 			}
+
+			currentShapesTransform = fillTransformShapes(passedShapesItem, currentBB);
 
 			/*shapesPosition.x = passedShapesItem->p->k[0];
 			shapesPosition.y = passedShapesItem->p->k[1];
@@ -301,7 +302,7 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 
 	//EM_ASM({console.log("LAYERS found 1.0.2");});
 
-	struct ShapesItem* currentBaseTransform = findShapesTransform(passedShapesItem);
+	struct ShapesItem* currentBaseTransform = findShapesTransform(passedShapesItem, currentBB);
 	
 	passedShapesItem = passedShapesItem->start;
 	float currentShapesPosX, currentShapesPosY, currentShapesAncX, currentShapesAncY;
@@ -365,7 +366,7 @@ void findLayersTransform(struct Layers* passedLayers) {
 				passedLayers->currentBB->anchorX = passedLayers->ks->a->k[0];
 				passedLayers->currentBB->anchorY = passedLayers->ks->a->k[1];
 			}
-			currentLayersTransform = fillTransformLayers(passedLayers);
+			currentLayersTransform = fillTransformLayers(passedLayers, passedLayers->currentBB);
 		}
 		if (currentLayersTransform != NULL && currentLayersTransform->p != NULL && currentLayersTransform->p->startTime == 0) {
 				EM_ASM({console.log("///// layer transform applied ");});

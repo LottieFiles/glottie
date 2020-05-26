@@ -403,7 +403,7 @@ int checkCharacter(char& currentChar) {
 	//EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $1 + " ] " + String.fromCharCode($0) + " " + $2 + " - " + $3 + " " + $4);}, currentChar, readingArray,theScope->currentKeyValueTrail, colonEncountered, justStartedArray);
 	switch (currentChar) {
 		case '{':
-			//EM_ASM_({console.log("__________________======================================__________OPENING object " + $0 + " " + String.fromCharCode($1));}, theState->stateNow, theState->reservedKey[0]);
+			EM_ASM_({console.log("__________________======================================__________OPENING object " + $0 + " " + String.fromCharCode($1));}, theState->stateNow, theState->reservedKey[0]);
 			colonEncountered = false;
 			//EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);

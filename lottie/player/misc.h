@@ -27,6 +27,11 @@ struct alignas(ALIGNSIZE) Vertex {
 	GLfloat x,y,z,a;
 };
 
+struct alignas(ALIGNSIZE) ReturnPosition {
+	struct Vertex* layers = NULL;
+	struct Vertex* shapes = NULL;
+};
+
 //struct alignas(alignof(struct ArrayOfVertex*)) ArrayOfVertex {
 struct alignas(ALIGNSIZE) ArrayOfVertex {
 //struct ArrayOfVertex {

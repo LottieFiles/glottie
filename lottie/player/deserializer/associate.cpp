@@ -137,6 +137,13 @@ int associateKeyValues() {
 			//EM_ASM({console.log("-//***----> fill ValueKeyframe in r in layers");});
 			fillPropertiesOffsetKeyframe(currentLayers->ks->s->keyframe);
 
+		} else if (theScope->prev->scope == _o && strcmp(theScope->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->scope != _layers) {
+			//EM_ASM({console.log("-//***----> fill ValueKeyframe in r");});
+			fillPropertiesValueKeyframe(currentShapesItem->o->keyframe);
+		} else if (theScope->prev->scope == _o && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _layers) {
+			//EM_ASM({console.log("-//***----> fill ValueKeyframe in r in layers");});
+			fillPropertiesValueKeyframe(currentLayers->ks->o->keyframe);
+
 
 		} else if (theScope->prev->scope == _s && strcmp(theScope->prev->prev->currentTy, "el") == 0) {
 			//EM_ASM({console.log("-//***----> fill ValueKeyframe in r");});
@@ -179,6 +186,12 @@ int associateKeyValues() {
 			//EM_ASM({console.log("-//***----> fill BexierCurve in i in r in layers");});
 			fillBezierCurve(currentLayers->ks->s->keyframe->i);
 
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _o && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
+			//EM_ASM({console.log("-//***----> fill BexierCurve in i in r");});
+			fillBezierCurve(currentShapesItem->o->keyframe->i);
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _o && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
+			//EM_ASM({console.log("-//***----> fill BexierCurve in i in r in layers");});
+			fillBezierCurve(currentLayers->ks->o->keyframe->i);
 
 		}
 	} else if (theScope->scope == _e) {
@@ -264,7 +277,14 @@ int associateKeyValues() {
 
 		}
 	} else if (theScope->scope == _o) {
-		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
+		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
+			//EM_ASM({console.log("//----------------> filling multidim p");});
+			fillPropertiesValue(currentShapesItem->o);
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			//EM_ASM({console.log("//----------------> filling multidim p in layer");});
+			fillPropertiesValue(currentLayers->ks->o);
+	
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
 			fillBezierCurve(currentShapesItem->a->keyframe->o);
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
 			fillBezierCurve(currentLayers->ks->a->keyframe->o);
@@ -284,12 +304,19 @@ int associateKeyValues() {
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _s && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
 			fillBezierCurve(currentLayers->ks->s->keyframe->o);
 
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _o && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
+			fillBezierCurve(currentShapesItem->o->keyframe->o);
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _o && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
+			fillBezierCurve(currentLayers->ks->o->keyframe->o);
 
 
+
+		/*
 		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
 			fillPropertiesValue(currentLayers->ks->o);
 		} else if (currentShapesItem != NULL && strcmp(theScope->prev->currentTy, "tr") == 0) {
 			fillPropertiesValue(currentShapesItem->o);
+		*/
 		}
 	} else if (theScope->scope == _sk) {
 		if (currentShapesItem != NULL && strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
@@ -501,6 +528,13 @@ int prepareContainer(bool arrayOfObjects) {
 			//EM_ASM({console.log("-//***----> OffsetKeyframe in p in layers ");});
 			currentLayers->ks->s->keyframe = newPropertiesOffsetKeyframe();
 
+		} else if (theScope->prev->scope == _o && strcmp(theScope->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->scope != _layers) {
+			//EM_ASM({console.log("-//***----> OffsetKeyframe in p");});
+			currentShapesItem->o->keyframe = newPropertiesValueKeyframe();
+		} else if (theScope->prev->scope == _o && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _layers) {
+			//EM_ASM({console.log("-//***----> OffsetKeyframe in p in layers ");});
+			currentLayers->ks->o->keyframe = newPropertiesValueKeyframe();
+
 
 		} else if (theScope->prev->scope == _s && strcmp(theScope->prev->prev->currentTy, "el") == 0) {
 			//EM_ASM({console.log("-//***----> ValueKeyframe in r");});
@@ -541,6 +575,13 @@ int prepareContainer(bool arrayOfObjects) {
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _s && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
 			//EM_ASM({console.log("-//***----> BezierCurve i in k in p in layers");});
 			currentLayers->ks->s->keyframe->i = newBezierCurve();
+
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _o && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
+			//EM_ASM({console.log("-//***----> BezierCurve i in k in p");});
+			currentShapesItem->o->keyframe->i = newBezierCurve();
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _o && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
+			//EM_ASM({console.log("-//***----> BezierCurve i in k in p in layers");});
+			currentLayers->ks->o->keyframe->i = newBezierCurve();
 
 
 		}
@@ -593,8 +634,15 @@ int prepareContainer(bool arrayOfObjects) {
 
 		}
 	} else if (theScope->scope == _o) {
+		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
+			//EM_ASM({console.log("-----------------> TRANSFORM p");});
+			currentShapesItem->o = newPropertiesValue();
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			//EM_ASM({console.log("-----------------> TRANSFORM p in LAYER");});
+			currentLayers->ks->o = newPropertiesValue();
 		//EM_ASM_({console.log("-----------------> p found " + String.fromCharCode($0) + String.fromCharCode($1));}, theScope->prev->currentTy[0], theScope->prev->currentTy[1]);
-		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
+
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
 			currentShapesItem->a->keyframe->o = newBezierCurve();
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
 			currentLayers->ks->a->keyframe->o = newBezierCurve();
@@ -614,11 +662,19 @@ int prepareContainer(bool arrayOfObjects) {
 		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _s && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
 			currentLayers->ks->s->keyframe->o = newBezierCurve();
 
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _o && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
+			currentShapesItem->o->keyframe->o = newBezierCurve();
+		} else if (theScope->prev->scope == _k && theScope->prev->prev->scope == _o && theScope->prev->prev->prev->scope == _ks && theScope->prev->prev->prev->prev->scope == _layers) {
+			currentLayers->ks->o->keyframe->o = newBezierCurve();
 
+
+
+		/*
 		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
 			currentLayers->ks->o = newPropertiesValue();
 		} else if (currentShapesItem != NULL && strcmp(theScope->prev->currentTy, "tr") == 0) {
 			currentShapesItem->o = newPropertiesValue();
+		*/
 		}
 	} else if (theScope->scope == _sk) {
 		if (currentShapesItem != NULL && strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
