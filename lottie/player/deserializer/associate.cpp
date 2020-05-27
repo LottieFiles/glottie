@@ -144,10 +144,12 @@ int associateKeyValues() {
 			//EM_ASM({console.log("-//***----> fill ValueKeyframe in r in layers");});
 			fillPropertiesValueKeyframe(currentLayers->ks->o->keyframe);
 
-
 		} else if (theScope->prev->scope == _s && strcmp(theScope->prev->prev->currentTy, "el") == 0) {
 			//EM_ASM({console.log("-//***----> fill ValueKeyframe in r");});
 			fillPropertiesOffsetKeyframe(currentShapesItem->s->keyframe);
+
+
+
 
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
 			//EM_ASM({console.log("//---------------> k within ks within shapes");});
@@ -499,7 +501,6 @@ int prepareContainer(bool arrayOfObjects) {
 			currentLayers->ks = newHelpersTransform(currentLayers->ks);
 		}
 	} else if (theScope->scope == _k) {
-
 		//EM_ASM({console.log("-//***----> k discovered " + $0);}, theScope->prev->scope);
 		if (theScope->prev->scope == _a && strcmp(theScope->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->scope != _layers) {
 			//EM_ASM({console.log("-//***----> OffsetKeyframe in a");});
@@ -539,7 +540,9 @@ int prepareContainer(bool arrayOfObjects) {
 
 		} else if (theScope->prev->scope == _s && strcmp(theScope->prev->prev->currentTy, "el") == 0) {
 			//EM_ASM({console.log("-//***----> ValueKeyframe in r");});
-			currentLayers->ks->s->keyframe = newPropertiesOffsetKeyframe();
+			currentShapesItem->s->keyframe = newPropertiesOffsetKeyframe();
+
+
 
 
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
