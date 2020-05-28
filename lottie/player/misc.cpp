@@ -1156,7 +1156,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 		//float segSize = 0.10;
 		segCounter++;
 		segSize = *(segSizePassed + segCounter);
-		if (segSize == 0) {
+		if (segSize == 0 || segSize < 0.00001) {
 			continue;
 		}
 		float segments = 1 / segSize;
