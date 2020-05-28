@@ -188,6 +188,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						trans = glm::mat4(1.0f);
 						transP = glm::mat4(1.0f);
 						transS = glm::mat4(1.0f);
+						transL = glm::mat4(1.0f);
 					
 
 
@@ -297,10 +298,10 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							if (tempBuffers->shapesTransform->composite != NULL) {
 								_translation = true;
 								if (tempBuffers->shapesTransform->composite->position != NULL) {
-									transP = tempBuffers->shapesTransform->composite->position->transform;
+									transS = tempBuffers->shapesTransform->composite->position->transform;
 								}
 								if (tempBuffers->shapesTransform->composite->scale != NULL) {
-									transS = tempBuffers->shapesTransform->composite->scale->transform;
+									transS = tempBuffers->shapesTransform->composite->scale->transform * transS;
 								}
 							}
 						}
@@ -319,7 +320,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 									transP = tempBuffers->layersTransform->composite->position->transform;
 								}
 								if (tempBuffers->layersTransform->composite->scale != NULL) {
-									transS = tempBuffers->layersTransform->composite->scale->transform;
+									transP = tempBuffers->layersTransform->composite->scale->transform * transP;
 								}
 							}
 						}
@@ -333,7 +334,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						} else {
 
 
-							trans = transP;
+							trans = transS * transP;
 							tempBuffers->lastTrans = trans;
 							tempBuffers->lastTransSet = true;
 						}

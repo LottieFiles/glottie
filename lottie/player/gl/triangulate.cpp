@@ -165,7 +165,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	bool outlierEncountered = false;
 	int outlierCount = 0;
 	//EM_ASM({console.log("pretri 2 " + $0);}, count);
-	if (count > 3) {
+	if (count >= 2) {
 		bool entered = true;
 		bool startEncountered = false;
 		int cyclesAfterStartEncountered = 0;
@@ -252,8 +252,12 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 			*/
 			//EM_ASM({console.log("checking outlier");});
 		}
+		lastBuffersCreated->filled = true;
 	} else {
-		if (count < 3) {
+		if (count < 2) {
+			return;
+		} else {
+			lastBuffersCreated->filled = true;
 			return;
 		}
 	}

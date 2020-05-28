@@ -55,5 +55,7 @@ struct alignas(ALIGNSIZE) Buffers {
 
 	bool changed = false;
 	bool clockwise;
+
+	bool filled = false;
 } *lastBuffersCreated;
 

@@ -1057,7 +1057,7 @@ void adjustScale(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayO
 }
 
 // related to animating
-void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed, bool fillNulls) {
+void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed, bool fillNulls, bool isGeometry) {
 	bool exhausted = false;
 	v = v->start;
 	i = i->start;
@@ -1077,8 +1077,17 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 
 	int segCounter = 0;
 	while (! exhausted) {
-		if (v == startPoint && startedCycling == true) {
-			break;
+		if (isGeometry) {
+			if (v == startPoint->next && startedCycling) {
+				exhausted = true;
+				break;
+			}
+		} else {
+			if (v == startPoint && startedCycling) {
+				exhausted = true;
+				break;
+			}
+		}
 			//continue;
 			/*
 				if (
@@ -1107,7 +1116,6 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 					exhausted = true;
 				}
 			*/
-		} else {
 				if (
 						(
 							i->vertex->x == 0 && 
@@ -1125,27 +1133,20 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 						startedCycling = true;
 						segCounter++;
 						if (fillNulls) {
-							//bezierFillNulls(v->prev, v, *(segSizePassed + segCounter), v_count, bezier_count);
+							bezierFillNulls(v->prev, v, *(segSizePassed + segCounter), v_count, bezier_count);
 						}
 						i = i->next;
 						o = o->next;
 						v = v->next;
-						//EM_ASM({console.log("non-bezier ");});
-						if (v == startPoint && startedCycling == true) {
-							break;
-						}
+						EM_ASM({console.log("non-bezier ");});
 						continue;
 				} else {
 					i = i->next;
 					o = o->next;
 					v = v->next;
-					if (v == startPoint && startedCycling == true) {
-						break;
-					}
-					//EM_ASM({console.log("breakout ");});
+					EM_ASM({console.log("breakout ");});
 				}
 
-		}
 		startedCycling = true;
 		o1 = v->prev;
 		o2 = v;
@@ -1161,7 +1162,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 		float segments = 1 / segSize;
 		//float segNow = segSize;
 		float segNow = segSize;
-		//EM_ASM_({console.log("segnow and segsize " + $0 + " " + $1);}, segNow, segSize);
+		EM_ASM_({console.log("segnow and segsize " + $0 + " " + $1);}, segNow, segSize);
 
 		float p1x = p1->vertex->x + o1->vertex->x;
 		float p2x = p2->vertex->x + o2->vertex->x;
