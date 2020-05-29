@@ -1138,12 +1138,20 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 						i = i->next;
 						o = o->next;
 						v = v->next;
+						if (v == startPoint && startedCycling && (! isGeometry)) {
+							exhausted = true;
+							break;
+						}
 						EM_ASM({console.log("non-bezier ");});
 						continue;
 				} else {
 					i = i->next;
 					o = o->next;
 					v = v->next;
+					if (v == startPoint && startedCycling && (! isGeometry)) {
+						exhausted = true;
+						break;
+					}
 					EM_ASM({console.log("breakout ");});
 				}
 

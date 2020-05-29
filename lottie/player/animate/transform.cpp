@@ -11,11 +11,13 @@ struct alignas(ALIGNSIZE) CompositeArray {
 	struct CompositeArray* prev = NULL;
 	struct CompositeArray* next = NULL;
 
-	struct TransformMatrix* position = NULL;
-	struct TransformMatrix* scale = NULL;
+	//struct TransformMatrix* position = NULL;
+	//struct TransformMatrix* scale = NULL;
+	glm::mat4 position = glm::mat4(1.0f);
+	glm::mat4 scale = glm::mat4(1.0f);
 	float opacity;
 
-	int frame;
+	int frame = -1;
 };
 
 struct alignas(ALIGNSIZE) Transform {
@@ -132,7 +134,7 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 
 		if (previousTime != 0) {
 			*(tempAOV->frames + (tempAOV->v_count - 1)) = (passedKeyframe->t * theAnimation->frMultiplier) - (previousTime * theAnimation->frMultiplier);
-			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 1 / (*(tempAOV->frames + (tempAOV->v_count - 1)) - tempAOV->v_count);
+			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 1 / (*(tempAOV->frames + (tempAOV->v_count - 1)) - 1);
 		} else {
 			*(tempAOV->frames + (tempAOV->v_count - 1)) = 1;
 			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 0;
@@ -272,21 +274,20 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 
 		if (passedTransform->p != NULL && passedTransform->p->transformMatrix != NULL && passedTransform->p->startTime <= i && passedTransform->p->endTime >= i) {
 			EM_ASM_({console.log("---------------===================TRANSFORM composite position ");});
-			passedTransform->composite->position = passedTransform->p->transformMatrix;
+			passedTransform->composite->position = passedTransform->composite->position * passedTransform->p->transformMatrix->transform;
+			passedTransform->composite->frame = i;
 			if (passedTransform->p->transformMatrix->next != NULL) {
 				passedTransform->p->transformMatrix = passedTransform->p->transformMatrix->next;
 			}
-		} else {
-			passedTransform->composite->position = defaultTransformMatrix;
 		}
 		if (passedTransform->s != NULL && passedTransform->s->transformMatrix != NULL && passedTransform->s->startTime <= i && passedTransform->s->endTime >= i) {
 			EM_ASM_({console.log("---------------===================TRANSFORM composite scale ");});
-			passedTransform->composite->scale = passedTransform->s->transformMatrix;
+			passedTransform->composite->scale = passedTransform->composite->scale * passedTransform->s->transformMatrix->transform;
+			passedTransform->composite->frame = i;
+			//passedTransform->composite->scale = passedTransform->s->transformMatrix;
 			if (passedTransform->s->transformMatrix->next != NULL) {
 				passedTransform->s->transformMatrix = passedTransform->s->transformMatrix->next;
 			}
-		} else {
-			passedTransform->composite->scale = defaultTransformMatrix;
 		}
 
 	}

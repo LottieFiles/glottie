@@ -3,11 +3,14 @@ const GLchar* vertexSource =
     "attribute vec4 position; \n"
     "attribute vec4 color; \n"
     "varying vec4 vcolors; \n"
-    "uniform mat4 transform; \n"
+    "uniform mat4 shapesTranslate; \n"
+    "uniform mat4 shapesScale; \n"
+    "uniform mat4 layersTranslate; \n"
+    "uniform mat4 layersScale; \n"
     "void main() \n"
     "{ \n"
     "  vcolors = color; \n"
-    "  gl_Position = transform * position; \n"
+    "  gl_Position = layersScale * layersTranslate * position; \n"
     "} \n";
 
 const GLchar* fragmentSource =
@@ -18,6 +21,7 @@ const GLchar* fragmentSource =
     "  gl_FragColor = vcolors; \n"
     "} \n";
 
+//    "  gl_Position = ((shapesScale * layersScale) * (shapesTranslate * layersTranslate)) * position; \n"
 //    "  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); \n"
 //    "  gl_FragColor = vcolors; \n"
 //    "out vec4 FragColor; \n"
@@ -128,10 +132,18 @@ float _zPos = 0;
 float _translation = false;
 float _rotation = false;
 int deltaFrame = 0;
-glm::mat4 trans;
-glm::mat4 transP;
-glm::mat4 transS;
+/*glm::mat4 trans;
+glm::mat4 transShapesP;
+glm::mat4 transShapesS;
+glm::mat4 transLayersP;
+glm::mat4 transLayersS;
 glm::mat4 transL;
+*/
+
+struct CompositeArray* shapesComposite = NULL;
+struct CompositeArray* layersComposite = NULL;
+
+glm::mat4 identityMatrix = glm::mat4(1.0f);
 
 void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersToRender, int frame) {
 
@@ -185,12 +197,16 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						}
 
 
+						/*
 						trans = glm::mat4(1.0f);
-						transP = glm::mat4(1.0f);
-						transS = glm::mat4(1.0f);
+
 						transL = glm::mat4(1.0f);
 					
-
+						transShapesP = glm::mat4(1.0f);
+						transShapesS = glm::mat4(1.0f);
+						transLayersP = glm::mat4(1.0f);
+						transLayersS = glm::mat4(1.0f);
+						*/
 
 	
 						/*
@@ -274,6 +290,10 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							}
 						*/
 
+
+						shapesComposite = NULL;
+						layersComposite = NULL;
+						
 						if (	(tempBuffers->shapesTransform != NULL && tempBuffers->shapesTransform->startTime > frame) || 
 							(tempBuffers->layersTransform != NULL && tempBuffers->layersTransform->startTime > frame)) {
 								if (tempBuffers->prev == tempBuffers->start->prev && firstCycleDone) {
@@ -297,12 +317,9 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							}
 							if (tempBuffers->shapesTransform->composite != NULL) {
 								_translation = true;
-								if (tempBuffers->shapesTransform->composite->position != NULL) {
-									transS = tempBuffers->shapesTransform->composite->position->transform;
-								}
-								if (tempBuffers->shapesTransform->composite->scale != NULL) {
-									transS = tempBuffers->shapesTransform->composite->scale->transform * transS;
-								}
+								//transShapesP = tempBuffers->shapesTransform->composite->position;
+								//transShapesS = tempBuffers->shapesTransform->composite->scale;
+								shapesComposite = tempBuffers->shapesTransform->composite;
 							}
 						}
 
@@ -314,34 +331,51 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 									tempBuffers->layersTransform->composite = tempBuffers->layersTransform->composite->next;
 								}
 							}
-							if (tempBuffers->layersTransform->composite != NULL) {
+							if (tempBuffers->layersTransform->composite != NULL && tempBuffers->layersTransform->composite->frame > -1) {
 								_translation = true;
-								if (tempBuffers->layersTransform->composite->position != NULL) {
-									transP = tempBuffers->layersTransform->composite->position->transform;
-								}
-								if (tempBuffers->layersTransform->composite->scale != NULL) {
-									transP = tempBuffers->layersTransform->composite->scale->transform * transP;
-								}
+								//transLayersP = tempBuffers->layersTransform->composite->position;
+								//transLayersS = tempBuffers->layersTransform->composite->scale;
+								layersComposite = tempBuffers->layersTransform->composite;
 							}
 						}
 
 						if (! _translation) {
 							if (tempBuffers->lastTransSet) {
-								trans = tempBuffers->lastTrans;
+								layersComposite = tempBuffers->lastLayersComposite;
+								shapesComposite = tempBuffers->lastShapesComposite;
 							} else {
-								trans = glm::mat4(1.0f);
 							}
 						} else {
 
 
-							trans = transS * transP;
-							tempBuffers->lastTrans = trans;
+							//trans = transS * transP;
+							tempBuffers->lastLayersComposite = layersComposite;
+							tempBuffers->lastShapesComposite = shapesComposite;
 							tempBuffers->lastTransSet = true;
 						}
 
 
-						unsigned int transformLoc = glGetUniformLocation(mainShader, "transform");
-						glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+						unsigned int shapesTranslateLoc = glGetUniformLocation(mainShader, "shapesTranslate");
+						unsigned int shapesScaleLoc = glGetUniformLocation(mainShader, "shapesScale");
+
+						if (shapesComposite != NULL) {
+							glUniformMatrix4fv(shapesTranslateLoc, 1, GL_FALSE, glm::value_ptr(shapesComposite->position));
+							glUniformMatrix4fv(shapesScaleLoc, 1, GL_FALSE, glm::value_ptr(shapesComposite->scale));
+						} else {
+							glUniformMatrix4fv(shapesTranslateLoc, 1, GL_FALSE, glm::value_ptr(identityMatrix));
+							glUniformMatrix4fv(shapesScaleLoc, 1, GL_FALSE, glm::value_ptr(identityMatrix));
+						}
+
+						unsigned int layersTranslateLoc = glGetUniformLocation(mainShader, "layersTranslate");
+						unsigned int layersScaleLoc = glGetUniformLocation(mainShader, "layersScale");
+
+						if (layersComposite != NULL) {
+							glUniformMatrix4fv(layersTranslateLoc, 1, GL_FALSE, glm::value_ptr(layersComposite->position));
+							glUniformMatrix4fv(layersScaleLoc, 1, GL_FALSE, glm::value_ptr(layersComposite->scale));
+						} else {
+							glUniformMatrix4fv(layersTranslateLoc, 1, GL_FALSE, glm::value_ptr(identityMatrix));
+							glUniformMatrix4fv(layersScaleLoc, 1, GL_FALSE, glm::value_ptr(identityMatrix));
+						}
 
 
 
