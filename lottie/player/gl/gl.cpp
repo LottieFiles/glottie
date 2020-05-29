@@ -10,7 +10,7 @@ const GLchar* vertexSource =
     "void main() \n"
     "{ \n"
     "  vcolors = color; \n"
-    "  gl_Position = layersScale * layersTranslate * position; \n"
+    "  gl_Position = (layersScale * layersTranslate) * ((shapesScale * shapesTranslate) * position); \n"
     "} \n";
 
 const GLchar* fragmentSource =
@@ -21,6 +21,7 @@ const GLchar* fragmentSource =
     "  gl_FragColor = vcolors; \n"
     "} \n";
 
+//    "  gl_Position = ( (shapesScale * layersTranslate) * ((layersScale * layersTranslate) * position) ); \n"
 //    "  gl_Position = ((shapesScale * layersScale) * (shapesTranslate * layersTranslate)) * position; \n"
 //    "  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); \n"
 //    "  gl_FragColor = vcolors; \n"
