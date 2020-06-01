@@ -48,19 +48,28 @@ struct alignas(ALIGNSIZE) Buffers {
 
 	//struct CompositeArray* lastShapesComposite;
 	//struct CompositeArray* lastLayersComposite;
+/*
 glm::mat4 lastLayersPosition;
 glm::mat4 lastLayersScale;
 glm::mat4 lastLayersRotate;
 glm::mat4 lastShapesPosition;
 glm::mat4 lastShapesScale;
 glm::mat4 lastShapesRotate;
+*/
+glm::mat4 lastLayersTransform;
+glm::mat4 lastShapesTransform;
 
+bool layersTransformSet = false;
+bool shapesTransformSet = false;
+
+/*
 bool lastLayersPositionSet = false;
 bool lastLayersScaleSet = false;
 bool lastLayersRotateSet = false;
 bool lastShapesPositionSet = false;
 bool lastShapesScaleSet = false;
 bool lastShapesRotateSet = false;
+*/
 
 	GLint* posAttrib = NULL;
 	GLint* colAttrib = NULL;

@@ -3,15 +3,11 @@ const GLchar* vertexSource =
     "attribute vec4 position; \n"
     "attribute vec4 color; \n"
     "varying vec4 vcolors; \n"
-    "uniform mat4 shapesTranslate; \n"
-    "uniform mat4 shapesScale; \n"
-    "uniform mat4 shapesRotate; \n"
-    "uniform mat4 layersTranslate; \n"
-    "uniform mat4 layersScale; \n"
-    "uniform mat4 layersRotate; \n"
+    "uniform mat4 layersTransform; \n"
+    "uniform mat4 shapesTransform; \n"
     "void main() \n"
     "{ \n"
-    "  gl_Position = (layersScale * layersTranslate * layersRotate) * ((shapesScale * shapesTranslate * shapesRotate) * position); \n"
+    "  gl_Position = layersTransform * (shapesTransform * position); \n"
     "  vcolors = color; \n"
     "} \n";
 
@@ -23,6 +19,12 @@ const GLchar* fragmentSource =
     "  gl_FragColor = vcolors; \n"
     "} \n";
 
+//    "uniform mat4 shapesTranslate; \n"
+//    "uniform mat4 shapesScale; \n"
+//    "uniform mat4 shapesRotate; \n"
+//    "uniform mat4 layersTranslate; \n"
+//    "uniform mat4 layersScale; \n"
+//    "uniform mat4 layersRotate; \n"
 //    "  gl_Position = (layersScale * layersTranslate * layersRotate) * ((shapesScale * shapesTranslate * shapesRotate) * position); \n"
 //    "  gl_Position = ( (shapesScale * layersTranslate) * ((layersScale * layersTranslate) * position) ); \n"
 //    "  gl_Position = ((shapesScale * layersScale) * (shapesTranslate * layersTranslate)) * position; \n"
@@ -208,12 +210,16 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 				while (!exhausted) {
 					if (frame == 0) {
+						/*
 						tempBuffers->lastLayersPositionSet = false;
 						tempBuffers->lastLayersScaleSet = false;
 						tempBuffers->lastLayersRotateSet = false;
 						tempBuffers->lastShapesPositionSet = false;
 						tempBuffers->lastShapesScaleSet = false;
 						tempBuffers->lastShapesRotateSet = false;
+						*/
+						tempBuffers->layersTransformSet = false;
+						tempBuffers->shapesTransformSet = false;
 					}
 
 					_xPos = 0;
@@ -243,12 +249,16 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 								continue;
 						}
 
+						/*
 						unsigned int shapesTranslateLoc = glGetUniformLocation(mainShader, "shapesTranslate");
 						unsigned int shapesScaleLoc = glGetUniformLocation(mainShader, "shapesScale");
 						unsigned int shapesRotateLoc = glGetUniformLocation(mainShader, "shapesRotate");
 						unsigned int layersTranslateLoc = glGetUniformLocation(mainShader, "layersTranslate");
 						unsigned int layersScaleLoc = glGetUniformLocation(mainShader, "layersScale");
 						unsigned int layersRotateLoc = glGetUniformLocation(mainShader, "layersRotate");
+						*/
+						unsigned int layersTransformLoc = glGetUniformLocation(mainShader, "layersTransform");
+						unsigned int shapesTransformLoc = glGetUniformLocation(mainShader, "shapesTransform");
 
 						//if (! secondPass) {					
 						_translation = true;
@@ -260,11 +270,13 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 									tempBuffers->shapesTransform->composite = tempBuffers->shapesTransform->composite->next;
 								}
 							}
-							if (tempBuffers->shapesTransform->composite != NULL) {
+							if (tempBuffers->shapesTransform->composite != NULL && tempBuffers->shapesTransform->composite->frame > -1 && tempBuffers->shapesTransform->composite->transformSet) {
 								//transShapesP = tempBuffers->shapesTransform->composite->position;
 								//transShapesS = tempBuffers->shapesTransform->composite->scale;
+								tempBuffers->lastShapesTransform = tempBuffers->shapesTransform->composite->transform;
+								tempBuffers->shapesTransformSet = true;
+								/*
 								if (tempBuffers->shapesTransform->composite->positionSet) {
-									//glUniformMatrix4fv(shapesTranslateLoc, 1, GL_FALSE, glm::value_ptr(tempBuffers->shapesTransform->composite->position));
 									tempBuffers->lastShapesPosition = tempBuffers->shapesTransform->composite->position;
 									tempBuffers->lastShapesPositionSet = true;
 								} else {
@@ -272,7 +284,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 								}
 								if (tempBuffers->shapesTransform->composite->scaleSet) {
-									//glUniformMatrix4fv(shapesScaleLoc, 1, GL_FALSE, glm::value_ptr(tempBuffers->shapesTransform->composite->scale));
 									tempBuffers->lastShapesScale = tempBuffers->shapesTransform->composite->scale;
 									tempBuffers->lastShapesScaleSet = true;
 								} else {
@@ -280,12 +291,12 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 								}
 								if (tempBuffers->shapesTransform->composite->rotateSet) {
-									//glUniformMatrix4fv(shapesRotateLoc, 1, GL_FALSE, glm::value_ptr(tempBuffers->shapesTransform->composite->rotate));
 									tempBuffers->lastShapesRotate = tempBuffers->shapesTransform->composite->rotate;
 									tempBuffers->lastShapesRotateSet = true;
 								} else {
 									_translation = false;
 								}
+								*/
 							} else {
 
 								_translation = false;
@@ -299,6 +310,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							glUniformMatrix4fv(shapesRotateLoc, 1, GL_FALSE, glm::value_ptr(identityMatrix));
 							*/
 						}
+
+						/*
 									if (tempBuffers->lastShapesPositionSet) {
 										glUniformMatrix4fv(shapesTranslateLoc, 1, GL_FALSE, glm::value_ptr(tempBuffers->lastShapesPosition));
 									} else {
@@ -314,7 +327,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 									} else {
 										glUniformMatrix4fv(shapesRotateLoc, 1, GL_FALSE, glm::value_ptr(identityMatrix));
 									}
-
+						*/
 
 						_translation = true;
 						if (tempBuffers->layersTransform != NULL && tempBuffers->layersTransform->startTime <= frame) {
@@ -325,11 +338,13 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 									tempBuffers->layersTransform->composite = tempBuffers->layersTransform->composite->next;
 								}
 							}
-							if (tempBuffers->layersTransform->composite != NULL && tempBuffers->layersTransform->composite->frame > -1) {
+							if (tempBuffers->layersTransform->composite != NULL && tempBuffers->layersTransform->composite->frame > -1 && tempBuffers->layersTransform->composite->transformSet) {
+								tempBuffers->lastLayersTransform = tempBuffers->layersTransform->composite->transform;
+								tempBuffers->layersTransformSet = true;
 								//transLayersP = tempBuffers->layersTransform->composite->position;
 								//transLayersS = tempBuffers->layersTransform->composite->scale;
+								/*
 								if (tempBuffers->layersTransform->composite->positionSet) {
-									//glUniformMatrix4fv(layersTranslateLoc, 1, GL_FALSE, glm::value_ptr(tempBuffers->layersTransform->composite->position));
 									tempBuffers->lastLayersPosition = tempBuffers->layersTransform->composite->position;
 									tempBuffers->lastLayersPositionSet = true;
 								} else {
@@ -337,7 +352,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 								}
 								if (tempBuffers->layersTransform->composite->scaleSet) {
-									//glUniformMatrix4fv(layersScaleLoc, 1, GL_FALSE, glm::value_ptr(tempBuffers->layersTransform->composite->scale));
 									tempBuffers->lastLayersScale = tempBuffers->layersTransform->composite->scale;
 									tempBuffers->lastLayersScaleSet = true;
 								} else {
@@ -345,13 +359,13 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 								}
 								if (tempBuffers->layersTransform->composite->rotateSet) {
-									//glUniformMatrix4fv(layersRotateLoc, 1, GL_FALSE, glm::value_ptr(tempBuffers->layersTransform->composite->rotate));
 									tempBuffers->lastLayersRotate = tempBuffers->layersTransform->composite->rotate;
 									tempBuffers->lastLayersRotateSet = true;
 								} else {
 									_translation = false;
 
 								}
+								*/
 							} else {
 								_translation = false;
 
@@ -366,7 +380,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							*/
 						}
 
-									if (tempBuffers->lastLayersPositionSet) {
+						/*
+									if (tempBuffers->layersTransformSet) {
 										glUniformMatrix4fv(layersTranslateLoc, 1, GL_FALSE, glm::value_ptr(tempBuffers->lastLayersPosition));
 									} else {
 										glUniformMatrix4fv(layersTranslateLoc, 1, GL_FALSE, glm::value_ptr(identityMatrix));
@@ -381,7 +396,18 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 									} else {
 										glUniformMatrix4fv(layersRotateLoc, 1, GL_FALSE, glm::value_ptr(identityMatrix));
 									}
+						*/
 
+						if (tempBuffers->shapesTransformSet) {
+							glUniformMatrix4fv(shapesTransformLoc, 1, GL_FALSE, glm::value_ptr(tempBuffers->lastShapesTransform));
+						} else {
+							glUniformMatrix4fv(shapesTransformLoc, 1, GL_FALSE, glm::value_ptr(identityMatrix));
+						}
+						if (tempBuffers->layersTransformSet) {
+							glUniformMatrix4fv(layersTransformLoc, 1, GL_FALSE, glm::value_ptr(tempBuffers->lastLayersTransform));
+						} else {
+							glUniformMatrix4fv(layersTransformLoc, 1, GL_FALSE, glm::value_ptr(identityMatrix));
+						}
 
 
 /*

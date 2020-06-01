@@ -1220,12 +1220,14 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 
 		switch (bezierType) {
 			case 1:
+				p1x = p1->vertex->x;
+				p1y = p1->vertex->y;
 				break;
 			case 2:
-				p1x = p1->vertex->x + o1->vertex->x;
-				p2x = p2->vertex->x + o2->vertex->x;
-				p1y = p1->vertex->y + o1->vertex->y;
-				p2y = p2->vertex->y + o2->vertex->y;
+				p1x = p1->vertex->x;
+				p2x = p2->vertex->x;
+				p1y = p1->vertex->y;
+				p2y = p2->vertex->y;
 				break;
 			case 3:
 				p1x = p1->vertex->x + o1->vertex->x;
@@ -1253,6 +1255,14 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 
 			switch (bezierType) {
 				case 1:
+					intermediate->vertex->x = 	(oneTsquare * 			o1->vertex->x) + 
+									(2 * oneT * segNow * 		p1x) + 
+									(Tsquare *	 		o2->vertex->x);
+
+					intermediate->vertex->y = 	(oneTsquare * 			o1->vertex->y) + 
+									(2 * oneT * segNow * 		p1y) + 
+									(Tsquare *	 		o2->vertex->y);
+			EM_ASM_({console.log("[[[[[[[[[[[[[==========> ROTATE adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
 
 					break;
 				case 2:
