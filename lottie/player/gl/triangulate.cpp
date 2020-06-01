@@ -152,9 +152,9 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	struct ArrayOfArrayOfVertex* reserve = NULL;
 	struct ArrayOfArrayOfVertex* reserveEnd = NULL;
 	//passedArray = dimensions->topVertex;
-	struct ArrayOfVertex* startPoint = passedArray->start->prev;
+	struct ArrayOfVertex* startPoint = passedArray->start;
 	struct ArrayOfVertex* lastPassedArray;
-	struct ArrayOfVertex* actualStartPoint = passedArray->start->prev;
+	struct ArrayOfVertex* actualStartPoint = passedArray->start;
 	struct ArrayOfVertex* reservePrevArray;
 	struct ArrayOfVertex* reserveNextArray;
 	passedArray = startPoint;
@@ -163,12 +163,14 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	int coreCount = count;
 	int angleOne, angleTwo;
 	bool outlierEncountered = false;
+	bool startPointNextEncountered = false;
 	int outlierCount = 0;
 	//EM_ASM({console.log("pretri 2 " + $0);}, count);
 	if (count >= 2) {
 		bool entered = true;
 		bool startEncountered = false;
 		int cyclesAfterStartEncountered = 0;
+		
 		while (! exhausted) {
 			outlierEncountered = false;
 			if (! passedArray->reserved) {
@@ -211,18 +213,19 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 					}
 				}
 			}
-			//if (startEncountered == true) {
-				if (passedArray->next == startPoint) {
+				if (passedArray == startPoint->next && startPointNextEncountered) {
 					exhausted = true;
 				} else {
-					
+					if (passedArray == startPoint->next) {
+						startPointNextEncountered = true;
+					}
 					if (outlierEncountered) {
 						outlierEncountered = false;
 					} else {
 						passedArray = passedArray->next;
 
 						while (passedArray->reserved) {
-							if (passedArray->next == startPoint) {
+							if (passedArray == startPoint->next && startPointNextEncountered) {
 								exhausted = true;
 							} else {
 								passedArray = passedArray->next;
@@ -230,36 +233,10 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 						}
 					}
 				}
-			/*
-			} else {
-				if (passedArray->next == startPoint) {
-					//exhausted = true;
-					startEncountered = true;
-				} else {
-					if (outlierEncountered) {
-						outlierEncountered = false;
-					} else {
-						while (passedArray->reserved) {
-							if (passedArray->next == startPoint) {
-								startEncountered = true;
-							} else {
-								passedArray = passedArray->next;
-							}
-						}
-					}
-				}
-			}
-			*/
-			//EM_ASM({console.log("checking outlier");});
 		}
 		lastBuffersCreated->filled = true;
 	} else {
-		if (count < 2) {
-			return;
-		} else {
-			lastBuffersCreated->filled = true;
-			return;
-		}
+		return;
 	}
 	reserveEnd = reserve;
 
@@ -390,7 +367,9 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		}
 	}
 	*/
-
+	float heightOffset = ((theAnimation->h * theAnimation->scaleFactorY) / theAnimation->h) / 2;
+	float widthOffset = ((theAnimation->w * theAnimation->scaleFactorX) / theAnimation->w) / 2;
+	//float heightOffset = 0.5;
 	while (! exhausted) {
 		/*
 		*(passedProp->gl_v + ((Bcounter * 4) + 0)) = ((2 * passedArray->vertex->x) / theAnimation->w);
@@ -408,8 +387,8 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		//EM_ASM_({console.log("adding regulars 1 " + $0 + " " + $1 + " " + $2);}, passedArray->vertex->x, layersOffset.x, layersOffset.y);
 		//passedProp->gl_v.push_back(((2 * ((passedArray->vertex->x) - halfW)) / theAnimation->w) + currentXPosition);
 		//passedProp->gl_v.push_back((((2 * ((passedArray->vertex->y) - halfH)) / theAnimation->h) * -1) + currentYPosition);
-		passedProp->gl_v.push_back(((passedArray->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w) - 0.5);
-		passedProp->gl_v.push_back((((passedArray->vertex->y + currentYPosition) * theAnimation->scaleFactorY / theAnimation->h) - 0.5) * -1);
+		passedProp->gl_v.push_back(((passedArray->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w) - widthOffset);
+		passedProp->gl_v.push_back((((passedArray->vertex->y + currentYPosition) * theAnimation->scaleFactorY / theAnimation->h) - heightOffset) * -1);
 		//passedProp->gl_v.push_back((2 * ((passedArray->vertex->x + currentXPosition))) / theAnimation->w);
 		//passedProp->gl_v.push_back(((2 * ((passedArray->vertex->y + currentYPosition))) / theAnimation->h) * -1);
 		if (passedArray->vertex->z == 0) {
@@ -480,8 +459,8 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 			//EM_ASM({console.log("adding regulars 2 " + $0);}, reserve->arrayItem->vertex->x);
 			//passedProp->gl_v.push_back(((2 * ((reserve->arrayItem->vertex->x) - halfW)) / theAnimation->w) + currentXPosition);
 			//passedProp->gl_v.push_back((((2 * ((reserve->arrayItem->vertex->y) - halfH)) / theAnimation->h) * -1) + currentYPosition);
-			passedProp->gl_v.push_back(((reserve->arrayItem->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w) - 0.5);
-			passedProp->gl_v.push_back((((reserve->arrayItem->vertex->y + currentYPosition) * theAnimation->scaleFactorY / theAnimation->h) - 0.5) * -1);
+			passedProp->gl_v.push_back(((reserve->arrayItem->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w) - widthOffset);
+			passedProp->gl_v.push_back((((reserve->arrayItem->vertex->y + currentYPosition) * theAnimation->scaleFactorY / theAnimation->h) - heightOffset) * -1);
 			//passedProp->gl_v.push_back((2 * ((reserve->arrayItem->vertex->x + currentXPosition))) / theAnimation->w);
 			//passedProp->gl_v.push_back(((2 * ((reserve->arrayItem->vertex->y + currentYPosition))) / theAnimation->h) * -1);
 			//passedProp->gl_v.push_back((2 * (reserve->arrayItem->vertex->x + layersOffset.x)) / theAnimation->w);

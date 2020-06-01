@@ -5,8 +5,10 @@ const GLchar* vertexSource =
     "varying vec4 vcolors; \n"
     "uniform mat4 shapesTranslate; \n"
     "uniform mat4 shapesScale; \n"
+    "uniform mat4 shapesRotate; \n"
     "uniform mat4 layersTranslate; \n"
     "uniform mat4 layersScale; \n"
+    "uniform mat4 layersRotate; \n"
     "void main() \n"
     "{ \n"
     "  vcolors = color; \n"
@@ -121,9 +123,9 @@ void glInit() {
 	//EM_ASM({console.log("glinit 1.7");});
 	//rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
 	rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED);
-	SDL_SetWindowSize(wnd, theAnimation->w * theAnimation->scaleFactorX, theAnimation->h * theAnimation->scaleFactorY);
-	SDL_RenderSetLogicalSize(rdr, theAnimation->w * theAnimation->scaleFactorX, theAnimation->h * theAnimation->scaleFactorY);
-	SDL_RenderSetScale(rdr, theAnimation->scaleFactorX, theAnimation->scaleFactorY);
+	SDL_SetWindowSize(wnd, theAnimation->w, theAnimation->h);
+	SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
+	//SDL_RenderSetScale(rdr, theAnimation->scaleFactorX, theAnimation->scaleFactorY);
 	//EM_ASM({console.log("glinit 1.8");});
 }
 
@@ -324,11 +326,11 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							}
 						}
 
-						if (tempBuffers->layersTransform != NULL && tempBuffers->layersTransform->startTime <= frame && tempBuffers->layersTransform->endTime >= frame) {
+						if (tempBuffers->layersTransform != NULL && tempBuffers->layersTransform->startTime <= frame) {
 							if (tempBuffers->layersTransform->startTime == frame) {
 								tempBuffers->layersTransform->composite = tempBuffers->layersTransform->composite->start;
 							} else {
-								if (tempBuffers->layersTransform->composite->next != NULL) {
+								if (tempBuffers->layersTransform->composite != NULL && tempBuffers->layersTransform->composite->next != NULL) {
 									tempBuffers->layersTransform->composite = tempBuffers->layersTransform->composite->next;
 								}
 							}

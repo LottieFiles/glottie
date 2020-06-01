@@ -234,6 +234,7 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem, stru
 	EM_ASM({console.log("///// entering findShapesTransform ");});
 	bool exhausted = false;
 	passedShapesItem = passedShapesItem->start;
+	currentShapesTransform = NULL;
 	while (! exhausted) {
 		EM_ASM({console.log("shape type " + $0);}, passedShapesItem->ty);
 		if (passedShapesItem->ty == _transform) {
@@ -353,6 +354,7 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 void findLayersTransform(struct Layers* passedLayers) {
 	//bool exhausted = false;
 	//while (! exhausted) {
+		currentLayersTransform = NULL;
 		if (passedLayers != NULL && passedLayers->ks != NULL) {
 			if (passedLayers->ks->p != NULL && passedLayers->ks->p->k != NULL) {
 				layersPosition.x = passedLayers->ks->p->k[0];
@@ -388,7 +390,6 @@ void findLayersTransform(struct Layers* passedLayers) {
 
 int prepLayers(struct Layers* passedLayers) {
 	EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- LAYERS found pre 1.0");});
-	currentLayersTransform = NULL;
 
 	if (passedLayers == NULL || passedLayers->shapes == NULL) {
 		return 0;

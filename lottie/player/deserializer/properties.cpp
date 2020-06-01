@@ -184,6 +184,13 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		return 1;
 	}
 
+//void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed, bool fillNulls, bool isGeometry, bool autoSegSize) {
+			//passedPropertiesShapeProp->v_count++;
+			//passedPropertiesShapeProp->bezier_count++;
+	float segSize = 0.1;
+	bezierSegment(passedPropertiesShapeProp->v, passedPropertiesShapeProp->i, passedPropertiesShapeProp->o, &(passedPropertiesShapeProp->v_count), &(passedPropertiesShapeProp->bezier_count), &segSize, false, true, true);
+	return 1;
+
 	exhausted = false;
 
 	//passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->start->prev;
@@ -296,7 +303,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		p1 = passedPropertiesShapeProp->o->prev;
 		p2 = passedPropertiesShapeProp->i;
 
-		float segSize = 0.10;
+		//float segSize = 0.10;
 		float segments = 1 / segSize;
 		//float segNow = segSize;
 		float segNow = segSize;

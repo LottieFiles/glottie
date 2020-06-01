@@ -95,6 +95,7 @@ void loadJson(char* buffer, int theLength) {
 	//EM_ASM({console.log("////> TIME " + $0 + " ");}, currentTime);
 
 	lastBuffersCreated->next = lastBuffersCreated->start;
+	EM_ASM({console.log("////> pre-starting");});
 	lastBuffersCreated->start->prev = lastBuffersCreated;
 
 	EM_ASM({console.log("////> starting");});

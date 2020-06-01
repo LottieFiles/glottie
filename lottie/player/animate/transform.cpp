@@ -253,14 +253,30 @@ struct CompositeArray* newCompositeArray(struct CompositeArray* passedCompositeA
 }
 
 void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTransform) {
+	bool pFound = false;
+	bool sFound = false;
+	bool rFound = false;
+	bool oFound = false;
 	if (passedTransform->p != NULL && passedTransform->p->transformMatrix != NULL) {
+		pFound = true;
 		passedTransform->p->transformMatrix = passedTransform->p->transformMatrix->start;
 	}
 	if (passedTransform->s != NULL && passedTransform->s->transformMatrix != NULL) {
+		sFound = true;
 		passedTransform->s->transformMatrix = passedTransform->s->transformMatrix->start;
 	}
 
-	for (int i = minTime; i <= maxTime; i++) {
+	int i = minTime;
+	bool exhausted = false;
+	bool pExhausted = false;
+	bool sExhausted = false;
+	bool rExhausted = false;
+	bool oExhausted = false;
+	bool pEnded = false;
+	bool sEnded = false;
+	bool rEnded = false;
+	bool oEnded = false;
+	while (! exhausted) {
 		if (passedTransform->composite == NULL) {
 			passedTransform->composite = newCompositeArray(passedTransform->composite, i);
 		} else {
@@ -272,23 +288,49 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			}
 		}
 
-		if (passedTransform->p != NULL && passedTransform->p->transformMatrix != NULL && passedTransform->p->startTime <= i && passedTransform->p->endTime >= i) {
+		if (pEnded && sEnded) {
+			exhausted = true;
+		}
+
+		if (passedTransform->p != NULL && passedTransform->p->transformMatrix != NULL && passedTransform->p->startTime <= i) {
 			EM_ASM_({console.log("---------------===================TRANSFORM composite position ");});
 			passedTransform->composite->position = passedTransform->composite->position * passedTransform->p->transformMatrix->transform;
 			passedTransform->composite->frame = i;
-			if (passedTransform->p->transformMatrix->next != NULL) {
+			if (passedTransform->p->transformMatrix->next != NULL && passedTransform->p->transformMatrix->next != passedTransform->p->transformMatrix->start) {
 				passedTransform->p->transformMatrix = passedTransform->p->transformMatrix->next;
+			} else {
+				pEnded = true;
+			}
+		} else {
+			if (! pFound) {
+				pEnded = true;
+			}
+			if (i >= maxTime) {
+				pExhausted = true;
 			}
 		}
-		if (passedTransform->s != NULL && passedTransform->s->transformMatrix != NULL && passedTransform->s->startTime <= i && passedTransform->s->endTime >= i) {
+		if (passedTransform->s != NULL && passedTransform->s->transformMatrix != NULL && passedTransform->s->startTime <= i) {
 			EM_ASM_({console.log("---------------===================TRANSFORM composite scale ");});
 			passedTransform->composite->scale = passedTransform->composite->scale * passedTransform->s->transformMatrix->transform;
 			passedTransform->composite->frame = i;
 			//passedTransform->composite->scale = passedTransform->s->transformMatrix;
-			if (passedTransform->s->transformMatrix->next != NULL) {
+			if (passedTransform->s->transformMatrix->next != NULL && passedTransform->s->transformMatrix->next != passedTransform->s->transformMatrix->start) {
 				passedTransform->s->transformMatrix = passedTransform->s->transformMatrix->next;
+			} else {
+				sEnded = true;
+			}
+		} else {
+			if (! sFound) {
+				sEnded = true;
+			}
+			if (i >= maxTime) {
+				sExhausted = true;
 			}
 		}
+		if (pExhausted && sExhausted) {
+			exhausted = true;
+		}
+		i++;
 
 	}
 	passedTransform->startTime = minTime;
@@ -313,7 +355,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 		passedShapesItem->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			EM_ASM_({console.log("=================================POSITION v_count ");});
-			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false);
+			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false);
 		}
 		fillAnimation(passedShapesItem->transform->p, 1);
 		EM_ASM_({console.log("---------------===================TRANSFORM ENDS ");});
@@ -330,7 +372,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 		passedShapesItem->transform->s = tempAOV;
 		if (tempAOV->v_count > 1) {
 			EM_ASM_({console.log("=================================SCALE v_count ");});
-			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false);
+			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false);
 		}
 		fillAnimation(passedShapesItem->transform->s, 2);
 		EM_ASM_({console.log("---------------===================SCALE TRANSFORM ENDS ");});
@@ -365,7 +407,7 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers, struct Boundi
 		passedLayers->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			EM_ASM_({console.log("=================================LAYERS POSITION v_count ");});
-			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false);
+			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false);
 		}
 		fillAnimation(passedLayers->transform->p, 1);
 		EM_ASM_({console.log("=================================LAYERS TRANSFORM ENDS ");});
@@ -384,7 +426,7 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers, struct Boundi
 		passedLayers->transform->s = tempAOV;
 		if (tempAOV->v_count > 1) {
 			EM_ASM_({console.log("=================================LAYERS SCALE v_count ");});
-			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false);
+			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false);
 		}
 		fillAnimation(passedLayers->transform->s, 2);
 		EM_ASM_({console.log("=================================LAYERS SCALE TRANSFORM ENDS ");});
