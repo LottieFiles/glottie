@@ -15,7 +15,7 @@ struct alignas(ALIGNSIZE) Layers {
 
         struct HelpersTransform* ks = NULL; //transform
 
-	struct BoundingBox* currentBB;
+	struct BoundingBox* currentBB = NULL;
 
 	struct Transform* transform = NULL;
 

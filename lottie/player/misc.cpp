@@ -1057,7 +1057,15 @@ void adjustScale(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayO
 }
 
 // related to animating
-void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed, bool fillNulls, bool isGeometry, bool autoSegSize) {
+void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed, bool fillNulls, bool isGeometry, bool autoSegSize, int bezierType) {
+	/*
+		bezierType:
+			1 - linear 
+			2 - quadratic
+			3 - cubic
+	*/
+
+
 	bool exhausted = false;
 	v = v->start;
 	i = i->start;
@@ -1205,10 +1213,27 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 		float segNow = segSize;
 		EM_ASM_({console.log("segnow and segsize " + $0 + " " + $1);}, segNow, segSize);
 
-		float p1x = p1->vertex->x + o1->vertex->x;
-		float p2x = p2->vertex->x + o2->vertex->x;
-		float p1y = p1->vertex->y + o1->vertex->y;
-		float p2y = p2->vertex->y + o2->vertex->y;
+		float p1x;
+		float p2x;
+		float p1y;
+		float p2y;
+
+		switch (bezierType) {
+			case 1:
+				break;
+			case 2:
+				p1x = p1->vertex->x + o1->vertex->x;
+				p2x = p2->vertex->x + o2->vertex->x;
+				p1y = p1->vertex->y + o1->vertex->y;
+				p2y = p2->vertex->y + o2->vertex->y;
+				break;
+			case 3:
+				p1x = p1->vertex->x + o1->vertex->x;
+				p2x = p2->vertex->x + o2->vertex->x;
+				p1y = p1->vertex->y + o1->vertex->y;
+				p2y = p2->vertex->y + o2->vertex->y;
+				break;
+		}
 
 		intermediateStart = NULL;
 		lastIntermediate = NULL;
@@ -1226,15 +1251,34 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 			oneTcube = pow(oneT, 3);
 			oneTsquare = pow(oneT, 2);
 
-			intermediate->vertex->x = 	(oneTcube * 			o1->vertex->x) + 
-							(3 * oneTsquare * segNow * 	p1x) + 
-							(3 * oneT * Tsquare * 		p2x) + 
-							(Tcube * 			o2->vertex->x);
+			switch (bezierType) {
+				case 1:
 
-			intermediate->vertex->y = 	(oneTcube * 			o1->vertex->y) + 
-							(3 * oneTsquare * segNow * 	p1y) + 
-							(3 * oneT * Tsquare * 		p2y) + 
-							(Tcube * 			o2->vertex->y);
+					break;
+				case 2:
+					intermediate->vertex->x = 	(oneTcube * 			o1->vertex->x) + 
+									(3 * oneTsquare * segNow * 	p1x) + 
+									(3 * oneT * Tsquare * 		p2x) + 
+									(Tcube * 			o2->vertex->x);
+
+					intermediate->vertex->y = 	(oneTcube * 			o1->vertex->y) + 
+									(3 * oneTsquare * segNow * 	p1y) + 
+									(3 * oneT * Tsquare * 		p2y) + 
+									(Tcube * 			o2->vertex->y);
+					break;
+				case 3:
+					intermediate->vertex->x = 	(oneTcube * 			o1->vertex->x) + 
+									(3 * oneTsquare * segNow * 	p1x) + 
+									(3 * oneT * Tsquare * 		p2x) + 
+									(Tcube * 			o2->vertex->x);
+
+					intermediate->vertex->y = 	(oneTcube * 			o1->vertex->y) + 
+									(3 * oneTsquare * segNow * 	p1y) + 
+									(3 * oneT * Tsquare * 		p2y) + 
+									(Tcube * 			o2->vertex->y);
+					break;
+			}
+
 			EM_ASM_({console.log("[[[[[[[[[[[[[==========> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
 			intermediate->vertex->z = 0;
 			intermediate->vertex->a = 1;

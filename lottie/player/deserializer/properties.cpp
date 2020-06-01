@@ -188,7 +188,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//passedPropertiesShapeProp->v_count++;
 			//passedPropertiesShapeProp->bezier_count++;
 	float segSize = 0.1;
-	bezierSegment(passedPropertiesShapeProp->v, passedPropertiesShapeProp->i, passedPropertiesShapeProp->o, &(passedPropertiesShapeProp->v_count), &(passedPropertiesShapeProp->bezier_count), &segSize, false, true, true);
+	bezierSegment(passedPropertiesShapeProp->v, passedPropertiesShapeProp->i, passedPropertiesShapeProp->o, &(passedPropertiesShapeProp->v_count), &(passedPropertiesShapeProp->bezier_count), &segSize, false, true, true, 3);
 	return 1;
 
 	exhausted = false;

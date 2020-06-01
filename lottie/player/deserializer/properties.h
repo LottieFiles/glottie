@@ -26,7 +26,7 @@ struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
 } *currentPropertiesValueKeyframe;
 
 struct alignas(ALIGNSIZE) PropertiesValue {
-	struct PropertiesValueKeyframe* keyframe;
+	struct PropertiesValueKeyframe* keyframe = NULL;
 
 	struct textBlock* ix;
 	struct textBlock* x;

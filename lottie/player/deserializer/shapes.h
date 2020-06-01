@@ -70,7 +70,7 @@ struct alignas(ALIGNSIZE) ShapesItem {
 
 	struct ShapesItem* baseTransform = NULL;
 
-	struct BoundingBox* currentBB;
+	struct BoundingBox* currentBB = NULL;
 
 	struct Transform* transform = NULL;
 
