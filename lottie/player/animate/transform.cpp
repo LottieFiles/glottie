@@ -339,7 +339,11 @@ void fillAnimation(struct TransformAOV* passedAOV, int type, struct BoundingBox*
 			case 3:
 				if (passedAOV->s_count >= 1) {
 					passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
-					passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, currentBB->anchorX, currentBB->anchorY, 0, passedAOV->v->vertex->x);
+					if (currentBB->anchorSet) {
+						passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, currentBB->anchorX, currentBB->anchorY, 0, passedAOV->v->vertex->x);
+					} else {
+						passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, currentBB->initX, currentBB->initY, 0, passedAOV->v->vertex->x);
+					}
 				}
 				break;
 		}
@@ -403,6 +407,10 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 	bool sEnded = false;
 	bool rEnded = false;
 	bool oEnded = false;
+	bool pEndProcessed = false;
+	bool sEndProcessed = false;
+	bool rEndProcessed = false;
+	bool oEndProcessed = false;
 	glm::mat4 tempP = glm::mat4(1.0f);
 	glm::mat4 tempR = glm::mat4(1.0f);
 	glm::mat4 tempS = glm::mat4(1.0f);
@@ -425,10 +433,13 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			exhausted = true;
 		}
 
-		if (passedTransform->p != NULL && passedTransform->p->transformMatrix != NULL && passedTransform->p->startTime <= i && passedTransform->p->endTime >= i) {
+		if (passedTransform->p != NULL && passedTransform->p->transformMatrix != NULL && passedTransform->p->startTime <= i && ! pEndProcessed) {
 			EM_ASM_({console.log("---------------===================TRANSFORM composite position ");});
 			tempP = passedTransform->p->transformMatrix->transform;
 			passedTransform->composite->positionSet = true;
+			if (pEnded) {
+				pEndProcessed = true;
+			}
 			if (passedTransform->p->transformMatrix->next != NULL && passedTransform->p->transformMatrix->next != passedTransform->p->transformMatrix->start) {
 				passedTransform->p->transformMatrix = passedTransform->p->transformMatrix->next;
 				pEnded = false;
@@ -443,13 +454,16 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				pExhausted = true;
 			}
 		}
-		if (passedTransform->s != NULL && passedTransform->s->transformMatrix != NULL && passedTransform->s->startTime <= i && passedTransform->s->endTime >= i) {
+		if (passedTransform->s != NULL && passedTransform->s->transformMatrix != NULL && passedTransform->s->startTime <= i && ! sEndProcessed) {
 			EM_ASM_({console.log("---------------===================TRANSFORM composite scale ");});
 			//passedTransform->composite->transform = passedTransform->composite->transform * passedTransform->s->transformMatrix->transform;
 			passedTransform->composite->scaleSet = true;
 			//passedTransform->composite->transformSet = true;
 			//passedTransform->composite->frame = i;
 			tempS = passedTransform->s->transformMatrix->transform;
+			if (sEnded) {
+				sEndProcessed = true;
+			}
 			if (passedTransform->s->transformMatrix->next != NULL && passedTransform->s->transformMatrix->next != passedTransform->s->transformMatrix->start) {
 				passedTransform->s->transformMatrix = passedTransform->s->transformMatrix->next;
 				sEnded = false;
@@ -464,13 +478,16 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				sExhausted = true;
 			}
 		}
-		if (passedTransform->r != NULL && passedTransform->r->transformMatrix != NULL && passedTransform->r->startTime <= i && passedTransform->r->endTime > i) {
+		if (passedTransform->r != NULL && passedTransform->r->transformMatrix != NULL && passedTransform->r->startTime <= i && ! rEnded) {
 			EM_ASM_({console.log("---------------===================TRANSFORM composite rotate ");});
 			//passedTransform->composite->transform = passedTransform->composite->transform * passedTransform->r->transformMatrix->transform;
 			passedTransform->composite->rotateSet = true;
 			//passedTransform->composite->transformSet = true;
 			//passedTransform->composite->frame = i;
 			tempR = passedTransform->r->transformMatrix->transform;
+			if (rEnded) {
+				rEndProcessed = true;
+			}
 			if (passedTransform->r->transformMatrix->next != NULL && passedTransform->r->transformMatrix->next != passedTransform->r->transformMatrix->start) {
 				passedTransform->r->transformMatrix = passedTransform->r->transformMatrix->next;
 				rEnded = false;
@@ -554,7 +571,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 		passedShapesItem->transform->r = tempAOV;
 		if (tempAOV->v_count > 1) {
 			EM_ASM_({console.log("=================================SCALE v_count ");});
-			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3);
+			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 1);
 		}
 		fillAnimation(passedShapesItem->transform->r, 3, passedShapesItem->currentBB);
 		EM_ASM_({console.log("---------------===================SCALE TRANSFORM ENDS ");});
@@ -626,7 +643,7 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers, struct Boundi
 		passedLayers->transform->r = tempAOV;
 		if (tempAOV->v_count > 1) {
 			EM_ASM_({console.log("=================================LAYERS SCALE v_count ");});
-			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3);
+			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 1);
 		}
 		fillAnimation(passedLayers->transform->r, 3, passedLayers->currentBB);
 		EM_ASM_({console.log("=================================LAYERS SCALE TRANSFORM ENDS ");});

@@ -1154,7 +1154,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 						o = o->next;
 						v = v->next;
 						if (isGeometry) {
-							if (v == startPoint->next && cycleCount == 2) {
+							if (v == startPoint && cycleCount == 2) {
 								exhausted = true;
 								break;
 							}
@@ -1171,7 +1171,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 					o = o->next;
 					v = v->next;
 					if (isGeometry) {
-						if (v == startPoint->next && cycleCount == 2) {
+						if (v == startPoint && cycleCount == 2) {
 							exhausted = true;
 							break;
 						}
@@ -1220,8 +1220,8 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 
 		switch (bezierType) {
 			case 1:
-				p1x = p1->vertex->x;
-				p1y = p1->vertex->y;
+				p1x = p1->vertex->x + o2->vertex->x;
+				p1y = p1->vertex->y + o2->vertex->y;
 				break;
 			case 2:
 				p1x = p1->vertex->x;
@@ -1331,8 +1331,59 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 	struct ReturnPosition* temp = new ReturnPosition;
 	temp->layers = new Vertex;
 	temp->shapes = new Vertex;
+
+	if (currentBB != NULL) {
+		if (currentBB->anchorSet) {
+			temp->layers->x = layersPosition.x - currentBB->anchorX;
+			temp->layers->y = layersPosition.y - currentBB->anchorY;
+		} else {
+			temp->layers->x = layersPosition.x - (currentBB->w / 2);
+			temp->layers->y = layersPosition.y - (currentBB->h / 2);
+		}
+
+	}
+
+	if (currentShapesBB != NULL) {
+		if (currentShapesBB->anchorSet) {
+			temp->shapes->x = shapesPosition.x - currentShapesBB->anchorX;
+			temp->shapes->y = shapesPosition.y - currentShapesBB->anchorY;
+		} else {
+			temp->shapes->x = shapesPosition.x - (currentShapesBB->w / 2);
+			temp->shapes->y = shapesPosition.y - (currentShapesBB->h / 2);
+		}
+	}
+
+	/*
+	if (currentBB->anchorSet) {
+		if (currentShapesBB != NULL) {
+			if (currentShapesBB->anchorSet) {
+				temp->layers->x = layersPosition.x - currentBB->anchorX + (shapesPosition.x - currentShapesBB->anchorX);
+				temp->layers->y = layersPosition.y - currentBB->anchorY + (shapesPosition.y - currentShapesBB->anchorY);
+			} else {
+				temp->layers->x = layersPosition.x - currentBB->anchorX + (shapesPosition.x - (currentShapesBB->w / 2));
+				temp->layers->y = layersPosition.y - currentBB->anchorY + (shapesPosition.y - (currentShapesBB->h / 2));
+			}
+		} else {
 			temp->layers->x = layersPosition.x - currentBB->anchorX + shapesPosition.x;
 			temp->layers->y = layersPosition.y - currentBB->anchorY + shapesPosition.y;
+		}
+	} else {
+		if (currentShapesBB != NULL) {
+			if (currentShapesBB->anchorSet) {
+				temp->layers->x = layersPosition.x - (currentBB->w / 2) + (shapesPosition.x - currentShapesBB->anchorX);
+				temp->layers->y = layersPosition.y - (currentBB->h / 2) + (shapesPosition.y - currentShapesBB->anchorY);
+			} else {
+				temp->layers->x = layersPosition.x - (currentBB->w / 2) + (shapesPosition.x - (currentShapesBB->w / 2));
+				temp->layers->y = layersPosition.y - (currentBB->h / 2) + (shapesPosition.y - (currentShapesBB->h / 2));
+			}
+		} else {
+			temp->layers->x = layersPosition.x - (currentBB->w / 2) + shapesPosition.x;
+			temp->layers->y = layersPosition.y - (currentBB->h / 2) + shapesPosition.y;
+		}
+
+	}
+	*/
+
 	/*
 	if (shapesPosition.x != 0 || shapesPosition.y != 0) {
 		if (shapesAnchor.x != 0 || shapesAnchor.y != 0) {

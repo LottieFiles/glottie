@@ -190,7 +190,9 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//passedPropertiesShapeProp->gl_v_fill = tempTriangulateReturn->cbo;
 			//passedPropertiesShapeProp->gl_v_idx = tempTriangulateReturn->index;
 			//prepVAO(passedPropertiesShapeProp);
-			prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, passedPropertiesShapeProp->gl_v_fill, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v->idxCount);
+			if (lastBuffersCreated->filled) {
+				prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, passedPropertiesShapeProp->gl_v_fill, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v->idxCount);
+			} 
 			//delete tempTriangulateReturn;
 		}
 
@@ -254,6 +256,7 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem, stru
 			if (passedShapesItem->a != NULL && passedShapesItem->a->k != NULL) {
 				shapesAnchor.x = passedShapesItem->a->k[0];
 				shapesAnchor.y = passedShapesItem->a->k[1];
+				shapesAnchor.isSet = true;
 			}
 
 			currentShapesTransform = fillTransformShapes(passedShapesItem, currentBB);
@@ -266,9 +269,9 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem, stru
 			if (currentShapesTransform != NULL && currentShapesTransform->p != NULL) {
 				EM_ASM({console.log("///// exiting findShapesTransform ");});
 				if (currentShapesTransform->p->startTime == 0) {
-				EM_ASM({console.log("///// exiting findShapesTransform2 ");});
-				shapesPosition.x = shapesPosition.x + currentShapesTransform->p->v->start->vertex->x;
-				shapesPosition.y = shapesPosition.y + currentShapesTransform->p->v->start->vertex->y;
+					EM_ASM({console.log("///// exiting findShapesTransform2 ");});
+					//shapesPosition.x = shapesPosition.x + currentShapesTransform->p->v->start->vertex->x;
+					//shapesPosition.y = shapesPosition.y + currentShapesTransform->p->v->start->vertex->y;
 				}
 			}
 			return passedShapesItem;
@@ -299,6 +302,7 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			shapesPosition.y = 0;
 			shapesAnchor.x = 0;
 			shapesAnchor.y = 0;
+			shapesAnchor.isSet = false;
 			freshStart = false;
 	}
 
@@ -310,6 +314,9 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 	float currentShapesPosX, currentShapesPosY, currentShapesAncX, currentShapesAncY;
 	while (! exhausted) {
 		EM_ASM({console.log("SHAPESITEM found");});
+		if (passedShapesItem->currentBB == NULL) {
+			passedShapesItem->currentBB = new BoundingBox;
+		}
 		if (passedShapesItem->it != NULL) {
 			currentShapesPosX = shapesPosition.x;
 			currentShapesPosY = shapesPosition.y;
@@ -321,6 +328,12 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			shapesAnchor.x = 0;
 			shapesAnchor.y = 0;
 			*/
+
+			if (shapesAnchor.isSet) {
+				passedShapesItem->currentBB->anchorX = shapesAnchor.x;
+				passedShapesItem->currentBB->anchorY = shapesAnchor.y;
+				passedShapesItem->currentBB->anchorSet = true;
+			}
 			prepShapesItem(passedShapesItem->it, currentBaseTransform, freshStart, currentBB);
 			shapesPosition.x = currentShapesPosX;
 			shapesPosition.y = currentShapesPosY;
@@ -328,12 +341,14 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			shapesAnchor.y = currentShapesAncY;
 		}
 		if (passedShapesItem->ks != NULL) {
-			if (passedShapesItem->currentBB == NULL) {
-				passedShapesItem->currentBB = new BoundingBox;
+			if (shapesAnchor.isSet) {
+				passedShapesItem->currentBB->anchorX = shapesAnchor.x;
+				passedShapesItem->currentBB->anchorY = shapesAnchor.y;
+				passedShapesItem->currentBB->anchorSet = true;
 			}
+
 			getBBPropShape(passedShapesItem->ks->start, passedShapesItem->currentBB);
-			passedShapesItem->currentBB->anchorX = shapesAnchor.x;
-			passedShapesItem->currentBB->anchorY = shapesAnchor.y;
+
 			prepPropertiesShape(passedShapesItem->ks, passedShapesItem, currentBB, passedShapesItem->currentBB);
 		}
 
@@ -368,6 +383,7 @@ void findLayersTransform(struct Layers* passedLayers) {
 				layersAnchor.y = passedLayers->ks->a->k[1];
 				passedLayers->currentBB->anchorX = passedLayers->ks->a->k[0];
 				passedLayers->currentBB->anchorY = passedLayers->ks->a->k[1];
+				passedLayers->currentBB->anchorSet = true;
 			}
 			currentLayersTransform = fillTransformLayers(passedLayers, passedLayers->currentBB);
 		}

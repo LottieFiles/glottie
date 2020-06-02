@@ -184,5 +184,6 @@ struct alignas(ALIGNSIZE) BoundingBox {
 	float initY = 0;
 	float anchorX = 0;
 	float anchorY = 0;
+	bool anchorSet = false;
 };
 

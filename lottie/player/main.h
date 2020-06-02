@@ -137,5 +137,6 @@ struct MainOffset {
 	float x = 0;
 	float y = 0;
 	float z = 0;
+	bool isSet = true;
 } layersPosition, layersAnchor, shapesPosition, shapesAnchor;
 
