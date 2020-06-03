@@ -166,7 +166,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	bool startPointNextEncountered = false;
 	int outlierCount = 0;
 	//EM_ASM({console.log("pretri 2 " + $0);}, count);
-	if (count >= 2) {
+	if (count > 2) {
 		bool entered = true;
 		bool startEncountered = false;
 		int cyclesAfterStartEncountered = 0;

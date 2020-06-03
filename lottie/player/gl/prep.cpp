@@ -180,8 +180,16 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		elementCount++;
 
 		EM_ASM({console.log("tracing 3 ");});
-		if (passedPropertiesShapeProp->v_count >= 2) {
-			passedPropertiesShapeProp->buffers_v = newBuffers();
+		if (passedPropertiesShapeProp->v_count > 2) {
+			if (lastBuffersCreated != NULL) {
+				if (lastBuffersCreated->filled) {
+					passedPropertiesShapeProp->buffers_v = newBuffers();
+				} else {
+					passedPropertiesShapeProp->buffers_v = lastBuffersCreated;
+				}
+			} else {
+				passedPropertiesShapeProp->buffers_v = newBuffers();
+			}
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
 			prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, passedShapesItem->order, passedPropertiesShapeProp, currentBB, currentShapesBB);
 			//if (tempTriangulateReturn == NULL) {return 0;}
@@ -192,7 +200,9 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//prepVAO(passedPropertiesShapeProp);
 			if (lastBuffersCreated->filled) {
 				prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, passedPropertiesShapeProp->gl_v_fill, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v->idxCount);
-			} 
+			} else {
+				passedPropertiesShapeProp->buffers_v = NULL;
+			}
 			//delete tempTriangulateReturn;
 		}
 
