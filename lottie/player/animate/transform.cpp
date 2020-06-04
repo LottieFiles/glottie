@@ -151,7 +151,11 @@ struct TransformAOV* createSegmentR(struct PropertiesValueKeyframe* passedKeyfra
 
 		if (previousTime != 0) {
 			*(tempAOV->frames + (tempAOV->v_count - 1)) = (passedKeyframe->t * theAnimation->frMultiplier) - (previousTime * theAnimation->frMultiplier);
-			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 1 / (*(tempAOV->frames + (tempAOV->v_count - 1)) - 1);
+			if (*(tempAOV->frames + (tempAOV->v_count - 1)) >= 2) {
+				*(tempAOV->segSize + (tempAOV->v_count - 1)) = 1 / (*(tempAOV->frames + (tempAOV->v_count - 1)) - 1);
+			} else {
+				*(tempAOV->segSize + (tempAOV->v_count - 1)) = 0;
+			}
 		} else {
 			*(tempAOV->frames + (tempAOV->v_count - 1)) = 1;
 			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 0;
@@ -534,7 +538,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			passedTransform->composite->rotateSet) {
 			passedTransform->composite->transformSet = true;
 			passedTransform->composite->transform = tempR * (tempS * tempP);
-			//passedTransform->composite->transform = (tempS * tempP);
+			//passedTransform->composite->transform = tempS * tempP;
 		}
 		if (pExhausted && sExhausted && rExhausted) {
 			exhausted = true;

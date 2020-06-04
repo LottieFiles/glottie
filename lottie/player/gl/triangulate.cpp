@@ -136,19 +136,22 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	/*
 	struct Dimensions* dimensions;
 	enum Phase phase = _maxY;
-	//EM_ASM({console.log("pretri 1.1");});
+	EM_ASM({console.log("pretri 1.1");});
 	if (passedBuffers->changed || passedBuffers->dimensions == NULL) {
-		//EM_ASM({console.log("pretri 1.2");});
+		EM_ASM({console.log("pretri 1.2");});
 		dimensions = findDimensions(count, passedBuffers, passedArray);
-		//EM_ASM({console.log("pretri 1.3");});
-		//EM_ASM({console.log("pretri 1.4");});
+		EM_ASM({console.log("pretri 1.3");});
+		EM_ASM({console.log("pretri 1.4");});
 		passedBuffers->dimensions = dimensions;
-		//EM_ASM({console.log("pretri 1.5");});
+		EM_ASM({console.log("pretri 1.5");});
 		passedBuffers->changed = false;
 	} else {
 		dimensions = passedBuffers->dimensions;
 	}
 	*/
+	if (count <= 2) {
+		return;
+	}
 	struct ArrayOfArrayOfVertex* reserve = NULL;
 	struct ArrayOfArrayOfVertex* reserveEnd = NULL;
 	//passedArray = dimensions->topVertex;
@@ -165,7 +168,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	bool outlierEncountered = false;
 	bool startPointNextEncountered = false;
 	int outlierCount = 0;
-	//EM_ASM({console.log("pretri 2 " + $0);}, count);
+	EM_ASM({console.log("pretri 2 " + $0);}, count);
 	if (count > 2) {
 		bool entered = true;
 		bool startEncountered = false;
@@ -208,7 +211,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 						passedArray = reservePrevArray;
 						coreCount = coreCount - 1;
 						outlierCount++;
-						//EM_ASM({console.log("outlier found");});
+						EM_ASM({console.log("outlier found");});
 						outlierEncountered = true;
 					}
 				}
@@ -240,27 +243,27 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	}
 	reserveEnd = reserve;
 
-	//EM_ASM_({console.log("done checking for outliers 1 - " + $0 + " " + $1 + " " + wasmTable.length);}, count, outlierCount);
+	EM_ASM_({console.log("done checking for outliers 1 - " + $0 + " " + $1 + " " + wasmTable.length);}, count, outlierCount);
 
 	//if (outlierEncountered) {
 		passedArray = startPoint;
 	//}
 	/*int growBy = ( (256 * ((count * 3) + outlierCount + 10)) / (65535/ALIGNSIZE));
 	if (growBy > 0) {
-		//EM_ASM({console.log("grow by 1.1 " + $0);}, growBy);
-		//EM_ASM({console.log("to grow by " + $0);}, growBy);
-		//EM_ASM({var memory=;}, growBy);
+		EM_ASM({console.log("grow by 1.1 " + $0);}, growBy);
+		EM_ASM({console.log("to grow by " + $0);}, growBy);
+		EM_ASM({var memory=;}, growBy);
 	}*/
 	/*
-	//EM_ASM({console.log("done checking for outliers 1.1 " + $0);}, count);
+	EM_ASM({console.log("done checking for outliers 1.1 " + $0);}, count);
 	struct Vertex* tempVBO = NULL;
 	tempVBO = new Vertex[count + 1]();
 	//GLfloat* tempVBO = new GLfloat[(count * 4)];
-	//EM_ASM({console.log("done checking for outliers 1.2 " + $0);}, count);
+	EM_ASM({console.log("done checking for outliers 1.2 " + $0);}, count);
 	struct Vertex* tempCBO = NULL;
 	tempCBO = new Vertex[count + 1]();
 	//GLfloat* tempCBO = new GLfloat[(count * 4)];
-	//EM_ASM({console.log("done checking for outliers 1.3 " + $0);}, (count + outlierCount));
+	EM_ASM({console.log("done checking for outliers 1.3 " + $0);}, (count + outlierCount));
 	struct IndexArray* tempIndex = NULL;
 	//tempIndex = new IndexArray[(count + outlierCount)]();
 	//unsigned int* tempIndex = new unsigned int[(count * 3)];
@@ -273,16 +276,16 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	*/
 
 	globalObjCount = globalObjCount + count + outlierCount;
-	//EM_ASM_({console.log("sorted 1 " + $0 + " " + $1 + " " + $2);}, count, outlierCount, globalObjCount);
+	EM_ASM_({console.log("sorted 1 " + $0 + " " + $1 + " " + $2);}, count, outlierCount, globalObjCount);
 	passedProp->gl_v.reserve((count + 1) * 4);
-	//EM_ASM({console.log("sorted 2");});
+	EM_ASM({console.log("sorted 2");});
 	passedProp->gl_v_fill.reserve((count + 1) * 4);
-	//EM_ASM({console.log("sorted 3");});
+	EM_ASM({console.log("sorted 3");});
 	passedProp->gl_v_idx.reserve((count + 1 + outlierCount) * 3);
 
 	int Bcounter = 0;
 	
-	//EM_ASM({console.log("done checking for outliers");});
+	EM_ASM({console.log("done checking for outliers");});
 	exhausted = false;
 	//int readItems = 0;
 	int Icounter = 0;
@@ -379,7 +382,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		*(passedProp->gl_v + ((Bcounter * 4) + 1)) = ((2 * passedArray->vertex->y) / theAnimation->h) * -1;
 		if (passedArray->vertex->z == 0) {
 			*(passedProp->gl_v + ((Bcounter * 4) + 2)) = ((float)order / 100000);
-			//EM_ASM({console.log("depth ------> " + $0 + " " + $1);}, *(passedProp->gl_v + ((Bcounter * 4) + 2)), order);
+			EM_ASM({console.log("depth ------> " + $0 + " " + $1);}, *(passedProp->gl_v + ((Bcounter * 4) + 2)), order);
 		} else {
 			*(passedProp->gl_v + ((Bcounter * 4) + 2)) = passedArray->vertex->z;
 		}
@@ -387,7 +390,6 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		*/
 		//passedProp->gl_v.resize((Bcounter + 1) * 4);
 
-		//EM_ASM_({console.log("adding regulars 1 " + $0 + " " + $1 + " " + $2);}, passedArray->vertex->x, layersOffset.x, layersOffset.y);
 		//passedProp->gl_v.push_back(((2 * ((passedArray->vertex->x) - halfW)) / theAnimation->w) + currentXPosition);
 		//passedProp->gl_v.push_back((((2 * ((passedArray->vertex->y) - halfH)) / theAnimation->h) * -1) + currentYPosition);
 		passedProp->gl_v.push_back(((passedArray->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w) - widthOffset);
@@ -401,7 +403,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		}
 		passedProp->gl_v.push_back(1);
 
-		//EM_ASM({console.log("adding regulars 1.1 ");});
+		EM_ASM({console.log("adding regulars 1.1 ");});
 		/*
 		*(passedProp->gl_v_fill + ((Bcounter * 4) + 0)) = *(defaultFill + 0);
 		*(passedProp->gl_v_fill + ((Bcounter * 4) + 1)) = *(defaultFill + 1);
@@ -411,16 +413,16 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 
 		//passedProp->gl_v_fill.resize((Bcounter + 1) * 4);
 
-		//EM_ASM({console.log("adding regulars 1.2 ");});
+		EM_ASM({console.log("adding regulars 1.2 ");});
 		passedProp->gl_v_fill.push_back(*(defaultFill + 0));
-		//EM_ASM({console.log("adding regulars 1.2 ");});
+		EM_ASM({console.log("adding regulars 1.2 ");});
 		passedProp->gl_v_fill.push_back(*(defaultFill + 1));
-		//EM_ASM({console.log("adding regulars 1.2 ");});
+		EM_ASM({console.log("adding regulars 1.2 ");});
 		passedProp->gl_v_fill.push_back(*(defaultFill + 2));
-		//EM_ASM({console.log("adding regulars 1.2 ");});
+		EM_ASM({console.log("adding regulars 1.2 ");});
 		passedProp->gl_v_fill.push_back(*(defaultFill + 3));
 		passedArray->idxOrder = Bcounter;
-		//EM_ASM({console.log("adding regulars 1.3 ");});
+		EM_ASM({console.log("adding regulars 1.3 ");});
 		if (Bcounter > 1) {
 			//passedProp->gl_v_idx.resize((Icounter + 1) * 3);
 			passedProp->gl_v_idx.push_back(startPoint->idxOrder);
@@ -429,7 +431,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 			Icounter++;
 		}
 		Bcounter++;
-		//EM_ASM({console.log("adding regulars 1.4 ");});
+		EM_ASM({console.log("adding regulars 1.4 ");});
 		//readItems++;
 		if (passedArray->next == startPoint) {
 			exhausted = true;
@@ -439,7 +441,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		}
 	}
 
-	//EM_ASM({console.log("done adding regulars");});
+	EM_ASM({console.log("done adding regulars");});
 	if (reserve != NULL) {
 		exhausted = false;
 		reserve = reserveEnd;
@@ -459,7 +461,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 			*/
 			//passedProp->gl_v.resize((Bcounter + 1) * 4);
 
-			//EM_ASM({console.log("adding regulars 2 " + $0);}, reserve->arrayItem->vertex->x);
+			EM_ASM({console.log("adding regulars 2 " + $0);}, reserve->arrayItem->vertex->x);
 			//passedProp->gl_v.push_back(((2 * ((reserve->arrayItem->vertex->x) - halfW)) / theAnimation->w) + currentXPosition);
 			//passedProp->gl_v.push_back((((2 * ((reserve->arrayItem->vertex->y) - halfH)) / theAnimation->h) * -1) + currentYPosition);
 			passedProp->gl_v.push_back(((reserve->arrayItem->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w) - widthOffset);
@@ -500,7 +502,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		exhausted = false;
 		reserve = reserveEnd;
 		Bcounter = BcounterReserveStart;
-		//EM_ASM({console.log("done adding outliers, now for indices");});
+		EM_ASM({console.log("done adding outliers, now for indices");});
 		while (! exhausted) {
 			/*
 			*(passedProp->gl_v_idx + ((Icounter * 3) + 0)) = reserve->arrayItem->idxOrder;
@@ -512,7 +514,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 			passedProp->gl_v_idx.push_back(reserve->arrayItem->idxOrder);
 			passedProp->gl_v_idx.push_back(reserve->arrayItem->bindPrev->idxOrder);
 			passedProp->gl_v_idx.push_back(reserve->arrayItem->bindNext->idxOrder);
-			//EM_ASM_({console.log("adding index " + $0);}, Icounter);
+			EM_ASM_({console.log("adding index " + $0);}, Icounter);
 			Icounter++;
 			reserve->arrayItem->next->prev = reserve->arrayItem;
 			reserve->arrayItem->prev->next = reserve->arrayItem;
@@ -553,7 +555,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	}
 
 	passedBuffers->idxCount = Icounter;
-	//EM_ASM({console.log("done all additions ");});
+	EM_ASM({console.log("done all additions ");});
 
 	/*
 	tempTriangulateReturn->vbo = tempVBO;

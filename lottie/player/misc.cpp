@@ -1066,11 +1066,13 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 	*/
 
 
+	EM_ASM({console.log("BZ 1 ");});
 	bool exhausted = false;
 	v = v->start;
 	i = i->start;
 	o = o->start;
 	
+	EM_ASM({console.log("BZ 2 ");});
 	struct ArrayOfVertex *o1, *o2, *p1, *p2;
 
 	bool startedCycling = false;
@@ -1080,6 +1082,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 	struct ArrayOfVertex* intermediate = NULL;
 	struct ArrayOfVertex* intermediateStart = NULL;
 
+	EM_ASM({console.log("BZ 3 ");});
 	float oneTcube, oneTsquare, Tcube, Tsquare, oneT;
 	float segSize;
 
@@ -1332,13 +1335,18 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 	temp->layers = new Vertex;
 	temp->shapes = new Vertex;
 
+				//temp->layers->x = layersPosition.x - currentBB->anchorX + shapesPosition.x;
+				//temp->layers->y = layersPosition.y - currentBB->anchorY + shapesPosition.y;
+
 	if (currentBB != NULL) {
 		if (currentBB->anchorSet) {
 			temp->layers->x = layersPosition.x - currentBB->anchorX;
 			temp->layers->y = layersPosition.y - currentBB->anchorY;
 		} else {
-			temp->layers->x = layersPosition.x - (currentBB->w / 2);
-			temp->layers->y = layersPosition.y - (currentBB->h / 2);
+			//temp->layers->x = layersPosition.x - (currentBB->w / 2);
+			//temp->layers->y = layersPosition.y - (currentBB->h / 2);
+			temp->layers->x = layersPosition.x;
+			temp->layers->y = layersPosition.y;
 		}
 
 	}
@@ -1348,6 +1356,9 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 			temp->shapes->x = shapesPosition.x - currentShapesBB->anchorX;
 			temp->shapes->y = shapesPosition.y - currentShapesBB->anchorY;
 		} else {
+			//temp->shapes->x = shapesPosition.x;
+			//temp->shapes->y = shapesPosition.x;
+
 			temp->shapes->x = shapesPosition.x - (currentShapesBB->w / 2);
 			temp->shapes->y = shapesPosition.y - (currentShapesBB->h / 2);
 		}

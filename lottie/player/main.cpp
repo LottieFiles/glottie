@@ -1,5 +1,5 @@
 #define KVLEN 128
-#define ALIGNSIZE 256 
+#define ALIGNSIZE 1024
 #define TEXTBLOCK 220
 
 #include <functional>
@@ -94,12 +94,14 @@ void loadJson(char* buffer, int theLength) {
 	//double currentTime = (double)timeRef.tv_sec + ((double)timeRef.tv_usec / 1000000);
 	//EM_ASM({console.log("////> TIME " + $0 + " ");}, currentTime);
 
+	/*
 	if (! lastBuffersCreated->filled) {
 		lastBuffersCreated = lastBuffersCreated->prev;
 	}
 	lastBuffersCreated->next = lastBuffersCreated->start;
 	EM_ASM({console.log("////> pre-starting");});
 	lastBuffersCreated->start->prev = lastBuffersCreated;
+	*/
 
 	EM_ASM({console.log("////> starting");});
 	struct Buffers* buffersToRender;
