@@ -83,8 +83,8 @@ int fillAnimation() {
 	}
 
 	theAnimation->fr = theAnimation->fr * theAnimation->frMultiplier;
-	theAnimation->ip = theAnimation->ip * theAnimation->frMultiplier;
-	theAnimation->op = theAnimation->op * theAnimation->frMultiplier;
+	theAnimation->ip = theAnimation->ip * theAnimation->lengthMultiplier;
+	theAnimation->op = theAnimation->op * theAnimation->lengthMultiplier;
 	theAnimation->frameTime = 1 / theAnimation->fr;
 	theAnimation->frameTimeMS = theAnimation->frameTime * 1000;
 

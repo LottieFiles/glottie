@@ -336,7 +336,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	//currentXPosition = tempLayersX + tempShapesX;
 	//currentYPosition = tempLayersY + tempShapesY;
 
-	struct ReturnPosition* tempPos = getRelativePosition(currentBB, currentShapesBB);
+	struct ReturnPosition* tempPos = getRelativePosition(currentBB, currentShapesBB, false);
 
 	currentXPosition = tempPos->layers->x + tempPos->shapes->x;
 	currentYPosition = tempPos->layers->y + tempPos->shapes->y;

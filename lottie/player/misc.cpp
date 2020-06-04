@@ -1330,13 +1330,15 @@ double seconds() {
 	return (double)tempRef.tv_sec + ((double)tempRef.tv_usec / 1000000);
 }
 
-struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct BoundingBox* currentShapesBB) {
+struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct BoundingBox* currentShapesBB, bool glDimensions) {
 	struct ReturnPosition* temp = new ReturnPosition;
 	temp->layers = new Vertex;
 	temp->shapes = new Vertex;
 
 				//temp->layers->x = layersPosition.x - currentBB->anchorX + shapesPosition.x;
 				//temp->layers->y = layersPosition.y - currentBB->anchorY + shapesPosition.y;
+
+
 
 	if (currentBB != NULL) {
 		if (currentBB->anchorSet) {
@@ -1364,6 +1366,15 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 		}
 	}
 
+	if (glDimensions) {
+		float heightOffset = ((theAnimation->h * theAnimation->scaleFactorY) / theAnimation->h) / 2;
+		float widthOffset = ((theAnimation->w * theAnimation->scaleFactorX) / theAnimation->w) / 2;
+		temp->layers->x = ((temp->layers->x * theAnimation->scaleFactorX) / theAnimation->w) - heightOffset;
+		temp->layers->y = ((temp->layers->y * theAnimation->scaleFactorY) / theAnimation->h) - widthOffset;
+
+		temp->shapes->x = ((temp->shapes->x * theAnimation->scaleFactorX) / theAnimation->w) - heightOffset;
+		temp->shapes->y = ((temp->shapes->y * theAnimation->scaleFactorY) / theAnimation->h) - widthOffset;
+	}
 	/*
 	if (currentBB->anchorSet) {
 		if (currentShapesBB != NULL) {

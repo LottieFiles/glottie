@@ -71,7 +71,7 @@ struct TransformAOV* createSegmentR(struct PropertiesValueKeyframe* passedKeyfra
 	float previousTime = 0;
 	tempAOV->frames = new float[passedKeyframe->s_count];
 	tempAOV->segSize = new float[passedKeyframe->s_count];
-	tempAOV->startTime = passedKeyframe->t * theAnimation->frMultiplier;
+	tempAOV->startTime = passedKeyframe->t * theAnimation->lengthMultiplier;
 	//EM_ASM_({console.log("1---> " + $0 + " " + $1);}, passedKeyframe->t, passedKeyframe->s_count);
 	float w, h, z;
 	w = theAnimation->w;
@@ -81,7 +81,7 @@ struct TransformAOV* createSegmentR(struct PropertiesValueKeyframe* passedKeyfra
 	} else {
 		z = 1;
 	}
-	struct ReturnPosition* tempPos = getRelativePosition(currentBB, NULL);
+	struct ReturnPosition* tempPos = getRelativePosition(currentBB, NULL, false);
 	float tempX, tempY, tempZ;
 	if (layers) {
 		tempX = tempPos->layers->x;
@@ -150,7 +150,7 @@ struct TransformAOV* createSegmentR(struct PropertiesValueKeyframe* passedKeyfra
 		}
 
 		if (previousTime != 0) {
-			*(tempAOV->frames + (tempAOV->v_count - 1)) = (passedKeyframe->t * theAnimation->frMultiplier) - (previousTime * theAnimation->frMultiplier);
+			*(tempAOV->frames + (tempAOV->v_count - 1)) = (passedKeyframe->t * theAnimation->lengthMultiplier) - previousTime;
 			if (*(tempAOV->frames + (tempAOV->v_count - 1)) >= 2) {
 				*(tempAOV->segSize + (tempAOV->v_count - 1)) = 1 / (*(tempAOV->frames + (tempAOV->v_count - 1)) - 1);
 			} else {
@@ -161,7 +161,7 @@ struct TransformAOV* createSegmentR(struct PropertiesValueKeyframe* passedKeyfra
 			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 0;
 		}
 		EM_ASM_({console.log("----> v: " + $0 + "/" + $1 + " -- frames: " + $2 + ", segsize: " + $3 + " -- start " + $4 + " vcount: " + $5 + "  i: " + $6 + "/" + $7 + "  o: " + $8 + "/" + $9);}, tempAOV->v->vertex->x, tempAOV->v->vertex->y, *(tempAOV->frames + (tempAOV->v_count - 1)), *(tempAOV->segSize + (tempAOV->v_count - 1)), tempAOV->startTime, tempAOV->v_count, tempAOV->i->vertex->x, tempAOV->i->vertex->y, tempAOV->o->vertex->x, tempAOV->o->vertex->y);
-		previousTime = passedKeyframe->t;
+		previousTime = passedKeyframe->t * theAnimation->lengthMultiplier;
 
 		if (passedKeyframe->next == NULL) {
 			exhausted = true;
@@ -176,12 +176,12 @@ struct TransformAOV* createSegmentR(struct PropertiesValueKeyframe* passedKeyfra
 	tempAOV->v->start->prev = tempAOV->v;
 	tempAOV->i->start->prev = tempAOV->i;
 	tempAOV->o->start->prev = tempAOV->o;
-	EM_ASM_({console.log("1----------------> " + $0 + " " + $1);}, passedKeyframe->t, passedKeyframe->s_count);
+	EM_ASM_({console.log("1----------------> " + $0 + " " + $1);}, passedKeyframe->t * theAnimation->lengthMultiplier, passedKeyframe->s_count);
 
 	if (tempAOV->startTime > previousTime || tempAOV->v_count == 1) {
 		tempAOV->endTime = tempAOV->startTime;
 	} else {
-		tempAOV->endTime = previousTime * theAnimation->frMultiplier;
+		tempAOV->endTime = previousTime;
 	}
 	return tempAOV;
 }
@@ -194,7 +194,7 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 	float previousTime = 0;
 	tempAOV->frames = new float[passedKeyframe->s_count];
 	tempAOV->segSize = new float[passedKeyframe->s_count];
-	tempAOV->startTime = passedKeyframe->t * theAnimation->frMultiplier;
+	tempAOV->startTime = passedKeyframe->t * theAnimation->lengthMultiplier;
 	//EM_ASM_({console.log("1---> " + $0 + " " + $1);}, passedKeyframe->t, passedKeyframe->s_count);
 	float w, h, z;
 	w = theAnimation->w;
@@ -204,7 +204,7 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 	} else {
 		z = 1;
 	}
-	struct ReturnPosition* tempPos = getRelativePosition(currentBB, NULL);
+	struct ReturnPosition* tempPos = getRelativePosition(currentBB, NULL, false);
 	float tempX, tempY, tempZ;
 	if (layers) {
 		tempX = tempPos->layers->x;
@@ -273,14 +273,14 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 		}
 
 		if (previousTime != 0) {
-			*(tempAOV->frames + (tempAOV->v_count - 1)) = (passedKeyframe->t * theAnimation->frMultiplier) - (previousTime * theAnimation->frMultiplier);
+			*(tempAOV->frames + (tempAOV->v_count - 1)) = (passedKeyframe->t * theAnimation->lengthMultiplier) - previousTime;
 			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 1 / (*(tempAOV->frames + (tempAOV->v_count - 1)) - 1);
 		} else {
 			*(tempAOV->frames + (tempAOV->v_count - 1)) = 1;
 			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 0;
 		}
 		EM_ASM_({console.log("----> v: " + $0 + "/" + $1 + " -- frames: " + $2 + ", segsize: " + $3 + " -- start " + $4 + " vcount: " + $5 + "  i: " + $6 + "/" + $7 + "  o: " + $8 + "/" + $9);}, tempAOV->v->vertex->x, tempAOV->v->vertex->y, *(tempAOV->frames + (tempAOV->v_count - 1)), *(tempAOV->segSize + (tempAOV->v_count - 1)), tempAOV->startTime, tempAOV->v_count, tempAOV->i->vertex->x, tempAOV->i->vertex->y, tempAOV->o->vertex->x, tempAOV->o->vertex->y);
-		previousTime = passedKeyframe->t;
+		previousTime = passedKeyframe->t * theAnimation->lengthMultiplier;
 
 		if (passedKeyframe->next == NULL) {
 			exhausted = true;
@@ -295,12 +295,12 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 	tempAOV->v->start->prev = tempAOV->v;
 	tempAOV->i->start->prev = tempAOV->i;
 	tempAOV->o->start->prev = tempAOV->o;
-	EM_ASM_({console.log("1----------------> " + $0 + " " + $1);}, passedKeyframe->t, passedKeyframe->s_count);
+	EM_ASM_({console.log("1----------------> " + $0 + " " + $1);}, (passedKeyframe->t * theAnimation->lengthMultiplier), passedKeyframe->s_count);
 
 	if (tempAOV->startTime > previousTime || tempAOV->v_count == 1) {
 		tempAOV->endTime = tempAOV->startTime;
 	} else {
-		tempAOV->endTime = previousTime * theAnimation->frMultiplier;
+		tempAOV->endTime = previousTime;
 	}
 	return tempAOV;
 }
@@ -342,38 +342,26 @@ void fillAnimation(struct TransformAOV* passedAOV, int type, struct BoundingBox*
 	while (! exhausted) {
 
 		switch (type) {
-			case 1:
+			case 1: //translate
 				if (passedAOV->s_count >= 2) {
 					passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
 					passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, passedAOV->v->vertex->x, passedAOV->v->vertex->y, passedAOV->v->vertex->z, 0);
 				}
 				break;
-			case 2:
+			case 2: //scale
 				if (passedAOV->s_count >= 2) {
 					passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
 					passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, passedAOV->v->vertex->x, passedAOV->v->vertex->x, passedAOV->v->vertex->x, 0);
 				}
 				break;
-			case 3:
+			case 3: //rotate
 				if (passedAOV->s_count >= 1) {
 					passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
-
+					struct ReturnPosition* tempPos = getRelativePosition(currentBB, NULL, false);
 					if (layers) {
-						if (currentBB->anchorSet) {
-							EM_ASM_({console.log("--------//////========ROTATE 1 ");});
-							passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, (currentBB->initX - currentBB->anchorX), (currentBB->initY - currentBB->anchorY), 0, passedAOV->v->vertex->x);
-						} else {
-							EM_ASM_({console.log("--------//////========ROTATE 2 ");});
-							passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, (currentBB->initX - (currentBB->w / 2)), (currentBB->initY - (currentBB->h)), 0, passedAOV->v->vertex->x);
-						}
+						passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, tempPos->layers->x, tempPos->layers->y, 0, passedAOV->v->vertex->x);
 					} else {
-						if (currentBB->anchorSet) {
-							EM_ASM_({console.log("--------//////========ROTATE 1 ");});
-							passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, (currentBB->initX - currentBB->anchorX), (currentBB->initY - currentBB->anchorY), 0, passedAOV->v->vertex->x);
-						} else {
-							EM_ASM_({console.log("--------//////========ROTATE 3 ");});
-							passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, currentBB->initX, currentBB->initY, 0, passedAOV->v->vertex->x);
-						}
+						passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, (tempPos->layers->x + tempPos->shapes->x), (tempPos->layers->y + tempPos->shapes->y), 0, passedAOV->v->vertex->x);
 					}
 				}
 				break;
@@ -537,7 +525,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			passedTransform->composite->scaleSet ||
 			passedTransform->composite->rotateSet) {
 			passedTransform->composite->transformSet = true;
-			passedTransform->composite->transform = tempR * (tempS * tempP);
+			passedTransform->composite->transform = tempR * tempS * tempP;
 			//passedTransform->composite->transform = tempS * tempP;
 		}
 		if (pExhausted && sExhausted && rExhausted) {
