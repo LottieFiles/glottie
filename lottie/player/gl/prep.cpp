@@ -266,7 +266,6 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem, stru
 				shapesAnchor.isSet = true;
 			}
 
-			currentShapesTransform = fillTransformShapes(passedShapesItem, currentBB);
 
 			/*shapesPosition.x = passedShapesItem->p->k[0];
 			shapesPosition.y = passedShapesItem->p->k[1];
@@ -354,9 +353,13 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 				passedShapesItem->currentBB->anchorSet = true;
 			}
 
+			struct ReturnPosition* tempPos = getRelativePosition(passedShapesItem->currentBB, currentBB, true);
+			passedShapesItem->currentBB->translatedX = tempPos->layers->x + tempPos->shapes->x;
+			passedShapesItem->currentBB->translatedY = tempPos->layers->y + tempPos->shapes->y;
 			getBBPropShape(passedShapesItem->ks->start, passedShapesItem->currentBB);
 
 			prepPropertiesShape(passedShapesItem->ks, passedShapesItem, currentBB, passedShapesItem->currentBB);
+			currentShapesTransform = fillTransformShapes(passedShapesItem, currentBB);
 		}
 
 		passedShapesItem->baseTransform = currentBaseTransform;
@@ -392,12 +395,15 @@ void findLayersTransform(struct Layers* passedLayers) {
 				passedLayers->currentBB->anchorY = passedLayers->ks->a->k[1];
 				passedLayers->currentBB->anchorSet = true;
 			}
+			struct ReturnPosition* tempPos = getRelativePosition(passedLayers->currentBB, NULL, true);
+			passedLayers->currentBB->translatedX = tempPos->layers->x;
+			passedLayers->currentBB->translatedY = tempPos->layers->y;
 			currentLayersTransform = fillTransformLayers(passedLayers, passedLayers->currentBB);
 		}
 		if (currentLayersTransform != NULL && currentLayersTransform->p != NULL && currentLayersTransform->p->startTime == 0) {
-				EM_ASM({console.log("///// layer transform applied ");});
-			layersPosition.x = layersPosition.x + currentLayersTransform->p->v->start->vertex->x;
-			layersPosition.y = layersPosition.y + currentLayersTransform->p->v->start->vertex->y;
+			EM_ASM({console.log("///// layer transform applied ");});
+			//layersPosition.x = layersPosition.x + currentLayersTransform->p->v->start->vertex->x;
+			//layersPosition.y = layersPosition.y + currentLayersTransform->p->v->start->vertex->y;
 			//layersPosition.x = layersPosition.x + currentLayersTransform->p->vertex.at(0)->x;
 			//layersPosition.y = layersPosition.y + currentLayersTransform->p->vertex.at(0)->y;
 		}
