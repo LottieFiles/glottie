@@ -128,7 +128,7 @@ struct TransformAOV* createSegmentR(struct PropertiesValueKeyframe* passedKeyfra
 				_2 = *(passedKeyframe->s + 1) / 100;
 				_3 = *(passedKeyframe->s + 2) / 100;
 			}
-			EM_ASM_({console.log("4---> " + $0 + " " + $1 + " " + $2);}, *(passedKeyframe->s + 0), passedKeyframe->s_count, type);
+			//EM_ASM_({console.log("4---> " + $0 + " " + $1 + " " + $2);}, *(passedKeyframe->s + 0), passedKeyframe->s_count, type);
 		} 
 		
 		float currentList[4] = {_1, _2, _3, _4};
@@ -163,7 +163,7 @@ struct TransformAOV* createSegmentR(struct PropertiesValueKeyframe* passedKeyfra
 			*(tempAOV->frames + (tempAOV->v_count - 1)) = 1;
 			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 0;
 		}
-		EM_ASM_({console.log("----> v: " + $0 + "/" + $1 + " -- frames: " + $2 + ", segsize: " + $3 + " -- start " + $4 + " vcount: " + $5 + "  i: " + $6 + "/" + $7 + "  o: " + $8 + "/" + $9);}, tempAOV->v->vertex->x, tempAOV->v->vertex->y, *(tempAOV->frames + (tempAOV->v_count - 1)), *(tempAOV->segSize + (tempAOV->v_count - 1)), tempAOV->startTime, tempAOV->v_count, tempAOV->i->vertex->x, tempAOV->i->vertex->y, tempAOV->o->vertex->x, tempAOV->o->vertex->y);
+		//EM_ASM_({console.log("----> v: " + $0 + "/" + $1 + " -- frames: " + $2 + ", segsize: " + $3 + " -- start " + $4 + " vcount: " + $5 + "  i: " + $6 + "/" + $7 + "  o: " + $8 + "/" + $9);}, tempAOV->v->vertex->x, tempAOV->v->vertex->y, *(tempAOV->frames + (tempAOV->v_count - 1)), *(tempAOV->segSize + (tempAOV->v_count - 1)), tempAOV->startTime, tempAOV->v_count, tempAOV->i->vertex->x, tempAOV->i->vertex->y, tempAOV->o->vertex->x, tempAOV->o->vertex->y);
 		previousTime = passedKeyframe->t * theAnimation->lengthMultiplier;
 
 		if (passedKeyframe->next == NULL) {
@@ -179,7 +179,7 @@ struct TransformAOV* createSegmentR(struct PropertiesValueKeyframe* passedKeyfra
 	tempAOV->v->start->prev = tempAOV->v;
 	tempAOV->i->start->prev = tempAOV->i;
 	tempAOV->o->start->prev = tempAOV->o;
-	EM_ASM_({console.log("1----------------> " + $0 + " " + $1);}, passedKeyframe->t * theAnimation->lengthMultiplier, passedKeyframe->s_count);
+	//EM_ASM_({console.log("1----------------> " + $0 + " " + $1);}, passedKeyframe->t * theAnimation->lengthMultiplier, passedKeyframe->s_count);
 
 	if (tempAOV->startTime > previousTime || tempAOV->v_count == 1) {
 		tempAOV->endTime = tempAOV->startTime;
@@ -251,7 +251,7 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 				_2 = *(passedKeyframe->s + 1) / 100;
 				_3 = *(passedKeyframe->s + 2) / 100;
 			}
-			EM_ASM_({console.log("4---> " + $0 + " " + $1 + " " + $2);}, *(passedKeyframe->s + 0), passedKeyframe->s_count, type);
+			//EM_ASM_({console.log("4---> " + $0 + " " + $1 + " " + $2);}, *(passedKeyframe->s + 0), passedKeyframe->s_count, type);
 		} 
 		
 		float currentList[4] = {_1, _2, _3, _4};
@@ -282,7 +282,7 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 			*(tempAOV->frames + (tempAOV->v_count - 1)) = 1;
 			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 0;
 		}
-		EM_ASM_({console.log("----> v: " + $0 + "/" + $1 + " -- frames: " + $2 + ", segsize: " + $3 + " -- start " + $4 + " vcount: " + $5 + "  i: " + $6 + "/" + $7 + "  o: " + $8 + "/" + $9);}, tempAOV->v->vertex->x, tempAOV->v->vertex->y, *(tempAOV->frames + (tempAOV->v_count - 1)), *(tempAOV->segSize + (tempAOV->v_count - 1)), tempAOV->startTime, tempAOV->v_count, tempAOV->i->vertex->x, tempAOV->i->vertex->y, tempAOV->o->vertex->x, tempAOV->o->vertex->y);
+		//EM_ASM_({console.log("----> v: " + $0 + "/" + $1 + " -- frames: " + $2 + ", segsize: " + $3 + " -- start " + $4 + " vcount: " + $5 + "  i: " + $6 + "/" + $7 + "  o: " + $8 + "/" + $9);}, tempAOV->v->vertex->x, tempAOV->v->vertex->y, *(tempAOV->frames + (tempAOV->v_count - 1)), *(tempAOV->segSize + (tempAOV->v_count - 1)), tempAOV->startTime, tempAOV->v_count, tempAOV->i->vertex->x, tempAOV->i->vertex->y, tempAOV->o->vertex->x, tempAOV->o->vertex->y);
 		previousTime = passedKeyframe->t * theAnimation->lengthMultiplier;
 
 		if (passedKeyframe->next == NULL) {
@@ -298,7 +298,7 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 	tempAOV->v->start->prev = tempAOV->v;
 	tempAOV->i->start->prev = tempAOV->i;
 	tempAOV->o->start->prev = tempAOV->o;
-	EM_ASM_({console.log("1----------------> " + $0 + " " + $1);}, (passedKeyframe->t * theAnimation->lengthMultiplier), passedKeyframe->s_count);
+	//EM_ASM_({console.log("1----------------> " + $0 + " " + $1);}, (passedKeyframe->t * theAnimation->lengthMultiplier), passedKeyframe->s_count);
 
 	if (tempAOV->startTime > previousTime || tempAOV->v_count == 1) {
 		tempAOV->endTime = tempAOV->startTime;
@@ -466,7 +466,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		}
 
 		if (passedTransform->p != NULL && passedTransform->p->transformMatrix != NULL && passedTransform->p->startTime <= i && ! pEndProcessed) {
-			EM_ASM_({console.log("---------------===================TRANSFORM composite position ");});
+			//EM_ASM_({console.log("---------------===================TRANSFORM composite position ");});
 			tempP = passedTransform->p->transformMatrix->transform;
 			passedTransform->composite->positionSet = true;
 			tempPFound = true;
@@ -488,7 +488,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			}
 		}
 		if (passedTransform->s != NULL && passedTransform->s->transformMatrix != NULL && passedTransform->s->startTime <= i && ! sEnded) {
-			EM_ASM_({console.log("---------------===================TRANSFORM composite scale ");});
+			//EM_ASM_({console.log("---------------===================TRANSFORM composite scale ");});
 			//passedTransform->composite->transform = passedTransform->composite->transform * passedTransform->s->transformMatrix->transform;
 			passedTransform->composite->scaleSet = true;
 			//passedTransform->composite->transformSet = true;
@@ -513,7 +513,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			}
 		}
 		if (passedTransform->r != NULL && passedTransform->r->transformMatrix != NULL && passedTransform->r->startTime <= i && ! rEnded) {
-			EM_ASM_({console.log("---------------===================TRANSFORM composite rotate ");});
+			//EM_ASM_({console.log("---------------===================TRANSFORM composite rotate ");});
 			//passedTransform->composite->transform = passedTransform->composite->transform * passedTransform->r->transformMatrix->transform;
 			passedTransform->composite->rotateSet = true;
 			//passedTransform->composite->transformSet = true;
@@ -563,7 +563,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 	passedTransform->startTime = minTime;
 	passedTransform->endTime = maxTime;
 	
-	EM_ASM_({console.log("---------------===================TRANSFORM composite done ");});
+	//EM_ASM_({console.log("---------------===================TRANSFORM composite done ");});
 }
 
 struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB) {
@@ -578,15 +578,15 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 	}
 
 	if (passedShapesItem->p != NULL && passedShapesItem->p->keyframe != NULL) {
-		EM_ASM_({console.log("---------------===================TRANSFORM BEGINS ");});
+		//EM_ASM_({console.log("---------------===================TRANSFORM BEGINS ");});
 		tempAOV = createSegmentP(passedShapesItem->p->keyframe->start, currentBB, 1, false);
 		passedShapesItem->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
-			EM_ASM_({console.log("=================================POSITION v_count ");});
+			//EM_ASM_({console.log("=================================POSITION v_count ");});
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3);
 		}
 		fillAnimation(passedShapesItem->transform->p, 1, NULL, false);
-		EM_ASM_({console.log("---------------===================TRANSFORM ENDS ");});
+		//EM_ASM_({console.log("---------------===================TRANSFORM ENDS ");});
 		if (tempAOV->startTime < minTime || minTime == -1) {
 			minTime = tempAOV->startTime;
 		}
@@ -595,15 +595,15 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 		}
 	}
 	if (passedShapesItem->s != NULL && passedShapesItem->s->keyframe != NULL) {
-		EM_ASM_({console.log("---------------===================SCALE TRANSFORM BEGINS ");});
+		//EM_ASM_({console.log("---------------===================SCALE TRANSFORM BEGINS ");});
 		tempAOV = createSegmentP(passedShapesItem->s->keyframe->start, currentBB, 2, false);
 		passedShapesItem->transform->s = tempAOV;
 		if (tempAOV->v_count > 1) {
-			EM_ASM_({console.log("=================================SCALE v_count ");});
+			//EM_ASM_({console.log("=================================SCALE v_count ");});
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3);
 		}
 		fillAnimation(passedShapesItem->transform->s, 2, NULL, false);
-		EM_ASM_({console.log("---------------===================SCALE TRANSFORM ENDS ");});
+		//EM_ASM_({console.log("---------------===================SCALE TRANSFORM ENDS ");});
 		if (tempAOV->startTime < minTime || minTime == -1) {
 			minTime = tempAOV->startTime;
 		}
@@ -612,15 +612,15 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 		}
 	}
 	if (passedShapesItem->r != NULL && passedShapesItem->r->keyframe != NULL && passedShapesItem->currentBB != NULL) {
-		EM_ASM_({console.log("---------------===================SCALE TRANSFORM BEGINS ");});
+		//EM_ASM_({console.log("---------------===================SCALE TRANSFORM BEGINS ");});
 		tempAOV = createSegmentR(passedShapesItem->r->keyframe->start, currentBB, 1, false);
 		passedShapesItem->transform->r = tempAOV;
 		if (tempAOV->v_count > 1) {
-			EM_ASM_({console.log("=================================SCALE v_count ");});
+			//EM_ASM_({console.log("=================================SCALE v_count ");});
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 1);
 		}
 		fillAnimation(passedShapesItem->transform->r, 3, passedShapesItem->currentBB, false);
-		EM_ASM_({console.log("---------------===================SCALE TRANSFORM ENDS ");});
+		//EM_ASM_({console.log("---------------===================SCALE TRANSFORM ENDS ");});
 		if (tempAOV->startTime < minTime || minTime == -1) {
 			minTime = tempAOV->startTime;
 		}
@@ -632,7 +632,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 	if (maxTime > minTime) {
 		fillCompositeAnimation(minTime, maxTime, passedShapesItem->transform);
 	}
-	EM_ASM_({console.log("---------------===================TRANSFORM done ");});
+	//EM_ASM_({console.log("---------------===================TRANSFORM done ");});
 
 	return passedShapesItem->transform;
 }
@@ -648,15 +648,15 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers, struct Boundi
 		passedLayers->transform = new Transform;
 	}
 	if (passedLayers->ks != NULL && passedLayers->ks->p != NULL && passedLayers->ks->p->keyframe != NULL) {
-		EM_ASM_({console.log("=================================LAYERS TRANSFORM BEGINS ");});
+		//EM_ASM_({console.log("=================================LAYERS TRANSFORM BEGINS ");});
 		tempAOV = createSegmentP(passedLayers->ks->p->keyframe->start, currentBB, 1, true);
 		passedLayers->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
-			EM_ASM_({console.log("=================================LAYERS POSITION v_count ");});
+			//EM_ASM_({console.log("=================================LAYERS POSITION v_count ");});
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3);
 		}
 		fillAnimation(passedLayers->transform->p, 1, NULL, true);
-		EM_ASM_({console.log("=================================LAYERS TRANSFORM ENDS ");});
+		//EM_ASM_({console.log("=================================LAYERS TRANSFORM ENDS ");});
 		minTime = tempAOV->startTime;
 		maxTime = tempAOV->endTime;
 		if (tempAOV->startTime < minTime || minTime == -1) {
@@ -667,15 +667,15 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers, struct Boundi
 		}
 	}
 	if (passedLayers->ks != NULL && passedLayers->ks->s != NULL && passedLayers->ks->s->keyframe != NULL) {
-		EM_ASM_({console.log("=================================LAYERS SCALE TRANSFORM BEGINS ");});
+		//EM_ASM_({console.log("=================================LAYERS SCALE TRANSFORM BEGINS ");});
 		tempAOV = createSegmentP(passedLayers->ks->s->keyframe->start, currentBB, 2, true);
 		passedLayers->transform->s = tempAOV;
 		if (tempAOV->v_count > 1) {
-			EM_ASM_({console.log("=================================LAYERS SCALE v_count ");});
+			//EM_ASM_({console.log("=================================LAYERS SCALE v_count ");});
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3);
 		}
 		fillAnimation(passedLayers->transform->s, 2, NULL, true);
-		EM_ASM_({console.log("=================================LAYERS SCALE TRANSFORM ENDS ");});
+		//EM_ASM_({console.log("=================================LAYERS SCALE TRANSFORM ENDS ");});
 		if (tempAOV->startTime < minTime || minTime == -1) {
 			minTime = tempAOV->startTime;
 		}
@@ -684,15 +684,15 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers, struct Boundi
 		}
 	}
 	if (passedLayers->ks != NULL && passedLayers->ks->r != NULL && passedLayers->ks->r->keyframe != NULL && passedLayers->currentBB != NULL) {
-		EM_ASM_({console.log("=================================LAYERS SCALE TRANSFORM BEGINS ");});
+		//EM_ASM_({console.log("=================================LAYERS SCALE TRANSFORM BEGINS ");});
 		tempAOV = createSegmentR(passedLayers->ks->r->keyframe->start, currentBB, 1, true);
 		passedLayers->transform->r = tempAOV;
 		if (tempAOV->v_count > 1) {
-			EM_ASM_({console.log("=================================LAYERS SCALE v_count ");});
+			//EM_ASM_({console.log("=================================LAYERS SCALE v_count ");});
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 1);
 		}
 		fillAnimation(passedLayers->transform->r, 3, passedLayers->currentBB, true);
-		EM_ASM_({console.log("=================================LAYERS SCALE TRANSFORM ENDS ");});
+		//EM_ASM_({console.log("=================================LAYERS SCALE TRANSFORM ENDS ");});
 		if (tempAOV->startTime < minTime || minTime == -1) {
 			minTime = tempAOV->startTime;
 		}
@@ -705,7 +705,7 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers, struct Boundi
 	if (maxTime > minTime) {
 		fillCompositeAnimation(minTime, maxTime, passedLayers->transform);
 	}
-	EM_ASM_({console.log("---------------===================TRANSFORM done ");});
+	//EM_ASM_({console.log("---------------===================TRANSFORM done ");});
 
 	return passedLayers->transform;
 }

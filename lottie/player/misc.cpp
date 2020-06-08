@@ -1066,13 +1066,13 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 	*/
 
 
-	EM_ASM({console.log("BZ 1 ");});
+	//EM_ASM({console.log("BZ 1 ");});
 	bool exhausted = false;
 	v = v->start;
 	i = i->start;
 	o = o->start;
 	
-	EM_ASM({console.log("BZ 2 ");});
+	//EM_ASM({console.log("BZ 2 ");});
 	struct ArrayOfVertex *o1, *o2, *p1, *p2;
 
 	bool startedCycling = false;
@@ -1082,7 +1082,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 	struct ArrayOfVertex* intermediate = NULL;
 	struct ArrayOfVertex* intermediateStart = NULL;
 
-	EM_ASM({console.log("BZ 3 ");});
+	//EM_ASM({console.log("BZ 3 ");});
 	float oneTcube, oneTsquare, Tcube, Tsquare, oneT;
 	float segSize;
 
@@ -1167,7 +1167,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 								break;
 							}
 						}
-						EM_ASM({console.log("non-bezier ");});
+						//EM_ASM({console.log("non-bezier ");});
 						continue;
 				} else {
 					i = i->next;
@@ -1184,7 +1184,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 							break;
 						}
 					}
-					EM_ASM({console.log("breakout ");});
+					//EM_ASM({console.log("breakout ");});
 				}
 
 		startedCycling = true;
@@ -1214,7 +1214,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 		float segments = 1 / segSize;
 		//float segNow = segSize;
 		float segNow = segSize;
-		EM_ASM_({console.log("segnow and segsize " + $0 + " " + $1);}, segNow, segSize);
+		//EM_ASM_({console.log("segnow and segsize " + $0 + " " + $1);}, segNow, segSize);
 
 		float p1x;
 		float p2x;
@@ -1265,7 +1265,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 					intermediate->vertex->y = 	(oneTsquare * 			o1->vertex->y) + 
 									(2 * oneT * segNow * 		p1y) + 
 									(Tsquare *	 		o2->vertex->y);
-			EM_ASM_({console.log("[[[[[[[[[[[[[==========> ROTATE adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
+			//EM_ASM_({console.log("[[[[[[[[[[[[[==========> ROTATE adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
 
 					break;
 				case 2:
@@ -1292,7 +1292,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 					break;
 			}
 
-			EM_ASM_({console.log("[[[[[[[[[[[[[==========> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
+			//EM_ASM_({console.log("[[[[[[[[[[[[[==========> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
 			intermediate->vertex->z = 0;
 			intermediate->vertex->a = 1;
 
