@@ -443,13 +443,15 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 	glm::mat4 tempS = glm::mat4(1.0f);
 	float tempAngle;
 	bool tempAngleFound, tempPFound, tempSFound;;
+	tempP = glm::mat4(1.0f);
+	tempR = glm::mat4(1.0f);
+	tempS = glm::mat4(1.0f);
 	while (! exhausted) {
-		tempAngleFound = false;
+		//tempAngleFound = false;
 		tempPFound = false;
 		tempSFound = false;
-		tempP = glm::mat4(1.0f);
-		tempR = glm::mat4(1.0f);
-		tempS = glm::mat4(1.0f);
+		tempR = glm::mat4(1.0f); 
+
 		if (passedTransform->composite == NULL) {
 			passedTransform->composite = newCompositeArray(passedTransform->composite, i);
 		} else {
@@ -542,16 +544,17 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			passedTransform->composite->scaleSet ||
 			passedTransform->composite->rotateSet) {
 			passedTransform->composite->transformSet = true;
+			//if (tempAngleFound) {
+			//	tempP = glm::rotate(tempP, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+			//}
 			if (tempSFound) {
 				passedTransform->composite->transform = tempS * tempP;
 			} else {
 				passedTransform->composite->transform = tempP;
 			}
-			if (tempAngleFound) {
-				if (tempPFound) {
-					passedTransform->composite->transform = glm::rotate(passedTransform->composite->transform, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
-				}
-			}
+			//if (tempAngleFound) {
+			//	passedTransform->composite->transform = glm::rotate(passedTransform->composite->transform, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+			//}
 			//passedTransform->composite->transform = tempS * tempP;
 		}
 		if (pExhausted && sExhausted && rExhausted) {
