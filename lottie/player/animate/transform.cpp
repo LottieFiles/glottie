@@ -7,12 +7,15 @@ struct alignas(ALIGNSIZE) TransformMatrix {
 
 	float angle;
 	glm::vec3 vector;
+	glm::vec3 inverseVector;
 
 	glm::vec3 translate;
 	glm::vec3 scale;
 	bool isRotate = false;
 	bool isScale = false;
 	bool isTranslate = false;
+	int startTime = -1;
+	int endTime = -1;
 } *defaultTransformMatrix = NULL;
 
 struct alignas(ALIGNSIZE) CompositeArray {
@@ -29,6 +32,7 @@ struct alignas(ALIGNSIZE) CompositeArray {
 	*/
 	glm::mat4 transform = glm::mat4(1.0f);
 	float opacity;
+	float rotateAngle = -1;
 
 	int frame = -1;
 
@@ -368,7 +372,8 @@ void fillAnimation(struct TransformAOV* passedAOV, int type, struct BoundingBox*
 				if (passedAOV->s_count >= 2) {
 					passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
 					//passedAOV->transformMatrix->transform = generateMatrix(passedAOV->transformMatrix->transform, type, passedAOV->v->vertex->x, passedAOV->v->vertex->x, passedAOV->v->vertex->x, 0);
-					passedAOV->transformMatrix->vector = glm::vec3(passedAOV->v->vertex->x, passedAOV->v->vertex->x, passedAOV->v->vertex->x);
+					passedAOV->transformMatrix->vector = glm::vec3(passedAOV->v->vertex->x, passedAOV->v->vertex->y, passedAOV->v->vertex->z);
+					passedAOV->transformMatrix->inverseVector = glm::vec3((passedAOV->v->vertex->x * -1), (passedAOV->v->vertex->y * -1), (passedAOV->v->vertex->z * -1));
 					//passedAOV->isScale = true;
 				}
 				break;
@@ -461,8 +466,14 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 	//tempP = glm::mat4(1.0f);
 	//tempR = glm::mat4(1.0f);
 	//tempS = glm::mat4(1.0f);
+	glm::vec3 tempPInverse = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 tempP = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 tempS = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::mat4 tempRMatrix = glm::mat4(1.0f);
+	glm::mat4 tempSMatrix = glm::mat4(1.0f);
+	glm::mat4 tempPMatrix = glm::mat4(1.0f);
+	glm::mat4 identityMatrix = glm::mat4(1.0f);
+
 	while (! exhausted) {
 		//tempAngleFound = false;
 		tempPFound = false;
@@ -488,6 +499,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			//EM_ASM_({console.log("---------------===================TRANSFORM composite position ");});
 			//tempP = passedTransform->p->transformMatrix->transform;
 			tempP = passedTransform->p->transformMatrix->vector;
+			tempPInverse = passedTransform->p->transformMatrix->inverseVector;
 			passedTransform->composite->positionSet = true;
 			tempPFound = true;
 			if (pEnded) {
@@ -507,7 +519,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				pExhausted = true;
 			}
 		}
-		if (passedTransform->s != NULL && passedTransform->s->transformMatrix != NULL && passedTransform->s->startTime <= i && ! sEnded) {
+		if (passedTransform->s != NULL && passedTransform->s->transformMatrix != NULL && passedTransform->s->startTime <= i && ! sEndProcessed) {
 		//if (passedTransform->s != NULL && passedTransform->s->isScale && passedTransform->s->startTime <= i && ! sEnded) {
 			//EM_ASM_({console.log("---------------===================TRANSFORM composite scale ");});
 			//passedTransform->composite->transform = passedTransform->composite->transform * passedTransform->s->transformMatrix->transform;
@@ -565,19 +577,38 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			//	tempP = glm::rotate(tempP, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
 			//}
 		passedTransform->composite->transform = glm::mat4(1.0f);
+		if (passedTransform->composite->scaleSet) {
+			passedTransform->composite->transformSet = true;
+			tempSMatrix = glm::scale(identityMatrix, tempS);
+		}
 		if (passedTransform->composite->positionSet) {
 			passedTransform->composite->transformSet = true;
-			passedTransform->composite->transform = glm::translate(passedTransform->composite->transform, tempP);
+			tempPMatrix = glm::translate(identityMatrix, tempP);
 		}
+
+		//passedTransform->composite->transform = tempSMatrix * tempPMatrix;
 		if (passedTransform->composite->rotateSet) {
 			passedTransform->composite->transformSet = true;
 			//passedTransform->composite->transform = glm::rotate(passedTransform->composite->transform, glm::radians(tempAngle), glm::vec3(1.0f, 1.0f, 0.0f));
-			passedTransform->composite->transform = glm::rotate(passedTransform->composite->transform, glm::radians(tempAngle), tempP);
+			//tempRMatrix = glm::translate(tempPMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
+			//tempRMatrix = glm::rotate(tempRMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+			//tempRMatrix = glm::rotate(tempPMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+			//tempRMatrix = glm::translate(tempRMatrix, tempP);
+			//passedTransform->composite->transform = glm::rotate(passedTransform->composite->transform, glm::radians(tempAngle), tempP);
+
+			//tempRMatrix = glm::translate(identityMatrix, tempP);
+			//tempRMatrix = glm::rotate(tempRMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+			//tempRMatrix = glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+			//tempRMatrix = glm::translate(tempRMatrix, -tempP);
+
+			//tempPMatrix = glm::translate(tempRMatrix, tempPInverse);
 		}
-		if (passedTransform->composite->scaleSet) {
-			passedTransform->composite->transformSet = true;
-			passedTransform->composite->transform = glm::scale(passedTransform->composite->transform, tempS);
-		}
+		//passedTransform->composite->transform = tempRMatrix * tempSMatrix *tempPMatrix;
+		//passedTransform->composite->transform = tempRMatrix * tempSMatrix * tempPMatrix;
+		passedTransform->composite->transform = tempSMatrix * tempPMatrix;
+		//passedTransform->composite->rotateAngle = tempAngle;
+
+
 			
 			/*if (tempSFound) {
 				passedTransform->composite->transform = tempS * tempP;

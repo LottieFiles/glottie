@@ -255,10 +255,10 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem, stru
 			shapesAnchor.y = passedShapesItem->a->k[1];*/
 
 			if (passedShapesItem->p != NULL && passedShapesItem->p->k != NULL) {
-				//shapesPosition.x = shapesPosition.x + passedShapesItem->p->k[0];
-				//shapesPosition.y = shapesPosition.y + passedShapesItem->p->k[1];
-				shapesPosition.x = passedShapesItem->p->k[0];
-				shapesPosition.y = passedShapesItem->p->k[1];
+				shapesPosition.x = shapesPosition.x + passedShapesItem->p->k[0];
+				shapesPosition.y = shapesPosition.y + passedShapesItem->p->k[1];
+				//shapesPosition.x = passedShapesItem->p->k[0];
+				//shapesPosition.y = passedShapesItem->p->k[1];
 			}
 			if (passedShapesItem->a != NULL && passedShapesItem->a->k != NULL) {
 				shapesAnchor.x = passedShapesItem->a->k[0];

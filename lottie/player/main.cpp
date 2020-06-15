@@ -12,11 +12,13 @@
 #define GL_GLEXT_PROTOTYPES 1
 #include <SDL_opengles2.h> // empscripten
 //#include <glm/glm.hpp>
-#include </usr/include/glm/glm.hpp> // glm::vec3
+#include "glm/glm.hpp" // glm::vec3
 //#include </usr/include/glm/vec3.hpp> // glm::vec3
 //#include </usr/include/glm/vec4.hpp> // glm::vec4
-#include </usr/include/glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
-#include </usr/include/glm/gtc/type_ptr.hpp> // glm::mat4
+//#include </usr/include/glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
+//#include </usr/include/glm/gtc/type_ptr.hpp> // glm::mat4
+#include "glm/gtc/matrix_transform.hpp" // glm::translate, glm::rotate, glm::scale, glm::perspective
+#include "glm/gtc/type_ptr.hpp" // glm::mat4
 //#include <GLES2/gl2.h>
 //#include <GL/gl.h>
 //#include <GL/glu.h>
