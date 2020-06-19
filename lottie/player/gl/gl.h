@@ -62,6 +62,12 @@ glm::mat4 lastShapesTransform;
 bool layersTransformSet = false;
 bool shapesTransformSet = false;
 
+glm::mat4 lastLayersRotate;
+glm::mat4 lastShapesRotate;
+
+bool layersRotateSet = false;
+bool shapesRotateSet = false;
+
 /*
 bool lastLayersPositionSet = false;
 bool lastLayersScaleSet = false;

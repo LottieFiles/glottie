@@ -118,8 +118,8 @@ struct alignas(ALIGNSIZE) Animation {
 	float customWidth = 0;
 	float customHeight = 0;
 
-	float frMultiplier = 0.5;
-	float lengthMultiplier = 4;
+	float frMultiplier = 1;
+	float lengthMultiplier = 1.5;
 	float frameTime; // in seconds
 	float totalTime; // in seconds
 	float frameTimeMS;

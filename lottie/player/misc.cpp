@@ -1046,8 +1046,8 @@ struct ArrayOfVertex* bezierFillNulls(struct ArrayOfVertex* startV, struct Array
 		intermediate->vertex->a = 1;
 
 		lastIntermediate = intermediate;
-		v_count++;
-		bezier_count++;
+		(*v_count)++;
+		(*bezier_count)++;
 	}
 	lastIntermediate->next = endV;
 	endV->prev = lastIntermediate;
@@ -1200,8 +1200,8 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 			if (distNow < 0) {
 				distNow = distNow * -1;
 			}
-			if (distNow >= 6) {
-				segSize = 1 / (distNow / 3);
+			if (distNow >= 8) {
+				segSize = 1 / (distNow / 4);
 			} else {
 				continue;
 			}
@@ -1307,12 +1307,14 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 
 			//passedPropertiesShapeProp->v = intermediate;
 			segNow = segNow + segSize;
-			v_count++;
-			bezier_count++;
+			(*v_count)++;
+			(*bezier_count)++;
 			if (intermediateStart == NULL) {
 				intermediateStart = intermediate;
 			}
 		}
+		(*v_count)++;
+		(*bezier_count)++;
 		if (intermediateStart != NULL) {
 			intermediateStart->prev = o1;
 			o1->next = intermediateStart;

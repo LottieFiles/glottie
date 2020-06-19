@@ -1,5 +1,5 @@
 #define KVLEN 128
-#define ALIGNSIZE 2048
+#define ALIGNSIZE 512
 #define TEXTBLOCK 220
 
 #include <functional>
@@ -9,6 +9,7 @@
 #include <SDL2/SDL.h> // emscripten
 //#include <SDL2/SDL.h>
 
+#define GLM_ENABLE_EXPERIMENTAL
 #define GL_GLEXT_PROTOTYPES 1
 #include <SDL_opengles2.h> // empscripten
 //#include <glm/glm.hpp>
@@ -19,6 +20,8 @@
 //#include </usr/include/glm/gtc/type_ptr.hpp> // glm::mat4
 #include "glm/gtc/matrix_transform.hpp" // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include "glm/gtc/type_ptr.hpp" // glm::mat4
+#include "glm/gtc/quaternion.hpp"
+#include "glm/gtx/quaternion.hpp"
 //#include <GLES2/gl2.h>
 //#include <GL/gl.h>
 //#include <GL/glu.h>
@@ -29,6 +32,7 @@
 #include <sstream>
 #include <cmath>
 #include <sys/time.h>
+
 
 using namespace std;
 

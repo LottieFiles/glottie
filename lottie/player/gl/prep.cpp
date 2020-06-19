@@ -195,6 +195,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//if (lastBuffersCreated->filled) {
 			if (passedPropertiesShapeProp->buffers_v->filled) {
 				prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, passedPropertiesShapeProp->gl_v_fill, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v->idxCount);
+				lastBuffersCreated->filled = true;
 			}
 			EM_ASM({console.log("tracing 6 ");});
 			//} else {

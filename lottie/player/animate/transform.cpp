@@ -31,6 +31,7 @@ struct alignas(ALIGNSIZE) CompositeArray {
 	glm::mat4 rotate = glm::mat4(1.0f);
 	*/
 	glm::mat4 transform = glm::mat4(1.0f);
+	glm::mat4 rotate = glm::mat4(1.0f);
 	float opacity;
 	float rotateAngle = -1;
 
@@ -74,12 +75,6 @@ struct alignas(ALIGNSIZE) TransformAOV {
 };
 
 struct Vertex* lastPosition;
-
-struct TransformAOV* createSegment() {
-}
-
-struct TransformAOV* createSegmentValue(struct PropertiesValueKeyframe* passedKeyframe) {
-}
 
 struct TransformAOV* createSegmentR(struct PropertiesValueKeyframe* passedKeyframe, struct BoundingBox* currentBB, int type, bool layers) {
 	bool exhausted = false;
@@ -469,10 +464,26 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 	glm::vec3 tempPInverse = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 tempP = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 tempS = glm::vec3(1.0f, 1.0f, 1.0f);
+
+	glm::vec3 lastTempP = glm::vec3(0.0f);
+	glm::mat4 lastTempRMatrix = glm::mat4(0.0f);
 	glm::mat4 tempRMatrix = glm::mat4(1.0f);
 	glm::mat4 tempSMatrix = glm::mat4(1.0f);
 	glm::mat4 tempPMatrix = glm::mat4(1.0f);
+
+	glm::quat rotateQuat;
+	/*
+	glm::mat4 previousPosition;
+	bool previousPositionSet = false;
+
+	glm::mat4 postRotateH;
+	glm::vec3 postRotate;
+	*/
+
 	glm::mat4 identityMatrix = glm::mat4(1.0f);
+
+	float sinHalfAngle;
+	float cosHalfAngle;
 
 	while (! exhausted) {
 		//tempAngleFound = false;
@@ -577,35 +588,56 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			//	tempP = glm::rotate(tempP, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
 			//}
 		passedTransform->composite->transform = glm::mat4(1.0f);
-		if (passedTransform->composite->scaleSet) {
-			passedTransform->composite->transformSet = true;
-			tempSMatrix = glm::scale(identityMatrix, tempS);
-		}
-		if (passedTransform->composite->positionSet) {
-			passedTransform->composite->transformSet = true;
-			tempPMatrix = glm::translate(identityMatrix, tempP);
-		}
 
-		//passedTransform->composite->transform = tempSMatrix * tempPMatrix;
+
 		if (passedTransform->composite->rotateSet) {
 			passedTransform->composite->transformSet = true;
-			//passedTransform->composite->transform = glm::rotate(passedTransform->composite->transform, glm::radians(tempAngle), glm::vec3(1.0f, 1.0f, 0.0f));
-			//tempRMatrix = glm::translate(tempPMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
-			//tempRMatrix = glm::rotate(tempRMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
-			//tempRMatrix = glm::rotate(tempPMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
-			//tempRMatrix = glm::translate(tempRMatrix, tempP);
-			//passedTransform->composite->transform = glm::rotate(passedTransform->composite->transform, glm::radians(tempAngle), tempP);
 
-			//tempRMatrix = glm::translate(identityMatrix, tempP);
-			//tempRMatrix = glm::rotate(tempRMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
-			//tempRMatrix = glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
-			//tempRMatrix = glm::translate(tempRMatrix, -tempP);
+			/*
+			glm::quat rotateQuat;
+			glm::vec3 eulerAngles(0, 0, glm::radians(tempAngle));
+			rotateQuat = glm::quat(eulerAngles);
+			tempRMatrix = glm::toMat4(rotateQuat);
+			*/
 
-			//tempPMatrix = glm::translate(tempRMatrix, tempPInverse);
+			//rotateQuat = glm::angleAxis(glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+			/*
+			glm::quat rotateQuat(
+					0,
+					0,
+					sin(glm::radians(tempAngle) / 2),
+					cos(glm::radians(tempAngle) / 2)
+				);
+			tempRMatrix = glm::mat4_cast(rotateQuat) * identityMatrix;
+			*/
+			//tempRMatrix = glm::translate(identityMatrix, -lastTempP);
+			passedTransform->composite->rotate = glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+			//tempRMatrix = glm::translate(tempRMatrix, lastTempP);
+
+			//lastTempP = tempP;
+
 		}
+
+		if (passedTransform->composite->scaleSet) {
+			passedTransform->composite->transformSet = true;
+			//tempSMatrix = glm::scale(identityMatrix, tempS);
+			passedTransform->composite->transform = glm::scale(passedTransform->composite->transform, tempS);
+		}
+
+		if (passedTransform->composite->positionSet) {
+			passedTransform->composite->transformSet = true;
+			//tempPMatrix = glm::translate(identityMatrix, tempP);
+			passedTransform->composite->transform = glm::translate(passedTransform->composite->transform, tempP);
+		}
+
+		/*
+		if (tempAngleFound) {
+			passedTransform->composite->transform = passedTransform->composite->transform * tempRMatrix;
+		}
+		*/
+		
 		//passedTransform->composite->transform = tempRMatrix * tempSMatrix *tempPMatrix;
 		//passedTransform->composite->transform = tempRMatrix * tempSMatrix * tempPMatrix;
-		passedTransform->composite->transform = tempSMatrix * tempPMatrix;
 		//passedTransform->composite->rotateAngle = tempAngle;
 
 
