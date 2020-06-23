@@ -90,9 +90,9 @@ struct alignas(ALIGNSIZE) PropertiesShapeKeyframed {
 
 struct alignas(ALIGNSIZE) PropertiesShapeProp {
 //struct PropertiesShapeProp {
-	struct PropertiesShapeProp* start=NULL;
-	struct PropertiesShapeProp* next=NULL;
-	struct PropertiesShapeProp* prev=NULL;
+	struct PropertiesShapeProp* start = NULL;
+	struct PropertiesShapeProp* next = NULL;
+	struct PropertiesShapeProp* prev = NULL;
 
 	struct ArrayOfVertex* i = NULL;
 	struct ArrayOfVertex* o = NULL;

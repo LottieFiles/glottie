@@ -144,8 +144,6 @@ void glInit() {
 	SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
 	//SDL_RenderSetScale(rdr, theAnimation->scaleFactorX, theAnimation->scaleFactorY);
 	//EM_ASM({console.log("glinit 1.8");});
-	glEnable(GL_BLEND); 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 float _xPos = 0;
@@ -284,8 +282,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 						unsigned int layersPositionLoc = glGetUniformLocation(mainShader, "layersPosition");
 						unsigned int shapesPositionLoc = glGetUniformLocation(mainShader, "shapesPosition");
-
-						//unsigned int alphaIndex = glGetUniformLocation(mainShader, "objectOpacity");
 
 						_translation = true;
 						if (tempBuffers->shapesTransform != NULL && tempBuffers->shapesTransform->startTime <= frame) {

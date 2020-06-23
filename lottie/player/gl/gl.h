@@ -38,44 +38,34 @@ struct alignas(ALIGNSIZE) Buffers {
 	struct Transform* shapesTransform = NULL;
 	struct Transform* layersTransform = NULL;
 
-/*
+	/*
 	glm::mat4 lastTrans = glm::mat4(1.0f);
 	glm::mat4 lastTransShapesS = glm::mat4(1.0f);
 	glm::mat4 lastTransShapesP = glm::mat4(1.0f);
 	glm::mat4 lastTransLayersS = glm::mat4(1.0f);
 	glm::mat4 lastTransLayersP = glm::mat4(1.0f);
-*/
+	*/
 
 	//struct CompositeArray* lastShapesComposite;
 	//struct CompositeArray* lastLayersComposite;
-/*
-glm::mat4 lastLayersPosition;
-glm::mat4 lastLayersScale;
-glm::mat4 lastLayersRotate;
-glm::mat4 lastShapesPosition;
-glm::mat4 lastShapesScale;
-glm::mat4 lastShapesRotate;
-*/
-glm::mat4 lastLayersTransform;
-glm::mat4 lastShapesTransform;
 
-bool layersTransformSet = false;
-bool shapesTransformSet = false;
+	glm::mat4 lastLayersTransform;
+	glm::mat4 lastShapesTransform;
 
-glm::mat4 lastLayersRotate;
-glm::mat4 lastShapesRotate;
+	bool layersTransformSet = false;
+	bool shapesTransformSet = false;
 
-bool layersRotateSet = false;
-bool shapesRotateSet = false;
+	glm::mat4 lastLayersRotate;
+	glm::mat4 lastShapesRotate;
 
-/*
-bool lastLayersPositionSet = false;
-bool lastLayersScaleSet = false;
-bool lastLayersRotateSet = false;
-bool lastShapesPositionSet = false;
-bool lastShapesScaleSet = false;
-bool lastShapesRotateSet = false;
-*/
+	bool layersRotateSet = false;
+	bool shapesRotateSet = false;
+
+	glm::mat4 lastLayersScale;
+	glm::mat4 lastShapesScale;
+
+	bool layersScaleSet = false;
+	bool shapesScaleSet = false;
 
 	GLint* posAttrib = NULL;
 	GLint* colAttrib = NULL;
@@ -94,5 +84,7 @@ bool lastShapesRotateSet = false;
 	bool clockwise;
 
 	bool filled = false;
+
+	bool addedToComposition = false;
 } *lastBuffersCreated;
 

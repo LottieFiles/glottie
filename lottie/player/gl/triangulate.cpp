@@ -277,11 +277,11 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 
 	globalObjCount = globalObjCount + count + outlierCount;
 	EM_ASM_({console.log("sorted 1 " + $0 + " " + $1 + " " + $2);}, count, outlierCount, globalObjCount);
-	passedProp->gl_v.reserve((count + 1) * 4);
+	passedProp->gl_v.reserve((count) * 4);
 	EM_ASM({console.log("sorted 2");});
-	passedProp->gl_v_fill.reserve((count + 1) * 4);
+	passedProp->gl_v_fill.reserve((count) * 4);
 	EM_ASM({console.log("sorted 3");});
-	passedProp->gl_v_idx.reserve((count + 1 + outlierCount) * 3);
+	passedProp->gl_v_idx.reserve((count + outlierCount) * 3);
 
 	int Bcounter = 0;
 	
