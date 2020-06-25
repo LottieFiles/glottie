@@ -306,6 +306,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						unsigned int layersPositionLoc = glGetUniformLocation(mainShader, "layersPosition");
 						unsigned int shapesPositionLoc = glGetUniformLocation(mainShader, "shapesPosition");
 				exhausted = false;
+				bool exhaustedShapesCL = false;
+				bool exhaustedLayersCL = false;
 				while (! exhausted) {
 
 					lastShapesO = 1.0f;
@@ -341,46 +343,55 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 					
 					if (shapesCL != NULL && shapesCL->composite != NULL && shapesCL->composite->vaol != NULL) {
-						tempVAOL = shapesCL->composite->vaol->start;
+						glUniform1i(shapesPositionLoc, 1);
+						tempVAOL = shapesCL->composite->vaol->start->prev;
 						buffersExhausted = false;
+						firstCycleDone = false;
 						while (! buffersExhausted) {
 							glBindVertexArrayOES(*(tempVAOL->vao));
 							glDrawElements(GL_TRIANGLES, tempVAOL->idxSize, GL_UNSIGNED_INT, 0);
 							glBindVertexArrayOES(0);
 
-							if (tempVAOL->next == NULL) {
+							if (tempVAOL->prev == tempVAOL->start->prev && firstCycleDone) {
 								buffersExhausted = true;
 							} else {
-								tempVAOL = tempVAOL->next;
+								tempVAOL = tempVAOL->prev;
 							}
+							firstCycleDone = true;
 						}
 					}
 
 					if (layersCL != NULL && layersCL->composite != NULL && layersCL->composite->vaol != NULL) {
-						tempVAOL = layersCL->composite->vaol->start;
+						glUniform1i(layersPositionLoc, 1);
+						tempVAOL = layersCL->composite->vaol->start->prev;
 						buffersExhausted = false;
+						firstCycleDone = false;
 						while (! buffersExhausted) {
 							glBindVertexArrayOES(*(tempVAOL->vao));
 							glDrawElements(GL_TRIANGLES, tempVAOL->idxSize, GL_UNSIGNED_INT, 0);
 							glBindVertexArrayOES(0);
 
-							if (tempVAOL->next == NULL) {
+							if (tempVAOL->prev == tempVAOL->start->prev && firstCycleDone) {
 								buffersExhausted = true;
 							} else {
-								tempVAOL = tempVAOL->next;
+								tempVAOL = tempVAOL->prev;
 							}
+							firstCycleDone = true;
 						}
 					}
 
-					if ((shapesCL == NULL || shapesCL->next == NULL) && (layersCL == NULL || layersCL->next == NULL)) {
+					if (exhaustedShapesCL && exhaustedLayersCL) {
 						exhausted = true;
+					}
+					if (shapesCL != NULL && shapesCL->next != NULL) {
+						shapesCL = shapesCL->next;
 					} else {
-						if (shapesCL != NULL && shapesCL->next != NULL) {
-							shapesCL = shapesCL->next;
-						}
-						if (layersCL != NULL && layersCL->next != NULL) {
-							layersCL = layersCL->next;
-						}
+						exhaustedShapesCL = true;
+					}
+					if (layersCL != NULL && layersCL->next != NULL) {
+						layersCL = layersCL->next;
+					} else {
+						exhaustedLayersCL = true;
 					}
 
 				}
