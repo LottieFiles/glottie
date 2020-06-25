@@ -67,6 +67,12 @@ struct alignas(ALIGNSIZE) Buffers {
 	bool layersScaleSet = false;
 	bool shapesScaleSet = false;
 
+	float lastLayersOpacity = 1.0f;
+	float lastShapesOpacity = 1.0f;
+
+	bool layersOpacitySet = false;
+	bool shapesOpacitySet = false;
+
 	GLint* posAttrib = NULL;
 	GLint* colAttrib = NULL;
 

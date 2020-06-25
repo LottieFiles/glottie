@@ -1,3 +1,131 @@
+struct alignas(ALIGNSIZE) TransformMatrix {
+	struct TransformMatrix* start = NULL;
+	struct TransformMatrix* prev = NULL;
+	struct TransformMatrix* next = NULL; 
+	
+	glm::mat4 transform = glm::mat4(1.0f);
+
+	float angle;
+	glm::vec3 vector;
+	glm::vec3 inverseVector;
+	float opacity = -1;
+
+	glm::vec3 translate;
+	glm::vec3 scale;
+	bool isRotate = false;
+	bool isScale = false;
+	bool isTranslate = false;
+	int startTime = -1;
+	int endTime = -1;
+} *defaultTransformMatrix = NULL;
+
+struct alignas(ALIGNSIZE) VAOList {
+	struct VAOList* start = NULL;
+	struct VAOList* prev = NULL;
+	struct VAOList* next = NULL;
+
+	GLuint *vao;
+
+	int frame;
+} *boundVAO = NULL;
+
+struct alignas(ALIGNSIZE) BuffersList {
+	struct BuffersList* start = NULL;
+	struct BuffersList* prev = NULL;
+	struct BuffersList* next = NULL;
+
+	/*
+	GLuint *vbo;	
+	GLuint *cbo;	
+	GLuint *ibo;
+	*/
+
+	struct Buffers* buffers_v;
+};
+
+struct alignas(ALIGNSIZE) CompositionList {
+	struct CompositionList* start = NULL;
+	struct CompositionList* prev = NULL;
+	struct CompositionList* next = NULL;
+
+	struct CompositeArray* composite = NULL;
+};
+
+struct alignas(ALIGNSIZE) FrameCompositionRef {
+	struct FrameCompositionRef* start = NULL;
+	struct FrameCompositionRef* prev = NULL;
+	struct FrameCompositionRef* next = NULL;
+
+	struct CompositionList* compositionList = NULL;
+
+	int frame;
+} *animationSequence = NULL;
+
+struct alignas(ALIGNSIZE) CompositeArray {
+	struct CompositeArray* start = NULL;
+	struct CompositeArray* prev = NULL;
+	struct CompositeArray* next = NULL;
+
+	struct BuffersList* buffers = NULL;
+
+	struct VAOList* vaol = NULL;
+
+	//struct TransformMatrix* position = NULL;
+	//struct TransformMatrix* scale = NULL;
+	/*
+	glm::mat4 position = glm::mat4(1.0f);
+	glm::mat4 scale = glm::mat4(1.0f);
+	glm::mat4 rotate = glm::mat4(1.0f);
+	*/
+
+	glm::mat4 transform = glm::mat4(1.0f);
+	glm::mat4 rotate = glm::mat4(1.0f);
+	glm::mat4 scale = glm::mat4(1.0f);
+
+	float opacity = -1;
+
+	float rotateAngle = -1;
+
+	int frame = -1;
+
+	bool positionSet = false;
+	bool scaleSet = false;
+	bool rotateSet = false;
+	bool opacitySet = false;
+
+	bool transformSet = false;
+};
+
+struct alignas(ALIGNSIZE) Transform {
+	struct TransformAOV* p = NULL;
+	struct TransformAOV* r = NULL;
+	struct TransformAOV* s = NULL;
+	struct TransformAOV* o = NULL;
+
+	struct CompositeArray* composite = NULL;
+
+	int startTime = -1;
+	int endTime = -1;
+};
+
+struct alignas(ALIGNSIZE) TransformAOV {
+	struct ArrayOfVertex* v = NULL;
+	struct ArrayOfVertex* i = NULL;
+	struct ArrayOfVertex* o = NULL;
+
+	struct TransformMatrix* transformMatrix = NULL;
+
+	int startTime = -1;
+	int endTime = -1;
+	float* frames;
+	float* segSize;
+	int v_count = 0;
+	int bezier_count = 0;
+	int s_count;
+
+};
+
+struct Vertex* lastPosition;
 
 struct BuffersList* newBuffersList(struct BuffersList* passedBuffersList, struct Buffers* passedBuffers) {
 	if (passedBuffersList == NULL) {
@@ -107,10 +235,6 @@ struct TransformAOV* createSegmentR(struct PropertiesValueKeyframe* passedKeyfra
 			} else {
 				*(tempAOV->segSize + (tempAOV->v_count - 1)) = 0;
 			}
-			/*
-			*(tempAOV->frames + (tempAOV->v_count - 1)) = (passedKeyframe->t * theAnimation->lengthMultiplier) - previousTime;
-			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 1 / (*(tempAOV->frames + (tempAOV->v_count - 1)) - 1);
-			*/
 		} else {
 			*(tempAOV->frames + (tempAOV->v_count - 1)) = 1;
 			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 0;
@@ -229,15 +353,7 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 
 		if (previousTime != 0) {
 			*(tempAOV->frames + (tempAOV->v_count - 1)) = (passedKeyframe->t * theAnimation->lengthMultiplier) - previousTime;
-			if (*(tempAOV->frames + (tempAOV->v_count - 1)) >= 2) {
-				*(tempAOV->segSize + (tempAOV->v_count - 1)) = 1 / (*(tempAOV->frames + (tempAOV->v_count - 1)) - 1);
-			} else {
-				*(tempAOV->segSize + (tempAOV->v_count - 1)) = 0;
-			}
-			/*
-			*(tempAOV->frames + (tempAOV->v_count - 1)) = (passedKeyframe->t * theAnimation->lengthMultiplier) - previousTime;
 			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 1 / (*(tempAOV->frames + (tempAOV->v_count - 1)) - 1);
-			*/
 		} else {
 			*(tempAOV->frames + (tempAOV->v_count - 1)) = 1;
 			*(tempAOV->segSize + (tempAOV->v_count - 1)) = 0;
@@ -338,12 +454,10 @@ void fillAnimation(struct TransformAOV* passedAOV, int type, struct BoundingBox*
 					}
 					*/
 				}
-			case 4: //opacity
+			case 4: //rotate
 				if (passedAOV->s_count >= 1) {
 					passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
 					passedAOV->transformMatrix->opacity = passedAOV->v->vertex->x;
-					EM_ASM_({console.log("========> OPACITY " + $0);}, passedAOV->v->vertex->x);
-
 				}
 				break;
 		}
@@ -379,7 +493,7 @@ struct CompositeArray* newCompositeArray(struct CompositeArray* passedCompositeA
 	return passedCompositeArray;
 }
 
-void addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize, int passedFrame) {
+void addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int passedFrame) {
 	if (passedVAOL == NULL) {
 		passedVAOL = new VAOList;
 		passedVAOL->start = passedVAOL;
@@ -391,7 +505,6 @@ void addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize,
 	}
 	passedVAOL->vao = passedVAO;
 	passedVAOL->frame = passedFrame;
-	passedVAOL->idxSize = idxSize;
 }
 
 struct FrameCompositionRef* addToSequence(struct FrameCompositionRef* passedSequence, int frame) {
@@ -424,7 +537,7 @@ void addToCompositionList(struct FrameCompositionRef* passedSequence, struct Com
 	passedSequence->compositionList->composite = passedArray;
 }
 
-void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTransform, struct ShapesItem* passedShapesItem, bool isArray, bool isLayers) {
+void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTransform, struct ShapesItem* passedShapesItem, bool isArray) {
 	bool pFound = false;
 	bool sFound = false;
 	bool rFound = false;
@@ -440,10 +553,6 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 	if (passedTransform->r != NULL && passedTransform->r->transformMatrix != NULL) {
 		rFound = true;
 		passedTransform->r->transformMatrix = passedTransform->r->transformMatrix->start;
-	}
-	if (passedTransform->o != NULL && passedTransform->o->transformMatrix != NULL) {
-		oFound = true;
-		passedTransform->o->transformMatrix = passedTransform->o->transformMatrix->start;
 	}
 
 	int i = minTime;
@@ -492,22 +601,14 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 
 	float sinHalfAngle;
 	float cosHalfAngle;
-	if (layersAnimationSequence != NULL) {
-		layersAnimationSequence = layersAnimationSequence->start;
-	}
-	if (shapesAnimationSequence != NULL) {
-		shapesAnimationSequence = shapesAnimationSequence->start;
+	if (animationSequence != NULL) {
+		animationSequence = animationSequence->start;
 	}
 
 	while (! exhausted) {
 		//tempAngleFound = false;
 		tempPFound = false;
 		tempSFound = false;
-
-		rFound = false;
-		pFound = false;
-		sFound = false;
-		oFound = false;
 
 		if (passedTransform->composite == NULL) {
 			passedTransform->composite = newCompositeArray(passedTransform->composite, i);
@@ -520,7 +621,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			}
 		}
 
-		if (pEnded && sEnded && rEnded && oEnded) {
+		if (pEnded && sEnded && rEnded) {
 			exhausted = true;
 		}
 
@@ -530,8 +631,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			//tempP = passedTransform->p->transformMatrix->transform;
 			tempP = passedTransform->p->transformMatrix->vector;
 			tempPInverse = passedTransform->p->transformMatrix->inverseVector;
-			//passedTransform->composite->positionSet = true;
-			pFound = true;
+			passedTransform->composite->positionSet = true;
 			tempPFound = true;
 			if (pEnded) {
 				pEndProcessed = true;
@@ -555,11 +655,10 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			//EM_ASM_({console.log("---------------===================TRANSFORM composite scale ");});
 			//passedTransform->composite->transform = passedTransform->composite->transform * passedTransform->s->transformMatrix->transform;
 			tempS = passedTransform->s->transformMatrix->vector;
-			//passedTransform->composite->scaleSet = true;
+			passedTransform->composite->scaleSet = true;
 			//passedTransform->composite->transformSet = true;
 			//passedTransform->composite->frame = i;
 			//tempS = passedTransform->s->transformMatrix->transform;
-			sFound = true;
 			tempSFound = true;
 			if (sEnded) {
 				sEndProcessed = true;
@@ -582,11 +681,10 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		//if (passedTransform->r != NULL && passedTransform->r->isRotate && passedTransform->r->startTime <= i && ! rEnded) {
 			//EM_ASM_({console.log("---------------===================TRANSFORM composite rotate ");});
 			//passedTransform->composite->transform = passedTransform->composite->transform * passedTransform->r->transformMatrix->transform;
-			//passedTransform->composite->rotateSet = true;
+			passedTransform->composite->rotateSet = true;
 			//passedTransform->composite->transformSet = true;
 			//passedTransform->composite->frame = i;
 			//tempR = passedTransform->r->transformMatrix->transform;
-			rFound = true;
 			tempAngle = passedTransform->r->transformMatrix->angle;
 			tempAngleFound = true;
 			if (rEnded) {
@@ -610,13 +708,11 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		//if (passedTransform->o != NULL && passedTransform->o->isRotate && passedTransform->o->startTime <= i && ! rEnded) {
 			//EM_ASM_({console.log("---------------===================TRANSFORM composite rotate ");});
 			//passedTransform->composite->transform = passedTransform->composite->transform * passedTransform->o->transformMatrix->transform;
-			//passedTransform->composite->opacitySet = true;
+			passedTransform->composite->opacitySet = true;
 			//passedTransform->composite->transformSet = true;
 			//passedTransform->composite->frame = i;
 			//tempR = passedTransform->o->transformMatrix->transform;
-			oFound = true;
 			tempOpacity = passedTransform->o->transformMatrix->opacity;
-					EM_ASM_({console.log("--------> OPACITY " + $0);}, tempOpacity);
 			//tempAngleFound = true;
 			if (oEnded) {
 				oEndProcessed = true;
@@ -641,7 +737,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		passedTransform->composite->transform = glm::mat4(1.0f);
 
 
-		if (rFound) {
+		if (passedTransform->composite->rotateSet) {
 			passedTransform->composite->rotateSet = true;
 
 			/*
@@ -670,45 +766,37 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		}
 		passedTransform->composite->rotate = tempRMatrix;
 
-		if (sFound) {
+		if (passedTransform->composite->scaleSet) {
 			passedTransform->composite->scaleSet = true;
 			tempSMatrix = glm::scale(identityMatrix, tempS);
 			//passedTransform->composite->transform = glm::scale(passedTransform->composite->transform, tempS);
 		}
 		passedTransform->composite->scale = tempSMatrix;
 
-		if (pFound) {
+		if (passedTransform->composite->positionSet) {
 			passedTransform->composite->transformSet = true;
 			tempPMatrix = glm::translate(identityMatrix, tempP);
 			//passedTransform->composite->transform = glm::translate(passedTransform->composite->transform, tempP);
 		}
 		passedTransform->composite->transform = tempPMatrix;
 
-		if (oFound) {
-			passedTransform->composite->opacitySet = true;
-		}
-
 		passedTransform->composite->opacity = tempOpacity;
 		//passedTransform->composite->transform = tempSMatrix * tempPMatrix;
 
 
-		if (shapesAnimationSequence == NULL) {
-			shapesAnimationSequence = addToSequence(shapesAnimationSequence, i);
-		} else if (shapesAnimationSequence != NULL && shapesAnimationSequence->next == NULL) {
-			shapesAnimationSequence = addToSequence(shapesAnimationSequence, i);
+		if (animationSequence == NULL) {
+			animationSequence = addToSequence(animationSequence, i);
+		} else if (animationSequence != NULL && animationSequence->next == NULL) {
+			animationSequence = addToSequence(animationSequence, i);
 		} else {
-			shapesAnimationSequence = shapesAnimationSequence->next;
+			animationSequence = animationSequence->next;
 		}
 
-		if (layersAnimationSequence == NULL) {
-			layersAnimationSequence = addToSequence(layersAnimationSequence, i);
-		} else if (layersAnimationSequence != NULL && layersAnimationSequence->next == NULL) {
-			layersAnimationSequence = addToSequence(layersAnimationSequence, i);
-		} else {
-			layersAnimationSequence = layersAnimationSequence->next;
-		}
-
-		if (rFound || sFound || pFound || oFound) {
+		if (
+				passedTransform->composite->rotateSet ||
+				passedTransform->composite->scaleSet ||
+				passedTransform->composite->positionSet
+			) {
 			
 			if (isArray) {
 				passedShapesItem = passedShapesItem->start;
@@ -716,8 +804,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				while (! shapesExhausted) {
 					if (passedShapesItem != NULL && passedShapesItem->ks != NULL && passedShapesItem->ks->k != NULL && passedShapesItem->ks->k->buffers_v != NULL) {
 						//passedTransform->composite->buffers = newBuffersList(passedTransform->composite->buffers, passedShapesItem->ks->k->buffers_v);
-						//addCompositeVAO(passedTransform->composite->vaol, passedShapesItem->ks->k->buffers_v->vao, i);
-						addCompositeVAO(passedTransform->composite->vaol, passedShapesItem->ks->k->buffers_v->vao, passedShapesItem->ks->k->buffers_v->idx.size(), i);
+						addCompositeVAO(passedTransform->composite->vaol, passedShapesItem->ks->k->buffers_v->vao, i);
 						passedShapesItem->ks->k->buffers_v->addedToComposition = true;
 						/*for (int counter = 0; counter < passedShapesItem->ks->k->gl_v_fill.size(); counter = counter + 4) {
 							passedShapesItem->ks->k->gl_v_fill[counter + 3] = tempOpacity;
@@ -732,7 +819,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			} else {
 				if (passedShapesItem != NULL && passedShapesItem->ks != NULL && passedShapesItem->ks->k != NULL && passedShapesItem->ks->k->buffers_v != NULL) {
 					//passedTransform->composite->buffers = newBuffersList(passedTransform->composite->buffers, passedShapesItem->ks->k->buffers_v);
-					addCompositeVAO(passedTransform->composite->vaol, passedShapesItem->ks->k->buffers_v->vao, passedShapesItem->ks->k->buffers_v->idx.size(), i);
+					addCompositeVAO(passedTransform->composite->vaol, passedShapesItem->ks->k->buffers_v->vao, i);
 					passedShapesItem->ks->k->buffers_v->addedToComposition = true;
 					/*for (int counter = 0; counter < passedShapesItem->ks->k->gl_v_fill.size(); counter = counter + 4) {
 						passedShapesItem->ks->k->gl_v_fill[counter + 3] = tempOpacity;
@@ -741,12 +828,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			}
 
 		}
-
-		if (isLayers) {
-			addToCompositionList(layersAnimationSequence, passedTransform->composite);
-		} else {
-			addToCompositionList(shapesAnimationSequence, passedTransform->composite);
-		}
+		addToCompositionList(animationSequence, passedTransform->composite);
 
 
 		/*
@@ -851,13 +933,13 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 
 	if (passedShapesItem->p != NULL && passedShapesItem->p->keyframe != NULL) {
 		//EM_ASM_({console.log("---------------===================TRANSFORM BEGINS ");});
-		tempAOV = createSegmentP(passedShapesItem->p->keyframe->start, passedShapesItem->currentBB, 1, false);
+		tempAOV = createSegmentP(passedShapesItem->p->keyframe->start, currentBB, 1, false);
 		passedShapesItem->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			//EM_ASM_({console.log("=================================POSITION v_count ");});
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3);
 		}
-		fillAnimation(passedShapesItem->transform->p, 1, passedShapesItem->currentBB, false);
+		fillAnimation(passedShapesItem->transform->p, 1, NULL, false);
 		//EM_ASM_({console.log("---------------===================TRANSFORM ENDS ");});
 		if (tempAOV->startTime < minTime || minTime == -1) {
 			minTime = tempAOV->startTime;
@@ -868,13 +950,13 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 	}
 	if (passedShapesItem->s != NULL && passedShapesItem->s->keyframe != NULL) {
 		//EM_ASM_({console.log("---------------===================SCALE TRANSFORM BEGINS ");});
-		tempAOV = createSegmentP(passedShapesItem->s->keyframe->start, passedShapesItem->currentBB, 2, false);
+		tempAOV = createSegmentP(passedShapesItem->s->keyframe->start, currentBB, 2, false);
 		passedShapesItem->transform->s = tempAOV;
 		if (tempAOV->v_count > 1) {
 			//EM_ASM_({console.log("=================================SCALE v_count ");});
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3);
 		}
-		fillAnimation(passedShapesItem->transform->s, 2, passedShapesItem->currentBB, false);
+		fillAnimation(passedShapesItem->transform->s, 2, NULL, false);
 		//EM_ASM_({console.log("---------------===================SCALE TRANSFORM ENDS ");});
 		if (tempAOV->startTime < minTime || minTime == -1) {
 			minTime = tempAOV->startTime;
@@ -885,7 +967,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 	}
 	if (passedShapesItem->r != NULL && passedShapesItem->r->keyframe != NULL && passedShapesItem->currentBB != NULL) {
 		//EM_ASM_({console.log("---------------===================SCALE TRANSFORM BEGINS ");});
-		tempAOV = createSegmentR(passedShapesItem->r->keyframe->start, passedShapesItem->currentBB, 1, false);
+		tempAOV = createSegmentR(passedShapesItem->r->keyframe->start, currentBB, 1, false);
 		passedShapesItem->transform->r = tempAOV;
 		if (tempAOV->v_count > 1) {
 			//EM_ASM_({console.log("=================================SCALE v_count ");});
@@ -902,7 +984,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 	}
 	if (passedShapesItem->o != NULL && passedShapesItem->o->keyframe != NULL && passedShapesItem->currentBB != NULL) {
 		//EM_ASM_({console.log("---------------===================SCALE TRANSFORM BEGINS ");});
-		tempAOV = createSegmentR(passedShapesItem->o->keyframe->start, passedShapesItem->currentBB, 2, false);
+		tempAOV = createSegmentR(passedShapesItem->o->keyframe->start, currentBB, 2, false);
 		passedShapesItem->transform->o = tempAOV;
 		if (tempAOV->v_count > 1) {
 			//EM_ASM_({console.log("=================================SCALE v_count ");});
@@ -919,7 +1001,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 	}
 
 	if (maxTime > minTime) {
-		fillCompositeAnimation(minTime, maxTime, passedShapesItem->transform, passedShapesItem, false, false);
+		fillCompositeAnimation(minTime, maxTime, passedShapesItem->transform, passedShapesItem, false);
 	}
 	//EM_ASM_({console.log("---------------===================TRANSFORM done ");});
 
@@ -938,13 +1020,13 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers, struct Boundi
 	}
 	if (passedLayers->ks != NULL && passedLayers->ks->p != NULL && passedLayers->ks->p->keyframe != NULL) {
 		//EM_ASM_({console.log("=================================LAYERS TRANSFORM BEGINS ");});
-		tempAOV = createSegmentP(passedLayers->ks->p->keyframe->start, passedLayers->currentBB, 1, true);
+		tempAOV = createSegmentP(passedLayers->ks->p->keyframe->start, currentBB, 1, true);
 		passedLayers->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			//EM_ASM_({console.log("=================================LAYERS POSITION v_count ");});
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3);
 		}
-		fillAnimation(passedLayers->transform->p, 1, passedLayers->currentBB, true);
+		fillAnimation(passedLayers->transform->p, 1, NULL, true);
 		//EM_ASM_({console.log("=================================LAYERS TRANSFORM ENDS ");});
 		minTime = tempAOV->startTime;
 		maxTime = tempAOV->endTime;
@@ -957,13 +1039,13 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers, struct Boundi
 	}
 	if (passedLayers->ks != NULL && passedLayers->ks->s != NULL && passedLayers->ks->s->keyframe != NULL) {
 		//EM_ASM_({console.log("=================================LAYERS SCALE TRANSFORM BEGINS ");});
-		tempAOV = createSegmentP(passedLayers->ks->s->keyframe->start, passedLayers->currentBB, 2, true);
+		tempAOV = createSegmentP(passedLayers->ks->s->keyframe->start, currentBB, 2, true);
 		passedLayers->transform->s = tempAOV;
 		if (tempAOV->v_count > 1) {
 			//EM_ASM_({console.log("=================================LAYERS SCALE v_count ");});
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3);
 		}
-		fillAnimation(passedLayers->transform->s, 2, passedLayers->currentBB, true);
+		fillAnimation(passedLayers->transform->s, 2, NULL, true);
 		//EM_ASM_({console.log("=================================LAYERS SCALE TRANSFORM ENDS ");});
 		if (tempAOV->startTime < minTime || minTime == -1) {
 			minTime = tempAOV->startTime;
@@ -974,7 +1056,7 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers, struct Boundi
 	}
 	if (passedLayers->ks != NULL && passedLayers->ks->r != NULL && passedLayers->ks->r->keyframe != NULL && passedLayers->currentBB != NULL) {
 		//EM_ASM_({console.log("=================================LAYERS SCALE TRANSFORM BEGINS ");});
-		tempAOV = createSegmentR(passedLayers->ks->r->keyframe->start, passedLayers->currentBB, 1, true);
+		tempAOV = createSegmentR(passedLayers->ks->r->keyframe->start, currentBB, 1, true);
 		passedLayers->transform->r = tempAOV;
 		if (tempAOV->v_count > 1) {
 			//EM_ASM_({console.log("=================================LAYERS SCALE v_count ");});
@@ -991,13 +1073,13 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers, struct Boundi
 	}
 	if (passedLayers->ks != NULL && passedLayers->ks->o != NULL && passedLayers->ks->o->keyframe && passedLayers->currentBB != NULL) {
 		//EM_ASM_({console.log("---------------===================SCALE TRANSFORM BEGINS ");});
-		tempAOV = createSegmentR(passedLayers->ks->o->keyframe->start, passedLayers->currentBB, 2, true);
+		tempAOV = createSegmentR(passedLayers->ks->o->keyframe->start, currentBB, 2, false);
 		passedLayers->transform->o = tempAOV;
 		if (tempAOV->v_count > 1) {
 			//EM_ASM_({console.log("=================================SCALE v_count ");});
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 1);
 		}
-		fillAnimation(passedLayers->transform->o, 4, passedLayers->currentBB, true);
+		fillAnimation(passedLayers->transform->o, 4, passedLayers->currentBB, false);
 		//EM_ASM_({console.log("---------------===================SCALE TRANSFORM ENDS ");});
 		if (tempAOV->startTime < minTime || minTime == -1) {
 			minTime = tempAOV->startTime;
@@ -1009,7 +1091,7 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers, struct Boundi
 
 
 	if (maxTime > minTime) {
-		fillCompositeAnimation(minTime, maxTime, passedLayers->transform, passedLayers->shapes->start, true, true);
+		fillCompositeAnimation(minTime, maxTime, passedLayers->transform, passedLayers->shapes->start, true);
 	}
 	//EM_ASM_({console.log("---------------===================TRANSFORM done ");});
 

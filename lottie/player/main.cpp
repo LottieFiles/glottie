@@ -55,6 +55,7 @@ alignas(256) GLint* posAttrib[1024];
 #include "deserializer/layers.h"
 #include "deserializer/shapes.h"
 #include "deserializer/helpers.h"
+#include "animate/animate.h"
 //#include "emscripten/emscripten.cpp"
 #include "misc.cpp"
 #include "animate/transform.cpp"
@@ -134,6 +135,9 @@ void loadJson(char* buffer, int theLength) {
 		currentFrame++;
 	}
 	*/
+	layersAnimationSequence = layersAnimationSequence->start;
+	shapesAnimationSequence = shapesAnimationSequence->start;
+
 	emscripten_set_main_loop(mainloop, theAnimation->fr, 0);
 }
 
