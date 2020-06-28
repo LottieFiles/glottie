@@ -362,6 +362,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					}
 
 					if (layersCL != NULL && layersCL->composite != NULL && layersCL->composite->vaol != NULL) {
+						EM_ASM({console.log("rendered ")});
 						glUniform1i(layersPositionLoc, 1);
 						tempVAOL = layersCL->composite->vaol->start->prev;
 						buffersExhausted = false;
@@ -377,6 +378,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 								tempVAOL = tempVAOL->prev;
 							}
 							firstCycleDone = true;
+							EM_ASM({console.log("rendered ")});
 						}
 					}
 

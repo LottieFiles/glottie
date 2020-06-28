@@ -424,6 +424,34 @@ void addToCompositionList(struct FrameCompositionRef* passedSequence, struct Com
 	passedSequence->compositionList->composite = passedArray;
 }
 
+void iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, int frame) {
+	bool exhausted = false;
+	while (! exhausted) {
+		addCompositeVAO(passedVAOL, passedK->buffers_v->vao, passedK->buffers_v->idx.size(), frame);
+		passedK->buffers_v->addedToComposition = true;
+		if (passedK->next == NULL) {
+			exhausted = true;
+		} else {
+			passedK = passedK->next;
+		}
+	}
+}
+
+void iterateKS(struct VAOList* passedVAOL, struct PropertiesShape* passedKS, int frame) {
+	passedKS = passedKS->start;
+	bool exhausted = false;
+	while (! exhausted) {
+		if (passedKS != NULL && passedKS->k != NULL) {
+			iterateK(passedKS->k, passedVAOL, frame);
+		}
+		if (passedKS->next == NULL) {
+			exhausted = true;
+		} else {
+			passedKS = passedKS->next;
+		}
+	}
+}
+
 void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTransform, struct ShapesItem* passedShapesItem, bool isArray, bool isLayers) {
 	bool pFound = false;
 	bool sFound = false;
@@ -714,15 +742,18 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				passedShapesItem = passedShapesItem->start;
 				bool shapesExhausted = false;
 				while (! shapesExhausted) {
-					if (passedShapesItem != NULL && passedShapesItem->ks != NULL && passedShapesItem->ks->k != NULL && passedShapesItem->ks->k->buffers_v != NULL) {
-						//passedTransform->composite->buffers = newBuffersList(passedTransform->composite->buffers, passedShapesItem->ks->k->buffers_v);
-						//addCompositeVAO(passedTransform->composite->vaol, passedShapesItem->ks->k->buffers_v->vao, i);
-						addCompositeVAO(passedTransform->composite->vaol, passedShapesItem->ks->k->buffers_v->vao, passedShapesItem->ks->k->buffers_v->idx.size(), i);
-						passedShapesItem->ks->k->buffers_v->addedToComposition = true;
-						/*for (int counter = 0; counter < passedShapesItem->ks->k->gl_v_fill.size(); counter = counter + 4) {
-							passedShapesItem->ks->k->gl_v_fill[counter + 3] = tempOpacity;
-						}*/
+					if (passedShapesItem->ks != NULL) {
+						iterateKS(passedTransform->composite->vaol, passedShapesItem->ks, i);
 					}
+					/*
+					if (passedShapesItem != NULL && passedShapesItem->ks != NULL && passedShapesItem->ks->k != NULL) {
+						EM_ASM_({console.log("-------ADDING to animseq");});
+						if (passedShapesItem->ks->k->buffers_v != NULL) {
+							addCompositeVAO(passedTransform->composite->vaol, passedShapesItem->ks->k->buffers_v->vao, passedShapesItem->ks->k->buffers_v->idx.size(), i);
+							passedShapesItem->ks->k->buffers_v->addedToComposition = true;
+						}
+					}
+					*/
 					if (passedShapesItem->next == NULL) {
 						shapesExhausted = true;
 					} else {
@@ -730,14 +761,16 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 					}
 				}
 			} else {
+				if (passedShapesItem->ks != NULL) {
+					iterateKS(passedTransform->composite->vaol, passedShapesItem->ks, i);
+				}
+				/*
 				if (passedShapesItem != NULL && passedShapesItem->ks != NULL && passedShapesItem->ks->k != NULL && passedShapesItem->ks->k->buffers_v != NULL) {
-					//passedTransform->composite->buffers = newBuffersList(passedTransform->composite->buffers, passedShapesItem->ks->k->buffers_v);
+					EM_ASM_({console.log("-------ADDING ONE SHAPE to animseq");});
 					addCompositeVAO(passedTransform->composite->vaol, passedShapesItem->ks->k->buffers_v->vao, passedShapesItem->ks->k->buffers_v->idx.size(), i);
 					passedShapesItem->ks->k->buffers_v->addedToComposition = true;
-					/*for (int counter = 0; counter < passedShapesItem->ks->k->gl_v_fill.size(); counter = counter + 4) {
-						passedShapesItem->ks->k->gl_v_fill[counter + 3] = tempOpacity;
-					}*/
 				}
+				*/
 			}
 
 		}
