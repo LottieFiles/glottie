@@ -428,6 +428,7 @@ void iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, i
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedK != NULL && passedK->buffers_v != NULL && passedK->buffers_v->vao != NULL) {
+			EM_ASM({console.log("--- VAOL added ");});
 			addCompositeVAO(passedVAOL, passedK->buffers_v->vao, passedK->buffers_v->idx.size(), frame);
 			passedK->buffers_v->addedToComposition = true;
 		}
@@ -440,11 +441,12 @@ void iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, i
 }
 
 void iterateKS(struct PropertiesShape* passedKS, struct VAOList* passedVAOL, int frame) {
-	passedKS = passedKS->start;
+	//passedKS = passedKS->start;
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedKS != NULL && passedKS->k != NULL) {
-			iterateK(passedKS->k, passedVAOL, frame);
+			EM_ASM({console.log("--- VAOL iterateKS k found ");});
+			iterateK(passedKS->k->start, passedVAOL, frame);
 		}
 		if (passedKS->next == NULL) {
 			exhausted = true;
@@ -455,13 +457,15 @@ void iterateKS(struct PropertiesShape* passedKS, struct VAOList* passedVAOL, int
 }
 
 void iterateShapesItem(struct ShapesItem* passedShapesItem, struct VAOList* passedVAOL, int frame) {
-	passedShapesItem = passedShapesItem->start;
+	//passedShapesItem = passedShapesItem->start;
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedShapesItem != NULL && passedShapesItem->it != NULL) {
+			EM_ASM({console.log("--- VAOL iterateShapesItem it found ");});
 			iterateShapesItem(passedShapesItem->it->start, passedVAOL, frame);
 		}
 		if (passedShapesItem != NULL && passedShapesItem->ks != NULL) {
+			EM_ASM({console.log("--- VAOL iterateShapesItem ks found ");});
 			iterateKS(passedShapesItem->ks, passedVAOL, frame);
 		}
 		if (passedShapesItem->next == NULL) {
