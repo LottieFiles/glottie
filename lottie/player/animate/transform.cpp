@@ -389,6 +389,7 @@ void addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize,
 		passedVAOL->next->start = passedVAOL->start;
 		passedVAOL = passedVAOL->next;
 	}
+	EM_ASM({console.log("--- VAO properly added ");});
 	passedVAOL->vao = passedVAO;
 	passedVAOL->frame = passedFrame;
 	passedVAOL->idxSize = idxSize;
@@ -466,7 +467,7 @@ void iterateShapesItem(struct ShapesItem* passedShapesItem, struct VAOList* pass
 		}
 		if (passedShapesItem != NULL && passedShapesItem->ks != NULL) {
 			EM_ASM({console.log("--- VAOL iterateShapesItem ks found ");});
-			iterateKS(passedShapesItem->ks, passedVAOL, frame);
+			iterateKS(passedShapesItem->ks->start, passedVAOL, frame);
 		}
 		if (passedShapesItem->next == NULL) {
 			exhausted = true;
@@ -954,7 +955,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 	return passedShapesItem->transform;
 }
 
-struct Transform* fillTransformLayers(struct Layers* passedLayers, struct BoundingBox* currentBB) {
+struct FillTransformReturn* fillTransformLayers(struct Layers* passedLayers, struct BoundingBox* currentBB) {
 	if (defaultTransformMatrix == NULL) {
 		defaultTransformMatrix = new TransformMatrix;
 	}
@@ -1035,12 +1036,17 @@ struct Transform* fillTransformLayers(struct Layers* passedLayers, struct Boundi
 		}
 	}
 
+	currentLayersTransformReturn->transform = passedLayers->transform;
+	currentLayersTransformReturn->minTime = minTime;
+	currentLayersTransformReturn->maxTime = maxTime;
 
+	return currentLayersTransformReturn;
+}
+
+void composeTransformLayers(struct Layers* passedLayers, int minTime, int maxTime) {
 	if (maxTime > minTime) {
 		fillCompositeAnimation(minTime, maxTime, passedLayers->transform, passedLayers->shapes->start, true, true);
 	}
 	//EM_ASM_({console.log("---------------===================TRANSFORM done ");});
-
-	return passedLayers->transform;
 }
 

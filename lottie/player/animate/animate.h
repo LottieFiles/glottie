@@ -126,5 +126,11 @@ struct alignas(ALIGNSIZE) TransformAOV {
 
 };
 
+struct alignas(ALIGNSIZE) FillTransformReturn {
+	struct Transform* transform;
+	int minTime = -1;
+	int maxTime = -1;
+} *currentLayersTransformReturn;
+
 struct Vertex* lastPosition;
 

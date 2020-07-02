@@ -399,7 +399,8 @@ void findLayersTransform(struct Layers* passedLayers) {
 			struct ReturnPosition* tempPos = getRelativePosition(passedLayers->currentBB, NULL, true);
 			passedLayers->currentBB->translatedX = tempPos->layers->x;
 			passedLayers->currentBB->translatedY = tempPos->layers->y;
-			currentLayersTransform = fillTransformLayers(passedLayers, passedLayers->currentBB);
+			currentLayersTransformReturn = fillTransformLayers(passedLayers, passedLayers->currentBB);
+			currentLayersTransform = currentLayersTransformReturn->transform;
 		}
 		if (currentLayersTransform != NULL && currentLayersTransform->p != NULL && currentLayersTransform->p->startTime == 0) {
 			EM_ASM({console.log("///// layer transform applied ");});
@@ -457,6 +458,7 @@ int prepLayers(struct Layers* passedLayers) {
 			//currentBB->initY = passedLayers->initY;
 			getBoundingBox(passedLayers->shapes->start, passedLayers->currentBB);
 			prepShapesItem(passedLayers->shapes->start, NULL, true, passedLayers->currentBB);
+			composeTransformLayers(passedLayers, currentLayersTransformReturn->minTime, currentLayersTransformReturn->maxTime);
 		}
 		if (passedLayers->next == NULL) {
 			exhausted = true;
@@ -499,6 +501,8 @@ int prepShapes() {
 	//layersPosition.y = 0;
 	//layersAnchor.x = 0;
 	//layersAnchor.y = 0;
+
+	currentLayersTransformReturn = new FillTransformReturn;
 
 	if (theAnimation->assets != NULL) {
 		EM_ASM({console.log("ASSETS found");});
