@@ -377,8 +377,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 				while (! caExhausted) {
 
 					if (currentCA->vaol != NULL) {
+						EM_ASM({console.log("vaol");});
 
-						EM_ASM({console.log("prerendered ");});
 						currentVAOL = currentCA->vaol->start->prev;
 						vaolExhausted = false;
 						firstSubCycleDone = false;

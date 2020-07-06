@@ -776,16 +776,17 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		if (layersAnimationSequence == NULL) {
 			layersAnimationSequence = addToSequence(layersAnimationSequence, i);
 		} else if (layersAnimationSequence != NULL && layersAnimationSequence->next == NULL) {
-			if (firstCycleDone) {
-				layersAnimationSequence = addToSequence(layersAnimationSequence, i);
-			}
-			firstCycleDone = true;
+			layersAnimationSequence = addToSequence(layersAnimationSequence, i);
 		} else {
 			layersAnimationSequence = layersAnimationSequence->next;
 		}
 
 		if (rFound || sFound || pFound || oFound) {
-			
+			if (passedTransform->composite->vaol == NULL) {
+				passedTransform->composite->vaol = new VAOList;
+				passedTransform->composite->vaol->start = passedTransform->composite->vaol;
+			}
+
 			if (isArray) {
 				iterateShapesItem(passedShapesItem, passedTransform->composite->vaol, i);
 			} else {
@@ -793,6 +794,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			}
 
 		}
+		firstCycleDone = true;
 
 		if (isLayers) {
 			addToCompositionList(layersAnimationSequence, passedTransform->composite);
