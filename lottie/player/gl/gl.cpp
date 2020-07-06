@@ -185,6 +185,8 @@ bool secondPass = false;
 
 glm::mat4 identityMatrix = glm::mat4(1.0f);
 
+
+
 void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersToRender, int frame) {
 
 
@@ -195,225 +197,270 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 	if (frame == 0 && ! firstPass) {
 		firstPass = true;
 	}
-	//loop = [&]
-	//{
-		/*
-		SDL_Event e;
-		while(SDL_PollEvent(&e))
-		{
-			if(e.type == SDL_QUIT) std::terminate();
+
+	//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	//glClear(GL_COLOR_BUFFER_BIT);
+
+
+
+
+		//struct Buffers* tempBuffers = lastBuffersCreated->start;
+		if (lastBuffersCreated == NULL) {
+			//EM_ASM({console.log("no buffers!");});
+			return;
 		}
-		*/
+		struct Buffers* tempBuffers = lastBuffersCreated->start->prev;
+		struct VAOList* tempVAOL;
 
-		// Clear the screen to black
-		//if (redrawRequired) {
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+		bool buffersExhausted;
+		bool firstCycleDone = false;
+		bool bogusDone = false;
+		int layersPosition = 0;
+		int shapesPosition = 0;
+
+		if (passedShaderProgram == NULL) {
+			glUseProgram(mainShader);
+		} else {
+			glUseProgram(*(passedShaderProgram->shader));
+		}
+
+		if (frame == 0) {
+			tempBuffers->layersTransformSet = false;
+			tempBuffers->shapesTransformSet = false;
+			tempBuffers->layersScaleSet = false;
+			tempBuffers->shapesScaleSet = false;
+			tempBuffers->layersRotateSet = false;
+			tempBuffers->shapesRotateSet = false;
+		}
+
+		bool exhausted = false;
+		unsigned int opacityValue = glGetUniformLocation(mainShader, "objectOpacity");
+		glUniform1f(opacityValue, 1.0f);
+		while (! exhausted) {
+			if (! tempBuffers->addedToComposition) {
+				glBindVertexArrayOES(*(tempBuffers->vao));
+				glDrawElements(GL_TRIANGLES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
+				glBindVertexArrayOES(0);
+			}
+
+			if (tempBuffers->prev == tempBuffers->start->prev && firstCycleDone) {
+				exhausted = true;
+			} else {
+				tempBuffers = tempBuffers->prev;
+			}
+			firstCycleDone = true;
+		}
 
 
+		if (frame == 0) {
+			if (shapesAnimationSequence != NULL && shapesAnimationSequence->start != NULL) {
+				shapesAnimationSequence = shapesAnimationSequence->start;
+			}
+			if (layersAnimationSequence != NULL && layersAnimationSequence->start != NULL) {
+				layersAnimationSequence = layersAnimationSequence->start;
+			}
+		}
 
-				//struct Buffers* tempBuffers = lastBuffersCreated->start;
-				if (lastBuffersCreated == NULL) {
-					//EM_ASM({console.log("no buffers!");});
-					return;
-				}
-				struct Buffers* tempBuffers = lastBuffersCreated->start->prev;
-				struct VAOList* tempVAOL;
+		struct CompositionList* shapesCL = NULL;
+		struct CompositionList* layersCL = NULL;
+		if (shapesAnimationSequence != NULL && shapesAnimationSequence->compositionList != NULL && shapesAnimationSequence->compositionList->start != NULL) {
+			shapesCL = shapesAnimationSequence->compositionList->start->prev;
+		}
+		if (layersAnimationSequence != NULL && layersAnimationSequence->compositionList != NULL && layersAnimationSequence->compositionList->start != NULL) {
+			layersCL = layersAnimationSequence->compositionList->start->prev;
+		}
 
-				bool buffersExhausted;
-				bool firstCycleDone = false;
-				bool bogusDone = false;
-				int layersPosition = 0;
-				int shapesPosition = 0;
+		glm::mat4 lastShapesP = glm::mat4(1.0f);
+		glm::mat4 lastShapesS = glm::mat4(1.0f);
+		glm::mat4 lastShapesR = glm::mat4(1.0f);
+		float lastShapesO;
+		glm::mat4 lastLayersP = glm::mat4(1.0f);
+		glm::mat4 lastLayersS = glm::mat4(1.0f);
+		glm::mat4 lastLayersR = glm::mat4(1.0f);
+		float lastLayersO;
 
-				if (passedShaderProgram == NULL) {
-					glUseProgram(mainShader);
-				} else {
-					glUseProgram(*(passedShaderProgram->shader));
-				}
+		unsigned int layersTransformLoc = glGetUniformLocation(mainShader, "layersTransform");
+		unsigned int shapesTransformLoc = glGetUniformLocation(mainShader, "shapesTransform");
+		unsigned int layersRotateLoc = glGetUniformLocation(mainShader, "layersRotate");
+		unsigned int shapesRotateLoc = glGetUniformLocation(mainShader, "shapesRotate");
+		unsigned int layersScaleLoc = glGetUniformLocation(mainShader, "layersScale");
+		unsigned int shapesScaleLoc = glGetUniformLocation(mainShader, "shapesScale");
 
-				if (frame == 0) {
-					tempBuffers->layersTransformSet = false;
-					tempBuffers->shapesTransformSet = false;
-					tempBuffers->layersScaleSet = false;
-					tempBuffers->shapesScaleSet = false;
-					tempBuffers->layersRotateSet = false;
-					tempBuffers->shapesRotateSet = false;
-				}
+		unsigned int layersPositionLoc = glGetUniformLocation(mainShader, "layersPosition");
+		unsigned int shapesPositionLoc = glGetUniformLocation(mainShader, "shapesPosition");
 
-				bool exhausted = false;
-				unsigned int opacityValue = glGetUniformLocation(mainShader, "objectOpacity");
-				glUniform1f(opacityValue, 1.0f);
-				while (! exhausted) {
-					if (! tempBuffers->addedToComposition) {
-						glBindVertexArrayOES(*(tempBuffers->vao));
-						glDrawElements(GL_TRIANGLES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
-						glBindVertexArrayOES(0);
+		exhausted = false;
+		bool exhaustedShapesCL = false;
+		bool exhaustedLayersCL = false;
+
+		struct CompositeArray* currentCA = NULL;
+		struct VAOList* currentVAOL = NULL;
+		bool caExhausted = false;
+		bool vaolExhausted = false;
+		bool firstSubCycleDone = false;
+		while (! exhausted) {
+
+			lastShapesO = 1.0f;
+			lastLayersO = 1.0f;
+
+				//unsigned int opacityValue = glGetUniformLocation(mainShader, "objectOpacity");
+
+						if (layersCL != NULL) {
+							lastLayersP = layersCL->composite->transform;
+							lastLayersS = layersCL->composite->scale;
+							lastLayersR = layersCL->composite->rotate;
+							lastLayersO = layersCL->composite->opacity;
+						}
+
+						if (shapesCL != NULL) {
+							lastShapesP = shapesCL->composite->transform;
+							lastShapesS = shapesCL->composite->scale;
+							lastShapesR = shapesCL->composite->rotate;
+							lastShapesO = shapesCL->composite->opacity;
+						}
+
+						glUniformMatrix4fv(shapesTransformLoc, 1, GL_FALSE, glm::value_ptr(lastShapesP));
+						glUniformMatrix4fv(layersTransformLoc, 1, GL_FALSE, glm::value_ptr(lastLayersP));
+						glUniformMatrix4fv(shapesRotateLoc, 1, GL_FALSE, glm::value_ptr(lastShapesR));
+						glUniformMatrix4fv(layersRotateLoc, 1, GL_FALSE, glm::value_ptr(lastLayersR));
+						glUniformMatrix4fv(shapesScaleLoc, 1, GL_FALSE, glm::value_ptr(lastShapesS));
+						glUniformMatrix4fv(layersScaleLoc, 1, GL_FALSE, glm::value_ptr(lastLayersS));
+						if (lastLayersO < lastShapesO) {
+							glUniform1f(opacityValue, lastLayersO);
+						} else {
+							glUniform1f(opacityValue, lastShapesO);
+						}
+						
+
+
+			if (shapesCL != NULL && shapesCL->composite != NULL) {
+				currentCA = shapesCL->composite->start->prev;
+
+				caExhausted = false;
+				firstCycleDone = false;
+				while (! caExhausted) {
+
+					if (currentCA->vaol != NULL) {
+
+						currentVAOL = currentCA->vaol->start->prev;
+						vaolExhausted = false;
+						firstSubCycleDone = false;
+						while (! vaolExhausted) {
+							glBindVertexArrayOES(*(currentVAOL->vao));
+							glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
+							glBindVertexArrayOES(0);
+							
+							if (currentVAOL->prev == currentVAOL->start->prev && firstSubCycleDone) {
+								vaolExhausted = true;
+							} else {
+								currentVAOL = currentVAOL->prev;
+							}
+							firstSubCycleDone = true;
+						}
 					}
 
-					if (tempBuffers->prev == tempBuffers->start->prev && firstCycleDone) {
-						exhausted = true;
+					if (currentCA->prev == currentCA->start->prev && firstCycleDone) {
+						caExhausted = true;
 					} else {
-						tempBuffers = tempBuffers->prev;
+						currentCA = currentCA->prev;
 					}
 					firstCycleDone = true;
 				}
 
-				//EM_ASM({console.log("rendered ")});
+			}
 
+			if (layersCL != NULL && layersCL->composite != NULL) {
+				currentCA = layersCL->composite->start->prev;
 
-				/*
-				if (layersAnimationSequence->frame != frame) {
-					glUseProgram(0);
-					return;
-				}
-				*/
+				caExhausted = false;
+				firstCycleDone = false;
+				while (! caExhausted) {
 
-				if (frame == 0) {
-					if (shapesAnimationSequence != NULL && shapesAnimationSequence->start != NULL) {
-						shapesAnimationSequence = shapesAnimationSequence->start;
-					}
-					if (layersAnimationSequence != NULL && layersAnimationSequence->start != NULL) {
-						layersAnimationSequence = layersAnimationSequence->start;
-					}
-				}
+					if (currentCA->vaol != NULL) {
 
-				struct CompositionList* shapesCL = NULL;
-				struct CompositionList* layersCL = NULL;
-				if (shapesAnimationSequence != NULL && shapesAnimationSequence->compositionList != NULL && shapesAnimationSequence->compositionList->start != NULL) {
-					shapesCL = shapesAnimationSequence->compositionList->start;
-				}
-				if (layersAnimationSequence != NULL && layersAnimationSequence->compositionList != NULL && layersAnimationSequence->compositionList->start != NULL) {
-					layersCL = layersAnimationSequence->compositionList->start;
-				}
-
-				glm::mat4 lastShapesP = glm::mat4(1.0f);
-				glm::mat4 lastShapesS = glm::mat4(1.0f);
-				glm::mat4 lastShapesR = glm::mat4(1.0f);
-				float lastShapesO;
-				glm::mat4 lastLayersP = glm::mat4(1.0f);
-				glm::mat4 lastLayersS = glm::mat4(1.0f);
-				glm::mat4 lastLayersR = glm::mat4(1.0f);
-				float lastLayersO;
-
-						unsigned int layersTransformLoc = glGetUniformLocation(mainShader, "layersTransform");
-						unsigned int shapesTransformLoc = glGetUniformLocation(mainShader, "shapesTransform");
-						unsigned int layersRotateLoc = glGetUniformLocation(mainShader, "layersRotate");
-						unsigned int shapesRotateLoc = glGetUniformLocation(mainShader, "shapesRotate");
-						unsigned int layersScaleLoc = glGetUniformLocation(mainShader, "layersScale");
-						unsigned int shapesScaleLoc = glGetUniformLocation(mainShader, "shapesScale");
-
-						unsigned int layersPositionLoc = glGetUniformLocation(mainShader, "layersPosition");
-						unsigned int shapesPositionLoc = glGetUniformLocation(mainShader, "shapesPosition");
-				exhausted = false;
-				bool exhaustedShapesCL = false;
-				bool exhaustedLayersCL = false;
-				while (! exhausted) {
-
-					lastShapesO = 1.0f;
-					lastLayersO = 1.0f;
-
-						//unsigned int opacityValue = glGetUniformLocation(mainShader, "objectOpacity");
-
-					if (shapesCL != NULL && shapesCL->composite != NULL) {
-						lastShapesP = shapesCL->composite->transform;
-						lastShapesS = shapesCL->composite->scale;
-						lastShapesR = shapesCL->composite->rotate;
-						lastShapesO = shapesCL->composite->opacity;
-					}
-
-					if (layersCL != NULL && layersCL->composite != NULL) {
-						lastLayersP = layersCL->composite->transform;
-						lastLayersS = layersCL->composite->scale;
-						lastLayersR = layersCL->composite->rotate;
-						lastLayersO = layersCL->composite->opacity;
-					}
-
-					glUniformMatrix4fv(shapesTransformLoc, 1, GL_FALSE, glm::value_ptr(lastShapesP));
-					glUniformMatrix4fv(layersTransformLoc, 1, GL_FALSE, glm::value_ptr(lastLayersP));
-					glUniformMatrix4fv(shapesRotateLoc, 1, GL_FALSE, glm::value_ptr(lastShapesR));
-					glUniformMatrix4fv(layersRotateLoc, 1, GL_FALSE, glm::value_ptr(lastLayersR));
-					glUniformMatrix4fv(shapesScaleLoc, 1, GL_FALSE, glm::value_ptr(lastShapesS));
-					glUniformMatrix4fv(layersScaleLoc, 1, GL_FALSE, glm::value_ptr(lastLayersS));
-					if (lastLayersO < lastShapesO) {
-						glUniform1f(opacityValue, lastLayersO);
-					} else {
-						glUniform1f(opacityValue, lastShapesO);
-					}
-
-					
-					if (shapesCL != NULL && shapesCL->composite != NULL && shapesCL->composite->vaol != NULL) {
-						glUniform1i(shapesPositionLoc, 1);
-						tempVAOL = shapesCL->composite->vaol->start->prev;
-						buffersExhausted = false;
-						firstCycleDone = false;
-						while (! buffersExhausted) {
-							glBindVertexArrayOES(*(tempVAOL->vao));
-							glDrawElements(GL_TRIANGLES, tempVAOL->idxSize, GL_UNSIGNED_INT, 0);
+						EM_ASM({console.log("prerendered ");});
+						currentVAOL = currentCA->vaol->start->prev;
+						vaolExhausted = false;
+						firstSubCycleDone = false;
+						while (! vaolExhausted) {
+							glBindVertexArrayOES(*(currentVAOL->vao));
+							glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
 							glBindVertexArrayOES(0);
-
-							if (tempVAOL->prev == tempVAOL->start->prev && firstCycleDone) {
-								buffersExhausted = true;
+							
+							if (currentVAOL->prev == currentVAOL->start->prev && firstSubCycleDone) {
+								vaolExhausted = true;
 							} else {
-								tempVAOL = tempVAOL->prev;
+								currentVAOL = currentVAOL->prev;
 							}
-							firstCycleDone = true;
+							firstSubCycleDone = true;
 						}
 					}
 
-					if (layersCL != NULL && layersCL->composite != NULL && layersCL->composite->vaol != NULL) {
-						EM_ASM({console.log("rendered ");});
-						glUniform1i(layersPositionLoc, 1);
-						tempVAOL = layersCL->composite->vaol->start->prev;
-						buffersExhausted = false;
-						firstCycleDone = false;
-						while (! buffersExhausted) {
-							glBindVertexArrayOES(*(tempVAOL->vao));
-							glDrawElements(GL_TRIANGLES, tempVAOL->idxSize, GL_UNSIGNED_INT, 0);
-							glBindVertexArrayOES(0);
-
-							if (tempVAOL->prev == tempVAOL->start->prev && firstCycleDone) {
-								buffersExhausted = true;
-							} else {
-								tempVAOL = tempVAOL->prev;
-							}
-							firstCycleDone = true;
-							EM_ASM({console.log("rendered ")});
-						}
-					}
-
-					if (exhaustedShapesCL && exhaustedLayersCL) {
-						exhausted = true;
-					}
-					if (shapesCL != NULL && shapesCL->next != NULL) {
-						shapesCL = shapesCL->next;
+					if (currentCA->prev == currentCA->start->prev && firstCycleDone) {
+						caExhausted = true;
 					} else {
-						exhaustedShapesCL = true;
+						currentCA = currentCA->prev;
 					}
-					if (layersCL != NULL && layersCL->next != NULL) {
-						layersCL = layersCL->next;
-					} else {
-						exhaustedLayersCL = true;
-					}
-
+					firstCycleDone = true;
 				}
 
-				glUseProgram(0);
 
-				if ((layersAnimationSequence == NULL || layersAnimationSequence->next == NULL) && (shapesAnimationSequence == NULL || shapesAnimationSequence->next == NULL)) {
-					shapesAnimationSequence = shapesAnimationSequence->start;
-					layersAnimationSequence = layersAnimationSequence->start;
-					exhausted = true;
-				} else {
-					if (layersAnimationSequence->next != NULL) {
-						layersAnimationSequence = layersAnimationSequence->next;
+			/*
+			if ( layersCL->composite->vaol != NULL) {
+				EM_ASM({console.log("rendered ");});
+				glUniform1i(layersPositionLoc, 1);
+				tempVAOL = layersCL->composite->vaol->start->prev;
+				buffersExhausted = false;
+				firstCycleDone = false;
+				while (! buffersExhausted) {
+					glBindVertexArrayOES(*(tempVAOL->vao));
+					glDrawElements(GL_TRIANGLES, tempVAOL->idxSize, GL_UNSIGNED_INT, 0);
+					glBindVertexArrayOES(0);
+
+					if (tempVAOL->prev == tempVAOL->start->prev && firstCycleDone) {
+						buffersExhausted = true;
+					} else {
+						tempVAOL = tempVAOL->prev;
 					}
-					if (shapesAnimationSequence->next != NULL) {
-						shapesAnimationSequence = shapesAnimationSequence->next;
-					}
+					firstCycleDone = true;
+					EM_ASM({console.log("rendered ")});
 				}
+			}
+			*/
+			}
 
-				return;
+			if (exhaustedShapesCL && exhaustedLayersCL) {
+				exhausted = true;
+			}
+			if (shapesCL != NULL && shapesCL->start != NULL && shapesCL->prev != shapesCL->start->prev) {
+				shapesCL = shapesCL->prev;
+			} else {
+				exhaustedShapesCL = true;
+			}
+			if (layersCL != NULL && layersCL->start != NULL && layersCL->prev != layersCL->start->prev) {
+				layersCL = layersCL->prev;
+			} else {
+				exhaustedLayersCL = true;
+			}
+
+		}
+
+		glUseProgram(0);
+
+		if ((layersAnimationSequence == NULL || layersAnimationSequence->next == NULL) && (shapesAnimationSequence == NULL || shapesAnimationSequence->next == NULL)) {
+			shapesAnimationSequence = shapesAnimationSequence->start;
+			layersAnimationSequence = layersAnimationSequence->start;
+			exhausted = true;
+		} else {
+			if (layersAnimationSequence->next != NULL) {
+				layersAnimationSequence = layersAnimationSequence->next;
+			}
+			if (shapesAnimationSequence->next != NULL) {
+				shapesAnimationSequence = shapesAnimationSequence->next;
+			}
+		}
+
+		return;
 
 
 

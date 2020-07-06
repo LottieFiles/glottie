@@ -342,7 +342,7 @@ void fillAnimation(struct TransformAOV* passedAOV, int type, struct BoundingBox*
 				if (passedAOV->s_count >= 1) {
 					passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
 					passedAOV->transformMatrix->opacity = passedAOV->v->vertex->x;
-					EM_ASM_({console.log("========> OPACITY " + $0);}, passedAOV->v->vertex->x);
+					//EM_ASM_({console.log("========> OPACITY " + $0);}, passedAOV->v->vertex->x);
 
 				}
 				break;
@@ -373,13 +373,17 @@ struct CompositeArray* newCompositeArray(struct CompositeArray* passedCompositeA
 		passedCompositeArray->next = new CompositeArray;
 		passedCompositeArray->next->prev = passedCompositeArray;
 		passedCompositeArray->next->start = passedCompositeArray->start;
+
+		passedCompositeArray->start->prev = passedCompositeArray->next;
+		passedCompositeArray->next->next = passedCompositeArray->start;
+
 		passedCompositeArray = passedCompositeArray->next;
 	}
 	passedCompositeArray->frame = frame;
 	return passedCompositeArray;
 }
 
-void addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize, int passedFrame) {
+struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize, int passedFrame) {
 	if (passedVAOL == NULL) {
 		passedVAOL = new VAOList;
 		passedVAOL->start = passedVAOL;
@@ -387,12 +391,19 @@ void addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize,
 		passedVAOL->next = new VAOList;
 		passedVAOL->next->prev = passedVAOL;
 		passedVAOL->next->start = passedVAOL->start;
+
+		passedVAOL->start->prev = passedVAOL->next;
+		passedVAOL->next->next = passedVAOL->start;
+
 		passedVAOL = passedVAOL->next;
 	}
-	EM_ASM({console.log("--- VAO properly added ");});
-	passedVAOL->vao = passedVAO;
-	passedVAOL->frame = passedFrame;
-	passedVAOL->idxSize = idxSize;
+	if (passedVAO != NULL) {
+		//EM_ASM({console.log("--- VAO properly added ");});
+		passedVAOL->vao = passedVAO;
+		passedVAOL->frame = passedFrame;
+		passedVAOL->idxSize = idxSize;
+		return passedVAOL;
+	}
 }
 
 struct FrameCompositionRef* addToSequence(struct FrameCompositionRef* passedSequence, int frame) {
@@ -419,18 +430,25 @@ void addToCompositionList(struct FrameCompositionRef* passedSequence, struct Com
 		passedSequence->compositionList->next = new CompositionList;
 		passedSequence->compositionList->next->prev = passedSequence->compositionList;
 		passedSequence->compositionList->next->start = passedSequence->compositionList->start;
+
+		passedSequence->compositionList->start->prev = passedSequence->compositionList->next;
+		passedSequence->compositionList->next->next = passedSequence->compositionList->start;
+
 		passedSequence->compositionList = passedSequence->compositionList->next;
 	}
 
-	passedSequence->compositionList->composite = passedArray;
+	if (passedArray != NULL) {
+		//EM_ASM({console.log("--- new composition added to list");});
+		passedSequence->compositionList->composite = passedArray;
+	}
 }
 
-void iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, int frame) {
+struct VAOList* iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, int frame) {
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedK != NULL && passedK->buffers_v != NULL && passedK->buffers_v->vao != NULL) {
-			EM_ASM({console.log("--- VAOL added ");});
-			addCompositeVAO(passedVAOL, passedK->buffers_v->vao, passedK->buffers_v->idx.size(), frame);
+			//EM_ASM({console.log("--- VAOL added ");});
+			passedVAOL = addCompositeVAO(passedVAOL, passedK->buffers_v->vao, passedK->buffers_v->idx.size(), frame);
 			passedK->buffers_v->addedToComposition = true;
 		}
 		if (passedK->next == NULL) {
@@ -439,15 +457,16 @@ void iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, i
 			passedK = passedK->next;
 		}
 	}
+	return passedVAOL;
 }
 
-void iterateKS(struct PropertiesShape* passedKS, struct VAOList* passedVAOL, int frame) {
+struct VAOList* iterateKS(struct PropertiesShape* passedKS, struct VAOList* passedVAOL, int frame) {
 	//passedKS = passedKS->start;
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedKS != NULL && passedKS->k != NULL) {
-			EM_ASM({console.log("--- VAOL iterateKS k found ");});
-			iterateK(passedKS->k->start, passedVAOL, frame);
+			//EM_ASM({console.log("--- VAOL iterateKS k found ");});
+			passedVAOL = iterateK(passedKS->k->start, passedVAOL, frame);
 		}
 		if (passedKS->next == NULL) {
 			exhausted = true;
@@ -455,19 +474,20 @@ void iterateKS(struct PropertiesShape* passedKS, struct VAOList* passedVAOL, int
 			passedKS = passedKS->next;
 		}
 	}
+	return passedVAOL;
 }
 
-void iterateShapesItem(struct ShapesItem* passedShapesItem, struct VAOList* passedVAOL, int frame) {
+struct VAOList* iterateShapesItem(struct ShapesItem* passedShapesItem, struct VAOList* passedVAOL, int frame) {
 	//passedShapesItem = passedShapesItem->start;
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedShapesItem != NULL && passedShapesItem->it != NULL) {
-			EM_ASM({console.log("--- VAOL iterateShapesItem it found ");});
-			iterateShapesItem(passedShapesItem->it->start, passedVAOL, frame);
+			//EM_ASM({console.log("--- VAOL iterateShapesItem it found ");});
+			passedVAOL = iterateShapesItem(passedShapesItem->it->start, passedVAOL, frame);
 		}
 		if (passedShapesItem != NULL && passedShapesItem->ks != NULL) {
-			EM_ASM({console.log("--- VAOL iterateShapesItem ks found ");});
-			iterateKS(passedShapesItem->ks->start, passedVAOL, frame);
+			//EM_ASM({console.log("--- VAOL iterateShapesItem ks found ");});
+			passedVAOL = iterateKS(passedShapesItem->ks->start, passedVAOL, frame);
 		}
 		if (passedShapesItem->next == NULL) {
 			exhausted = true;
@@ -475,6 +495,7 @@ void iterateShapesItem(struct ShapesItem* passedShapesItem, struct VAOList* pass
 			passedShapesItem = passedShapesItem->next;
 		}
 	}
+	return passedVAOL;
 }
 
 void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTransform, struct ShapesItem* passedShapesItem, bool isArray, bool isLayers) {
@@ -552,21 +573,20 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		shapesAnimationSequence = shapesAnimationSequence->start;
 	}
 
+	bool firstCycleDone = false;
 	while (! exhausted) {
+		//EM_ASM_({console.log("---- CYCLE in ");});
 		//tempAngleFound = false;
 		tempPFound = false;
 		tempSFound = false;
 
-		rFound = false;
-		pFound = false;
-		sFound = false;
-		oFound = false;
-
 		if (passedTransform->composite == NULL) {
 			passedTransform->composite = newCompositeArray(passedTransform->composite, i);
 		} else {
-			while (passedTransform->composite->next != NULL) {
-				passedTransform->composite = passedTransform->composite->next;
+			if (passedTransform->composite != passedTransform->composite->start) {
+				while (passedTransform->composite->next != passedTransform->composite->start) {
+					passedTransform->composite = passedTransform->composite->next;
+				}
 			}
 			if (passedTransform->composite->frame != i) {
 				passedTransform->composite = newCompositeArray(passedTransform->composite, i);
@@ -669,7 +689,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			//tempR = passedTransform->o->transformMatrix->transform;
 			oFound = true;
 			tempOpacity = passedTransform->o->transformMatrix->opacity;
-					EM_ASM_({console.log("--------> OPACITY " + $0);}, tempOpacity);
+					//EM_ASM_({console.log("--------> OPACITY " + $0);}, tempOpacity);
 			//tempAngleFound = true;
 			if (oEnded) {
 				oEndProcessed = true;
@@ -756,7 +776,10 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		if (layersAnimationSequence == NULL) {
 			layersAnimationSequence = addToSequence(layersAnimationSequence, i);
 		} else if (layersAnimationSequence != NULL && layersAnimationSequence->next == NULL) {
-			layersAnimationSequence = addToSequence(layersAnimationSequence, i);
+			if (firstCycleDone) {
+				layersAnimationSequence = addToSequence(layersAnimationSequence, i);
+			}
+			firstCycleDone = true;
 		} else {
 			layersAnimationSequence = layersAnimationSequence->next;
 		}
@@ -804,7 +827,9 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		}
 		i++;
 
+		//EM_ASM_({console.log("---- CYCLE out ");});
 	}
+	//EM_ASM_({console.log("---- CYCLE end ");});
 	passedTransform->startTime = minTime;
 	passedTransform->endTime = maxTime;
 	

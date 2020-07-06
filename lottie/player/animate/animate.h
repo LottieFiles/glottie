@@ -41,7 +41,7 @@ struct alignas(ALIGNSIZE) BuffersList {
 	GLuint *ibo;
 	*/
 
-	struct Buffers* buffers_v;
+	struct Buffers* buffers_v = NULL;
 };
 
 struct alignas(ALIGNSIZE) CompositionList {
