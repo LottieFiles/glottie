@@ -388,22 +388,25 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 		passedVAOL = new VAOList;
 		passedVAOL->start = passedVAOL;
 	} else {
-		passedVAOL->next = new VAOList;
-		passedVAOL->next->prev = passedVAOL;
-		passedVAOL->next->start = passedVAOL->start;
+		if (passedVAOL->assigned) {
+			passedVAOL->next = new VAOList;
+			passedVAOL->next->prev = passedVAOL;
+			passedVAOL->next->start = passedVAOL->start;
 
-		passedVAOL->start->prev = passedVAOL->next;
-		passedVAOL->next->next = passedVAOL->start;
+			passedVAOL->start->prev = passedVAOL->next;
+			passedVAOL->next->next = passedVAOL->start;
 
-		passedVAOL = passedVAOL->next;
+			passedVAOL = passedVAOL->next;
+		}
 	}
 	if (passedVAO != NULL) {
 		//EM_ASM({console.log("--- VAO properly added ");});
 		passedVAOL->vao = passedVAO;
 		passedVAOL->frame = passedFrame;
 		passedVAOL->idxSize = idxSize;
-		return passedVAOL;
+		passedVAOL->assigned = true;
 	}
+	return passedVAOL;
 }
 
 struct FrameCompositionRef* addToSequence(struct FrameCompositionRef* passedSequence, int frame) {
@@ -449,7 +452,9 @@ struct VAOList* iterateK(struct PropertiesShapeProp* passedK, struct VAOList* pa
 		if (passedK != NULL && passedK->buffers_v != NULL && passedK->buffers_v->vao != NULL) {
 			//EM_ASM({console.log("--- VAOL added ");});
 			passedVAOL = addCompositeVAO(passedVAOL, passedK->buffers_v->vao, passedK->buffers_v->idx.size(), frame);
-			passedK->buffers_v->addedToComposition = true;
+			if (passedVAOL->assigned) {
+				passedK->buffers_v->addedToComposition = true;
+			}
 		}
 		if (passedK->next == NULL) {
 			exhausted = true;

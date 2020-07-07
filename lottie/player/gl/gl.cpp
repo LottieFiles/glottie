@@ -346,9 +346,11 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						vaolExhausted = false;
 						firstSubCycleDone = false;
 						while (! vaolExhausted) {
-							glBindVertexArrayOES(*(currentVAOL->vao));
-							glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
-							glBindVertexArrayOES(0);
+							if (currentVAOL->vao != NULL) {
+								glBindVertexArrayOES(*(currentVAOL->vao));
+								glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
+								glBindVertexArrayOES(0);
+							}
 							
 							if (currentVAOL->prev == currentVAOL->start->prev && firstSubCycleDone) {
 								vaolExhausted = true;
@@ -383,9 +385,11 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						vaolExhausted = false;
 						firstSubCycleDone = false;
 						while (! vaolExhausted) {
-							glBindVertexArrayOES(*(currentVAOL->vao));
-							glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
-							glBindVertexArrayOES(0);
+							if (currentVAOL->vao != NULL) {
+								glBindVertexArrayOES(*(currentVAOL->vao));
+								glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
+								glBindVertexArrayOES(0);
+							}
 							
 							if (currentVAOL->prev == currentVAOL->start->prev && firstSubCycleDone) {
 								vaolExhausted = true;

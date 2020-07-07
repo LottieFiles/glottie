@@ -24,10 +24,12 @@ struct alignas(ALIGNSIZE) VAOList {
 	struct VAOList* prev = NULL;
 	struct VAOList* next = NULL;
 
-	GLuint *vao;
+	GLuint *vao = NULL;
 	int idxSize;
 
 	int frame;
+
+	bool assigned = false;
 } *boundVAO = NULL;
 
 struct alignas(ALIGNSIZE) BuffersList {
