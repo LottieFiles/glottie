@@ -338,7 +338,7 @@ void fillAnimation(struct TransformAOV* passedAOV, int type, struct BoundingBox*
 					}
 					*/
 				}
-			case 4: //opacity
+
 				if (passedAOV->s_count >= 1) {
 					passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
 					passedAOV->transformMatrix->opacity = passedAOV->v->vertex->x;
@@ -722,13 +722,6 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		if (rFound) {
 			passedTransform->composite->rotateSet = true;
 
-			/*
-			glm::quat rotateQuat;
-			glm::vec3 eulerAngles(0, 0, glm::radians(tempAngle));
-			rotateQuat = glm::quat(eulerAngles);
-			tempRMatrix = glm::toMat4(rotateQuat);
-			*/
-
 			//rotateQuat = glm::angleAxis(glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
 			/*
 			glm::quat rotateQuat(
@@ -786,11 +779,13 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			layersAnimationSequence = layersAnimationSequence->next;
 		}
 
+		if (passedTransform->composite->vaol == NULL) {
+			passedTransform->composite->vaol = new VAOList;
+			passedTransform->composite->vaol->start = passedTransform->composite->vaol;
+		}
+
 		if (rFound || sFound || pFound || oFound) {
-			if (passedTransform->composite->vaol == NULL) {
-				passedTransform->composite->vaol = new VAOList;
-				passedTransform->composite->vaol->start = passedTransform->composite->vaol;
-			}
+
 
 			if (isArray) {
 				iterateShapesItem(passedShapesItem, passedTransform->composite->vaol, i);

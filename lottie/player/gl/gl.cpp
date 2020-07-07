@@ -233,9 +233,21 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 			tempBuffers->shapesRotateSet = false;
 		}
 
+		unsigned int layersTransformLoc = glGetUniformLocation(mainShader, "layersTransform");
+		unsigned int shapesTransformLoc = glGetUniformLocation(mainShader, "shapesTransform");
+		unsigned int layersRotateLoc = glGetUniformLocation(mainShader, "layersRotate");
+		unsigned int shapesRotateLoc = glGetUniformLocation(mainShader, "shapesRotate");
+		unsigned int layersScaleLoc = glGetUniformLocation(mainShader, "layersScale");
+		unsigned int shapesScaleLoc = glGetUniformLocation(mainShader, "shapesScale");
+
+		unsigned int layersPositionLoc = glGetUniformLocation(mainShader, "layersPosition");
+		unsigned int shapesPositionLoc = glGetUniformLocation(mainShader, "shapesPosition");
+
 		bool exhausted = false;
 		unsigned int opacityValue = glGetUniformLocation(mainShader, "objectOpacity");
 		glUniform1f(opacityValue, 1.0f);
+		glUniform1i(shapesPositionLoc, 0);
+		glUniform1i(layersPositionLoc, 0);
 		while (! exhausted) {
 			if (! tempBuffers->addedToComposition) {
 				glBindVertexArrayOES(*(tempBuffers->vao));
@@ -279,15 +291,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		glm::mat4 lastLayersR = glm::mat4(1.0f);
 		float lastLayersO;
 
-		unsigned int layersTransformLoc = glGetUniformLocation(mainShader, "layersTransform");
-		unsigned int shapesTransformLoc = glGetUniformLocation(mainShader, "shapesTransform");
-		unsigned int layersRotateLoc = glGetUniformLocation(mainShader, "layersRotate");
-		unsigned int shapesRotateLoc = glGetUniformLocation(mainShader, "shapesRotate");
-		unsigned int layersScaleLoc = glGetUniformLocation(mainShader, "layersScale");
-		unsigned int shapesScaleLoc = glGetUniformLocation(mainShader, "shapesScale");
-
-		unsigned int layersPositionLoc = glGetUniformLocation(mainShader, "layersPosition");
-		unsigned int shapesPositionLoc = glGetUniformLocation(mainShader, "shapesPosition");
 
 		exhausted = false;
 		bool exhaustedShapesCL = false;
@@ -306,6 +309,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 				//unsigned int opacityValue = glGetUniformLocation(mainShader, "objectOpacity");
 
 						if (layersCL != NULL) {
+							EM_ASM({console.log("vaol layers starting");});
 							lastLayersP = layersCL->composite->transform;
 							lastLayersS = layersCL->composite->scale;
 							lastLayersR = layersCL->composite->rotate;
@@ -326,14 +330,17 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						glUniformMatrix4fv(shapesScaleLoc, 1, GL_FALSE, glm::value_ptr(lastShapesS));
 						glUniformMatrix4fv(layersScaleLoc, 1, GL_FALSE, glm::value_ptr(lastLayersS));
 						if (lastLayersO < lastShapesO) {
+							EM_ASM_({console.log("vaol layers starting " + $0);}, lastLayersO);
 							glUniform1f(opacityValue, lastLayersO);
 						} else {
+							EM_ASM_({console.log("vaol shapes starting " + $0);}, lastShapesO);
 							glUniform1f(opacityValue, lastShapesO);
 						}
 						
 
 
 			if (shapesCL != NULL && shapesCL->composite != NULL) {
+				glUniform1i(shapesPositionLoc, 1);
 				currentCA = shapesCL->composite->start->prev;
 
 				caExhausted = false;
@@ -346,16 +353,20 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						vaolExhausted = false;
 						firstSubCycleDone = false;
 						while (! vaolExhausted) {
-							if (currentVAOL->vao != NULL) {
+							if (currentVAOL != NULL && currentVAOL->vao != NULL) {
 								glBindVertexArrayOES(*(currentVAOL->vao));
 								glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
 								glBindVertexArrayOES(0);
 							}
 							
-							if (currentVAOL->prev == currentVAOL->start->prev && firstSubCycleDone) {
+							if (currentVAOL == NULL) {
 								vaolExhausted = true;
 							} else {
-								currentVAOL = currentVAOL->prev;
+								if (currentVAOL->prev == currentVAOL->start->prev && firstSubCycleDone) {
+									vaolExhausted = true;
+								} else {
+									currentVAOL = currentVAOL->prev;
+								}
 							}
 							firstSubCycleDone = true;
 						}
@@ -372,6 +383,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 			}
 
 			if (layersCL != NULL && layersCL->composite != NULL) {
+				glUniform1i(layersPositionLoc, 1);
 				currentCA = layersCL->composite->start->prev;
 
 				caExhausted = false;
@@ -379,22 +391,27 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 				while (! caExhausted) {
 
 					if (currentCA->vaol != NULL) {
-						EM_ASM({console.log("vaol");});
 
 						currentVAOL = currentCA->vaol->start->prev;
 						vaolExhausted = false;
 						firstSubCycleDone = false;
 						while (! vaolExhausted) {
-							if (currentVAOL->vao != NULL) {
+							if (currentVAOL != NULL && currentVAOL->vao != NULL) {
+								//EM_ASM_({console.log("vaol " + $0);}, currentVAOL->idxSize);
+								//EM_ASM({console.log("vaol ");});
 								glBindVertexArrayOES(*(currentVAOL->vao));
 								glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
 								glBindVertexArrayOES(0);
 							}
-							
-							if (currentVAOL->prev == currentVAOL->start->prev && firstSubCycleDone) {
+						
+							if (currentVAOL == NULL) {
 								vaolExhausted = true;
 							} else {
-								currentVAOL = currentVAOL->prev;
+								if (currentVAOL->prev == currentVAOL->start->prev && firstSubCycleDone) {
+									vaolExhausted = true;
+								} else {
+									currentVAOL = currentVAOL->prev;
+								}
 							}
 							firstSubCycleDone = true;
 						}

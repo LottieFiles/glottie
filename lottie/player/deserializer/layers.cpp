@@ -82,6 +82,11 @@ int fillAnimation() {
 		}
 	}
 
+	if (theAnimation->fr > 30) {
+		theAnimation->op = theAnimation->op * (30 / theAnimation->fr);
+		theAnimation->fr = 30;
+	}
+
 	theAnimation->fr = theAnimation->fr * theAnimation->frMultiplier;
 	theAnimation->ip = theAnimation->ip * theAnimation->lengthMultiplier;
 	theAnimation->op = theAnimation->op * theAnimation->lengthMultiplier;
