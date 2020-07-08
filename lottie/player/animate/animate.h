@@ -24,7 +24,8 @@ struct alignas(ALIGNSIZE) VAOList {
 	struct VAOList* prev = NULL;
 	struct VAOList* next = NULL;
 
-	struct CompositionList* compositionList = NULL;
+	struct CompositeArray* layersComposite = NULL;
+	struct CompositeArray* shapesComposite = NULL;
 	GLuint *vao = NULL;
 	int idxSize;
 
@@ -65,7 +66,7 @@ struct alignas(ALIGNSIZE) FrameCompositionRef {
 	struct VAOList* vaol = NULL;
 
 	int frame;
-} *layersAnimationSequence = NULL, *shapesAnimationSequence = NULL;
+} *layersAnimationSequence = NULL, *shapesAnimationSequence = NULL, *animationSequence = NULL;
 
 struct alignas(ALIGNSIZE) CompositeArray {
 	struct CompositeArray* start = NULL;

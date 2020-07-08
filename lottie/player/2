@@ -291,7 +291,9 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 
 		exhausted = false;
-		bool exhaustedCL = false;
+		bool exhaustedShapesCL = false;
+		bool exhaustedLayersCL = false;
+
 
 		bool firstSubCycleDone = false;
 		firstCycleDone = false;
@@ -311,27 +313,33 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						}
 						*/
 
-			if (currentVAOL->layersComposite != NULL) {
+			while (! 
 
-			}
-			if (currentVAOL->shapesComposite != NULL) {
 
-			}
 
-			if (currentVAOL == currentVAOL->start) {
-				exhausted = true;
-			} else {
-				currentVAOL = currentVAOL->prev;
-			}
+			if (currentVAOL 
+			firstCycleDone = false;
 		}
 
 		glUseProgram(0);
 
-		if (animationSequence->next != NULL) {
-			animationSequence = animationSequence->next;
+		if ((layersAnimationSequence == NULL || layersAnimationSequence->next == NULL) && (shapesAnimationSequence == NULL || shapesAnimationSequence->next == NULL)) {
+			shapesAnimationSequence = shapesAnimationSequence->start;
+			layersAnimationSequence = layersAnimationSequence->start;
+			exhausted = true;
+		} else {
+			if (layersAnimationSequence->next != NULL) {
+				layersAnimationSequence = layersAnimationSequence->next;
+			}
+			if (shapesAnimationSequence->next != NULL) {
+				shapesAnimationSequence = shapesAnimationSequence->next;
+			}
 		}
 
 		return;
+
+
+
 
 }
 

@@ -383,28 +383,50 @@ struct CompositeArray* newCompositeArray(struct CompositeArray* passedCompositeA
 	return passedCompositeArray;
 }
 
-struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize, struct CompositionList* passedCL, struct FrameCompositionRef* passedSequence, int passedFrame) {
+struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int passedFrame, bool isLayer) {
 	if (passedVAOL == NULL) {
 		passedVAOL = new VAOList;
 		passedVAOL->start = passedVAOL;
 	} else {
-		if (passedVAOL->assigned) {
+		passedVAOL = passedVAOL->start;
+		bool exhausted = false;
+		struct VAOList* foundVAOL = NULL;
+		while (! exhausted) {
+			if (passedVAOL->vao == passedVAO) {
+				foundVAOL = passedVAOL;
+				break;
+			}
+			if (passedVAOL->next == NULL) {
+				exhausted = true;
+			} else {
+				passedVAOL = passedVAOL->next;
+			}
+		}
+
+		if (foundVAOL == NULL) {
 			passedVAOL->next = new VAOList;
 			passedVAOL->next->prev = passedVAOL;
 			passedVAOL->next->start = passedVAOL->start;
-
+	
 			passedVAOL->start->prev = passedVAOL->next;
-			passedVAOL->next->next = passedVAOL->start;
-
+	
 			passedVAOL = passedVAOL->next;
+		} else {
+			passedVAOL = foundVAOL;
 		}
 	}
 	if (passedVAO != NULL) {
 		//EM_ASM({console.log("--- VAO properly added ");});
+		passedVAO = addedToComposition = true;
 		passedVAOL->vao = passedVAO;
 		passedVAOL->frame = passedFrame;
 		passedVAOL->idxSize = idxSize;
 		passedVAOL->assigned = true;
+		if (isLayer) {
+			passedVAOL->layersComposite = passedComposite;
+		} else {
+			passedVAOL->shapesComposite = passedComposite;
+		}
 	}
 	return passedVAOL;
 }
@@ -446,12 +468,12 @@ void addToCompositionList(struct FrameCompositionRef* passedSequence, struct Com
 	}
 }
 
-struct VAOList* iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, struct CompositionList* passedCL, struct FrameCompositionRef* passedSequence, int frame) {
+struct VAOList* iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer) {
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedK != NULL && passedK->buffers_v != NULL && passedK->buffers_v->vao != NULL) {
 			//EM_ASM({console.log("--- VAOL added ");});
-			passedVAOL = addCompositeVAO(passedVAOL, passedK->buffers_v->vao, passedK->buffers_v->idx.size(), frame);
+			passedVAOL = addCompositeVAO(passedVAOL, passedK->buffers_v->vao, passedK->buffers_v->idx.size(), passedComposite, passedSequence, frame, isLayer);
 			if (passedVAOL->assigned) {
 				passedK->buffers_v->addedToComposition = true;
 			}
@@ -465,13 +487,13 @@ struct VAOList* iterateK(struct PropertiesShapeProp* passedK, struct VAOList* pa
 	return passedVAOL;
 }
 
-struct VAOList* iterateKS(struct PropertiesShape* passedKS, struct VAOList* passedVAOL, int frame) {
+struct VAOList* iterateKS(struct PropertiesShape* passedKS, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer) {
 	//passedKS = passedKS->start;
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedKS != NULL && passedKS->k != NULL) {
 			//EM_ASM({console.log("--- VAOL iterateKS k found ");});
-			passedVAOL = iterateK(passedKS->k->start, passedVAOL, frame);
+			passedVAOL = iterateK(passedKS->k->start, passedVAOL, passedComposite, passedSequence, frame, isLayer);
 		}
 		if (passedKS->next == NULL) {
 			exhausted = true;
@@ -482,17 +504,17 @@ struct VAOList* iterateKS(struct PropertiesShape* passedKS, struct VAOList* pass
 	return passedVAOL;
 }
 
-struct VAOList* iterateShapesItem(struct ShapesItem* passedShapesItem, struct VAOList* passedVAOL, struct CompositionList* passedCL, struct FrameCompositionRef* passedSequence, int frame) {
+struct VAOList* iterateShapesItem(struct ShapesItem* passedShapesItem, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer) {
 	//passedShapesItem = passedShapesItem->start;
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedShapesItem != NULL && passedShapesItem->it != NULL) {
 			//EM_ASM({console.log("--- VAOL iterateShapesItem it found ");});
-			passedVAOL = iterateShapesItem(passedShapesItem->it->start, passedVAOL, frame);
+			passedVAOL = iterateShapesItem(passedShapesItem->it->start, passedVAOL, passedComposite, passedSequence, frame, isLayer);
 		}
 		if (passedShapesItem != NULL && passedShapesItem->ks != NULL) {
 			//EM_ASM({console.log("--- VAOL iterateShapesItem ks found ");});
-			passedVAOL = iterateKS(passedShapesItem->ks->start, passedVAOL, frame);
+			passedVAOL = iterateKS(passedShapesItem->ks->start, passedVAOL, passedComposite, passedSequence, frame, isLayer);
 		}
 		if (passedShapesItem->next == NULL) {
 			exhausted = true;
@@ -571,11 +593,8 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 
 	float sinHalfAngle;
 	float cosHalfAngle;
-	if (layersAnimationSequence != NULL) {
-		layersAnimationSequence = layersAnimationSequence->start;
-	}
-	if (shapesAnimationSequence != NULL) {
-		shapesAnimationSequence = shapesAnimationSequence->start;
+	if (animationSequence != NULL) {
+		animationSequence = animationSequence->start;
 	}
 
 	bool firstCycleDone = false;
@@ -764,69 +783,33 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		//passedTransform->composite->transform = tempSMatrix * tempPMatrix;
 
 
-		if (shapesAnimationSequence == NULL) {
-			shapesAnimationSequence = addToSequence(shapesAnimationSequence, i);
-		} else if (shapesAnimationSequence != NULL && shapesAnimationSequence->next == NULL) {
-			shapesAnimationSequence = addToSequence(shapesAnimationSequence, i);
+		if (animationSequence == NULL) {
+			animationSequence = addToSequence(animationSequence, i);
+		} else if (animationSequence != NULL && animationSequence->next == NULL) {
+			animationSequence = addToSequence(animationSequence, i);
 		} else {
-			shapesAnimationSequence = shapesAnimationSequence->next;
+			animationSequence = animationSequence->next;
 		}
 
-		if (layersAnimationSequence == NULL) {
-			layersAnimationSequence = addToSequence(layersAnimationSequence, i);
-		} else if (layersAnimationSequence != NULL && layersAnimationSequence->next == NULL) {
-			layersAnimationSequence = addToSequence(layersAnimationSequence, i);
-		} else {
-			layersAnimationSequence = layersAnimationSequence->next;
-		}
-
+		/*
 		if (passedTransform->composite->vaol == NULL) {
 			passedTransform->composite->vaol = new VAOList;
 			passedTransform->composite->vaol->start = passedTransform->composite->vaol;
 		}
+		*/
 
 		if (rFound || sFound || pFound || oFound) {
 
 
 			if (isLayers) {
-				iterateShapesItem(passedShapesItem, passedTransform->composite->vaol, passedTransform->composite, layersAnimationSequence, i);
+				animationSequence->vaol = iterateShapesItem(passedShapesItem, passedTransform->composite->vaol, passedTransform->composite, layersAnimationSequence, i, isLayers);
 			} else {
-				iterateKS(passedShapesItem->ks, passedTransform->composite->vaol, passedTransform->composite, shapesAnimationSequence, i);
+				animationSequence->vaol = iterateKS(passedShapesItem->ks, passedTransform->composite->vaol, passedTransform->composite, shapesAnimationSequence, i, isLayers);
 			}
 
 		}
 		firstCycleDone = true;
 
-		/*
-		if (isLayers) {
-			addToCompositionList(layersAnimationSequence, passedTransform->composite);
-		} else {
-			addToCompositionList(shapesAnimationSequence, passedTransform->composite);
-		}
-		*/
-
-
-		/*
-		if (tempAngleFound) {
-			passedTransform->composite->transform = passedTransform->composite->transform * tempRMatrix;
-		}
-		*/
-		
-		//passedTransform->composite->transform = tempRMatrix * tempSMatrix *tempPMatrix;
-		//passedTransform->composite->transform = tempRMatrix * tempSMatrix * tempPMatrix;
-		//passedTransform->composite->rotateAngle = tempAngle;
-
-
-			
-			/*if (tempSFound) {
-				passedTransform->composite->transform = tempS * tempP;
-			} else {
-				passedTransform->composite->transform = tempP;
-			}*/
-			//if (tempAngleFound) {
-			//	passedTransform->composite->transform = glm::rotate(passedTransform->composite->transform, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
-			//}
-			//passedTransform->composite->transform = tempS * tempP;
 		if (pExhausted && sExhausted && rExhausted) {
 			exhausted = true;
 		}
