@@ -24,7 +24,6 @@ struct alignas(ALIGNSIZE) VAOList {
 	struct VAOList* prev = NULL;
 	struct VAOList* next = NULL;
 
-	struct CompositionList* compositionList = NULL;
 	GLuint *vao = NULL;
 	int idxSize;
 
@@ -47,7 +46,6 @@ struct alignas(ALIGNSIZE) BuffersList {
 	struct Buffers* buffers_v = NULL;
 };
 
-// might become redundant
 struct alignas(ALIGNSIZE) CompositionList {
 	struct CompositionList* start = NULL;
 	struct CompositionList* prev = NULL;
@@ -61,8 +59,7 @@ struct alignas(ALIGNSIZE) FrameCompositionRef {
 	struct FrameCompositionRef* prev = NULL;
 	struct FrameCompositionRef* next = NULL;
 
-	//struct CompositionList* compositionList = NULL; // removed to change to a VAO-based sequencer
-	struct VAOList* vaol = NULL;
+	struct CompositionList* compositionList = NULL;
 
 	int frame;
 } *layersAnimationSequence = NULL, *shapesAnimationSequence = NULL;
@@ -74,7 +71,7 @@ struct alignas(ALIGNSIZE) CompositeArray {
 
 	struct BuffersList* buffers = NULL;
 
-	//struct VAOList* vaol = NULL; // removed to change to a VAO-based sequencer
+	struct VAOList* vaol = NULL;
 
 	//struct TransformMatrix* position = NULL;
 	//struct TransformMatrix* scale = NULL;

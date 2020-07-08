@@ -384,7 +384,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 				firstCycleDone = false;
 				while (! caExhausted) {
 					if (currentCA != NULL) {
-						EM_ASM({console.log("vaol transform ");});
 						lastLayersP = currentCA->transform;
 						lastLayersS = currentCA->scale;
 						lastLayersR = currentCA->rotate;

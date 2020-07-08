@@ -383,7 +383,7 @@ struct CompositeArray* newCompositeArray(struct CompositeArray* passedCompositeA
 	return passedCompositeArray;
 }
 
-struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize, struct CompositionList* passedCL, struct FrameCompositionRef* passedSequence, int passedFrame) {
+struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize, int passedFrame) {
 	if (passedVAOL == NULL) {
 		passedVAOL = new VAOList;
 		passedVAOL->start = passedVAOL;
@@ -446,7 +446,7 @@ void addToCompositionList(struct FrameCompositionRef* passedSequence, struct Com
 	}
 }
 
-struct VAOList* iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, struct CompositionList* passedCL, struct FrameCompositionRef* passedSequence, int frame) {
+struct VAOList* iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, int frame) {
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedK != NULL && passedK->buffers_v != NULL && passedK->buffers_v->vao != NULL) {
@@ -482,7 +482,7 @@ struct VAOList* iterateKS(struct PropertiesShape* passedKS, struct VAOList* pass
 	return passedVAOL;
 }
 
-struct VAOList* iterateShapesItem(struct ShapesItem* passedShapesItem, struct VAOList* passedVAOL, struct CompositionList* passedCL, struct FrameCompositionRef* passedSequence, int frame) {
+struct VAOList* iterateShapesItem(struct ShapesItem* passedShapesItem, struct VAOList* passedVAOL, int frame) {
 	//passedShapesItem = passedShapesItem->start;
 	bool exhausted = false;
 	while (! exhausted) {
@@ -788,22 +788,20 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		if (rFound || sFound || pFound || oFound) {
 
 
-			if (isLayers) {
-				iterateShapesItem(passedShapesItem, passedTransform->composite->vaol, passedTransform->composite, layersAnimationSequence, i);
+			if (isArray) {
+				iterateShapesItem(passedShapesItem, passedTransform->composite->vaol, i);
 			} else {
-				iterateKS(passedShapesItem->ks, passedTransform->composite->vaol, passedTransform->composite, shapesAnimationSequence, i);
+				iterateKS(passedShapesItem->ks, passedTransform->composite->vaol, i);
 			}
 
 		}
 		firstCycleDone = true;
 
-		/*
 		if (isLayers) {
 			addToCompositionList(layersAnimationSequence, passedTransform->composite);
 		} else {
 			addToCompositionList(shapesAnimationSequence, passedTransform->composite);
 		}
-		*/
 
 
 		/*
