@@ -276,7 +276,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		struct CompositionList* shapesCL = NULL;
 		struct CompositionList* layersCL = NULL;
 
-		if (animationSequence != NULL && animationSequence->compositionList != NULL && animationSequence->compositionList->start != NULL) {
+		if (animationSequence != NULL && animationSequence->vaol != NULL) {
 			 currentVAOL = animationSequence->vaol->start->prev;
 		}
 
@@ -296,33 +296,57 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		bool firstSubCycleDone = false;
 		firstCycleDone = false;
 
-		while (! exhausted) {
+		if (animationSequence != NULL && animationSequence->vaol != NULL) {
 
-			lastShapesO = 1.0f;
-			lastLayersO = 1.0f;
+			while (! exhausted) {
 
-				//unsigned int opacityValue = glGetUniformLocation(mainShader, "objectOpacity");
+				lastShapesO = 1.0f;
+				lastLayersO = 1.0f;
 
-						/*
-						if (lastLayersO < lastShapesO) {
-							EM_ASM_({console.log("vaol layers starting " + $0);}, lastLayersO);
-						} else {
-							EM_ASM_({console.log("vaol shapes starting " + $0);}, lastShapesO);
-						}
-						*/
+				if (currentVAOL->layersComposite != NULL) {
+					lastLayersP = currentVAOL->layersComposite->transform;
+					lastLayersS = currentVAOL->layersComposite->scale;
+					lastLayersR = currentVAOL->layersComposite->rotate;
+					lastLayersO = currentVAOL->layersComposite->opacity;
 
-			if (currentVAOL->layersComposite != NULL) {
+					glUniformMatrix4fv(layersTransformLoc, 1, GL_FALSE, glm::value_ptr(lastLayersP));
+					glUniformMatrix4fv(layersRotateLoc, 1, GL_FALSE, glm::value_ptr(lastLayersR));
+					glUniformMatrix4fv(layersScaleLoc, 1, GL_FALSE, glm::value_ptr(lastLayersS));
+
+					glUniform1i(layersPositionLoc, 1);
+				}
+
+				if (currentVAOL->shapesComposite != NULL) {
+					lastShapesP = currentVAOL->shapesComposite->transform;
+					lastShapesS = currentVAOL->shapesComposite->scale;
+					lastShapesR = currentVAOL->shapesComposite->rotate;
+					lastShapesO = currentVAOL->shapesComposite->opacity;
+
+					glUniformMatrix4fv(shapesTransformLoc, 1, GL_FALSE, glm::value_ptr(lastShapesP));
+					glUniformMatrix4fv(shapesRotateLoc, 1, GL_FALSE, glm::value_ptr(lastShapesR));
+					glUniformMatrix4fv(shapesScaleLoc, 1, GL_FALSE, glm::value_ptr(lastShapesS));
+
+					glUniform1i(shapesPositionLoc, 1);
+				}
+
+				if (lastLayersO < lastShapesO) {
+					glUniform1f(opacityValue, lastLayersO);
+				} else {
+					glUniform1f(opacityValue, lastShapesO);	
+				}
+
+				glBindVertexArrayOES(*(currentVAOL->vao));
+				glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
+				glBindVertexArrayOES(0);
+
+				if (currentVAOL == currentVAOL->start) {
+					exhausted = true;
+				} else {
+					currentVAOL = currentVAOL->prev;
+				}
 
 			}
-			if (currentVAOL->shapesComposite != NULL) {
 
-			}
-
-			if (currentVAOL == currentVAOL->start) {
-				exhausted = true;
-			} else {
-				currentVAOL = currentVAOL->prev;
-			}
 		}
 
 		glUseProgram(0);

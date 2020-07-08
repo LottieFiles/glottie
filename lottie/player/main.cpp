@@ -135,8 +135,9 @@ void loadJson(char* buffer, int theLength) {
 		currentFrame++;
 	}
 	*/
-	layersAnimationSequence = layersAnimationSequence->start;
-	shapesAnimationSequence = shapesAnimationSequence->start;
+	//layersAnimationSequence = layersAnimationSequence->start;
+	//shapesAnimationSequence = shapesAnimationSequence->start;
+	animationSequence = animationSequence->start;
 
 	emscripten_set_main_loop(mainloop, theAnimation->fr, 0);
 }
