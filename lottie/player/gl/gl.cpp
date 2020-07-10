@@ -17,7 +17,7 @@ const GLchar* vertexSource =
     "  if (shapesPosition == 1 && layersPosition == 1) {\n"
     "    gl_Position = ((layersRotate * shapesRotate) * (layersScale * shapesScale) * (layersTransform * shapesTransform)) * position; \n"
     "  } else if (layersPosition == 1) {\n"
-    "    gl_Position = ((layersScale * layersTransform) * layersRotate) * position; \n"
+    "    gl_Position = (layersRotate * layersScale * layersTransform) * position; \n"
     "  } else if (shapesPosition == 1) {\n"
     "    gl_Position = (shapesRotate * shapesScale * shapesTransform) * position; \n"
     "  } else {\n"
@@ -276,9 +276,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		struct CompositionList* shapesCL = NULL;
 		struct CompositionList* layersCL = NULL;
 
-		if (animationSequence != NULL && animationSequence->vaol != NULL) {
-			 currentVAOL = animationSequence->vaol->start->prev;
-		}
+		//if (animationSequence != NULL && animationSequence->vaol != NULL) {
+		//}
 
 		glm::mat4 lastShapesP = glm::mat4(1.0f);
 		glm::mat4 lastShapesS = glm::mat4(1.0f);
@@ -298,16 +297,19 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 		if (animationSequence != NULL && animationSequence->vaol != NULL) {
 
+			currentVAOL = animationSequence->vaol->start->prev;
+
 			while (! exhausted) {
 
 				lastShapesO = 1.0f;
 				lastLayersO = 1.0f;
 
 				if (currentVAOL->layersComposite != NULL) {
+					//EM_ASM({console.log("vaol");});
 					lastLayersP = currentVAOL->layersComposite->transform;
 					lastLayersS = currentVAOL->layersComposite->scale;
 					lastLayersR = currentVAOL->layersComposite->rotate;
-					lastLayersO = currentVAOL->layersComposite->opacity;
+					//lastLayersO = currentVAOL->layersComposite->opacity;
 
 					glUniformMatrix4fv(layersTransformLoc, 1, GL_FALSE, glm::value_ptr(lastLayersP));
 					glUniformMatrix4fv(layersRotateLoc, 1, GL_FALSE, glm::value_ptr(lastLayersR));
@@ -320,7 +322,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					lastShapesP = currentVAOL->shapesComposite->transform;
 					lastShapesS = currentVAOL->shapesComposite->scale;
 					lastShapesR = currentVAOL->shapesComposite->rotate;
-					lastShapesO = currentVAOL->shapesComposite->opacity;
+					//lastShapesO = currentVAOL->shapesComposite->opacity;
 
 					glUniformMatrix4fv(shapesTransformLoc, 1, GL_FALSE, glm::value_ptr(lastShapesP));
 					glUniformMatrix4fv(shapesRotateLoc, 1, GL_FALSE, glm::value_ptr(lastShapesR));

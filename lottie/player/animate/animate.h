@@ -89,7 +89,7 @@ struct alignas(ALIGNSIZE) CompositeArray {
 	glm::mat4 rotate = glm::mat4(1.0f);
 	glm::mat4 scale = glm::mat4(1.0f);
 
-	float opacity = -1;
+	float opacity = 1;
 
 	float rotateAngle = -1;
 
