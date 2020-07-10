@@ -428,7 +428,7 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 		} else {
 			passedVAOL->shapesComposite = passedComposite;
 		}
-		EM_ASM({console.log($0 + " --- VAO properly added " + $1 + " " + $2 + " " + $3);}, passedFrame, passedVAOL->vao, passedVAOL->idxSize, passedComposite);
+		//EM_ASM({console.log($0 + " --- VAO properly added " + $1 + " " + $2 + " " + $3);}, passedFrame, passedVAOL->vao, passedVAOL->idxSize, passedComposite);
 	}
 	if (foundVAOL != NULL) {
 		passedVAOL = passedVAOL->start->prev;
@@ -589,6 +589,11 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		
 		tempPFound = false;
 		tempSFound = false;
+	
+		if (i < minTime) {
+			i++;
+			continue;
+		}
 
 		if (passedTransform->composite == NULL) {
 			passedTransform->composite = newCompositeArray(passedTransform->composite, i);
@@ -604,10 +609,6 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			}
 		}
 
-		if (i < minTime) {
-			i++;
-			continue;
-		}
 
 		if (pEnded && sEnded && rEnded && oEnded) {
 			exhausted = true;
