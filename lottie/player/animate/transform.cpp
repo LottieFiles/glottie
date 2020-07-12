@@ -425,8 +425,40 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 		passedVAOL->assigned = true;
 		if (isLayer) {
 			passedVAOL->layersComposite = passedComposite;
+			if (passedVAOL->shapesComposite != NULL) {
+				passedVAOL->precomputed =
+					(passedVAOL->layersComposite->transform *
+					passedVAOL->layersComposite->scale *
+					passedVAOL->layersComposite->rotate) *
+					(passedVAOL->shapesComposite->transform *
+					passedVAOL->shapesComposite->scale *
+					passedVAOL->shapesComposite->rotate);
+
+			} else {
+				passedVAOL->precomputed =
+					passedVAOL->layersComposite->transform *
+					passedVAOL->layersComposite->scale *
+					passedVAOL->layersComposite->rotate;
+			}
+			passedVAOL->isPrecomputed = true;
 		} else {
 			passedVAOL->shapesComposite = passedComposite;
+			if (passedVAOL->layersComposite != NULL) {
+				passedVAOL->precomputed =
+					(passedVAOL->layersComposite->transform *
+					passedVAOL->layersComposite->scale *
+					passedVAOL->layersComposite->rotate) *
+					(passedVAOL->shapesComposite->transform *
+					passedVAOL->shapesComposite->scale *
+					passedVAOL->shapesComposite->rotate);
+
+			} else {
+				passedVAOL->precomputed =
+					passedVAOL->shapesComposite->transform *
+					passedVAOL->shapesComposite->scale *
+					passedVAOL->shapesComposite->rotate;
+			}
+			passedVAOL->isPrecomputed = true;
 		}
 		//EM_ASM({console.log($0 + " --- VAO properly added " + $1 + " " + $2 + " " + $3);}, passedFrame, passedVAOL->vao, passedVAOL->idxSize, passedComposite);
 	}
@@ -586,6 +618,13 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 	while (i <= theAnimation->op) {
 		//EM_ASM_({console.log("---- CYCLE in ");});
 		//tempAngleFound = false;
+		if (animationSequence == NULL) {
+			animationSequence = addToSequence(animationSequence, i);
+		} else if (animationSequence != NULL && animationSequence->next == NULL) {
+			animationSequence = addToSequence(animationSequence, i);
+		} else {
+			animationSequence = animationSequence->next;
+		}
 		
 		tempPFound = false;
 		tempSFound = false;
@@ -728,13 +767,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		passedTransform->composite->opacity = tempOpacity;
 
 
-		if (animationSequence == NULL) {
-			animationSequence = addToSequence(animationSequence, i);
-		} else if (animationSequence != NULL && animationSequence->next == NULL) {
-			animationSequence = addToSequence(animationSequence, i);
-		} else {
-			animationSequence = animationSequence->next;
-		}
+
 
 
 		//if (rFound || sFound || pFound || oFound) {
@@ -811,8 +844,8 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				animationSequence->vaol->frame = (i - 1);
 				animationSequence->vaol->idxSize = prevSequence->vaol->idxSize;
 				animationSequence->vaol->assigned = prevSequence->vaol->assigned;
-				animationSequence->vaol->layersComposite = prevSequence->vaol->layersComposite;
-				animationSequence->vaol->shapesComposite = prevSequence->vaol->shapesComposite;
+				//animationSequence->vaol->layersComposite = prevSequence->vaol->layersComposite;
+				//animationSequence->vaol->shapesComposite = prevSequence->vaol->shapesComposite;
 	
 			}
 	

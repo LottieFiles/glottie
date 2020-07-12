@@ -120,10 +120,10 @@ void glInit() {
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);*/
 
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 161);
 
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 1);
 
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1); 
 
@@ -185,6 +185,31 @@ bool secondPass = false;
 
 glm::mat4 identityMatrix = glm::mat4(1.0f);
 
+		glm::mat4 lastShapesP = glm::mat4(1.0f);
+		glm::mat4 lastShapesS = glm::mat4(1.0f);
+		glm::mat4 lastShapesR = glm::mat4(1.0f);
+		float lastShapesO;
+		glm::mat4 lastLayersP = glm::mat4(1.0f);
+		glm::mat4 lastLayersS = glm::mat4(1.0f);
+		glm::mat4 lastLayersR = glm::mat4(1.0f);
+		float lastLayersO;
+
+
+
+		unsigned int layersTransformLoc;
+		unsigned int shapesTransformLoc;
+		unsigned int layersRotateLoc;
+		unsigned int shapesRotateLoc;
+		unsigned int layersScaleLoc;
+		unsigned int shapesScaleLoc;
+
+		unsigned int layersPositionLoc;
+		unsigned int shapesPositionLoc;
+
+		unsigned int precomputedLoc;
+		unsigned int isPrecomputedLoc;
+
+		unsigned int opacityValue;
 
 
 void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersToRender, int frame) {
@@ -233,22 +258,39 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 			tempBuffers->shapesRotateSet = false;
 		}
 
-		unsigned int layersTransformLoc = glGetUniformLocation(mainShader, "layersTransform");
-		unsigned int shapesTransformLoc = glGetUniformLocation(mainShader, "shapesTransform");
-		unsigned int layersRotateLoc = glGetUniformLocation(mainShader, "layersRotate");
-		unsigned int shapesRotateLoc = glGetUniformLocation(mainShader, "shapesRotate");
-		unsigned int layersScaleLoc = glGetUniformLocation(mainShader, "layersScale");
-		unsigned int shapesScaleLoc = glGetUniformLocation(mainShader, "shapesScale");
+		layersTransformLoc = glGetUniformLocation(mainShader, "layersTransform");
+		shapesTransformLoc = glGetUniformLocation(mainShader, "shapesTransform");
+		layersRotateLoc = glGetUniformLocation(mainShader, "layersRotate");
+		shapesRotateLoc = glGetUniformLocation(mainShader, "shapesRotate");
+		layersScaleLoc = glGetUniformLocation(mainShader, "layersScale");
+		shapesScaleLoc = glGetUniformLocation(mainShader, "shapesScale");
 
-		unsigned int layersPositionLoc = glGetUniformLocation(mainShader, "layersPosition");
-		unsigned int shapesPositionLoc = glGetUniformLocation(mainShader, "shapesPosition");
+		layersPositionLoc = glGetUniformLocation(mainShader, "layersPosition");
+		shapesPositionLoc = glGetUniformLocation(mainShader, "shapesPosition");
+
+		precomputedLoc = glGetUniformLocation(mainShader, "precomputed");
+		isPrecomputedLoc = glGetUniformLocation(mainShader, "isPrecomputed");
+
+		opacityValue = glGetUniformLocation(mainShader, "objectOpacity");
+
+
+		lastLayersP = identityMatrix;
+		lastLayersS = identityMatrix;
+		lastLayersR = identityMatrix;
+		lastShapesP = identityMatrix;
+		lastShapesS = identityMatrix;
+		lastShapesR = identityMatrix;
+
+		lastShapesO = 1.0f;
+		lastLayersO = 1.0f;
 
 		bool exhausted = false;
-		unsigned int opacityValue = glGetUniformLocation(mainShader, "objectOpacity");
+
 		glUniform1f(opacityValue, 1.0f);
 		glUniform1i(shapesPositionLoc, 0);
 		glUniform1i(layersPositionLoc, 0);
 		while (! exhausted) {
+			glUniform1i(isPrecomputedLoc, 0);
 			if (! tempBuffers->addedToComposition) {
 				glBindVertexArrayOES(*(tempBuffers->vao));
 				glDrawElements(GL_TRIANGLES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
@@ -279,14 +321,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		//if (animationSequence != NULL && animationSequence->vaol != NULL) {
 		//}
 
-		glm::mat4 lastShapesP = glm::mat4(1.0f);
-		glm::mat4 lastShapesS = glm::mat4(1.0f);
-		glm::mat4 lastShapesR = glm::mat4(1.0f);
-		float lastShapesO;
-		glm::mat4 lastLayersP = glm::mat4(1.0f);
-		glm::mat4 lastLayersS = glm::mat4(1.0f);
-		glm::mat4 lastLayersR = glm::mat4(1.0f);
-		float lastLayersO;
+
 
 
 		exhausted = false;
@@ -316,6 +351,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					glUniformMatrix4fv(layersScaleLoc, 1, GL_FALSE, glm::value_ptr(lastLayersS));
 
 					glUniform1i(layersPositionLoc, 1);
+
 				}
 
 				if (currentVAOL->shapesComposite != NULL) {
@@ -329,6 +365,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					glUniformMatrix4fv(shapesScaleLoc, 1, GL_FALSE, glm::value_ptr(lastShapesS));
 
 					glUniform1i(shapesPositionLoc, 1);
+
 				}
 
 				if (lastLayersO < lastShapesO) {

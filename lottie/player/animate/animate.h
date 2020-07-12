@@ -26,12 +26,17 @@ struct alignas(ALIGNSIZE) VAOList {
 
 	struct CompositeArray* layersComposite = NULL;
 	struct CompositeArray* shapesComposite = NULL;
+
+	glm::mat4 precomputed = glm::mat4(1.0f);
+
 	GLuint *vao = NULL;
 	int idxSize;
 
 	int frame;
 
 	bool assigned = false;
+	bool isPrecomputed = false;
+
 } *boundVAO = NULL;
 
 struct alignas(ALIGNSIZE) BuffersList {
