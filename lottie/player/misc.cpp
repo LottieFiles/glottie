@@ -1049,8 +1049,11 @@ struct ArrayOfVertex* bezierFillNulls(struct ArrayOfVertex* startV, struct Array
 		(*v_count)++;
 		(*bezier_count)++;
 	}
-	lastIntermediate->next = endV;
-	endV->prev = lastIntermediate;
+	if (lastIntermediate != NULL) {
+		lastIntermediate->next = endV;
+		endV->prev = lastIntermediate;
+	}
+	return lastIntermediate;
 }
 
 void adjustScale(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o) {
