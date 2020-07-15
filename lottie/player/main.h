@@ -114,6 +114,7 @@ bool previousScopeNotArray = false;
 int currentOrderIndex = 0;
 bool closedArray = false;
 int encounteredKeyframe = 0;
+int universalOrder = 0;
 
 enum States lastClosedScope;
 int closureCount = 0;

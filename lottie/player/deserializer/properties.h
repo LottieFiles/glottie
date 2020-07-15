@@ -138,11 +138,14 @@ struct alignas(ALIGNSIZE) PropertiesShapeProp {
 	int lowestX;
 	int lowestY;
 
+	int order;
+
 	//int refIndex_i = 0;
 	//int refIndex_o = 0;
 	//int refIndex_v = 0;
 
 	bool c; //closed
+	
 	/*
 	vector<float> i; // in point - array of 2 elements
 	vector<float> o; // out point

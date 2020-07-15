@@ -103,7 +103,7 @@ int fillAnimation() {
 	}
 	theAnimation->halfW = theAnimation->w / 2;
 	theAnimation->halfH = theAnimation->h / 2;
-	//EM_ASM_({console.log("========================> fill 80.1 " + $0);}, theAnimation->h);
+	EM_ASM_({console.log("========================> theAnimation " + $0 + " " + $1);}, theAnimation->ip, theAnimation->op);
 	//deleteKeyValues(theScope->currentKeyValueTrail);
 
 	return 1;

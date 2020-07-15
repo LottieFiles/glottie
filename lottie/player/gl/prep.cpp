@@ -184,7 +184,9 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			passedPropertiesShapeProp->buffers_v = newBuffers();
 			//EM_ASM({console.log("tracing 4 ");});
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
-			prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, passedShapesItem->order, passedPropertiesShapeProp, currentBB, currentShapesBB);
+			//prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, passedShapesItem->order, passedPropertiesShapeProp, currentBB, currentShapesBB);
+			universalOrder++;
+			prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, universalOrder, passedPropertiesShapeProp, currentBB, currentShapesBB);
 			//EM_ASM({console.log("tracing 5 ");});
 			//if (tempTriangulateReturn == NULL) {return 0;}
 			
@@ -458,7 +460,9 @@ int prepLayers(struct Layers* passedLayers) {
 			//currentBB->initY = passedLayers->initY;
 			getBoundingBox(passedLayers->shapes->start, passedLayers->currentBB);
 			prepShapesItem(passedLayers->shapes->start, NULL, true, passedLayers->currentBB);
-			composeTransformLayers(passedLayers, currentLayersTransformReturn->minTime, currentLayersTransformReturn->maxTime);
+			if (passedLayers->ks != NULL) {
+				composeTransformLayers(passedLayers, currentLayersTransformReturn->minTime, currentLayersTransformReturn->maxTime);
+			}
 		}
 		if (passedLayers->next == NULL) {
 			exhausted = true;

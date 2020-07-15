@@ -397,7 +397,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		//passedProp->gl_v.push_back((2 * ((passedArray->vertex->x + currentXPosition))) / theAnimation->w);
 		//passedProp->gl_v.push_back(((2 * ((passedArray->vertex->y + currentYPosition))) / theAnimation->h) * -1);
 		if (passedArray->vertex->z == 0) {
-			passedProp->gl_v.push_back(1 - ((float)order / 100000));
+			passedProp->gl_v.push_back((float)order / 100000);
 		} else {
 			passedProp->gl_v.push_back(passedArray->vertex->z * theAnimation->scaleFactorZ);
 		}

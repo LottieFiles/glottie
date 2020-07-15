@@ -345,7 +345,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						lastLayersP = currentVAOL->layersComposite->transform;
 						lastLayersS = currentVAOL->layersComposite->scale;
 						lastLayersR = currentVAOL->layersComposite->rotate;
-						//lastLayersO = currentVAOL->layersComposite->opacity;
+						lastLayersO = currentVAOL->layersComposite->opacity;
 	
 						glUniformMatrix4fv(layersTransformLoc, 1, GL_FALSE, glm::value_ptr(lastLayersP));
 						glUniformMatrix4fv(layersRotateLoc, 1, GL_FALSE, glm::value_ptr(lastLayersR));
@@ -353,13 +353,15 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 	
 						glUniform1i(layersPositionLoc, 1);
 	
+					} else {
+						glUniform1i(layersPositionLoc, 0);
 					}
 	
 					if (currentVAOL->shapesComposite != NULL) {
 						lastShapesP = currentVAOL->shapesComposite->transform;
 						lastShapesS = currentVAOL->shapesComposite->scale;
 						lastShapesR = currentVAOL->shapesComposite->rotate;
-						//lastShapesO = currentVAOL->shapesComposite->opacity;
+						lastShapesO = currentVAOL->shapesComposite->opacity;
 	
 						glUniformMatrix4fv(shapesTransformLoc, 1, GL_FALSE, glm::value_ptr(lastShapesP));
 						glUniformMatrix4fv(shapesRotateLoc, 1, GL_FALSE, glm::value_ptr(lastShapesR));
@@ -367,6 +369,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 	
 						glUniform1i(shapesPositionLoc, 1);
 	
+					} else {
+						glUniform1i(shapesPositionLoc, 0);
 					}
 	
 					if (lastLayersO < lastShapesO) {
@@ -392,7 +396,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 		glUseProgram(0);
 
-		if (animationSequence->next != NULL) {
+		if (animationSequence != NULL && animationSequence->next != NULL) {
 			animationSequence = animationSequence->next;
 		}
 

@@ -27,15 +27,12 @@ struct alignas(ALIGNSIZE) VAOList {
 	struct CompositeArray* layersComposite = NULL;
 	struct CompositeArray* shapesComposite = NULL;
 
-	glm::mat4 precomputed = glm::mat4(1.0f);
-
 	GLuint *vao = NULL;
 	int idxSize;
 
 	int frame;
 
 	bool assigned = false;
-	bool isPrecomputed = false;
 
 } *boundVAO = NULL;
 
@@ -118,6 +115,15 @@ struct alignas(ALIGNSIZE) Transform {
 
 	int startTime = -1;
 	int endTime = -1;
+
+	int startTimeP = -1;
+	int endTimeP = -1;
+	int startTimeS = -1;
+	int endTimeS = -1;
+	int startTimeO = -1;
+	int endTimeO = -1;
+	int startTimeR = -1;
+	int endTimeR = -1;
 };
 
 struct alignas(ALIGNSIZE) TransformAOV {
