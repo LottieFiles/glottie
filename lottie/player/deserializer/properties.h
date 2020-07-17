@@ -145,7 +145,9 @@ struct alignas(ALIGNSIZE) PropertiesShapeProp {
 	//int refIndex_v = 0;
 
 	bool c; //closed
-	
+	bool prepped = false;
+	bool vaoAdded = false;
+
 	/*
 	vector<float> i; // in point - array of 2 elements
 	vector<float> o; // out point

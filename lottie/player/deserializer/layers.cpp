@@ -109,3 +109,42 @@ int fillAnimation() {
 	return 1;
 }
 
+int fillLayers(struct Layers* passedLayers) {
+	//EM_ASM({console.log("========================> entered");});
+	bool exhausted = false;
+	struct KeyValue* tempKeyValue;
+	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
+	struct ArrayOfString* tempArrayValue; 
+	while (! exhausted) {
+		if (tempKeyValue) {
+			//EM_ASM({console.log("========================> iteration");});
+		}
+			//EM_ASM({console.log("========================> iteration pre");});
+		if (tempKeyValue->arrayValue == NULL && strlen(tempKeyValue->key) == 0) {
+			//EM_ASM({console.log("========================> empty");});
+			if (tempKeyValue->next == NULL) {
+				exhausted = true;
+			} else {
+				tempKeyValue = tempKeyValue->next;
+			}
+			continue;
+		}
+			//EM_ASM({console.log("========================> iteration predone");});
+		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "parent") == 0) {
+			passedLayers->parent = stringToInt(tempKeyValue->value);
+		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ind") == 0) {
+			passedLayers->ind = stringToInt(tempKeyValue->value);
+		}
+
+
+
+		if (tempKeyValue->next == NULL) {
+			exhausted = true;
+		} else {
+			tempKeyValue = tempKeyValue->next;
+		}
+	}
+
+	return 1;
+}
+

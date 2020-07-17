@@ -12,17 +12,21 @@ const GLchar* vertexSource =
     "uniform mat4 layersTransform; \n"
     "uniform mat4 shapesTransform; \n"
     "uniform float objectOpacity; \n"
+    "uniform mat4 layersPrecomputed; \n"
+    "uniform int isLayersPrecomputed; \n"
+    "uniform mat4 shapesPrecomputed; \n"
+    "uniform int isShapesPrecomputed; \n"
     "void main() \n"
     "{ \n"
-    "  if (shapesPosition == 1 && layersPosition == 1) {\n"
-    "    gl_Position = ((layersRotate * shapesRotate) * (layersScale * shapesScale) * (layersTransform * shapesTransform)) * position; \n"
-    "  } else if (layersPosition == 1) {\n"
-    "    gl_Position = (layersRotate * layersScale * layersTransform) * position; \n"
-    "  } else if (shapesPosition == 1) {\n"
-    "    gl_Position = (shapesRotate * shapesScale * shapesTransform) * position; \n"
-    "  } else {\n"
-    "    gl_Position = position; \n"
-    "  }\n"
+    "    if (shapesPosition == 1 && layersPosition == 1) {\n"
+    "      gl_Position = ((layersRotate * shapesRotate) * (layersScale * shapesScale) * (layersTransform * shapesTransform)) * position; \n"
+    "    } else if (layersPosition == 1) {\n"
+    "      gl_Position = (layersTransform * (layersScale * (layersRotate * position))); \n"
+    "    } else if (shapesPosition == 1) {\n"
+    "      gl_Position = (shapesRotate * shapesScale * shapesTransform) * position; \n"
+    "    } else {\n"
+    "      gl_Position = position; \n"
+    "    }\n"
     "  vcolors = vec4(color.xyz, objectOpacity); \n"
     "} \n";
 
@@ -34,6 +38,17 @@ const GLchar* fragmentSource =
     "  gl_FragColor = vcolors; \n"
     "} \n";
 
+
+
+//    "  if (isLayersPrecomputed == 1) {\n"
+//    "      gl_Position = layersPrecomputed * position; \n"
+//    "  } else if (isShapesPrecomputed == 1) {\n"
+//    "      gl_Position = shapesPrecomputed * position; \n"
+//    "  } else if (isShapesPrecomputed == 1 && isLayersPrecomputed == 1) {\n"
+//    "      gl_Position = layersPrecomputed * (shapesPrecomputed * position); \n"
+//    "  } else {\n"
+//    "      gl_Position = position; \n"
+//    "  }\n"
 
 //    "  vcolors = color; \n"
 //    "  gl_Position = (layersTransform * shapesTransform) * position; \n"
@@ -120,12 +135,12 @@ void glInit() {
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);*/
 
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 161);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
 
-	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1); 
+	//SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1); 
 
 	//EM_ASM({console.log("glinit 1.1");});
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -188,11 +203,17 @@ glm::mat4 identityMatrix = glm::mat4(1.0f);
 		glm::mat4 lastShapesP = glm::mat4(1.0f);
 		glm::mat4 lastShapesS = glm::mat4(1.0f);
 		glm::mat4 lastShapesR = glm::mat4(1.0f);
-		float lastShapesO;
 		glm::mat4 lastLayersP = glm::mat4(1.0f);
 		glm::mat4 lastLayersS = glm::mat4(1.0f);
 		glm::mat4 lastLayersR = glm::mat4(1.0f);
+	
+		float lastShapesO;
 		float lastLayersO;
+
+		glm::mat4 lastLayersPrecomputed = glm::mat4(1.0f);
+		int isLayersPrecomputed;
+		glm::mat4 lastShapesPrecomputed = glm::mat4(1.0f);
+		int isShapesPrecomputed;
 
 
 
@@ -206,8 +227,10 @@ glm::mat4 identityMatrix = glm::mat4(1.0f);
 		unsigned int layersPositionLoc;
 		unsigned int shapesPositionLoc;
 
-		unsigned int precomputedLoc;
-		unsigned int isPrecomputedLoc;
+		unsigned int layersPrecomputedLoc;
+		unsigned int isLayersPrecomputedLoc;
+		unsigned int shapesPrecomputedLoc;
+		unsigned int isShapesPrecomputedLoc;
 
 		unsigned int opacityValue;
 
@@ -249,6 +272,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 			glUseProgram(*(passedShaderProgram->shader));
 		}
 
+		/*
 		if (frame == 0) {
 			tempBuffers->layersTransformSet = false;
 			tempBuffers->shapesTransformSet = false;
@@ -257,6 +281,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 			tempBuffers->layersRotateSet = false;
 			tempBuffers->shapesRotateSet = false;
 		}
+		*/
 
 		layersTransformLoc = glGetUniformLocation(mainShader, "layersTransform");
 		shapesTransformLoc = glGetUniformLocation(mainShader, "shapesTransform");
@@ -268,8 +293,13 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		layersPositionLoc = glGetUniformLocation(mainShader, "layersPosition");
 		shapesPositionLoc = glGetUniformLocation(mainShader, "shapesPosition");
 
-		precomputedLoc = glGetUniformLocation(mainShader, "precomputed");
-		isPrecomputedLoc = glGetUniformLocation(mainShader, "isPrecomputed");
+
+		layersPrecomputedLoc = glGetUniformLocation(mainShader, "layersPrecomputed");
+		isLayersPrecomputedLoc = glGetUniformLocation(mainShader, "isLayersPrecomputed");
+
+		shapesPrecomputedLoc = glGetUniformLocation(mainShader, "shapesPrecomputed");
+		isShapesPrecomputedLoc = glGetUniformLocation(mainShader, "isShapesPrecomputed");
+
 
 		opacityValue = glGetUniformLocation(mainShader, "objectOpacity");
 
@@ -281,6 +311,10 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		lastShapesS = identityMatrix;
 		lastShapesR = identityMatrix;
 
+		lastLayersPrecomputed = identityMatrix;
+		lastShapesPrecomputed = identityMatrix;
+		isLayersPrecomputed = 1;
+
 		lastShapesO = 1.0f;
 		lastLayersO = 1.0f;
 
@@ -290,7 +324,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		glUniform1i(shapesPositionLoc, 0);
 		glUniform1i(layersPositionLoc, 0);
 		while (! exhausted) {
-			glUniform1i(isPrecomputedLoc, 0);
+			glUniform1i(isLayersPrecomputedLoc, 0);
+			glUniform1i(isShapesPrecomputedLoc, 0);
 			if (! tempBuffers->addedToComposition) {
 				glBindVertexArrayOES(*(tempBuffers->vao));
 				glDrawElements(GL_TRIANGLES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
@@ -341,20 +376,23 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					lastLayersO = 1.0f;
 	
 					if (currentVAOL->layersComposite != NULL) {
-						//EM_ASM({console.log("vaol");});
 						lastLayersP = currentVAOL->layersComposite->transform;
 						lastLayersS = currentVAOL->layersComposite->scale;
 						lastLayersR = currentVAOL->layersComposite->rotate;
 						lastLayersO = currentVAOL->layersComposite->opacity;
+						lastLayersPrecomputed = currentVAOL->layersComposite->precomputed;
 	
 						glUniformMatrix4fv(layersTransformLoc, 1, GL_FALSE, glm::value_ptr(lastLayersP));
 						glUniformMatrix4fv(layersRotateLoc, 1, GL_FALSE, glm::value_ptr(lastLayersR));
 						glUniformMatrix4fv(layersScaleLoc, 1, GL_FALSE, glm::value_ptr(lastLayersS));
+						glUniformMatrix4fv(layersPrecomputedLoc, 1, GL_FALSE, glm::value_ptr(lastLayersPrecomputed));
 	
 						glUniform1i(layersPositionLoc, 1);
+						glUniform1i(isLayersPrecomputedLoc, 1);
 	
 					} else {
 						glUniform1i(layersPositionLoc, 0);
+						glUniform1i(isLayersPrecomputedLoc, 0);
 					}
 	
 					if (currentVAOL->shapesComposite != NULL) {
@@ -362,15 +400,19 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						lastShapesS = currentVAOL->shapesComposite->scale;
 						lastShapesR = currentVAOL->shapesComposite->rotate;
 						lastShapesO = currentVAOL->shapesComposite->opacity;
+						lastShapesPrecomputed = currentVAOL->shapesComposite->precomputed;
 	
 						glUniformMatrix4fv(shapesTransformLoc, 1, GL_FALSE, glm::value_ptr(lastShapesP));
 						glUniformMatrix4fv(shapesRotateLoc, 1, GL_FALSE, glm::value_ptr(lastShapesR));
 						glUniformMatrix4fv(shapesScaleLoc, 1, GL_FALSE, glm::value_ptr(lastShapesS));
+						glUniformMatrix4fv(shapesPrecomputedLoc, 1, GL_FALSE, glm::value_ptr(lastShapesPrecomputed));
 	
 						glUniform1i(shapesPositionLoc, 1);
+						glUniform1i(isShapesPrecomputedLoc, 1);
 	
 					} else {
 						glUniform1i(shapesPositionLoc, 0);
+						glUniform1i(isShapesPrecomputedLoc, 0);
 					}
 	
 					if (lastLayersO < lastShapesO) {

@@ -1160,12 +1160,12 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 						o = o->next;
 						v = v->next;
 						if (isGeometry) {
-							if (v == startPoint && cycleCount == 2) {
+							if (v == startPoint->next && cycleCount == 2) {
 								exhausted = true;
 								break;
 							}
 						} else {
-							if (v == startPoint && startedCycling) {
+							if (v == startPoint->next && startedCycling) {
 								exhausted = true;
 								break;
 							}
@@ -1177,12 +1177,12 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 					o = o->next;
 					v = v->next;
 					if (isGeometry) {
-						if (v == startPoint && cycleCount == 2) {
+						if (v == startPoint->next && cycleCount == 2) {
 							exhausted = true;
 							break;
 						}
 					} else {
-						if (v == startPoint && startedCycling) {
+						if (v == startPoint->next && startedCycling) {
 							exhausted = true;
 							break;
 						}
@@ -1248,7 +1248,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 		while (segNow < 1) {
 			intermediate = new ArrayOfVertex;
 			intermediate->vertex = new Vertex;
-			intermediate->start = o1->start;
+			intermediate->start = v->start;
 
 			//intermediate->vertex->x = ( (((pt2->x - pt1->x) / segments) * segNow) + pt1->x );
 			//intermediate->vertex->y = ( (((pt2->y - pt1->y) / segments) * segNow) + pt1->y );
@@ -1325,6 +1325,10 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 			o2->prev = intermediate;
 		}
 		//return intermediate;
+	}
+	if (intermediate != NULL) {
+		v->start->prev = intermediate;
+		intermediate->next = v->start;
 	}
 }
 

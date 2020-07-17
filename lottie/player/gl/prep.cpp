@@ -180,7 +180,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		elementCount++;
 
 		//EM_ASM({console.log("tracing 3 ");});
-		if (passedPropertiesShapeProp->v_count > 2) {
+		if (passedPropertiesShapeProp->v_count > 2 && ! passedPropertiesShapeProp->prepped) {
 			passedPropertiesShapeProp->buffers_v = newBuffers();
 			//EM_ASM({console.log("tracing 4 ");});
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
@@ -195,10 +195,13 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//passedPropertiesShapeProp->gl_v_idx = tempTriangulateReturn->index;
 			//prepVAO(passedPropertiesShapeProp);
 			//if (lastBuffersCreated->filled) {
-			if (passedPropertiesShapeProp->buffers_v->filled) {
+
+			//if (passedPropertiesShapeProp->buffers_v->filled) {
 				prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, passedPropertiesShapeProp->gl_v_fill, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v->idxCount);
-				lastBuffersCreated->filled = true;
-			}
+				passedPropertiesShapeProp->prepped = true;
+			//	lastBuffersCreated->filled = true;
+			//}
+
 			//EM_ASM({console.log("tracing 6 ");});
 			//} else {
 			//passedPropertiesShapeProp->buffers_v = NULL;
@@ -520,4 +523,5 @@ int prepShapes() {
 
 	return 1;
 }
+
 

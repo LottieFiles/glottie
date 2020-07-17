@@ -90,7 +90,7 @@ struct alignas(ALIGNSIZE) ShapesItem {
 
 	bool isKeyframed = false;
 	bool basicShapeGenerated = false;
-	
+
 } *currentShapesItem;
 
 

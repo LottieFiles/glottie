@@ -91,6 +91,8 @@ struct alignas(ALIGNSIZE) CompositeArray {
 	glm::mat4 rotate = glm::mat4(1.0f);
 	glm::mat4 scale = glm::mat4(1.0f);
 
+	glm::mat4 precomputed = glm::mat4(1.0f);
+
 	float opacity = 1;
 
 	float rotateAngle = -1;
@@ -103,6 +105,7 @@ struct alignas(ALIGNSIZE) CompositeArray {
 	bool opacitySet = false;
 
 	bool transformSet = false;
+	bool isPrecomputed = false;
 };
 
 struct alignas(ALIGNSIZE) Transform {

@@ -4,6 +4,7 @@ struct alignas(ALIGNSIZE) Layers {
         struct Layers* start = NULL;
         struct Layers* prev = NULL;
         struct Layers* next = NULL;
+        struct Layers* parentLayers; //parent
       
 	struct Mask* maskProperties = NULL;
         //struct Index* ef = NULL; // effects
@@ -111,9 +112,9 @@ struct alignas(ALIGNSIZE) Animation {
 	float halfW;
 	float halfH;
 
-	float scaleFactorX = 2;
-	float scaleFactorY = 2;
-	float scaleFactorZ = 2;
+	float scaleFactorX = 1;
+	float scaleFactorY = 1;
+	float scaleFactorZ = 1;
 
 	float customWidth = 0;
 	float customHeight = 0;
