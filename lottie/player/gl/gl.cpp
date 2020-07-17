@@ -21,7 +21,7 @@ const GLchar* vertexSource =
     "    if (shapesPosition == 1 && layersPosition == 1) {\n"
     "      gl_Position = ((layersRotate * shapesRotate) * (layersScale * shapesScale) * (layersTransform * shapesTransform)) * position; \n"
     "    } else if (layersPosition == 1) {\n"
-    "      gl_Position = (layersRotate * (layersScale * (layersTransform * position))); \n"
+    "      gl_Position = (layersTransform * (layersScale * (layersRotate * position))); \n"
     "    } else if (shapesPosition == 1) {\n"
     "      gl_Position = (shapesRotate * shapesScale * shapesTransform) * position; \n"
     "    } else {\n"

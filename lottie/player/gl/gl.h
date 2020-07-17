@@ -82,6 +82,8 @@ struct alignas(ALIGNSIZE) Buffers {
 	GLuint* ibo = NULL;
 	std::vector<unsigned int> idx; // array of triangulation data
 	int idxCount;
+	bool preppedFrame = -1;
+
 	bool firstFrameRendered = false;
 
 	bool lastTransSet = false;

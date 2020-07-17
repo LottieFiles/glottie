@@ -1160,12 +1160,12 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 						o = o->next;
 						v = v->next;
 						if (isGeometry) {
-							if (v == startPoint && cycleCount == 2) {
+							if (v == startPoint->next && cycleCount == 2) {
 								exhausted = true;
 								break;
 							}
 						} else {
-							if (v == startPoint && startedCycling) {
+							if (v == startPoint->next && startedCycling) {
 								exhausted = true;
 								break;
 							}

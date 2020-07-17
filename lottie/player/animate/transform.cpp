@@ -422,7 +422,7 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 		}
 	}
 
-	//if (foundVAOL == NULL) {
+	if (foundVAOL == NULL) {
 		//EM_ASM_({console.log("--- VAO properly added " + $0);}, passedVAO);
 		passedVAOL->vao = passedVAO;
 		passedVAOL->frame = passedFrame;
@@ -434,7 +434,6 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 			passedVAOL->shapesComposite = passedComposite;
 		}
 		//EM_ASM({console.log($0 + " --- VAO properly added " + $1 + " " + $2 + " " + $3);}, passedFrame, passedVAOL->vao, passedVAOL->idxSize, passedComposite);
-	/*
 	} else {
 		if (isLayer) {
 			passedVAOL->layersComposite = passedComposite;
@@ -443,7 +442,6 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 		}
 		passedVAOL = passedVAOL->start->prev;
 	}
-	*/
 	return passedVAOL;
 }
 
