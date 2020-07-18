@@ -178,10 +178,12 @@ struct alignas(ALIGNSIZE) IndexArray {
 };
 
 struct alignas(ALIGNSIZE) BoundingBox {
-	float w = 0;
-	float h = 0;
-	float initX = 0;
-	float initY = 0;
+	float w = 0; // width
+	float h = 0; // height
+	float initX = 0; // top of bounding box
+	float initY = 0; // left  of bounding box
+	float initXc = 0; // center of bounding box
+	float initYc = 0; // center of bounding box
 	float anchorX = 0;
 	float anchorY = 0;
 	float translatedX = 0;

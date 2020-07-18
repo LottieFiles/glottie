@@ -1354,10 +1354,10 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 			temp->layers->x = layersPosition.x - currentBB->anchorX;
 			temp->layers->y = layersPosition.y - currentBB->anchorY;
 		} else {
-			//temp->layers->x = layersPosition.x - (currentBB->w / 2);
-			//temp->layers->y = layersPosition.y - (currentBB->h / 2);
-			temp->layers->x = layersPosition.x;
-			temp->layers->y = layersPosition.y;
+			temp->layers->x = layersPosition.x - (currentBB->w / 2);
+			temp->layers->y = layersPosition.y - (currentBB->h / 2);
+			//temp->layers->x = layersPosition.x;
+			//temp->layers->y = layersPosition.y;
 		}
 
 	}

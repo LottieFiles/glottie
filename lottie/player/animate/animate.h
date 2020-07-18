@@ -87,11 +87,16 @@ struct alignas(ALIGNSIZE) CompositeArray {
 	glm::mat4 rotate = glm::mat4(1.0f);
 	*/
 
+	glm::vec3 positionVec;
+	glm::vec3 scaleVec;
+
 	glm::mat4 transform = glm::mat4(1.0f);
 	glm::mat4 rotate = glm::mat4(1.0f);
 	glm::mat4 scale = glm::mat4(1.0f);
 
 	glm::mat4 precomputed = glm::mat4(1.0f);
+
+	glm::vec3 rotateAxisOffset;
 
 	float opacity = 1;
 

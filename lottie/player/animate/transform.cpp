@@ -517,7 +517,7 @@ struct VAOList* iterateShapesItem(struct ShapesItem* passedShapesItem, struct VA
 	return passedVAOL;
 }
 
-void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTransform, struct ShapesItem* passedShapesItem, bool isArray, bool isLayers, struct BoundingBox* currentBB) {
+void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTransform, struct ShapesItem* passedShapesItem, bool isArray, bool isLayers, struct BoundingBox* layersBB) {
 	bool pFound = false;
 	bool sFound = false;
 	bool rFound = false;
@@ -762,11 +762,19 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				tempRMatrix = glm::translate(identityMatrix, glm::vec3((currentBB->initX * -1), (currentBB->initY * -1), 0));
 			}*/
 			if (pCompFound) {
-				tempRMatrix = glm::translate(identityMatrix, glm::vec3((tempP.x * -1), (tempP.y * -1), tempP.z));
-			}
-			tempRMatrix = glm::rotate(tempRMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
-			if (pCompFound) {
-				tempRMatrix = glm::translate(tempRMatrix, glm::vec3((tempP.x), (tempP.y), tempP.z));
+				//if (isLayers) {
+				//	tempRMatrix = glm::translate(identityMatrix, glm::vec3(((tempP.x + layersBB->initXc + passedShapesItem->currentBB->initXc) * -1), ((tempP.y + layersBB->initYc + passedShapesItem->currentBB->initYc) * -1), 0));
+				//} else {
+					tempRMatrix = glm::translate(identityMatrix, glm::vec3(((tempP.x + passedShapesItem->currentBB->initXc) * -1), ((tempP.y + passedShapesItem->currentBB->initYc) * -1), 0));
+				//}
+				tempRMatrix = glm::rotate(tempRMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+				//if (isLayers) {
+				//	tempRMatrix = glm::translate(tempRMatrix, glm::vec3(((tempP.x + layersBB->initXc + passedShapesItem->currentBB->initXc)), ((tempP.y + layersBB->initYc + passedShapesItem->currentBB->initYc)), tempP.z));
+				//} else {
+					tempRMatrix = glm::translate(tempRMatrix, glm::vec3(((tempP.x + passedShapesItem->currentBB->initXc)), ((tempP.y + passedShapesItem->currentBB->initYc)), tempP.z));
+				//}
+			} else {
+				tempRMatrix = glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
 			}
 			/*if (currentBB->anchorX != 0 && currentBB->anchorY != 0) {
 				tempPMatrix = glm::translate(tempRMatrix, glm::vec3((currentBB->initX + currentBB->anchorX), (currentBB->initY + currentBB->anchorY), 0));
@@ -804,7 +812,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				animationSequence->vaol->start->prev = animationSequence->vaol;
 			}
 
-			if (isArray) {
+			if (isLayers) {
 				//EM_ASM_({console.log("---------------==============adding to array ");});
 				animationSequence->vaol = iterateShapesItem(passedShapesItem, animationSequence->vaol, passedTransform->composite, animationSequence, i, isLayers);
 			} else {
@@ -814,83 +822,11 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 
 		}
 
-
 		firstCycleDone = true;
 
 		if (animationSequence->next != NULL) {
 			animationSequence = animationSequence->next;
 		}
-
-		/*
-		continue;
-
-		if (animationSequence->start->next == NULL) {
-			continue;
-		}
-	
-		struct FrameCompositionRef* prevSequence;
-		prevSequence = animationSequence->prev;
-		if (prevSequence->vaol == NULL) {
-			continue;
-		}
-		EM_ASM_({console.log("---------------==============CHECKING ");});
-		prevSequence->vaol = prevSequence->vaol->start;
-	
-		bool prevExhausted = false;
-		bool vaoExists = false;
-	
-		while (! prevExhausted) {
-	
-			animationSequence->vaol = animationSequence->vaol->start;
-	
-			vaoExists = false;
-			bool currExhausted = false;
-			while (! currExhausted) {
-				if (prevSequence->vaol->vao == animationSequence->vaol->vao) {
-					vaoExists = true;
-					break;
-				}
-				if (animationSequence->vaol->next == NULL) {
-					currExhausted = true;
-				} else {
-					animationSequence->vaol = animationSequence->vaol->next;
-				}
-			}
-			animationSequence->vaol = animationSequence->vaol->start->prev;
-	
-	
-			if (! vaoExists) {
-				if (animationSequence->vaol == NULL) {
-					animationSequence->vaol = new VAOList;
-					animationSequence->vaol->start = animationSequence->vaol;
-					animationSequence->vaol->start->prev = animationSequence->vaol;
-				} else {
-					animationSequence->vaol->next = new VAOList;
-					animationSequence->vaol->next->start = animationSequence->vaol->start;
-					animationSequence->vaol->next->prev = animationSequence->vaol;
-					animationSequence->vaol->start->prev = animationSequence->vaol->next;
-					animationSequence->vaol = animationSequence->vaol->next;
-				}
-	
-				animationSequence->vaol->vao = prevSequence->vaol->vao;
-				animationSequence->vaol->frame = (i - 1);
-				animationSequence->vaol->idxSize = prevSequence->vaol->idxSize;
-				animationSequence->vaol->assigned = prevSequence->vaol->assigned;
-				//animationSequence->vaol->layersComposite = prevSequence->vaol->layersComposite;
-				//animationSequence->vaol->shapesComposite = prevSequence->vaol->shapesComposite;
-	
-			}
-	
-	
-			if (prevSequence->vaol->next == NULL) {
-				prevExhausted = true;
-			} else {
-				prevSequence->vaol = prevSequence->vaol->next;
-			}
-
-		}
-		*/
-
 
 	}
 
@@ -904,58 +840,6 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 }
 
 
-/*
-GLuint* unboundVAO;
-
-void addBoundVAO(GLuint* passedVAO) {
-	if (boundVAO == NULL) {
-		boundVAO = new VAOList;
-		boundVAO->start = boundVAO;
-	} else {
-		boundVAO->next = new VAOList;
-		boundVAO->next->prev = boundVAO;
-		boundVAO->next->start = boundVAO->start;
-	}
-	boundVAO->vao = passedVAO;
-}
-
-void buildVAO(struct Buffers* passedBuffers, bool addedToComposition) {
-	passedBuffers = passedBuffers->start;
-	bool exhausted = false;
-	GLuint* vao;
-
-	glGenVertexArraysOES(1, &vao);
-       	glBindVertexArrayOES(vao);
-
-	if (addedToComposition) {
-		addBoundVAO(vao);
-	} else {
-		unboundVAO = vao;
-	}
-
-	while (! exhausted) {
-		if (addedToComposition) {
-			if (! passedBuffers->addedToComposition) {
-			}
-		} else {
-			if (passedBuffers->addedToComposition) {
-			}
-		}
-		
-		if (passedBuffers == NULL) {
-			exhausted = true;
-		} else {
-			passedBuffers = passedBuffers->next;
-		}
-	}
-
-	if (addedToComposition) {
-		
-	} else {
-	}
-	glBindVertexArrayOES(0);
-}
-*/
 
 struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB) {
 	if (defaultTransformMatrix == NULL) {
@@ -977,7 +861,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3);
 		}
 		fillAnimation(passedShapesItem->transform->p, 1, passedShapesItem->currentBB, false);
-		//EM_ASM_({console.log("---------------===================TRANSFORM ENDS ");});
+		EM_ASM_({console.log("---------------===================TRANSFORM shapes position ENDS ");});
 		if (tempAOV->startTime < minTime || minTime == -1) {
 			minTime = tempAOV->startTime;
 		}
@@ -1041,7 +925,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 		fillCompositeAnimation(minTime, maxTime, passedShapesItem->transform, passedShapesItem, false, false, passedShapesItem->currentBB);
 		EM_ASM_({console.log("---------------===================TRANSFORM shapes done ");});
 	}
-	//EM_ASM_({console.log("---------------===================TRANSFORM done ");});
+	EM_ASM_({console.log("---------------===================TRANSFORM shapes done done ");});
 
 	return passedShapesItem->transform;
 }

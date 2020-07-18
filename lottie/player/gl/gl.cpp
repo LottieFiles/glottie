@@ -16,12 +16,34 @@ const GLchar* vertexSource =
     "uniform int isLayersPrecomputed; \n"
     "uniform mat4 shapesPrecomputed; \n"
     "uniform int isShapesPrecomputed; \n"
+    "uniform float rotateLayersAngle; \n"
+    "uniform vec3 rotateLayersAxisOffset; \n"
+    "uniform int rotateLayersAngleSet; \n"
+    "uniform float rotateShapesAngle; \n"
+    "uniform vec3 rotateShapesAxisOffset; \n"
+    "uniform int rotateShapesAngleSet; \n"
+    "vec4 quat_from_axis_angle(vec3 axis, float angle) \n"
+    "{ \n"
+    "  vec4 qr; \n"
+    "  float half_angle = (angle * 0.5) * 3.14159 / 180.0; \n"
+    "  qr.x = axis.x * sin(half_angle); \n"
+    "  qr.y = axis.y * sin(half_angle); \n"
+    "  qr.z = axis.z * sin(half_angle); \n"
+    "  qr.w = cos(half_angle); \n"
+    "  return qr; \n"
+    "} \n"
+    "vec3 rotate_vertex_position(vec3 position, vec3 axis, float angle) \n"
+    "{ \n"
+    "  vec4 q = quat_from_axis_angle(axis, angle); \n"
+    "  vec3 v = position.xyz; \n"
+    "  return v + 2.0 * cross(q.xyz, cross(q.xyz, v) + q.w * v); \n"
+    "} \n"
     "void main() \n"
     "{ \n"
     "    if (shapesPosition == 1 && layersPosition == 1) {\n"
     "      gl_Position = ((layersRotate * shapesRotate) * (layersScale * shapesScale) * (layersTransform * shapesTransform)) * position; \n"
     "    } else if (layersPosition == 1) {\n"
-    "      gl_Position = (layersTransform * (layersScale * (layersRotate * position))); \n"
+    "      gl_Position = ((layersScale * (layersTransform * position))); \n"
     "    } else if (shapesPosition == 1) {\n"
     "      gl_Position = (shapesRotate * shapesScale * shapesTransform) * position; \n"
     "    } else {\n"
@@ -232,6 +254,22 @@ glm::mat4 identityMatrix = glm::mat4(1.0f);
 		unsigned int shapesPrecomputedLoc;
 		unsigned int isShapesPrecomputedLoc;
 
+		glm::vec3 lastRotateLayersAxisOffset;
+		float lastRotateLayersAngle;
+		unsigned int lastRotateLayersAngleSet;
+
+		glm::vec3 lastRotateShapesAxisOffset;
+		float lastRotateShapesAngle;
+		unsigned int lastRotateShapesAngleSet;
+
+		unsigned int rotateShapesAngleLoc;
+		unsigned int rotateShapesAngleSetLoc;
+		unsigned int rotateShapesAxisOffsetLoc;
+
+		unsigned int rotateLayersAngleLoc;
+		unsigned int rotateLayersAngleSetLoc;
+		unsigned int rotateLayersAxisOffsetLoc;
+
 		unsigned int opacityValue;
 
 
@@ -300,6 +338,13 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		shapesPrecomputedLoc = glGetUniformLocation(mainShader, "shapesPrecomputed");
 		isShapesPrecomputedLoc = glGetUniformLocation(mainShader, "isShapesPrecomputed");
 
+		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle");
+		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet");
+		rotateLayersAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateLayersAxisOffset");
+
+		rotateShapesAngleLoc = glGetUniformLocation(mainShader, "rotateShapesAngle");
+		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet");
+		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset");
 
 		opacityValue = glGetUniformLocation(mainShader, "objectOpacity");
 
@@ -386,7 +431,16 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						glUniformMatrix4fv(layersRotateLoc, 1, GL_FALSE, glm::value_ptr(lastLayersR));
 						glUniformMatrix4fv(layersScaleLoc, 1, GL_FALSE, glm::value_ptr(lastLayersS));
 						glUniformMatrix4fv(layersPrecomputedLoc, 1, GL_FALSE, glm::value_ptr(lastLayersPrecomputed));
-	
+
+						if (currentVAOL->layersComposite->rotateSet) {
+							lastRotateLayersAngleSet = 1;
+							lastRotateLayersAngle = currentVAOL->layersComposite->rotateAngle;
+							lastRotateLayersAxisOffset = currentVAOL->layersComposite->rotateAxisOffset;
+						}
+						glUniform1i(rotateLayersAngleSetLoc, lastRotateLayersAngleSet);
+						glUniform1f(rotateLayersAngleLoc, lastRotateLayersAngle);
+						glUniform3fv(rotateLayersAxisOffsetLoc, 1, glm::value_ptr(lastRotateLayersAxisOffset));
+
 						glUniform1i(layersPositionLoc, 1);
 						glUniform1i(isLayersPrecomputedLoc, 1);
 	
@@ -406,6 +460,15 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						glUniformMatrix4fv(shapesRotateLoc, 1, GL_FALSE, glm::value_ptr(lastShapesR));
 						glUniformMatrix4fv(shapesScaleLoc, 1, GL_FALSE, glm::value_ptr(lastShapesS));
 						glUniformMatrix4fv(shapesPrecomputedLoc, 1, GL_FALSE, glm::value_ptr(lastShapesPrecomputed));
+			
+						if (currentVAOL->shapesComposite->rotateSet) {
+							lastRotateShapesAngleSet = 1;
+							lastRotateShapesAngle = currentVAOL->shapesComposite->rotateAngle;
+							lastRotateShapesAxisOffset = currentVAOL->shapesComposite->rotateAxisOffset;
+						}
+						glUniform1i(rotateShapesAngleSetLoc, lastRotateShapesAngleSet);
+						glUniform1f(rotateShapesAngleLoc, lastRotateShapesAngle);
+						glUniform3fv(rotateShapesAxisOffsetLoc, 1, glm::value_ptr(lastRotateShapesAxisOffset));
 	
 						glUniform1i(shapesPositionLoc, 1);
 						glUniform1i(isShapesPrecomputedLoc, 1);
