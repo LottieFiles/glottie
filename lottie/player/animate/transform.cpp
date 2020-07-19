@@ -762,19 +762,11 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				tempRMatrix = glm::translate(identityMatrix, glm::vec3((currentBB->initX * -1), (currentBB->initY * -1), 0));
 			}*/
 			if (pCompFound) {
-				//if (isLayers) {
-				//	tempRMatrix = glm::translate(identityMatrix, glm::vec3(((tempP.x + layersBB->initXc + passedShapesItem->currentBB->initXc) * -1), ((tempP.y + layersBB->initYc + passedShapesItem->currentBB->initYc) * -1), 0));
-				//} else {
-					tempRMatrix = glm::translate(identityMatrix, glm::vec3(((tempP.x + passedShapesItem->currentBB->initXc) * -1), ((tempP.y + passedShapesItem->currentBB->initYc) * -1), 0));
-				//}
-				tempRMatrix = glm::rotate(tempRMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
-				//if (isLayers) {
-				//	tempRMatrix = glm::translate(tempRMatrix, glm::vec3(((tempP.x + layersBB->initXc + passedShapesItem->currentBB->initXc)), ((tempP.y + layersBB->initYc + passedShapesItem->currentBB->initYc)), tempP.z));
-				//} else {
-					tempRMatrix = glm::translate(tempRMatrix, glm::vec3(((tempP.x + passedShapesItem->currentBB->initXc)), ((tempP.y + passedShapesItem->currentBB->initYc)), tempP.z));
-				//}
+				tempRMatrix = glm::translate(identityMatrix, glm::vec3(((tempP.x + passedShapesItem->currentBB->initXc) * -1), ((tempP.y + passedShapesItem->currentBB->initYc) * -1), 0))
+						* glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f))
+						* glm::translate(identityMatrix, glm::vec3(((tempP.x + passedShapesItem->currentBB->initXc)), ((tempP.y + passedShapesItem->currentBB->initYc)), tempP.z));
 			} else {
-				tempRMatrix = glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+				//tempRMatrix = glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
 			}
 			/*if (currentBB->anchorX != 0 && currentBB->anchorY != 0) {
 				tempPMatrix = glm::translate(tempRMatrix, glm::vec3((currentBB->initX + currentBB->anchorX), (currentBB->initY + currentBB->anchorY), 0));
@@ -782,6 +774,8 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				tempPMatrix = glm::translate(tempRMatrix, glm::vec3(currentBB->initX, currentBB->initY, 0));
 			}*/
 			passedTransform->composite->rotate = tempRMatrix;
+			passedTransform->composite->rotateAngle = tempAngle;
+			passedTransform->composite->rotateAxisOffset = glm::vec3(passedShapesItem->currentBB->anchorX, passedShapesItem->currentBB->anchorY, passedShapesItem->currentBB->anchorZ);
 		}
 
 		if (sCompFound) {

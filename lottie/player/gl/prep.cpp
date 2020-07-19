@@ -186,6 +186,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
 			//prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, passedShapesItem->order, passedPropertiesShapeProp, currentBB, currentShapesBB);
 			universalOrder++;
+			currentShapesBB->anchorZ = universalOrder;
 			prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, universalOrder, passedPropertiesShapeProp, currentBB, currentShapesBB);
 			//EM_ASM({console.log("tracing 5 ");});
 			//if (tempTriangulateReturn == NULL) {return 0;}

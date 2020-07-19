@@ -32,23 +32,25 @@ const GLchar* vertexSource =
     "  qr.w = cos(half_angle); \n"
     "  return qr; \n"
     "} \n"
-    "vec3 rotate_vertex_position(vec3 position, vec3 axis, float angle) \n"
+    "vec3 rotate_vertex_position(vec3 passedPosition, vec3 axis, float angle) \n"
     "{ \n"
     "  vec4 q = quat_from_axis_angle(axis, angle); \n"
-    "  vec3 v = position.xyz; \n"
+    "  vec3 v = passedPosition.xyz; \n"
     "  return v + 2.0 * cross(q.xyz, cross(q.xyz, v) + q.w * v); \n"
     "} \n"
     "void main() \n"
     "{ \n"
-    "    if (shapesPosition == 1 && layersPosition == 1) {\n"
-    "      gl_Position = ((layersRotate * shapesRotate) * (layersScale * shapesScale) * (layersTransform * shapesTransform)) * position; \n"
-    "    } else if (layersPosition == 1) {\n"
-    "      gl_Position = ((layersScale * (layersTransform * position))); \n"
-    "    } else if (shapesPosition == 1) {\n"
-    "      gl_Position = (shapesRotate * shapesScale * shapesTransform) * position; \n"
-    "    } else {\n"
-    "      gl_Position = position; \n"
-    "    }\n"
+    "  vec4 glpre; \n"
+    "  if (shapesPosition == 1 && layersPosition == 1) {\n"
+    "    gl_Position = ((layersRotate * shapesRotate) * (layersScale * shapesScale) * (layersTransform * shapesTransform)) * position; \n"
+    "  } else if (layersPosition == 1) {\n"
+    "    glpre = (layersScale * layersTransform) * position; \n"
+    "    gl_Position = layersRotate * glpre; \n"
+    "  } else if (shapesPosition == 1) {\n"
+    "    gl_Position = (shapesRotate * shapesScale * shapesTransform) * position; \n"
+    "  } else {\n"
+    "    gl_Position = position; \n"
+    "  }\n"
     "  vcolors = vec4(color.xyz, objectOpacity); \n"
     "} \n";
 
@@ -60,6 +62,15 @@ const GLchar* fragmentSource =
     "  gl_FragColor = vcolors; \n"
     "} \n";
 
+
+//    "  vec4 glpre; \n"
+//    "  if (rotateShapesAngleSet == 1) { \n"
+//    "    glpre = vec4(rotate_vertex_position(vec3(glpre.xyz), vec3(0, 0, 1), rotateShapesAngle), 1.0); \n"
+//    "  } \n"
+//    "  if (rotateLayersAngleSet == 1) { \n"
+//    "    glpre = vec4(rotate_vertex_position(vec3(glpre.xyz), vec3(0, 0, 1), rotateLayersAngle), 1.0); \n"
+//    "  } \n"
+//    "  gl_Position = glpre;\n"
 
 
 //    "  if (isLayersPrecomputed == 1) {\n"
@@ -364,6 +375,12 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		lastLayersO = 1.0f;
 
 		bool exhausted = false;
+
+		lastRotateLayersAngleSet = 0;
+		lastRotateShapesAngleSet = 0;
+
+		glUniform1i(rotateLayersAngleSetLoc, lastRotateLayersAngleSet);
+		glUniform1i(rotateShapesAngleSetLoc, lastRotateShapesAngleSet);
 
 		glUniform1f(opacityValue, 1.0f);
 		glUniform1i(shapesPositionLoc, 0);
