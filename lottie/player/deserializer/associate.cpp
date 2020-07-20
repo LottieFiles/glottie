@@ -100,7 +100,7 @@ int associateKeyValues() {
 	if (theScope->scope == _animation) {
 		//EM_ASM({console.log("//----------------> filling animation");});
 		fillAnimation();
-	} else if (theScope->scope == _animation) {
+	} else if (theScope->scope == _layers) {
 		fillLayers(currentLayers);
 	} else if (theScope->scope == _ks) {
 		if (theScope->prev->scope == _shapes && theScope->prev->prev->scope == _layers) { // PropertiesShape

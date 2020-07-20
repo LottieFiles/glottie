@@ -25,11 +25,11 @@ struct alignas(ALIGNSIZE) Layers {
         string nm; //name
 
 	int shapesItemCount = 0; // internal use - amount of shapesItems in this object
-        int ind; // index
+        int ind = -1; // index
 
         int sr = 1; //stretch
         int hasMask; // has masks
-        int parent; //parent
+        int parent = -1; //parent
         int st; // start time
         int op; // out point
         int ip; // in point
@@ -38,6 +38,8 @@ struct alignas(ALIGNSIZE) Layers {
         int bm; //blendmode
         int ddd;
 
+	int minTime = -1;
+	int maxTime = -1;
       
 	int id;
 

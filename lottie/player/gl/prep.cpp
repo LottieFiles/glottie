@@ -408,6 +408,8 @@ void findLayersTransform(struct Layers* passedLayers) {
 			passedLayers->currentBB->translatedX = tempPos->layers->x;
 			passedLayers->currentBB->translatedY = tempPos->layers->y;
 			currentLayersTransformReturn = fillTransformLayers(passedLayers, passedLayers->currentBB);
+			passedLayers->minTime = currentLayersTransformReturn->minTime;
+			passedLayers->maxTime = currentLayersTransformReturn->maxTime;
 			currentLayersTransform = currentLayersTransformReturn->transform;
 		}
 		if (currentLayersTransform != NULL && currentLayersTransform->p != NULL && currentLayersTransform->p->startTime == 0) {
@@ -470,9 +472,9 @@ int prepLayers(struct Layers* passedLayers) {
 				passedLayers->currentBB->initYc = passedLayers->currentBB->initY + (passedLayers->currentBB->h / 2);
 			}
 			prepShapesItem(passedLayers->shapes->start, NULL, true, passedLayers->currentBB);
-			if (passedLayers->ks != NULL) {
-				composeTransformLayers(passedLayers, currentLayersTransformReturn->minTime, currentLayersTransformReturn->maxTime);
-			}
+			//if (passedLayers->ks != NULL) {
+			//	composeTransformLayers(passedLayers, currentLayersTransformReturn->minTime, currentLayersTransformReturn->maxTime);
+			//}
 		}
 		if (passedLayers->next == NULL) {
 			exhausted = true;

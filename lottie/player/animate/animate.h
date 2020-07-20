@@ -132,6 +132,8 @@ struct alignas(ALIGNSIZE) Transform {
 	int endTimeO = -1;
 	int startTimeR = -1;
 	int endTimeR = -1;
+
+	int frame = -1;
 };
 
 struct alignas(ALIGNSIZE) TransformAOV {

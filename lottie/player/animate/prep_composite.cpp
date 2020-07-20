@@ -1,5 +1,5 @@
 
-int parentLayers(struct Layers* passedLayers, bool findIndex, int indexToFind, struct Layers* parentRef) {
+int prepTransformLayers(struct Layers* passedLayers) {
 	//EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- LAYERS found pre 1.0");});
 
 	if (passedLayers == NULL || passedLayers->shapes == NULL) {
@@ -12,17 +12,9 @@ int parentLayers(struct Layers* passedLayers, bool findIndex, int indexToFind, s
 	passedLayers = passedLayers->start;
 	bool exhausted = false;
 	while (! exhausted) {
-		if (! findIndex) {
-			if (passedLayers->parent >= 0) {
-				//EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- searching for parent " + $0);}, passedLayers->parent);
-				parentLayers(passedLayers, true, passedLayers->parent, passedLayers->parentLayers);
-			}
-		} else {
-			if (passedLayers->ind == indexToFind) {
-				//EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- parent found " + $0);}, passedLayers->parent);
-				parentRef = passedLayers;
-				return 1;
-			}
+		if (passedLayers->ks != NULL) {
+			EM_ASM({console.log("composition prepping ");});
+			composeTransformLayers(passedLayers, passedLayers->minTime, passedLayers->maxTime);
 		}
 
 		if (passedLayers->next == NULL) {
@@ -36,7 +28,7 @@ int parentLayers(struct Layers* passedLayers, bool findIndex, int indexToFind, s
 	return 1;
 }
 
-int parentAssets(struct Assets* passedAssets) {
+int prepTransformAssets(struct Assets* passedAssets) {
 	if (passedAssets == NULL) {
 		return 0;
 	}
@@ -47,7 +39,7 @@ int parentAssets(struct Assets* passedAssets) {
 	while (! exhausted) {
 		//EM_ASM({console.log("PRECOMP found");});
 		if (passedAssets->precomps != NULL) {
-			parentLayers(passedAssets->precomps->start, false, 0, NULL);
+			prepTransformLayers(passedAssets->precomps->start);
 		}
 		
 		if (passedAssets->next == NULL) {
@@ -61,7 +53,7 @@ int parentAssets(struct Assets* passedAssets) {
 	return 1;
 }
 
-int parentShapes() {
+int prepTransformShapes() {
 	//layersPosition.x = 0;
 	//layersPosition.y = 0;
 	//layersAnchor.x = 0;
@@ -71,11 +63,11 @@ int parentShapes() {
 
 	if (theAnimation->assets != NULL) {
 		//EM_ASM({console.log("ASSETS found");});
-		parentAssets(theAnimation->assets);
+		prepTransformAssets(theAnimation->assets);
 	}
 	if (theAnimation->layers != NULL) {
 		//EM_ASM({console.log("ANIMLAYERS found");});
-		parentLayers(theAnimation->layers, false, -1, NULL);
+		prepTransformLayers(theAnimation->layers);
 	}
 	//EM_ASM({console.log("ALL done");});
 

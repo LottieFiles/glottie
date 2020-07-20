@@ -762,9 +762,16 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				tempRMatrix = glm::translate(identityMatrix, glm::vec3((currentBB->initX * -1), (currentBB->initY * -1), 0));
 			}*/
 			if (pCompFound) {
+				/*
 				tempRMatrix = glm::translate(identityMatrix, glm::vec3(((tempP.x + passedShapesItem->currentBB->initXc) * -1), ((tempP.y + passedShapesItem->currentBB->initYc) * -1), 0))
 						* glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f))
 						* glm::translate(identityMatrix, glm::vec3(((tempP.x + passedShapesItem->currentBB->initXc)), ((tempP.y + passedShapesItem->currentBB->initYc)), tempP.z));
+				*/
+				//tempRMatrix = glm::translate(identityMatrix, glm::vec3(tempP.x, tempP.y, 0))
+				//		* glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f))
+				//		* glm::translate(identityMatrix, glm::vec3((tempP.x * -1), (tempP.y * -1), 0));
+				tempRMatrix = glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+				//tempRMatrix = identityMatrix;
 			} else {
 				//tempRMatrix = glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
 			}
@@ -1010,6 +1017,16 @@ struct FillTransformReturn* fillTransformLayers(struct Layers* passedLayers, str
 	currentLayersTransformReturn->maxTime = maxTime;
 
 	return currentLayersTransformReturn;
+}
+
+void composeParentTransformLayers(struct Layers* passedLayers, struct Layers* parentLayers) {
+	if (parentLayers->parent != NULL) {
+		composeParentTransformLayers(parentLayers, parentLayers->parent);
+	}
+
+	bool exhausted = false;
+	while (! exhausted) {
+	}
 }
 
 void composeTransformLayers(struct Layers* passedLayers, int minTime, int maxTime) {

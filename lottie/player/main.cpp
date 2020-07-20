@@ -62,7 +62,9 @@ alignas(256) GLint* posAttrib[1024];
 #include "deserializer/deserializer.cpp"
 #include "animate/prep_anim.cpp"
 #include "gl/gl.cpp"
+#include "gl/parentage.cpp"
 #include "gl/prep.cpp"
+#include "gl/prep_transform.cpp"
 
 extern "C" {
 
@@ -92,8 +94,12 @@ void loadJson(char* buffer, int theLength) {
 	EM_ASM({console.log("////> gl init done");});
 
 	glInitShaders(0);
+	EM_ASM({console.log("////> start of parenting shapes");});
+	parentShapes();
 	EM_ASM({console.log("////> start of prepping shapes");});
 	prepShapes();
+	EM_ASM({console.log("////> start of prepping transforms for shapes");});
+	prepTransformShapes();
 	EM_ASM({console.log("////> done prepping shapes " + $0);}, theAnimation->frameTimeMS);
 	redrawRequired = true;
 
