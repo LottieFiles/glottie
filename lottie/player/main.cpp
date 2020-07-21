@@ -65,6 +65,7 @@ alignas(256) GLint* posAttrib[1024];
 #include "gl/parentage.cpp"
 #include "gl/prep.cpp"
 #include "gl/prep_transform.cpp"
+//#include "animate/prep_parent.cpp"
 
 extern "C" {
 
@@ -98,8 +99,15 @@ void loadJson(char* buffer, int theLength) {
 	parentShapes();
 	EM_ASM({console.log("////> start of prepping shapes");});
 	prepShapes();
-	EM_ASM({console.log("////> start of prepping transforms for shapes");});
+	EM_ASM({console.log("////> start of prepping transforms for parent layers");});
+
+//	prepParentShapes();
+//	EM_ASM({console.log("////> start of prepping transforms for shapes");});
+
 	prepTransformShapes();
+	EM_ASM({console.log("////> start of prepping transforms for shapes");});
+	matchParentVAO();
+
 	EM_ASM({console.log("////> done prepping shapes " + $0);}, theAnimation->frameTimeMS);
 	redrawRequired = true;
 
@@ -150,12 +158,6 @@ void loadJson(char* buffer, int theLength) {
 	emscripten_set_main_loop(mainloop, theAnimation->fr, 0);
 }
 
-
-
-
-int simpleFunction(int someInt) {
-	return someInt + someInt;
-}
 
 int doMain(char someChar[]) {
 	/*

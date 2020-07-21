@@ -366,7 +366,7 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			getBBPropShape(passedShapesItem->ks->start, passedShapesItem->currentBB);
 
 			prepPropertiesShape(passedShapesItem->ks, passedShapesItem, currentBB, passedShapesItem->currentBB);
-			currentShapesTransform = fillTransformShapes(passedShapesItem, currentBB);
+			currentShapesTransform = fillTransformShapes(passedShapesItem, currentBB, NULL, NULL);
 		}
 
 		passedShapesItem->baseTransform = currentBaseTransform;
@@ -407,7 +407,7 @@ void findLayersTransform(struct Layers* passedLayers) {
 			passedLayers->currentBB->initY = tempPos->layers->y;
 			passedLayers->currentBB->translatedX = tempPos->layers->x;
 			passedLayers->currentBB->translatedY = tempPos->layers->y;
-			currentLayersTransformReturn = fillTransformLayers(passedLayers, passedLayers->currentBB);
+			currentLayersTransformReturn = fillTransformLayers(passedLayers, passedLayers->currentBB, passedLayers, passedLayers->parentLayers);
 			passedLayers->minTime = currentLayersTransformReturn->minTime;
 			passedLayers->maxTime = currentLayersTransformReturn->maxTime;
 			currentLayersTransform = currentLayersTransformReturn->transform;

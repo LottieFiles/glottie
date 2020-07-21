@@ -27,6 +27,10 @@ struct alignas(ALIGNSIZE) VAOList {
 	struct CompositeArray* layersComposite = NULL;
 	struct CompositeArray* shapesComposite = NULL;
 
+	struct Layers* currentLayers = NULL;
+	struct Layers* parentLayers = NULL;
+	struct VAOList* parentVAOL = NULL;
+
 	GLuint *vao = NULL;
 	int idxSize;
 
