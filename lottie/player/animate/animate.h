@@ -19,6 +19,14 @@ struct alignas(ALIGNSIZE) TransformMatrix {
 	int endTime = -1;
 } *defaultTransformMatrix = NULL;
 
+struct alignas(ALIGNSIZE) VAOChildren {
+	struct VAOChildren* start = NULL;
+	struct VAOChildren* prev = NULL;
+	struct VAOChildren* next = NULL;
+
+	struct VAOList* vaol = NULL;
+};
+
 struct alignas(ALIGNSIZE) VAOList {
 	struct VAOList* start = NULL;
 	struct VAOList* prev = NULL;
@@ -30,6 +38,8 @@ struct alignas(ALIGNSIZE) VAOList {
 	struct Layers* currentLayers = NULL;
 	struct Layers* parentLayers = NULL;
 	struct VAOList* parentVAOL = NULL;
+
+	struct VAOChildren* children = NULL;
 
 	GLuint *vao = NULL;
 	int idxSize;

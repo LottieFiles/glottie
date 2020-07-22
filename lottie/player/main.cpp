@@ -99,13 +99,13 @@ void loadJson(char* buffer, int theLength) {
 	parentShapes();
 	EM_ASM({console.log("////> start of prepping shapes");});
 	prepShapes();
-	EM_ASM({console.log("////> start of prepping transforms for parent layers");});
 
-//	prepParentShapes();
 //	EM_ASM({console.log("////> start of prepping transforms for shapes");});
+//	prepParentShapes();
 
-	prepTransformShapes();
 	EM_ASM({console.log("////> start of prepping transforms for shapes");});
+	prepTransformShapes();
+	EM_ASM({console.log("////> matching VAOs");});
 	matchParentVAO();
 
 	EM_ASM({console.log("////> done prepping shapes " + $0);}, theAnimation->frameTimeMS);

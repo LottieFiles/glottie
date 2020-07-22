@@ -15,12 +15,12 @@ int parentLayers(struct Layers* passedLayers, bool findIndex, int indexToFind, s
 		if (! findIndex) {
 			if (passedLayers->parent >= 0) {
 				//EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- searching for parent " + $0);}, passedLayers->parent);
-				parentLayers(passedLayers, true, passedLayers->parent, passedLayers->parentLayers);
+				parentLayers(passedLayers, true, passedLayers->parent, passedLayers);
 			}
 		} else {
 			if (passedLayers->ind == indexToFind) {
-				//EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- parent found " + $0);}, passedLayers->parent);
-				parentRef = passedLayers;
+				//EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- parent found " + $0);}, passedLayers->ind);
+				parentRef->parentLayers = passedLayers;
 				return 1;
 			}
 		}

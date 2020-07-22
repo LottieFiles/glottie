@@ -1159,6 +1159,27 @@ void composeParentTransformLayers(struct Layers* passedLayers, struct Layers* pa
 }
 */
 
+void addChildToVAOL(struct VAOList* baseVAOL, struct VAOList* childVAOL) {
+	if (baseVAOL->children == NULL) {
+		baseVAOL->children = new VAOChildren;
+		baseVAOL->children->start = baseVAOL->children;
+		baseVAOL->children->start->prev = baseVAOL->children;
+	} else {
+		while (baseVAOL->children->next != NULL) {
+			baseVAOL->children = baseVAOL->children->next;
+		}
+		baseVAOL->children->next = new VAOChildren;
+		baseVAOL->children->next->start = baseVAOL->children->start;
+		baseVAOL->children->next->prev = baseVAOL->children;
+		baseVAOL->children->start->prev = baseVAOL->children->next;
+
+		baseVAOL->children = baseVAOL->children->next;
+	}
+
+				EM_ASM_({console.log("---------------==== CHILD added ");});
+	baseVAOL->children->vaol = childVAOL;
+}
+
 void matchParentVAO() {
 	animationSequence = animationSequence->start;
 
@@ -1167,24 +1188,29 @@ void matchParentVAO() {
 	bool exhausted = false;
 	bool baseExhausted = false;
 	bool refExhausted = false;
+	//EM_ASM_({console.log("---------------==== matching - starting iteration ");});
 	while (! exhausted) {
 	
 		baseExhausted = false;
 		baseVAOL = animationSequence->vaol->start;	
+		//EM_ASM_({console.log("---------------==== matching - starting secondary iteration ");});
 		while (! baseExhausted) {
+			if (baseVAOL == NULL) {
+				break;
+			}
 
-			if (baseVAOL->parentLayers != NULL) {
-				EM_ASM_({console.log("---------------==== parent Layer in vaol found ");});
+			if (baseVAOL != NULL && baseVAOL->parentLayers != NULL) {
 				refExhausted = false;
 				refVAOL = animationSequence->vaol->start;
 
 				while (! refExhausted) {
 					if (baseVAOL->parentLayers == refVAOL->currentLayers) {
+						EM_ASM_({console.log("---------------==== corresponding parent found ");});
 						baseVAOL->parentVAOL = refVAOL;
-						break;
+						addChildToVAOL(baseVAOL->parentVAOL, refVAOL);
 					}
 
-					if (refVAOL->next != NULL) {
+					if (refVAOL->next == NULL) {
 						refExhausted = true;
 					} else {
 						refVAOL = refVAOL->next;
@@ -1192,7 +1218,7 @@ void matchParentVAO() {
 				}
 			}
 
-			if (baseVAOL->next != NULL) {
+			if (baseVAOL->next == NULL) {
 				baseExhausted = true;
 			} else {
 				baseVAOL = baseVAOL->next;
@@ -1205,6 +1231,7 @@ void matchParentVAO() {
 			animationSequence = animationSequence->next;
 		}
 	}
+	EM_ASM_({console.log("---------------==== matching DONE ");});
 }
 
 void composeTransformLayers(struct Layers* passedLayers, int minTime, int maxTime) {
