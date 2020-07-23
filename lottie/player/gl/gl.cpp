@@ -1,3 +1,6 @@
+
+#include "assignAttributeNames.cpp"
+
 // Shader sources
 const GLchar* vertexSource =
     "attribute vec4 position; \n"
@@ -323,36 +326,34 @@ glm::mat4 identityMatrix = glm::mat4(1.0f);
 		struct CompositionList* layersCL = NULL;
 
 
-		layersTransformLoc = glGetUniformLocation(mainShader, getCString("layersTransform[" + std::to_string(passedIndex) + "]"));
 
-const char* getCString (std::string passedString) {
-	return passedString.c_str();
-}
 
 void associateShaderAttributes(int passedIndex) {
 
-		layersTransformLoc = glGetUniformLocation(mainShader, getCString("layersTransform[" + std::to_string(passedIndex) + "]"));
-		shapesTransformLoc = glGetUniformLocation(mainShader, getCString("shapesTransform[" + std::to_string(passedIndex) + "]"));
-		layersRotateLoc = glGetUniformLocation(mainShader, getCString("layersRotate[" + std::to_string(passedIndex) + "]"));
-		shapesRotateLoc = glGetUniformLocation(mainShader, getCString("shapesRotate[" + std::to_string(passedIndex) + "]"));
-		layersScaleLoc = glGetUniformLocation(mainShader, getCString("layersScale[" + std::to_string(passedIndex) + "]"));
-		shapesScaleLoc = glGetUniformLocation(mainShader, getCString("shapesScale[" + std::to_string(passedIndex) + "]"));
+		assignAttributeNames(passedIndex);
 
-		layersPositionSetLoc = glGetUniformLocation(mainShader, getCString("layersPositionSet[" + std::to_string(passedIndex) + "]"));
-		shapesPositionSetLoc = glGetUniformLocation(mainShader, getCString("shapesPositionSet[" + std::to_string(passedIndex) + "]"));
+		layersTransformLoc = glGetUniformLocation(mainShader, __layersTransform);
+		shapesTransformLoc = glGetUniformLocation(mainShader, __shapesTransform);
+		layersRotateLoc = glGetUniformLocation(mainShader, __layersRotate);
+		shapesRotateLoc = glGetUniformLocation(mainShader, __shapesRotate);
+		layersScaleLoc = glGetUniformLocation(mainShader, __layersScale);
+		shapesScaleLoc = glGetUniformLocation(mainShader, __shapesScale);
+
+		layersPositionSetLoc = glGetUniformLocation(mainShader, __layersPositionSet);
+		shapesPositionSetLoc = glGetUniformLocation(mainShader, __shapesPositionSet);
 
 
-		rotateLayersAngleLoc = glGetUniformLocation(mainShader, getCString("rotateLayersAngle[" + std::to_string(passedIndex) + "]"));
-		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, getCString("rotateLayersAngleSet[" + std::to_string(passedIndex) + "]"));
-		rotateLayersAxisOffsetLoc = glGetUniformLocation(mainShader, getCString("rotateLayersAxisOffset[" + std::to_string(passedIndex) + "]"));
+		rotateLayersAngleLoc = glGetUniformLocation(mainShader, __rotateLayersAngle);
+		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, __rotateLayersAngleSet);
+		rotateLayersAxisOffsetLoc = glGetUniformLocation(mainShader, __rotateLayersAxisOffset);
 
-		rotateShapesAngleLoc = glGetUniformLocation(mainShader, getCString("rotateShapesAngle[" + std::to_string(passedIndex) + "]"));
-		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, getCString("rotateShapesAngleSet[" + std::to_string(passedIndex) + "]"));
-		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, getCString("rotateShapesAxisOffset[" + std::to_string(passedIndex) + "]"));
+		rotateShapesAngleLoc = glGetUniformLocation(mainShader, __rotateShapesAngle);
+		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, __rotateShapesAngleSet);
+		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, __rotateShapesAxisOffset);
 
-		opacityValue = glGetUniformLocation(mainShader, getCString("objectOpacity[" + std::to_string(passedIndex) + "]"));
+		opacityValueLoc = glGetUniformLocation(mainShader, __opacityValue);
 
-		preAnimationLoc = glGetUniformLocation(mainShader, "preAnimation");
+		preAnimationLoc = glGetUniformLocation(mainShader, __preAnimation);
 
 }
 
@@ -418,9 +419,9 @@ void pushShaderAttributes(struct VAOList* passedVAOL, int passedIndex) {
 					}
 	
 					if (lastLayersO < lastShapesO) {
-						glUniform1f(opacityValue, lastLayersO);
+						glUniform1f(opacityValueLoc, lastLayersO);
 					} else {
-						glUniform1f(opacityValue, lastShapesO);	
+						glUniform1f(opacityValueLoc, lastShapesO);	
 					}
 	
 
