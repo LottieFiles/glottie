@@ -41,7 +41,7 @@ const GLchar* vertexSource =
     "void main() \n"
     "{ \n"
     "  vec4 glpre; \n"
-    "  gl_Position = glpre; \n"
+    "  gl_Position = position; \n"
     "  vcolors = vec4(color.xyz, objectOpacity[0]); \n"
     "} \n";
 
@@ -313,7 +313,7 @@ glm::mat4 identityMatrix = glm::mat4(1.0f);
 		bool VAOLExhausted = false;
 		bool parentExhausted = false;
 
-		struct Buffers* tempBuffers = lastBuffersCreated->start->prev;
+		struct Buffers* tempBuffers;
 
 		bool _firstCycleDone = false;
 		int layersPositionSet = 0;
@@ -508,6 +508,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		glUniform1i(shapesPositionSetLoc, 0);
 		glUniform1i(layersPositionSetLoc, 0);
 		glUniform1i(preAnimationLoc, 1);
+		glUniform1f(opacityValueLoc, 1.0f);
 
 		while (! VAOLExhausted) {
 			//glUniform1i(isLayersPrecomputedLoc, 0);
