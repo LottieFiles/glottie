@@ -1,11 +1,15 @@
 
-#include "assignAttributeNames.cpp"
+//#include "assignAttributeNames.cpp"
+
+#include "vertexShader.cpp"
 
 // Shader sources
+/*
 const GLchar* vertexSource =
     "attribute vec4 position; \n"
     "attribute vec4 color; \n"
     "varying vec4 vcolors; \n"
+    "uniform int transformationsCount; \n"
     "uniform int preAnimation; \n"
     "uniform int layersPositionSet[16]; \n"
     "uniform int shapesPositionSet[16]; \n"
@@ -41,9 +45,26 @@ const GLchar* vertexSource =
     "void main() \n"
     "{ \n"
     "  vec4 glpre; \n"
-    "  gl_Position = position; \n"
+    "  vec4 gltemp; \n"
+    "  if (preAnimation == 1) { \n"
+    "    gl_Position = position; \n"
+    "  } else { \n"
+    "    glpre = position; \n"
+    "    for (int i = 0; i < int(transformationsCount); i++) { \n"
+    "      int counter = i; \n"
+    "      if (shapesPositionSet[counter] == 1 && layersPositionSet[counter] == 1) { \n"
+    "        gltemp = ((layersRotate[counter] * shapesRotate[counter]) * (layersScale[counter] * shapesScale[counter]) * (layersTransform[counter] * shapesTransform[counter])) * glpre; \n"
+    "      } else if (layersPositionSet[counter] == 1) {\n"
+    "        gltemp = layersRotate[counter] * ((layersScale[counter] * layersTransform[counter]) * glpre); \n"
+    "      } else if (shapesPositionSet[counter] == 1) {\n"
+    "        gltemp = (shapesRotate[counter] * shapesScale[counter] * shapesTransform[counter]) * glpre; \n"
+    "      } \n"
+    "    } \n"
+    "    gl_Position = gltemp; \n"
+    "  } \n"
     "  vcolors = vec4(color.xyz, objectOpacity[0]); \n"
     "} \n";
+*/
 
 const GLchar* fragmentSource =
     "precision mediump float; \n"
@@ -54,6 +75,8 @@ const GLchar* fragmentSource =
     "} \n";
 
 /*
+
+
     "  if (preAnimation == 1) { \n"
     "    if (shapesPositionSet[0] == 1 && layersPositionSet[0] == 1) { \n"
     "      glpre = ((layersRotate[0] * shapesRotate[0]) * (layersScale[0] * shapesScale[0]) * (layersTransform[0] * shapesTransform[0])) * position; \n"
@@ -309,6 +332,7 @@ glm::mat4 identityMatrix = glm::mat4(1.0f);
 		unsigned int rotateLayersAxisOffsetLoc;
 
 		unsigned int opacityValueLoc;
+		unsigned int transformationsCountLoc;
 
 		bool VAOLExhausted = false;
 		bool parentExhausted = false;
@@ -321,16 +345,22 @@ glm::mat4 identityMatrix = glm::mat4(1.0f);
 
 		struct CompositeArray* currentCA = NULL;
 		struct VAOList* currentVAOL = NULL;
+		struct VAOList* startVAOL = NULL;
 
 		struct CompositionList* shapesCL = NULL;
 		struct CompositionList* layersCL = NULL;
 
+		int currentTransformationsCount;
 
 
+#include "associateShaderAttributes.cpp"
 
+		/*
 void associateShaderAttributes(int passedIndex) {
 
 		assignAttributeNames(passedIndex);
+		//transformationsCountLoc = glGetUniformLocation(mainShader, "transformationsCount");
+		//preAnimationLoc = glGetUniformLocation(mainShader, "preAnimation");
 
 		layersTransformLoc = glGetUniformLocation(mainShader, __layersTransform);
 		shapesTransformLoc = glGetUniformLocation(mainShader, __shapesTransform);
@@ -353,18 +383,21 @@ void associateShaderAttributes(int passedIndex) {
 
 		opacityValueLoc = glGetUniformLocation(mainShader, __opacityValue);
 
-		preAnimationLoc = glGetUniformLocation(mainShader, __preAnimation);
 
 }
-
+*/
 
 void pushShaderAttributes(struct VAOList* passedVAOL, int passedIndex) {
 
-						if (passedVAOL->layersComposite != NULL) {
+		lastShapesO = 1.0;
+		lastLayersO = 1.0;
+
+					if (passedVAOL->layersComposite != NULL) {
 						lastLayersP = passedVAOL->layersComposite->transform;
 						lastLayersS = passedVAOL->layersComposite->scale;
 						lastLayersR = passedVAOL->layersComposite->rotate;
 						lastLayersO = passedVAOL->layersComposite->opacity;
+						//EM_ASM({console.log("vaol" + $0);}, lastLayersO);
 						//lastLayersPrecomputed = passedVAOL->layersComposite->precomputed;
 	
 						glUniformMatrix4fv(layersTransformLoc, 1, GL_FALSE, glm::value_ptr(lastLayersP));
@@ -472,8 +505,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		*/
 
 
-		associateShaderAttributes(0);
 
+		//associateShaderAttributes(0);
 
 		lastLayersP = identityMatrix;
 		lastLayersS = identityMatrix;
@@ -493,6 +526,11 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		lastRotateLayersAngleSet = 0;
 		lastRotateShapesAngleSet = 0;
 
+		associateShaderAttributes(0);
+
+		glUniform1i(preAnimationLoc, 1);
+		glUniform1i(transformationsCountLoc, -1);
+		glUniform1f(opacityValueLoc, 1.0);
 		/*
 		glUniform1i(rotateLayersAngleSetLoc, lastRotateLayersAngleSet);
 		glUniform1i(rotateShapesAngleSetLoc, lastRotateShapesAngleSet);
@@ -503,17 +541,17 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		*/
 
 		VAOLExhausted = false;
-		associateShaderAttributes(0);
 
-		glUniform1i(shapesPositionSetLoc, 0);
-		glUniform1i(layersPositionSetLoc, 0);
-		glUniform1i(preAnimationLoc, 1);
-		glUniform1f(opacityValueLoc, 1.0f);
+		//glUniform1i(shapesPositionSetLoc, 0);
+		//glUniform1i(layersPositionSetLoc, 0);
+
 
 		while (! VAOLExhausted) {
 			//glUniform1i(isLayersPrecomputedLoc, 0);
 			//glUniform1i(isShapesPrecomputedLoc, 0);
 			if (! tempBuffers->addedToComposition) {
+
+
 				glBindVertexArrayOES(*(tempBuffers->vao));
 				glDrawElements(GL_TRIANGLES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
 				glBindVertexArrayOES(0);
@@ -553,22 +591,39 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 		_firstCycleDone = false;
 
-		/*
 		if (animationSequence != NULL && animationSequence->vaol != NULL) {
 
 			currentVAOL = animationSequence->vaol->start->prev;
 
 			while (! VAOLExhausted) {
 
-				int attribIndex = 0;
+				currentTransformationsCount = 0;
 
 				if (currentVAOL->vao != NULL) {
 
 					lastShapesO = 1.0f;
 					lastLayersO = 1.0f;
 
+
 					associateShaderAttributes(0);
+					glUniform1i(preAnimationLoc, 0);
 					pushShaderAttributes(currentVAOL, 0);
+					currentTransformationsCount++;
+
+					if (currentVAOL->parentVAOL != NULL) {
+						startVAOL = currentVAOL;
+						
+						while (currentVAOL->parentVAOL != NULL) {
+							currentVAOL = currentVAOL->parentVAOL;
+							associateShaderAttributes(currentTransformationsCount);
+							pushShaderAttributes(currentVAOL, currentTransformationsCount);
+							currentTransformationsCount++;
+						}
+
+						currentVAOL = startVAOL;
+					}
+
+					glUniform1i(transformationsCountLoc, currentTransformationsCount);
 
 					glBindVertexArrayOES(*(currentVAOL->vao));
 					glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
@@ -585,7 +640,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 			}
 
 		}
-		*/
 
 		glUseProgram(0);
 

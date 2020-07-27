@@ -13,7 +13,6 @@
 	const char* __rotateShapesAngleSet;
 	const char* __rotateShapesAxisOffset;
 	const char* __opacityValue;
-	const char* __preAnimation;
 
 
 void assignAttributeNames(int passedIndex) {
@@ -33,7 +32,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[0]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[0]";
 		__opacityValue = "objectOpacity[0]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 1) {
@@ -52,7 +50,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[1]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[1]";
 		__opacityValue = "objectOpacity[1]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 2) {
@@ -71,7 +68,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[2]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[2]";
 		__opacityValue = "objectOpacity[2]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 3) {
@@ -90,7 +86,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[3]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[3]";
 		__opacityValue = "objectOpacity[3]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 4) {
@@ -109,7 +104,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[4]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[4]";
 		__opacityValue = "objectOpacity[4]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 5) {
@@ -128,7 +122,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[5]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[5]";
 		__opacityValue = "objectOpacity[5]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 6) {
@@ -147,7 +140,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[6]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[6]";
 		__opacityValue = "objectOpacity[6]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 7) {
@@ -166,7 +158,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[7]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[7]";
 		__opacityValue = "objectOpacity[7]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 8) {
@@ -185,7 +176,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[8]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[8]";
 		__opacityValue = "objectOpacity[8]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 9) {
@@ -204,7 +194,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[9]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[9]";
 		__opacityValue = "objectOpacity[9]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 10) {
@@ -223,7 +212,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[10]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[10]";
 		__opacityValue = "objectOpacity[10]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 11) {
@@ -242,7 +230,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[11]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[11]";
 		__opacityValue = "objectOpacity[11]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 12) {
@@ -261,7 +248,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[12]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[12]";
 		__opacityValue = "objectOpacity[12]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 13) {
@@ -280,7 +266,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[13]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[13]";
 		__opacityValue = "objectOpacity[13]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 14) {
@@ -299,7 +284,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[14]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[14]";
 		__opacityValue = "objectOpacity[14]";
-		__preAnimation = "preAnimation";
 	}
 
 	if (passedIndex == 15) {
@@ -318,7 +302,6 @@ void assignAttributeNames(int passedIndex) {
 		__rotateShapesAngleSet = "rotateShapesAngleSet[15]";
 		__rotateShapesAxisOffset = "rotateShapesAxisOffset[15]";
 		__opacityValue = "objectOpacity[15]";
-		__preAnimation = "preAnimation";
 	}
 
 }

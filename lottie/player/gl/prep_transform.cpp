@@ -5,7 +5,7 @@ int prepTransformLayers(struct Layers* passedLayers) {
 	if (passedLayers == NULL || passedLayers->shapes == NULL) {
 		return 0;
 	}
-	//EM_ASM({console.log("LAYERS found pre 1.1");});
+	EM_ASM({console.log("LAYERS found pre 1.1");});
 
 
 

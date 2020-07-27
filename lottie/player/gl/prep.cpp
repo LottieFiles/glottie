@@ -457,7 +457,7 @@ int prepLayers(struct Layers* passedLayers) {
 			findLayersTransform(passedLayers);
 		}
 
-		if (passedLayers->shapes != NULL) {
+		//if (passedLayers->shapes != NULL) {
 			/*shapesPosition.x = 0;
 			shapesPosition.y = 0;
 			shapesAnchor.x = 0;
@@ -475,7 +475,7 @@ int prepLayers(struct Layers* passedLayers) {
 			//if (passedLayers->ks != NULL) {
 			//	composeTransformLayers(passedLayers, currentLayersTransformReturn->minTime, currentLayersTransformReturn->maxTime);
 			//}
-		}
+		//}
 		if (passedLayers->next == NULL) {
 			exhausted = true;
 		} else {

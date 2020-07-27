@@ -24,7 +24,6 @@ print FILE "\tconst char* __rotateShapesAxisOffset;\n";
 
 print FILE "\tconst char* __opacityValue;\n";
 
-print FILE "\tconst char* __preAnimation;\n";
 print FILE "\n";
 print FILE "\n";
 
@@ -52,7 +51,6 @@ for ($i = 0; $i < 16; $i++) {
 	
 	print FILE "\t\t__opacityValue = \"objectOpacity[$i]\";\n";
 	
-	print FILE "\t\t__preAnimation = \"preAnimation\";\n";
 	print FILE "\t}\n";
 	print FILE "\n";
 }
