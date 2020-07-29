@@ -333,8 +333,12 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		}
 	}
 	*/
-	//currentXPosition = tempLayersX + tempShapesX;
-	//currentYPosition = tempLayersY + tempShapesY;
+
+
+	//currentXPosition = currentShapesBB->translatedX;
+	//currentYPosition = currentShapesBB->translatedY;
+
+
 
 	struct ReturnPosition* tempPos = getRelativePosition(currentBB, currentShapesBB, false);
 
@@ -348,6 +352,8 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		currentShapesBB->initXc = currentXPosition + (currentShapesBB->w / 2);
 		currentShapesBB->initYc = currentYPosition + (currentShapesBB->h / 2);
 	}
+
+
 
 	/*
 		if (currentBB->anchorX != 0 || currentBB->anchorY != 0) {
@@ -378,8 +384,10 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		}
 	}
 	*/
-	float heightOffset = ((theAnimation->h * theAnimation->scaleFactorY) / theAnimation->h) / 2;
-	float widthOffset = ((theAnimation->w * theAnimation->scaleFactorX) / theAnimation->w) / 2;
+	//float heightOffset = ((theAnimation->h * theAnimation->scaleFactorY) / theAnimation->h) / 2;
+	//float widthOffset = ((theAnimation->w * theAnimation->scaleFactorX) / theAnimation->w) / 2;
+	float heightOffset = ((theAnimation->h * theAnimation->scaleFactorY) / theAnimation->h);
+	float widthOffset = ((theAnimation->w * theAnimation->scaleFactorX) / theAnimation->w);
 	//float heightOffset = 0.5;
 	while (! exhausted) {
 		/*
@@ -395,12 +403,10 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		*/
 		//passedProp->gl_v.resize((Bcounter + 1) * 4);
 
-		//passedProp->gl_v.push_back(((2 * ((passedArray->vertex->x) - halfW)) / theAnimation->w) + currentXPosition);
-		//passedProp->gl_v.push_back((((2 * ((passedArray->vertex->y) - halfH)) / theAnimation->h) * -1) + currentYPosition);
-		passedProp->gl_v.push_back(((passedArray->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w) - widthOffset);
-		passedProp->gl_v.push_back((((passedArray->vertex->y + currentYPosition) * theAnimation->scaleFactorY / theAnimation->h) - heightOffset) * -1);
-		//passedProp->gl_v.push_back((2 * ((passedArray->vertex->x + currentXPosition))) / theAnimation->w);
-		//passedProp->gl_v.push_back(((2 * ((passedArray->vertex->y + currentYPosition))) / theAnimation->h) * -1);
+		//passedProp->gl_v.push_back(((passedArray->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w) - widthOffset);
+		//passedProp->gl_v.push_back((((passedArray->vertex->y + currentYPosition) * theAnimation->scaleFactorY / theAnimation->h) - heightOffset) * -1);
+		passedProp->gl_v.push_back((2 * ((passedArray->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w)) - widthOffset);
+		passedProp->gl_v.push_back(((2 * ((passedArray->vertex->y + currentYPosition) * theAnimation->scaleFactorY / theAnimation->h)) - heightOffset) * -1);
 		if (passedArray->vertex->z == 0) {
 			passedProp->gl_v.push_back((float)order / 100000);
 		} else {
@@ -467,14 +473,10 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 			//passedProp->gl_v.resize((Bcounter + 1) * 4);
 
 			//EM_ASM({console.log("adding regulars 2 " + $0);}, reserve->arrayItem->vertex->x);
-			//passedProp->gl_v.push_back(((2 * ((reserve->arrayItem->vertex->x) - halfW)) / theAnimation->w) + currentXPosition);
-			//passedProp->gl_v.push_back((((2 * ((reserve->arrayItem->vertex->y) - halfH)) / theAnimation->h) * -1) + currentYPosition);
-			passedProp->gl_v.push_back(((reserve->arrayItem->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w) - widthOffset);
-			passedProp->gl_v.push_back((((reserve->arrayItem->vertex->y + currentYPosition) * theAnimation->scaleFactorY / theAnimation->h) - heightOffset) * -1);
-			//passedProp->gl_v.push_back((2 * ((reserve->arrayItem->vertex->x + currentXPosition))) / theAnimation->w);
-			//passedProp->gl_v.push_back(((2 * ((reserve->arrayItem->vertex->y + currentYPosition))) / theAnimation->h) * -1);
-			//passedProp->gl_v.push_back((2 * (reserve->arrayItem->vertex->x + layersOffset.x)) / theAnimation->w);
-			//passedProp->gl_v.push_back(((2 * (reserve->arrayItem->vertex->y + layersOffset.y)) / theAnimation->h) * -1);
+			//passedProp->gl_v.push_back(((reserve->arrayItem->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w) - widthOffset);
+			//passedProp->gl_v.push_back((((reserve->arrayItem->vertex->y + currentYPosition) * theAnimation->scaleFactorY / theAnimation->h) - heightOffset) * -1);
+			passedProp->gl_v.push_back((2 * ((reserve->arrayItem->vertex->x + currentXPosition) * theAnimation->scaleFactorX / theAnimation->w)) - widthOffset);
+			passedProp->gl_v.push_back(((2 * ((reserve->arrayItem->vertex->y + currentYPosition) * theAnimation->scaleFactorY / theAnimation->h)) - heightOffset) * -1);
 			if (passedArray->vertex->z == 0) {
 				passedProp->gl_v.push_back(1 - ((float)order / 100000));
 			} else {

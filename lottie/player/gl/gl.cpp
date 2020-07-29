@@ -451,9 +451,15 @@ void pushShaderAttributes(struct VAOList* passedVAOL, int passedIndex) {
 						//glUniform1i(isShapesPrecomputedLoc, 0);
 					}
 	
-					if (lastLayersO < lastShapesO) {
+					if (passedVAOL->layersComposite != NULL && passedVAOL->shapesComposite != NULL) {
+						if (lastLayersO < lastShapesO) {
+							glUniform1f(opacityValueLoc, lastLayersO);
+						} else {
+							glUniform1f(opacityValueLoc, lastShapesO);	
+						}
+					} else if (passedVAOL->layersComposite != NULL) {
 						glUniform1f(opacityValueLoc, lastLayersO);
-					} else {
+					} else if (passedVAOL->shapesComposite != NULL) {
 						glUniform1f(opacityValueLoc, lastShapesO);	
 					}
 	

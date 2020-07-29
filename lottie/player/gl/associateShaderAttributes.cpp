@@ -15,7 +15,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[0]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[0]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[0]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[0]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[0]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[0]");
@@ -38,7 +38,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[1]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[1]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[1]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[1]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[1]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[1]");
@@ -61,7 +61,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[2]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[2]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[2]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[2]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[2]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[2]");
@@ -84,7 +84,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[3]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[3]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[3]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[3]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[3]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[3]");
@@ -107,7 +107,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[4]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[4]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[4]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[4]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[4]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[4]");
@@ -130,7 +130,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[5]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[5]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[5]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[5]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[5]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[5]");
@@ -153,7 +153,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[6]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[6]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[6]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[6]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[6]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[6]");
@@ -176,7 +176,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[7]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[7]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[7]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[7]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[7]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[7]");
@@ -199,7 +199,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[8]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[8]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[8]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[8]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[8]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[8]");
@@ -222,7 +222,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[9]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[9]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[9]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[9]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[9]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[9]");
@@ -245,7 +245,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[10]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[10]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[10]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[10]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[10]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[10]");
@@ -268,7 +268,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[11]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[11]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[11]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[11]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[11]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[11]");
@@ -291,7 +291,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[12]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[12]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[12]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[12]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[12]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[12]");
@@ -314,7 +314,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[13]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[13]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[13]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[13]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[13]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[13]");
@@ -337,7 +337,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[14]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[14]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[14]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[14]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[14]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[14]");
@@ -360,7 +360,7 @@ void associateShaderAttributes(int passedIndex) {
 		layersPositionSetLoc = glGetUniformLocation(mainShader, "layersPositionSet[15]");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, "shapesPositionSet[15]");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, "opacityValue[15]");
+		opacityValueLoc = glGetUniformLocation(mainShader, "objectOpacity[15]");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, "rotateLayersAngle[15]");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, "rotateLayersAngleSet[15]");

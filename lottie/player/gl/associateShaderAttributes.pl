@@ -23,7 +23,7 @@ print FILE "
 		layersPositionSetLoc = glGetUniformLocation(mainShader, \"layersPositionSet[$i]\");
 		shapesPositionSetLoc = glGetUniformLocation(mainShader, \"shapesPositionSet[$i]\");
 
-		opacityValueLoc = glGetUniformLocation(mainShader, \"opacityValue[$i]\");
+		opacityValueLoc = glGetUniformLocation(mainShader, \"objectOpacity[$i]\");
 
 		rotateLayersAngleLoc = glGetUniformLocation(mainShader, \"rotateLayersAngle[$i]\");
 		rotateLayersAngleSetLoc = glGetUniformLocation(mainShader, \"rotateLayersAngleSet[$i]\");

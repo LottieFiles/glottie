@@ -57,6 +57,9 @@ struct alignas(ALIGNSIZE) ArrayOfArrayOfVertex {
 	struct ArrayOfArrayOfVertex* prev = NULL;
 
 	struct ArrayOfVertex* arrayItem;
+
+	bool traversed = false;
+	bool translated = false;
 };
 
 struct alignas(ALIGNSIZE) Dimensions {

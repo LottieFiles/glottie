@@ -1060,7 +1060,7 @@ void adjustScale(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayO
 }
 
 // related to animating
-void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed, bool fillNulls, bool isGeometry, bool autoSegSize, int bezierType) {
+void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed, bool fillNulls, bool isGeometry, bool autoSegSize, int bezierType, bool doTranslation) {
 	/*
 		bezierType:
 			1 - linear 
@@ -1329,6 +1329,28 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 	if (intermediate != NULL) {
 		v->start->prev = intermediate;
 		intermediate->next = v->start;
+	}
+
+	if (doTranslation) {
+		v = v->start;
+		cycleCount = 0;
+		exhausted = false;
+		float heightOffset = ((theAnimation->h * theAnimation->scaleFactorY) / theAnimation->h);
+		float widthOffset = ((theAnimation->w * theAnimation->scaleFactorX) / theAnimation->w);
+		while (! exhausted) {
+			v->vertex->x = (2 * ((v->vertex->x * theAnimation->scaleFactorX) / theAnimation->w));
+			v->vertex->y = ((2 * ((v->vertex->y * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
+			if (cycleCount == 0) {
+				v = v->next;
+				cycleCount = 1;
+			} else {
+				if (v->next == v->start) {
+					exhausted = true;
+				} else {
+					v = v->next;
+				}
+			}
+		}
 	}
 }
 

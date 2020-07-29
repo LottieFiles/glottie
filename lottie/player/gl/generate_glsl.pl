@@ -48,6 +48,7 @@ print FILE '    "attribute vec4 position; \n"
     "{ \n"
     "  vec4 glpre; \n"
     "  vec4 gltemp; \n"
+    "  float tempOpValue = 1.0; \n"
     "  if (preAnimation == 1) { \n"
     "    gl_Position = position; \n"
     "  } else { \n"
@@ -73,7 +74,6 @@ print FILE '    "attribute vec4 position; \n"
 #';
 #}
 
-
 for ($i = 0; $i < 16; $i++) {
     print FILE '    "      if (transformationsCount > '.$i.') { \n"
     "        if (shapesPositionSet['.$i.'] == 1 && layersPositionSet['.$i.'] == 1) { \n"
@@ -83,10 +83,26 @@ for ($i = 0; $i < 16; $i++) {
     "        } else if (shapesPositionSet['.$i.'] == 1) {\n"
     "          gltemp = (shapesRotate['.$i.'] * shapesScale['.$i.'] * shapesTransform['.$i.']) * gltemp; \n"
     "        } \n"
+    "          tempOpValue = objectOpacity['.$i.']; \n"
     "      } \n"
 ';
 }
 
+#    "          gltemp = layersRotate['.$i.'] * ((layersScale['.$i.'] * layersTransform['.$i.']) * gltemp); \n"
+#    "          gltemp = (layersTransform['.$i.'] * layersScale['.$i.'] * layersRotate['.$i.']) * gltemp; \n"
+
+#for ($i = 0; $i < 16; $i++) {
+#    print FILE '    "      if (transformationsCount > '.$i.') { \n"
+#    "        if (shapesPositionSet['.$i.'] == 1 && layersPositionSet['.$i.'] == 1) { \n"
+#    "          gltemp = ((layersRotate['.$i.'] * shapesRotate['.$i.']) * (layersScale['.$i.'] * shapesScale['.$i.']) * (layersTransform['.$i.'] * shapesTransform['.$i.'])) * gltemp; \n"
+#    "        } else if (layersPositionSet['.$i.'] == 1) {\n"
+#    "          gltemp = layersRotate['.$i.'] * ((layersTransform['.$i.']) * gltemp); \n"
+#    "        } else if (shapesPositionSet['.$i.'] == 1) {\n"
+#    "          gltemp = (shapesRotate['.$i.'] * shapesScale['.$i.'] * shapesTransform['.$i.']) * gltemp; \n"
+#    "        } \n"
+#    "      } \n"
+#';
+#}
 
 #    "      gltemp = glpre; \n"
 #print FILE '    "    } \n"
@@ -95,5 +111,8 @@ for ($i = 0; $i < 16; $i++) {
 
 print FILE '    "    gl_Position = gltemp; \n"
     "  } \n"
-    "    vcolors = vec4(color.xyz, 1.0); \n"
+    "    if (tempOpValue > 1.0) { \n"
+    "      tempOpValue = 1.0; \n"
+    "    } \n"
+    "    vcolors = vec4(color.xyz, tempOpValue); \n"
     "} \n";';
