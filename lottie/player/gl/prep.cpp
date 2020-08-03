@@ -252,7 +252,7 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem, stru
 	passedShapesItem = passedShapesItem->start;
 	currentShapesTransform = NULL;
 	while (! exhausted) {
-		//EM_ASM({console.log("shape type " + $0);}, passedShapesItem->ty);
+		//EM_ASM_({console.log("shape type " + $0);}, passedShapesItem->ty);
 		if (passedShapesItem->ty == _transform) {
 			//EM_ASM({console.log("SHAPEPROP TRANSFORM found");});
 
@@ -278,7 +278,7 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem, stru
 			shapesPosition.y = passedShapesItem->p->k[1];
 			shapesAnchor.x = passedShapesItem->a->k[0];
 			shapesAnchor.y = passedShapesItem->a->k[1];*/
-			//EM_ASM({console.log("SHAPE TRANSFORM found " + $0 + " " + $1 + " " + $2 + " " + $3);}, shapesPosition.x, shapesPosition.y, shapesAnchor.x, shapesAnchor.y);
+			//EM_ASM_({console.log("SHAPE TRANSFORM found " + $0 + " " + $1 + " " + $2 + " " + $3);}, shapesPosition.x, shapesPosition.y, shapesAnchor.x, shapesAnchor.y);
 			if (currentShapesTransform != NULL && currentShapesTransform->p != NULL) {
 				//EM_ASM({console.log("///// exiting findShapesTransform ");});
 				if (currentShapesTransform->p->startTime == 0) {
@@ -483,7 +483,7 @@ int prepLayers(struct Layers* passedLayers) {
 			passedLayers = passedLayers->next;
 		}
 	}
-	//EM_ASM({console.log("LAYERS found 1.2 " + $0 +  " " + $1);}, passedLayers->currentBB->w, passedLayers->currentBB->h);
+	//EM_ASM_({console.log("LAYERS found 1.2 " + $0 +  " " + $1);}, passedLayers->currentBB->w, passedLayers->currentBB->h);
 
 	return 1;
 }
@@ -521,14 +521,14 @@ int prepShapes() {
 	currentLayersTransformReturn = new FillTransformReturn;
 
 	if (theAnimation->assets != NULL) {
-		//EM_ASM({console.log("ASSETS found");});
+		EM_ASM({console.log("ASSETS found");});
 		prepAssets(theAnimation->assets);
 	}
 	if (theAnimation->layers != NULL) {
-		//EM_ASM({console.log("ANIMLAYERS found");});
+		EM_ASM({console.log("ANIMLAYERS found");});
 		prepLayers(theAnimation->layers);
 	}
-	//EM_ASM({console.log("ALL done");});
+	EM_ASM({console.log("ALL done");});
 
 	return 1;
 }

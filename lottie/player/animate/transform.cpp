@@ -826,6 +826,13 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		}
 
 
+
+		//CHECK if any parents have transforms,
+		// if parents have transforms but self does, for the given frame, then add vaol to animationSequence->vaol and set the parentInstigates flag
+		// for vbos that have no transforms at all, this will have to be handled in the prep call - to be done
+
+
+
 		if (rCompFound || sCompFound || pCompFound || oCompFound) {
 			//passedTransform->composite->precomputed = tempSMatrix * (tempRMatrix * tempPMatrix);
 			//passedTransform->composite->isPrecomputed = true;
@@ -949,7 +956,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 		fillCompositeAnimation(minTime, maxTime, passedShapesItem->transform, passedShapesItem, false, false, passedShapesItem->currentBB, currentLayers, parentLayers);
 		EM_ASM_({console.log("---------------===================TRANSFORM shapes done ");});
 	}
-	EM_ASM_({console.log("---------------===================TRANSFORM shapes done done ");});
+	//EM_ASM_({console.log("---------------===================TRANSFORM shapes done done ");});
 
 	return passedShapesItem->transform;
 }
@@ -1197,7 +1204,7 @@ void addChildToVAOL(struct VAOList* baseVAOL, struct VAOList* childVAOL) {
 		baseVAOL->children = baseVAOL->children->next;
 	}
 
-				EM_ASM_({console.log("---------------==== CHILD added ");});
+				//EM_ASM_({console.log("---------------==== CHILD added ");});
 	baseVAOL->children->vaol = childVAOL;
 }
 
@@ -1226,7 +1233,7 @@ void matchParentVAO() {
 
 				while (! refExhausted) {
 					if (baseVAOL->parentLayers == refVAOL->currentLayers) {
-						EM_ASM_({console.log("---------------==== corresponding parent found ");});
+						//EM_ASM_({console.log("---------------==== corresponding parent found ");});
 						baseVAOL->parentVAOL = refVAOL;
 						addChildToVAOL(baseVAOL->parentVAOL, refVAOL);
 					}

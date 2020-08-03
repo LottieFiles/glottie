@@ -397,6 +397,7 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 	struct FloatArrayReturn* tempFloatArray = NULL;
 	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
 	struct ArrayOfString* tempArrayValue; 
+	//EM_ASM({console.log("========================> entered");});
 	while (! exhausted) {
 		if (tempKeyValue) {
 			//EM_ASM({console.log("========================> iteration 99");});
@@ -469,6 +470,7 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 			tempKeyValue = tempKeyValue->next;
 		}
 	}
+	//EM_ASM({console.log("========================> entered ii");});
 	return 1;
 }
 
@@ -695,133 +697,4 @@ int fillBezierCurve(struct BezierCurve* passedBezierCurve) {
 	}
 	return 1;
 }
-
-void createEllipse(struct ShapesItem* passedShapesItem) {
-	return;
-	if (passedShapesItem->basicShapeGenerated == true) {
-		return;
-	}
-	if (passedShapesItem->p == NULL || passedShapesItem->s == NULL) {
-		return;
-	}
-	passedShapesItem->basicShapeGenerated = true;
-
-	passedShapesItem->ks = newPropertiesShape(passedShapesItem->ks);
-	passedShapesItem->ks->k = newPropertiesShapeProp(passedShapesItem->ks, passedShapesItem->ks->k, false);
-	//passedShapesItem->p -- position (PropertiesMultiDimensional*)
-	//passedShapesItem->s -- size (PropertiesMultiDimensional*)
-
-	float xorig = *(passedShapesItem->p->k + 0);
-	float yorig = *(passedShapesItem->p->k + 1);
-
-	float xsize = *(passedShapesItem->s->k + 0);
-	float ysize = *(passedShapesItem->s->k + 1);
-	if (ysize == 0) {
-		ysize = xsize;
-	}
-
-	int segments = 30;
-	float angleDelta = 90/segments;
-	float xy = xorig * yorig;
-	float xx = xorig * xorig;
-	float yy = yorig * yorig;
-	float xval, yval;
-	float radius;
-	float angle;
-
-	struct Vertex* currVertex = NULL;
-	struct Vertex* prevVertex = NULL;
-
-	struct ArrayOfVertex* q1PrevArray = NULL;
-	struct ArrayOfVertex* q2PrevArray = NULL;
-	struct ArrayOfVertex* q3PrevArray = NULL;
-	struct ArrayOfVertex* q4PrevArray = NULL;
-	struct ArrayOfVertex* q1 = NULL;
-	struct ArrayOfVertex* q2 = NULL;
-	struct ArrayOfVertex* q3 = NULL;
-	struct ArrayOfVertex* q4 = NULL;
-	struct ArrayOfVertex* q1Start = NULL;
-	struct ArrayOfVertex* q2Start = NULL;
-	struct ArrayOfVertex* q3Start = NULL;
-	struct ArrayOfVertex* q4Start = NULL;
-	struct ArrayOfVertex* start = NULL;
-
-	for (int i = 1; i < 30; i++) {
-		//EM_ASM({console.log("===&&&&&&&&&&===> ellipse");});
-		angle = angleDelta * i;
-		radius = xy / ( (xx * pow(sin(angle), 2)) + (yy * pow(cos(angle),2)) );
-
-		xsize = radius * cos(angle);
-		ysize = radius * sin(angle);
-
-		q1PrevArray = q1;
-		q1 = new ArrayOfVertex;
-		q1->vertex = new Vertex;
-		q1->prev = q1PrevArray;
-		if (q1PrevArray != NULL) {
-			q1PrevArray->next = q1;
-		} else {
-			start = q1;
-			q1Start = q1;
-		}
-		q1->start = start;
-		q1->vertex->x = xsize + xorig;
-		q1->vertex->y = ysize + yorig;
-	
-		q2PrevArray = q2;
-		q2 = new ArrayOfVertex;
-		q2->vertex = new Vertex;
-		q2->next = q2PrevArray;
-		if (q2PrevArray != NULL) {
-			q2PrevArray->prev = q2;
-		} else {
-			q2Start = q2;
-		}
-		q2->start = start;
-		q2->vertex->x = xsize + xorig;
-		q2->vertex->y = ysize - yorig;
-	
-		q3PrevArray = q3;
-		q3 = new ArrayOfVertex;
-		q3->vertex = new Vertex;
-		q3->next = q3PrevArray;
-		if (q3PrevArray != NULL) {
-			q3PrevArray->prev = q3;
-		} else {
-			q3Start = q3;
-		}
-		q3->start = start;
-		q3->vertex->x = xsize - xorig;
-		q3->vertex->y = ysize + yorig;
-	
-		q4PrevArray = q4;
-		q4 = new ArrayOfVertex;
-		q4->vertex = new Vertex;
-		q4->prev = q4PrevArray;
-		if (q4PrevArray != NULL) {
-			q4PrevArray->next = q4;
-		} else {
-			q4Start = q4;
-		}
-		q4->start = start;
-		q4->vertex->x = xsize - xorig;
-		q4->vertex->y = ysize + yorig;
-
-	}
-
-	q1Start->prev = q2Start;
-	q2Start->next = q1Start;
-
-	q1->next = q3;
-	q3->prev = q1;
-
-	q3Start->next = q4Start;
-	q4Start->prev = q3Start;
-
-	q4->next = q2;
-	q2->prev = q4;
-
-	passedShapesItem->ks->k->v = q1->start;
-}
-
 

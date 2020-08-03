@@ -479,8 +479,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		firstPass = true;
 	}
 
-	//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	//glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 
 		tempBuffers = lastBuffersCreated->start->prev;
@@ -616,6 +616,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					pushShaderAttributes(currentVAOL, 0);
 					currentTransformationsCount++;
 
+					/*
 					if (currentVAOL->parentVAOL != NULL) {
 						startVAOL = currentVAOL;
 						
@@ -628,6 +629,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 						currentVAOL = startVAOL;
 					}
+					*/
 
 					glUniform1i(transformationsCountLoc, currentTransformationsCount);
 

@@ -47,6 +47,7 @@ struct alignas(ALIGNSIZE) VAOList {
 	int frame;
 
 	bool assigned = false;
+	bool parentInstigates = false;
 
 } *boundVAO = NULL;
 

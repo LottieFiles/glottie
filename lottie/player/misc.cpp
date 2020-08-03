@@ -1093,6 +1093,9 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 
 	int segCounter = 0;
 	while (! exhausted) {
+		i = i->next;
+		o = o->next;
+		v = v->next;
 		if (v == startPoint) {
 			cycleCount++;
 		}
@@ -1156,9 +1159,12 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 						if (fillNulls) {
 							bezierFillNulls(v->prev, v, *(segSizePassed + segCounter), v_count, bezier_count);
 						}
+						/*
 						i = i->next;
 						o = o->next;
 						v = v->next;
+						*/
+						/*
 						if (isGeometry) {
 							if (v == startPoint->next && cycleCount == 2) {
 								exhausted = true;
@@ -1170,12 +1176,27 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 								break;
 							}
 						}
+						*/
 						//EM_ASM({console.log("non-bezier ");});
+						if (isGeometry) {
+							if (v == startPoint->next && cycleCount == 2) {
+								exhausted = true;
+								break;
+							}
+						} else {
+							if (v == startPoint && cycleCount == 2) {
+								exhausted = true;
+								break;
+							}
+						}
 						continue;
 				} else {
+					/*
 					i = i->next;
 					o = o->next;
 					v = v->next;
+					*/
+					/*
 					if (isGeometry) {
 						if (v == startPoint->next && cycleCount == 2) {
 							exhausted = true;
@@ -1187,7 +1208,19 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 							break;
 						}
 					}
+					*/
 					//EM_ASM({console.log("breakout ");});
+					if (isGeometry) {
+						if (v == startPoint->next && cycleCount == 2) {
+							exhausted = true;
+							break;
+						}
+					} else {
+						if (v == startPoint && cycleCount == 2) {
+							exhausted = true;
+							break;
+						}
+					}
 				}
 
 		startedCycling = true;
@@ -1324,12 +1357,15 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 			intermediate->next = o2;
 			o2->prev = intermediate;
 		}
+
 		//return intermediate;
 	}
+	/*
 	if (intermediate != NULL) {
 		v->start->prev = intermediate;
 		intermediate->next = v->start;
 	}
+	*/
 
 	if (doTranslation) {
 		v = v->start;
