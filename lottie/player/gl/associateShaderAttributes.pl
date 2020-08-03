@@ -33,6 +33,7 @@ print FILE "
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, \"rotateShapesAngleSet[$i]\");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, \"rotateShapesAxisOffset[$i]\");
 
+		instigatedLoc = glGetUniformLocation(mainShader, \"instigated[$i]\");
 	}
 ";
 

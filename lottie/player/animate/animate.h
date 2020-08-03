@@ -47,7 +47,7 @@ struct alignas(ALIGNSIZE) VAOList {
 	int frame;
 
 	bool assigned = false;
-	bool parentInstigates = false;
+	bool instigated = false;
 
 } *boundVAO = NULL;
 
@@ -138,6 +138,9 @@ struct alignas(ALIGNSIZE) Transform {
 
 	int startTime = -1;
 	int endTime = -1;
+
+	int maxTime = -1;
+	int minTime = -1;
 
 	int startTimeP = -1;
 	int endTimeP = -1;

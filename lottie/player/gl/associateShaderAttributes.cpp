@@ -25,6 +25,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[0]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[0]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[0]");
 	}
 
 	if (passedIndex == 1) {
@@ -48,6 +49,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[1]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[1]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[1]");
 	}
 
 	if (passedIndex == 2) {
@@ -71,6 +73,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[2]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[2]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[2]");
 	}
 
 	if (passedIndex == 3) {
@@ -94,6 +97,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[3]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[3]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[3]");
 	}
 
 	if (passedIndex == 4) {
@@ -117,6 +121,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[4]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[4]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[4]");
 	}
 
 	if (passedIndex == 5) {
@@ -140,6 +145,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[5]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[5]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[5]");
 	}
 
 	if (passedIndex == 6) {
@@ -163,6 +169,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[6]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[6]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[6]");
 	}
 
 	if (passedIndex == 7) {
@@ -186,6 +193,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[7]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[7]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[7]");
 	}
 
 	if (passedIndex == 8) {
@@ -209,6 +217,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[8]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[8]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[8]");
 	}
 
 	if (passedIndex == 9) {
@@ -232,6 +241,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[9]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[9]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[9]");
 	}
 
 	if (passedIndex == 10) {
@@ -255,6 +265,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[10]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[10]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[10]");
 	}
 
 	if (passedIndex == 11) {
@@ -278,6 +289,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[11]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[11]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[11]");
 	}
 
 	if (passedIndex == 12) {
@@ -301,6 +313,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[12]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[12]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[12]");
 	}
 
 	if (passedIndex == 13) {
@@ -324,6 +337,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[13]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[13]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[13]");
 	}
 
 	if (passedIndex == 14) {
@@ -347,6 +361,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[14]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[14]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[14]");
 	}
 
 	if (passedIndex == 15) {
@@ -370,6 +385,7 @@ void associateShaderAttributes(int passedIndex) {
 		rotateShapesAngleSetLoc = glGetUniformLocation(mainShader, "rotateShapesAngleSet[15]");
 		rotateShapesAxisOffsetLoc = glGetUniformLocation(mainShader, "rotateShapesAxisOffset[15]");
 
+		instigatedLoc = glGetUniformLocation(mainShader, "instigated[15]");
 	}
 
 

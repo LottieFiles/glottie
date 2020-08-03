@@ -613,6 +613,22 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 	glm::vec3 postRotate;
 	*/
 
+	currentLayers->instigatedMaxTime = -1;
+	currentLayers->instigatedMinTime = -1;
+	struct Layers* tempLayers;
+	tempLayers = currentLayers;
+	while (tempLayers->parentLayers != NULL) {
+		tempLayers = tempLayers->parentLayers;
+		if (tempLayers->transform != NULL) {
+			if (tempLayers->transform->maxTime > currentLayers->instigatedMaxTime) {
+				currentLayers->instigatedMaxTime = tempLayers->transform->maxTime;
+			}
+			if (tempLayers->transform->minTime < currentLayers->instigatedMinTime) {
+				currentLayers->instigatedMinTime = tempLayers->transform->minTime;
+			}
+		}
+	}
+
 	glm::mat4 identityMatrix = glm::mat4(1.0f);
 
 	float sinHalfAngle;
@@ -851,6 +867,22 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, passedTransform->composite, animationSequence, i, isLayers, currentLayers, parentLayers);
 			}
 
+		} else {
+			if (currentLayers->instigatedMaxTime >= i && currentLayers->instigatedMinTime <= i) {
+				if (animationSequence->vaol == NULL) {
+					animationSequence->vaol = new VAOList;
+					animationSequence->vaol->start = animationSequence->vaol;
+					animationSequence->vaol->start->prev = animationSequence->vaol;
+				}
+				if (isLayers) {
+					//EM_ASM_({console.log("---------------==============adding to array ");});
+					animationSequence->vaol = iterateShapesItem(passedShapesItem, animationSequence->vaol, NULL, animationSequence, i, isLayers, currentLayers, parentLayers);
+				} else {
+					//EM_ASM_({console.log("---------------==============adding to prop ");});
+					animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, NULL, animationSequence, i, isLayers, currentLayers, parentLayers);
+				}
+				animationSequence->vaol->instigated = true;
+			}
 		}
 
 		firstCycleDone = true;
@@ -952,6 +984,9 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 		}
 	}
 
+	passedShapesItem->transform->maxTime = maxTime;
+	passedShapesItem->transform->minTime = minTime;
+
 	if (maxTime > minTime) {
 		fillCompositeAnimation(minTime, maxTime, passedShapesItem->transform, passedShapesItem, false, false, passedShapesItem->currentBB, currentLayers, parentLayers);
 		EM_ASM_({console.log("---------------===================TRANSFORM shapes done ");});
@@ -1041,6 +1076,9 @@ struct FillTransformReturn* fillTransformLayers(struct Layers* passedLayers, str
 			maxTime = tempAOV->endTime;
 		}
 	}
+
+	passedLayers->transform->maxTime = maxTime;
+	passedLayers->transform->minTime = minTime;
 
 	currentLayersTransformReturn->transform = passedLayers->transform;
 	currentLayersTransformReturn->minTime = minTime;

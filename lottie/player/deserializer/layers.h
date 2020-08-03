@@ -40,6 +40,9 @@ struct alignas(ALIGNSIZE) Layers {
 
 	int minTime = -1;
 	int maxTime = -1;
+
+	int instigatedMaxTime = -1;
+	int instigatedMinTime = -1;
       
 	int id;
 

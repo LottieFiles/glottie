@@ -334,6 +334,8 @@ glm::mat4 identityMatrix = glm::mat4(1.0f);
 		unsigned int opacityValueLoc;
 		unsigned int transformationsCountLoc;
 
+		unsigned int instigatedLoc;
+
 		bool VAOLExhausted = false;
 		bool parentExhausted = false;
 
@@ -393,26 +395,33 @@ void pushShaderAttributes(struct VAOList* passedVAOL, int passedIndex) {
 		lastLayersO = 1.0;
 
 					if (passedVAOL->layersComposite != NULL) {
-						lastLayersP = passedVAOL->layersComposite->transform;
-						lastLayersS = passedVAOL->layersComposite->scale;
-						lastLayersR = passedVAOL->layersComposite->rotate;
-						lastLayersO = passedVAOL->layersComposite->opacity;
-						//EM_ASM({console.log("vaol" + $0);}, lastLayersO);
-						//lastLayersPrecomputed = passedVAOL->layersComposite->precomputed;
-	
-						glUniformMatrix4fv(layersTransformLoc, 1, GL_FALSE, glm::value_ptr(lastLayersP));
-						glUniformMatrix4fv(layersRotateLoc, 1, GL_FALSE, glm::value_ptr(lastLayersR));
-						glUniformMatrix4fv(layersScaleLoc, 1, GL_FALSE, glm::value_ptr(lastLayersS));
-						//glUniformMatrix4fv(layersPrecomputedLoc, 1, GL_FALSE, glm::value_ptr(lastLayersPrecomputed));
+						if (passedVAOL->instigated) {
+							glUniform1i(instigatedLoc, 1);
+						} else {
+							glUniform1i(instigatedLoc, 0);
+							lastLayersP = passedVAOL->layersComposite->transform;
+							lastLayersS = passedVAOL->layersComposite->scale;
+							lastLayersR = passedVAOL->layersComposite->rotate;
+							lastLayersO = passedVAOL->layersComposite->opacity;
 
-						if (passedVAOL->layersComposite->rotateSet) {
-							lastRotateLayersAngleSet = 1;
-							lastRotateLayersAngle = passedVAOL->layersComposite->rotateAngle;
-							lastRotateLayersAxisOffset = passedVAOL->layersComposite->rotateAxisOffset;
+
+							//EM_ASM({console.log("vaol" + $0);}, lastLayersO);
+							//lastLayersPrecomputed = passedVAOL->layersComposite->precomputed;
+		
+							glUniformMatrix4fv(layersTransformLoc, 1, GL_FALSE, glm::value_ptr(lastLayersP));
+							glUniformMatrix4fv(layersRotateLoc, 1, GL_FALSE, glm::value_ptr(lastLayersR));
+							glUniformMatrix4fv(layersScaleLoc, 1, GL_FALSE, glm::value_ptr(lastLayersS));
+							//glUniformMatrix4fv(layersPrecomputedLoc, 1, GL_FALSE, glm::value_ptr(lastLayersPrecomputed));
+
+							if (passedVAOL->layersComposite->rotateSet) {
+								lastRotateLayersAngleSet = 1;
+								lastRotateLayersAngle = passedVAOL->layersComposite->rotateAngle;
+								lastRotateLayersAxisOffset = passedVAOL->layersComposite->rotateAxisOffset;
+							}
+							glUniform1i(rotateLayersAngleSetLoc, lastRotateLayersAngleSet);
+							glUniform1f(rotateLayersAngleLoc, lastRotateLayersAngle);
+							glUniform3fv(rotateLayersAxisOffsetLoc, 1, glm::value_ptr(lastRotateLayersAxisOffset));
 						}
-						glUniform1i(rotateLayersAngleSetLoc, lastRotateLayersAngleSet);
-						glUniform1f(rotateLayersAngleLoc, lastRotateLayersAngle);
-						glUniform3fv(rotateLayersAxisOffsetLoc, 1, glm::value_ptr(lastRotateLayersAxisOffset));
 
 						glUniform1i(layersPositionSetLoc, 1);
 						//glUniform1i(isLayersPrecomputedLoc, 1);
@@ -423,25 +432,30 @@ void pushShaderAttributes(struct VAOList* passedVAOL, int passedIndex) {
 					}
 	
 					if (passedVAOL->shapesComposite != NULL) {
-						lastShapesP = passedVAOL->shapesComposite->transform;
-						lastShapesS = passedVAOL->shapesComposite->scale;
-						lastShapesR = passedVAOL->shapesComposite->rotate;
-						lastShapesO = passedVAOL->shapesComposite->opacity;
-						//lastShapesPrecomputed = passedVAOL->shapesComposite->precomputed;
-	
-						glUniformMatrix4fv(shapesTransformLoc, 1, GL_FALSE, glm::value_ptr(lastShapesP));
-						glUniformMatrix4fv(shapesRotateLoc, 1, GL_FALSE, glm::value_ptr(lastShapesR));
-						glUniformMatrix4fv(shapesScaleLoc, 1, GL_FALSE, glm::value_ptr(lastShapesS));
-						//glUniformMatrix4fv(shapesPrecomputedLoc, 1, GL_FALSE, glm::value_ptr(lastShapesPrecomputed));
-			
-						if (passedVAOL->shapesComposite->rotateSet) {
-							lastRotateShapesAngleSet = 1;
-							lastRotateShapesAngle = passedVAOL->shapesComposite->rotateAngle;
-							lastRotateShapesAxisOffset = passedVAOL->shapesComposite->rotateAxisOffset;
+						if (passedVAOL->instigated) {
+							glUniform1i(instigatedLoc, 1);
+						} else {
+							glUniform1i(instigatedLoc, 0);
+							lastShapesP = passedVAOL->shapesComposite->transform;
+							lastShapesS = passedVAOL->shapesComposite->scale;
+							lastShapesR = passedVAOL->shapesComposite->rotate;
+							lastShapesO = passedVAOL->shapesComposite->opacity;
+							//lastShapesPrecomputed = passedVAOL->shapesComposite->precomputed;
+		
+							glUniformMatrix4fv(shapesTransformLoc, 1, GL_FALSE, glm::value_ptr(lastShapesP));
+							glUniformMatrix4fv(shapesRotateLoc, 1, GL_FALSE, glm::value_ptr(lastShapesR));
+							glUniformMatrix4fv(shapesScaleLoc, 1, GL_FALSE, glm::value_ptr(lastShapesS));
+							//glUniformMatrix4fv(shapesPrecomputedLoc, 1, GL_FALSE, glm::value_ptr(lastShapesPrecomputed));
+				
+							if (passedVAOL->shapesComposite->rotateSet) {
+								lastRotateShapesAngleSet = 1;
+								lastRotateShapesAngle = passedVAOL->shapesComposite->rotateAngle;
+								lastRotateShapesAxisOffset = passedVAOL->shapesComposite->rotateAxisOffset;
+							}
+							glUniform1i(rotateShapesAngleSetLoc, lastRotateShapesAngleSet);
+							glUniform1f(rotateShapesAngleLoc, lastRotateShapesAngle);
+							glUniform3fv(rotateShapesAxisOffsetLoc, 1, glm::value_ptr(lastRotateShapesAxisOffset));
 						}
-						glUniform1i(rotateShapesAngleSetLoc, lastRotateShapesAngleSet);
-						glUniform1f(rotateShapesAngleLoc, lastRotateShapesAngle);
-						glUniform3fv(rotateShapesAxisOffsetLoc, 1, glm::value_ptr(lastRotateShapesAxisOffset));
 	
 						glUniform1i(shapesPositionSetLoc, 1);
 						//glUniform1i(isShapesPrecomputedLoc, 1);
@@ -616,7 +630,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					pushShaderAttributes(currentVAOL, 0);
 					currentTransformationsCount++;
 
-					/*
 					if (currentVAOL->parentVAOL != NULL) {
 						startVAOL = currentVAOL;
 						
@@ -629,7 +642,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 						currentVAOL = startVAOL;
 					}
-					*/
 
 					glUniform1i(transformationsCountLoc, currentTransformationsCount);
 
