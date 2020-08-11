@@ -618,13 +618,23 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 	struct Layers* tempLayers;
 	tempLayers = currentLayers;
 	while (tempLayers->parentLayers != NULL) {
+		EM_ASM({console.log("parent included");});
 		tempLayers = tempLayers->parentLayers;
 		if (tempLayers->transform != NULL) {
 			if (tempLayers->transform->maxTime > currentLayers->instigatedMaxTime) {
+				EM_ASM({console.log("instigation max time");});
 				currentLayers->instigatedMaxTime = tempLayers->transform->maxTime;
 			}
-			if (tempLayers->transform->minTime < currentLayers->instigatedMinTime) {
-				currentLayers->instigatedMinTime = tempLayers->transform->minTime;
+			if (tempLayers->transform->maxTime > 0) {
+				if (currentLayers->instigatedMinTime == -1) {
+					EM_ASM({console.log("instigation min time init");});
+					currentLayers->instigatedMinTime = tempLayers->transform->minTime;
+				} else {
+					if (tempLayers->transform->minTime < currentLayers->instigatedMinTime) {
+						EM_ASM({console.log("instigation min time");});
+						currentLayers->instigatedMinTime = tempLayers->transform->minTime;
+					}
+				}
 			}
 		}
 	}
@@ -848,7 +858,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		// for vbos that have no transforms at all, this will have to be handled in the prep call - to be done
 
 
-
+		bool transformationSet = false;
 		if (rCompFound || sCompFound || pCompFound || oCompFound) {
 			//passedTransform->composite->precomputed = tempSMatrix * (tempRMatrix * tempPMatrix);
 			//passedTransform->composite->isPrecomputed = true;
@@ -866,22 +876,24 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				//EM_ASM_({console.log("---------------==============adding to prop ");});
 				animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, passedTransform->composite, animationSequence, i, isLayers, currentLayers, parentLayers);
 			}
+			transformationSet = true;
+		}
 
-		} else {
-			if (currentLayers->instigatedMaxTime >= i && currentLayers->instigatedMinTime <= i) {
-				if (animationSequence->vaol == NULL) {
-					animationSequence->vaol = new VAOList;
-					animationSequence->vaol->start = animationSequence->vaol;
-					animationSequence->vaol->start->prev = animationSequence->vaol;
-				}
-				if (isLayers) {
-					//EM_ASM_({console.log("---------------==============adding to array ");});
-					animationSequence->vaol = iterateShapesItem(passedShapesItem, animationSequence->vaol, NULL, animationSequence, i, isLayers, currentLayers, parentLayers);
-				} else {
-					//EM_ASM_({console.log("---------------==============adding to prop ");});
-					animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, NULL, animationSequence, i, isLayers, currentLayers, parentLayers);
-				}
-				animationSequence->vaol->instigated = true;
+		if (currentLayers->instigatedMaxTime >= i && currentLayers->instigatedMinTime <= i) {
+			if (! transformationSet) {
+					if (animationSequence->vaol == NULL) {
+						animationSequence->vaol = new VAOList;
+						animationSequence->vaol->start = animationSequence->vaol;
+						animationSequence->vaol->start->prev = animationSequence->vaol;
+					}
+					if (isLayers) {
+						EM_ASM_({console.log("---------------==============adding instigated to array ");});
+						animationSequence->vaol = iterateShapesItem(passedShapesItem, animationSequence->vaol, NULL, animationSequence, i, isLayers, currentLayers, parentLayers);
+					} else {
+						EM_ASM_({console.log("---------------==============adding instigated to prop ");});
+						animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, NULL, animationSequence, i, isLayers, currentLayers, parentLayers);
+					}
+					animationSequence->vaol->instigated = true;
 			}
 		}
 
@@ -1301,6 +1313,8 @@ void matchParentVAO() {
 }
 
 void composeTransformLayers(struct Layers* passedLayers, int minTime, int maxTime) {
+	// if layer doesn't have animation ks, then maxTime and minTime are -1. find a solution to this!!!
+
 	if (maxTime > minTime) {
 		fillCompositeAnimation(minTime, maxTime, passedLayers->transform, passedLayers->shapes->start, true, true, passedLayers->currentBB, passedLayers, passedLayers->parentLayers);
 		//EM_ASM_({console.log("---------------===================TRANSFORM layers done ");});

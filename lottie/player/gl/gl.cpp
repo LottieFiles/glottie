@@ -574,6 +574,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 				glBindVertexArrayOES(*(tempBuffers->vao));
 				glDrawElements(GL_TRIANGLES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
+				//glDrawElements(GL_LINES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
 				glBindVertexArrayOES(0);
 			}
 
@@ -630,6 +631,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					pushShaderAttributes(currentVAOL, 0);
 					currentTransformationsCount++;
 
+					/*
 					if (currentVAOL->parentVAOL != NULL) {
 						startVAOL = currentVAOL;
 						
@@ -642,11 +644,13 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 						currentVAOL = startVAOL;
 					}
+					*/
 
 					glUniform1i(transformationsCountLoc, currentTransformationsCount);
 
 					glBindVertexArrayOES(*(currentVAOL->vao));
 					glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
+					//glDrawElements(GL_LINES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
 					glBindVertexArrayOES(0);
 
 				}
