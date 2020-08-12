@@ -879,7 +879,8 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			transformationSet = true;
 		}
 
-		if (currentLayers->instigatedMaxTime >= i && currentLayers->instigatedMinTime <= i) {
+		//if (currentLayers->instigatedMaxTime >= i && currentLayers->instigatedMinTime <= i) {
+		if (currentLayers->instigatedMinTime >= 0 && currentLayers->instigatedMinTime <= i) {
 			if (! transformationSet) {
 					if (animationSequence->vaol == NULL) {
 						animationSequence->vaol = new VAOList;
@@ -1315,10 +1316,10 @@ void matchParentVAO() {
 void composeTransformLayers(struct Layers* passedLayers, int minTime, int maxTime) {
 	// if layer doesn't have animation ks, then maxTime and minTime are -1. find a solution to this!!!
 
-	if (maxTime > minTime) {
+	//if (maxTime > minTime) {
 		fillCompositeAnimation(minTime, maxTime, passedLayers->transform, passedLayers->shapes->start, true, true, passedLayers->currentBB, passedLayers, passedLayers->parentLayers);
 		//EM_ASM_({console.log("---------------===================TRANSFORM layers done ");});
-	}
+	//}
 	//EM_ASM_({console.log("---------------===================TRANSFORM done ");});
 }
 

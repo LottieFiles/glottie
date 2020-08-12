@@ -631,7 +631,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					pushShaderAttributes(currentVAOL, 0);
 					currentTransformationsCount++;
 
-					/*
 					if (currentVAOL->parentVAOL != NULL) {
 						startVAOL = currentVAOL;
 						
@@ -644,7 +643,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 						currentVAOL = startVAOL;
 					}
-					*/
 
 					glUniform1i(transformationsCountLoc, currentTransformationsCount);
 
