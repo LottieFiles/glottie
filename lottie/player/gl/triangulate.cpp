@@ -386,8 +386,11 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	*/
 	//float heightOffset = ((theAnimation->h * theAnimation->scaleFactorY) / theAnimation->h) / 2;
 	//float widthOffset = ((theAnimation->w * theAnimation->scaleFactorX) / theAnimation->w) / 2;
-	float heightOffset = ((theAnimation->h * theAnimation->scaleFactorY) / theAnimation->h);
-	float widthOffset = ((theAnimation->w * theAnimation->scaleFactorX) / theAnimation->w);
+	//
+	//float heightOffset = ((theAnimation->h * theAnimation->scaleFactorY) / theAnimation->h);
+	//float widthOffset = ((theAnimation->w * theAnimation->scaleFactorX) / theAnimation->w);
+	float heightOffset = 1;
+	float widthOffset = 1;
 	//float heightOffset = 0.5;
 	while (! exhausted) {
 		/*

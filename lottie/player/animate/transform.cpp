@@ -613,6 +613,10 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 	glm::vec3 postRotate;
 	*/
 
+	struct ReturnPosition* tempPos = NULL;
+
+	tempPos = getRelativePosition(layersBB, NULL, true);
+
 	currentLayers->instigatedMaxTime = -1;
 	currentLayers->instigatedMinTime = -1;
 	struct Layers* tempLayers;
@@ -661,6 +665,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 	bool firstCycleDone = false;
 
 	//while (i <= theAnimation->op) {
+
 	for (i = theAnimation->ip; i <= theAnimation->op; i++) {
 		//EM_ASM_({console.log("---- CYCLE in ");});
 		//tempAngleFound = false;
@@ -841,7 +846,11 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 
 		if (pCompFound) {
 			passedTransform->composite->transformSet = true;
-			tempPMatrix = glm::translate(identityMatrix, tempP);
+			if (tempPos == NULL) {
+				tempPMatrix = glm::translate(identityMatrix, tempP);
+			} else {
+				tempPMatrix = glm::translate(identityMatrix, glm::vec3(tempP.x + tempPos->layers->x, tempP.y + tempPos->layers->y, tempP.z));
+			}
 			passedTransform->composite->transform = tempPMatrix;
 		}
 
