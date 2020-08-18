@@ -30,6 +30,8 @@ struct alignas(ALIGNSIZE) Vertex {
 struct alignas(ALIGNSIZE) ReturnPosition {
 	struct Vertex* layers = NULL;
 	struct Vertex* shapes = NULL;
+	//struct Vertex* layersTranslated = NULL;
+	//struct Vertex* shapesTranslated = NULL;
 };
 
 //struct alignas(alignof(struct ArrayOfVertex*)) ArrayOfVertex {

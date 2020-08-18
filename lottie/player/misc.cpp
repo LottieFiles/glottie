@@ -1407,6 +1407,8 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 	struct ReturnPosition* temp = new ReturnPosition;
 	temp->layers = new Vertex;
 	temp->shapes = new Vertex;
+	//temp->layersTranslated = new Vertex;
+	//temp->shapesTranslated = new Vertex;
 
 				//temp->layers->x = layersPosition.x - currentBB->anchorX + shapesPosition.x;
 				//temp->layers->y = layersPosition.y - currentBB->anchorY + shapesPosition.y;
@@ -1465,6 +1467,13 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 		}
 
 	}
+
+	/*
+	temp->layersTranslated->x = ((temp->layers->x * theAnimation->scaleFactorX) / theAnimation->w) - heightOffset;
+	temp->layersTranslated->y = ((temp->layers->y * theAnimation->scaleFactorY) / theAnimation->h) - widthOffset;
+	temp->shapesTranslated->x = ((temp->shapes->x * theAnimation->scaleFactorX) / theAnimation->w) - heightOffset;
+	temp->shapesTranslated->y = ((temp->shapes->y * theAnimation->scaleFactorY) / theAnimation->h) - widthOffset;
+	*/
 
 	/*
 	if (glDimensions) {

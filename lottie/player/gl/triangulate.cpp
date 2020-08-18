@@ -354,7 +354,6 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	}
 
 
-
 	/*
 		if (currentBB->anchorX != 0 || currentBB->anchorY != 0) {
 			currentXPosition = (layersPosition.x - currentBB->anchorX) + shapesPosition.x;

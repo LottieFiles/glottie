@@ -844,13 +844,41 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			passedTransform->composite->scale = tempSMatrix;
 		}
 
-		if (pCompFound) {
+		if (pCompInitFound) {
 			passedTransform->composite->transformSet = true;
+			if (isLayers) {
+				//tempP.x = (2 * (((tempP.x) * theAnimation->scaleFactorX) / theAnimation->w));
+				//tempP.y = ((2 * (((tempP.y) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
+				if (layersBB->anchorSet) {
+					tempP.x = (2 * (((tempP.x - (layersBB->initX - layersBB->anchorX)) * theAnimation->scaleFactorX) / theAnimation->w));
+					tempP.y = ((2 * (((tempP.y - (layersBB->initY - layersBB->anchorY)) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
+				} else {
+					tempP.x = (2 * (((tempP.x - layersBB->initXc) * theAnimation->scaleFactorX) / theAnimation->w));
+					tempP.y = ((2 * (((tempP.y - layersBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
+				}
+				tempPMatrix = glm::translate(identityMatrix, tempP);
+			} else {
+				//tempP.x = (2 * (((tempP.x) * theAnimation->scaleFactorX) / theAnimation->w));
+				//tempP.y = ((2 * (((tempP.y) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
+				if (passedShapesItem->currentBB->anchorSet) {
+					tempP.x = (2 * (((tempP.x - (passedShapesItem->currentBB->initX - passedShapesItem->currentBB->anchorX)) * theAnimation->scaleFactorX) / theAnimation->w));
+					tempP.y = ((2 * (((tempP.y - (passedShapesItem->currentBB->initY - passedShapesItem->currentBB->anchorY)) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
+				} else {
+					tempP.x = (2 * (((tempP.x - passedShapesItem->currentBB->initXc) * theAnimation->scaleFactorX) / theAnimation->w));
+					tempP.y = ((2 * (((tempP.y - passedShapesItem->currentBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
+				}
+				tempPMatrix = glm::translate(identityMatrix, tempP);
+			}
+			/*
 			if (tempPos == NULL) {
 				tempPMatrix = glm::translate(identityMatrix, tempP);
 			} else {
 				tempPMatrix = glm::translate(identityMatrix, glm::vec3(tempP.x + tempPos->layers->x, tempP.y + tempPos->layers->y, tempP.z));
 			}
+			*/
+		}
+
+		if (pCompFound) {
 			passedTransform->composite->transform = tempPMatrix;
 		}
 
@@ -943,7 +971,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 		passedShapesItem->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			//EM_ASM_({console.log("=================================POSITION v_count ");});
-			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3, true);
+			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3, false);
 		}
 		fillAnimation(passedShapesItem->transform->p, 1, passedShapesItem->currentBB, false);
 		EM_ASM_({console.log("---------------===================TRANSFORM shapes position ENDS ");});
@@ -1034,7 +1062,7 @@ struct FillTransformReturn* fillTransformLayers(struct Layers* passedLayers, str
 		passedLayers->transform->p = tempAOV;
 		if (tempAOV->v_count > 1) {
 			//EM_ASM_({console.log("=================================LAYERS POSITION v_count ");});
-			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3, true);
+			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3, false);
 		}
 		fillAnimation(passedLayers->transform->p, 1, passedLayers->currentBB, true);
 		//EM_ASM_({console.log("=================================LAYERS TRANSFORM ENDS ");});
