@@ -349,8 +349,8 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	currentShapesBB->initY = currentYPosition;
 
 	if (currentShapesBB->w > 0 && currentShapesBB->h > 0) {
-		currentShapesBB->initXc = currentXPosition + (currentShapesBB->w / 2);
-		currentShapesBB->initYc = currentYPosition + (currentShapesBB->h / 2);
+		currentShapesBB->initXc = currentXPosition - (currentShapesBB->w / 2);
+		currentShapesBB->initYc = currentYPosition - (currentShapesBB->h / 2);
 	}
 
 

@@ -1,4 +1,6 @@
 
+glm::mat4 identityMatrix = glm::mat4(1.0f);
+
 struct BuffersList* newBuffersList(struct BuffersList* passedBuffersList, struct Buffers* passedBuffers) {
 	if (passedBuffersList == NULL) {
 		passedBuffersList = new BuffersList;
@@ -442,6 +444,35 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 		}
 	}
 
+
+
+			if (isLayers) {
+				//tempP.x = (2 * (((tempP.x) * theAnimation->scaleFactorX) / theAnimation->w));
+				//tempP.y = ((2 * (((tempP.y) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
+				if (layersBB->anchorSet) {
+					tempP.x = (2 * (((tempP.x - (layersBB->initX - layersBB->anchorX)) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
+					tempP.y = ((2 * (((tempP.y - (layersBB->initY - layersBB->anchorY)) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
+				} else {
+					tempP.x = (2 * (((tempP.x - layersBB->initXc) * theAnimation->scaleFactorX) / theAnimation->w));
+					tempP.y = ((2 * (((tempP.y - layersBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
+				}
+				tempPMatrix = glm::translate(identityMatrix, tempP);
+			} else {
+				//tempP.x = (2 * (((tempP.x) * theAnimation->scaleFactorX) / theAnimation->w));
+				//tempP.y = ((2 * (((tempP.y) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
+				if (passedShapesItem->currentBB->anchorSet) {
+					tempP.x = (2 * (((tempP.x - (passedShapesItem->currentBB->initX - passedShapesItem->currentBB->anchorX)) * theAnimation->scaleFactorX) / theAnimation->w));
+					tempP.y = ((2 * (((tempP.y - (passedShapesItem->currentBB->initY - passedShapesItem->currentBB->anchorY)) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
+				} else {
+					tempP.x = (2 * (((tempP.x - passedShapesItem->currentBB->initXc) * theAnimation->scaleFactorX) / theAnimation->w));
+					tempP.y = ((2 * (((tempP.y - passedShapesItem->currentBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
+				}
+				tempPMatrix = glm::translate(identityMatrix, tempP);
+			}
+
+
+
+
 	if (foundVAOL == NULL) {
 		//EM_ASM_({console.log("--- VAO properly added " + $0);}, passedVAO);
 		passedVAOL->vao = passedVAO;
@@ -643,7 +674,6 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		}
 	}
 
-	glm::mat4 identityMatrix = glm::mat4(1.0f);
 
 	float sinHalfAngle;
 	float cosHalfAngle;
@@ -846,29 +876,8 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 
 		if (pCompInitFound) {
 			passedTransform->composite->transformSet = true;
-			if (isLayers) {
-				//tempP.x = (2 * (((tempP.x) * theAnimation->scaleFactorX) / theAnimation->w));
-				//tempP.y = ((2 * (((tempP.y) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
-				if (layersBB->anchorSet) {
-					tempP.x = (2 * (((tempP.x - (layersBB->initX - layersBB->anchorX)) * theAnimation->scaleFactorX) / theAnimation->w));
-					tempP.y = ((2 * (((tempP.y - (layersBB->initY - layersBB->anchorY)) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
-				} else {
-					tempP.x = (2 * (((tempP.x - layersBB->initXc) * theAnimation->scaleFactorX) / theAnimation->w));
-					tempP.y = ((2 * (((tempP.y - layersBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
-				}
-				tempPMatrix = glm::translate(identityMatrix, tempP);
-			} else {
-				//tempP.x = (2 * (((tempP.x) * theAnimation->scaleFactorX) / theAnimation->w));
-				//tempP.y = ((2 * (((tempP.y) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
-				if (passedShapesItem->currentBB->anchorSet) {
-					tempP.x = (2 * (((tempP.x - (passedShapesItem->currentBB->initX - passedShapesItem->currentBB->anchorX)) * theAnimation->scaleFactorX) / theAnimation->w));
-					tempP.y = ((2 * (((tempP.y - (passedShapesItem->currentBB->initY - passedShapesItem->currentBB->anchorY)) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
-				} else {
-					tempP.x = (2 * (((tempP.x - passedShapesItem->currentBB->initXc) * theAnimation->scaleFactorX) / theAnimation->w));
-					tempP.y = ((2 * (((tempP.y - passedShapesItem->currentBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
-				}
-				tempPMatrix = glm::translate(identityMatrix, tempP);
-			}
+			passedTransform->composite->positionVec = tempP;
+
 			/*
 			if (tempPos == NULL) {
 				tempPMatrix = glm::translate(identityMatrix, tempP);
@@ -885,7 +894,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		if (oCompFound) {
 			passedTransform->composite->opacitySet = true;
 			passedTransform->composite->opacity = tempOpacity;
-			EM_ASM_({console.log("========> OPACITY " + $0);}, passedTransform->composite->opacity);
+			//EM_ASM_({console.log("========> OPACITY " + $0);}, passedTransform->composite->opacity);
 		}
 
 
