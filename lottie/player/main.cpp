@@ -2,6 +2,7 @@
 #define ALIGNSIZE 512
 #define TEXTBLOCK 220
 
+
 #include <functional>
 
 #include <emscripten.h> // emscripten
@@ -40,6 +41,7 @@ std::function<void()> loop;
 void main_loop() { loop(); }
 void _doMain() { loop(); }
 
+
 /*
 alignas(256) GLuint* vao[1024];
 alignas(256) GLuint* vbo[1024];
@@ -47,6 +49,8 @@ alignas(256) GLuint* ibo[1024];
 alignas(256) GLuint* shaderProgram[1024];
 alignas(256) GLint* posAttrib[1024];
 */
+
+glm::mat4 identityMatrix;
 
 #include "main.h"
 #include "gl/gl.h"
@@ -173,6 +177,7 @@ int doMain(char someChar[]) {
 	//	return strlen(someChar);
 	//}
 
+	identityMatrix = glm::mat4(1.0f);
 
 	deserialize();
 	EM_ASM({console.log("////> init done");});

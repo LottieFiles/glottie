@@ -276,7 +276,6 @@ bool lastShapesRotateSet = false;
 bool firstPass = false;
 bool secondPass = false;
 
-glm::mat4 identityMatrix = glm::mat4(1.0f);
 
 		glm::mat4 lastShapesP = glm::mat4(1.0f);
 		glm::mat4 lastShapesS = glm::mat4(1.0f);

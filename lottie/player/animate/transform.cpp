@@ -1,5 +1,5 @@
 
-glm::mat4 identityMatrix = glm::mat4(1.0f);
+//glm::mat4 identityMatrix = glm::mat4(1.0f);
 
 struct BuffersList* newBuffersList(struct BuffersList* passedBuffersList, struct Buffers* passedBuffers) {
 	if (passedBuffersList == NULL) {
@@ -405,7 +405,7 @@ struct CompositeArray* newCompositeArray(struct CompositeArray* passedCompositeA
 	return passedCompositeArray;
 }
 
-struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int passedFrame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem) {
+struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int passedFrame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem, glm::mat4* passedP) {
 	struct VAOList* foundVAOL = NULL;
 	if (passedVAOL != NULL) {
 		passedVAOL = passedVAOL->start;
@@ -449,12 +449,23 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 
 
 
-	if (isLayer) {
-		
-	} else {
+//		passedComposite->positionVec.x = passedComposite->positionVec.x - (passedShapesItem->currentBB->initXc - passedLayers->currentBB->initXc);
+	if (passedComposite->positionSet) {
+		if (isLayer) {
+			passedComposite->positionVec.x = (2 * ((( (passedComposite->positionVec.x - passedLayers->currentBB->initXc) + (passedShapesItem->currentBB->initXc - passedLayers->currentBB->initXc) ) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
+			passedComposite->positionVec.y = ((2 * ((( (passedComposite->positionVec.y - passedLayers->currentBB->initXc) + (passedShapesItem->currentBB->initYc - passedLayers->currentBB->initXc) ) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
+		} else {
+			passedComposite->positionVec.x = (2 * (((passedComposite->positionVec.x - passedShapesItem->currentBB->initXc) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
+			passedComposite->positionVec.y = ((2 * (((passedComposite->positionVec.y - passedShapesItem->currentBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
+		}
+
+		EM_ASM_({console.log("positionVec --> " + $0 + " : " + $1);}, passedComposite->positionVec.x, passedComposite->positionVec.y);	
+		*(passedP) = glm::translate(identityMatrix, passedComposite->positionVec);
 	}
+	passedComposite->transform = *(passedP);
 
 
+/*
 			if (isLayer) {
 				//tempP.x = (2 * (((tempP.x) * theAnimation->scaleFactorX) / theAnimation->w));
 				//tempP.y = ((2 * (((tempP.y) * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
@@ -478,6 +489,8 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 				}
 				tempPMatrix = glm::translate(identityMatrix, tempP);
 			}
+*/
+
 
 
 
@@ -523,12 +536,12 @@ struct FrameCompositionRef* addToSequence(struct FrameCompositionRef* passedSequ
 	return passedSequence;
 }
 
-struct VAOList* iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem) {
+struct VAOList* iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem, glm::mat4* passedP) {
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedK != NULL && passedK->buffers_v != NULL && passedK->buffers_v->vao != NULL) {
 			//EM_ASM_({console.log("--- processing VAOL " + $0);}, passedK->buffers_v->vao);
-			passedVAOL = addCompositeVAO(passedVAOL, passedK->buffers_v->vao, passedK->buffers_v->idx.size(), passedComposite, passedSequence, frame, isLayer, passedLayers, parentLayers, passedShapesItem);
+			passedVAOL = addCompositeVAO(passedVAOL, passedK->buffers_v->vao, passedK->buffers_v->idx.size(), passedComposite, passedSequence, frame, isLayer, passedLayers, parentLayers, passedShapesItem, passedP);
 			passedK->buffers_v->addedToComposition = true;
 		}
 		if (passedK->next == NULL) {
@@ -541,13 +554,13 @@ struct VAOList* iterateK(struct PropertiesShapeProp* passedK, struct VAOList* pa
 	return passedVAOL;
 }
 
-struct VAOList* iterateKS(struct PropertiesShape* passedKS, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem) {
+struct VAOList* iterateKS(struct PropertiesShape* passedKS, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem, glm::mat4* passedP) {
 	//passedKS = passedKS->start;
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedKS != NULL && passedKS->k != NULL) {
 			//EM_ASM({console.log("--- VAOL iterateKS k found ");});
-			passedVAOL = iterateK(passedKS->k->start, passedVAOL, passedComposite, passedSequence, frame, isLayer, passedLayers, parentLayers, passedShapesItem);
+			passedVAOL = iterateK(passedKS->k->start, passedVAOL, passedComposite, passedSequence, frame, isLayer, passedLayers, parentLayers, passedShapesItem, passedP);
 		}
 		if (passedKS->next == NULL) {
 			exhausted = true;
@@ -558,17 +571,17 @@ struct VAOList* iterateKS(struct PropertiesShape* passedKS, struct VAOList* pass
 	return passedVAOL;
 }
 
-struct VAOList* iterateShapesItem(struct ShapesItem* passedShapesItem, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers) {
+struct VAOList* iterateShapesItem(struct ShapesItem* passedShapesItem, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, glm::mat4* passedP) {
 	//passedShapesItem = passedShapesItem->start;
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedShapesItem != NULL && passedShapesItem->it != NULL) {
 			//EM_ASM({console.log("--- VAOL iterateShapesItem it found ");});
-			passedVAOL = iterateShapesItem(passedShapesItem->it->start, passedVAOL, passedComposite, passedSequence, frame, isLayer, passedLayers, parentLayers, passedShapesItem);
+			passedVAOL = iterateShapesItem(passedShapesItem->it->start, passedVAOL, passedComposite, passedSequence, frame, isLayer, passedLayers, parentLayers, passedP);
 		}
 		if (passedShapesItem != NULL && passedShapesItem->ks != NULL) {
 			//EM_ASM({console.log("--- VAOL iterateShapesItem ks found ");});
-			passedVAOL = iterateKS(passedShapesItem->ks->start, passedVAOL, passedComposite, passedSequence, frame, isLayer, passedLayers, parentLayers, passedShapesItem);
+			passedVAOL = iterateKS(passedShapesItem->ks->start, passedVAOL, passedComposite, passedSequence, frame, isLayer, passedLayers, parentLayers, passedShapesItem, passedP);
 		}
 		if (passedShapesItem->next == NULL) {
 			exhausted = true;
@@ -926,10 +939,10 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 
 			if (isLayers) {
 				//EM_ASM_({console.log("---------------==============adding to array ");});
-				animationSequence->vaol = iterateShapesItem(passedShapesItem, animationSequence->vaol, passedTransform->composite, animationSequence, i, isLayers, passedLayers, parentLayers);
+				animationSequence->vaol = iterateShapesItem(passedShapesItem, animationSequence->vaol, passedTransform->composite, animationSequence, i, isLayers, passedLayers, parentLayers, &tempPMatrix);
 			} else {
 				//EM_ASM_({console.log("---------------==============adding to prop ");});
-				animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, passedTransform->composite, animationSequence, i, isLayers, passedLayers, parentLayers);
+				animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, passedTransform->composite, animationSequence, i, isLayers, passedLayers, parentLayers, passedShapesItem, &tempPMatrix);
 			}
 			transformationSet = true;
 		}
@@ -944,10 +957,10 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 					}
 					if (isLayers) {
 						EM_ASM_({console.log("---------------==============adding instigated to array ");});
-						animationSequence->vaol = iterateShapesItem(passedShapesItem, animationSequence->vaol, NULL, animationSequence, i, isLayers, passedLayers, parentLayers);
+						animationSequence->vaol = iterateShapesItem(passedShapesItem, animationSequence->vaol, NULL, animationSequence, i, isLayers, passedLayers, parentLayers, &tempPMatrix);
 					} else {
 						EM_ASM_({console.log("---------------==============adding instigated to prop ");});
-						animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, NULL, animationSequence, i, isLayers, passedLayers, parentLayers);
+						animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, NULL, animationSequence, i, isLayers, passedLayers, parentLayers, passedShapesItem, &tempPMatrix);
 					}
 					animationSequence->vaol->instigated = true;
 			}
@@ -1064,7 +1077,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 	return passedShapesItem->transform;
 }
 
-struct FillTransformReturn* fillTransformLayers(struct Layers* passedLayers, struct BoundingBox* currentBB, struct Layers* passedLayers, struct Layers* parentLayers) {
+struct FillTransformReturn* fillTransformLayers(struct Layers* passedLayers, struct BoundingBox* currentBB, struct Layers* nullPassedLayers, struct Layers* parentLayers) {
 	if (defaultTransformMatrix == NULL) {
 		defaultTransformMatrix = new TransformMatrix;
 	}
