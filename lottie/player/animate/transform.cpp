@@ -450,10 +450,21 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 
 
 //		passedComposite->positionVec.x = passedComposite->positionVec.x - (passedShapesItem->currentBB->initXc - passedLayers->currentBB->initXc);
-	if (passedComposite->positionSet) {
+	if (passedComposite->transformSet) {
 		if (isLayer) {
-			passedComposite->positionVec.x = (2 * ((( (passedComposite->positionVec.x - passedLayers->currentBB->initXc) + (passedShapesItem->currentBB->initXc - passedLayers->currentBB->initXc) ) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
-			passedComposite->positionVec.y = ((2 * ((( (passedComposite->positionVec.y - passedLayers->currentBB->initXc) + (passedShapesItem->currentBB->initYc - passedLayers->currentBB->initXc) ) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
+			//passedComposite->positionVec.x = (2 * (( (passedComposite->positionVec.x - passedLayers->currentBB->initXc)  * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
+			//passedComposite->positionVec.y = ((2 * (( (passedComposite->positionVec.y - passedLayers->currentBB->initYc)  * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
+			//passedComposite->positionVec.x = (2 * ((( (passedComposite->positionVec.x - passedLayers->currentBB->initXc) + (passedShapesItem->currentBB->initXc - passedLayers->currentBB->initXc) ) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
+			//passedComposite->positionVec.y = ((2 * ((( (passedComposite->positionVec.y - passedLayers->currentBB->initYc) + (passedShapesItem->currentBB->initYc - passedLayers->currentBB->initYc) ) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
+
+			passedComposite->positionVec.x = ( (2 * ((passedComposite->positionVec.x * theAnimation->scaleFactorX) / theAnimation->w))
+								- (2 * ((passedLayers->currentBB->initXc * theAnimation->scaleFactorX) / theAnimation->w)) ) - 1;
+			passedComposite->positionVec.y = ( ( (2 * ((passedComposite->positionVec.y * theAnimation->scaleFactorY) / theAnimation->h))
+								- (2 * ((passedLayers->currentBB->initYc * theAnimation->scaleFactorY) / theAnimation->h)) ) - 1 ) * -1;
+			//passedComposite->positionVec.x = (2 * ((( (passedComposite->positionVec.x - passedLayers->currentBB->initXc) + (passedShapesItem->currentBB->initXc - passedLayers->currentBB->initXc) ) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
+			//passedComposite->positionVec.y = ((2 * ((( (passedComposite->positionVec.y - passedLayers->currentBB->initYc) + (passedShapesItem->currentBB->initYc - passedLayers->currentBB->initYc) ) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
+			//passedComposite->positionVec.x = (2 * ((( (passedComposite->positionVec.x - passedLayers->currentBB->initXc) + (passedShapesItem->currentBB->initXc - passedLayers->currentBB->initXc) ) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
+			//passedComposite->positionVec.y = ((2 * ((( (passedComposite->positionVec.y - passedLayers->currentBB->initYc) + (passedShapesItem->currentBB->initYc - passedLayers->currentBB->initYc) ) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
 		} else {
 			passedComposite->positionVec.x = (2 * (((passedComposite->positionVec.x - passedShapesItem->currentBB->initXc) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
 			passedComposite->positionVec.y = ((2 * (((passedComposite->positionVec.y - passedShapesItem->currentBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
