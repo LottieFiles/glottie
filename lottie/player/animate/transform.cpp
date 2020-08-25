@@ -913,6 +913,12 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			passedTransform->composite->positionVec = tempP;
 			EM_ASM_({console.log("====> position pre --> " + $0 + " : " + $1);}, tempP.x, tempP.y);	
 
+			if (isLayers) {
+				passedTransform->composite->positionVec.x = (2 * (((passedTransform->composite->positionVec.x - layersBB->initXc) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
+				passedTransform->composite->positionVec.y = ((2 * (((passedTransform->composite->positionVec.y - layersBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
+				tempPMatrix = glm::translate(identityMatrix, passedTransform->composite->positionVec);
+			}
+
 			/*
 			if (tempPos == NULL) {
 				tempPMatrix = glm::translate(identityMatrix, tempP);
