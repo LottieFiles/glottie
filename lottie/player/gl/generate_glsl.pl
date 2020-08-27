@@ -83,11 +83,12 @@ for ($i = 0; $i < 16; $i++) {
     print FILE '    "      if (transformationsCount > '.$i.') { \n"
     "        if (instigated['.$i.'] == 0) { \n"
     "          if (shapesPositionSet['.$i.'] == 1 && layersPositionSet['.$i.'] == 1) { \n"
-    "            gltemp = ((layersRotate['.$i.'] * shapesRotate['.$i.']) * (layersScale['.$i.'] * shapesScale['.$i.']) * (layersTransform['.$i.'] * shapesTransform['.$i.'])) * gltemp; \n"
+    "            gltemp = shapesRotate['.$i.'] * ((shapesScale['.$i.'] * shapesTransform['.$i.']) * gltemp); \n"
+    "            gltemp = layersRotate['.$i.'] * ((layersScale['.$i.'] * layersTransform['.$i.']) * gltemp); \n"
     "          } else if (layersPositionSet['.$i.'] == 1) {\n"
     "            gltemp = layersRotate['.$i.'] * ((layersScale['.$i.'] * layersTransform['.$i.']) * gltemp); \n"
     "          } else if (shapesPositionSet['.$i.'] == 1) {\n"
-    "            gltemp = (shapesRotate['.$i.'] * shapesScale['.$i.'] * shapesTransform['.$i.']) * gltemp; \n"
+    "            gltemp = shapesRotate['.$i.'] * ((shapesScale['.$i.'] * shapesTransform['.$i.']) * gltemp); \n"
     "          } \n"
     "            tempOpValue = objectOpacity['.$i.']; \n"
     "        } \n"
@@ -116,6 +117,7 @@ for ($i = 0; $i < 16; $i++) {
 #';
 
 
+#print FILE '    "    gl_Position = position; \n"
 print FILE '    "    gl_Position = gltemp; \n"
     "  } \n"
     "    if (tempOpValue > 1.0) { \n"

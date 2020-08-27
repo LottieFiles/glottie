@@ -93,6 +93,8 @@ void mainloop() {
 }
 
 void loadJson(char* buffer, int theLength) {
+	identityMatrix = glm::mat4(1.0f);
+
 	deserializeChar(buffer, theLength);
 	EM_ASM({console.log("////> init done");});
 	glInit();

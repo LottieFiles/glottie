@@ -405,7 +405,7 @@ struct CompositeArray* newCompositeArray(struct CompositeArray* passedCompositeA
 	return passedCompositeArray;
 }
 
-struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int passedFrame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem, glm::mat4* passedP) {
+struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int passedFrame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem, glm::mat4 &passedP) {
 	struct VAOList* foundVAOL = NULL;
 	if (passedVAOL != NULL) {
 		passedVAOL = passedVAOL->start;
@@ -467,13 +467,15 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 			//passedComposite->positionVec.x = (2 * ((( (passedComposite->positionVec.x - passedLayers->currentBB->initXc) + (passedShapesItem->currentBB->initXc - passedLayers->currentBB->initXc) ) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
 			//passedComposite->positionVec.y = ((2 * ((( (passedComposite->positionVec.y - passedLayers->currentBB->initYc) + (passedShapesItem->currentBB->initYc - passedLayers->currentBB->initYc) ) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
 		} else {
-			passedComposite->positionVec.x = (2 * (((passedComposite->positionVec.x - passedShapesItem->currentBB->initXc) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
-			passedComposite->positionVec.y = ((2 * (((passedComposite->positionVec.y - passedShapesItem->currentBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
+			//passedComposite->positionVec.x = (2 * (((passedComposite->positionVec.x - passedShapesItem->currentBB->initXc) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
+			//passedComposite->positionVec.y = ((2 * (((passedComposite->positionVec.y - passedShapesItem->currentBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
+			//*(passedP) = glm::translate(identityMatrix, passedComposite->positionVec);
+			//passedP = glm::translate(identityMatrix, glm::vec3(0, 0, 0));
+			//passedComposite->transform = passedP;
 		}
 
-		EM_ASM_({console.log("positionVec --> " + $0 + " : " + $1);}, passedComposite->positionVec.x, passedComposite->positionVec.y);	
-		*(passedP) = glm::translate(identityMatrix, passedComposite->positionVec);
-		passedComposite->transform = *(passedP);
+		//EM_ASM_({console.log("positionVec --> " + $0 + " : " + $1);}, passedComposite->positionVec.x, passedComposite->positionVec.y);	
+
 	}
 
 
@@ -520,7 +522,7 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 		} else {
 			passedVAOL->shapesComposite = passedComposite;
 		}
-		//EM_ASM({console.log($0 + " --- VAO properly added " + $1 + " " + $2 + " " + $3);}, passedFrame, passedVAOL->vao, passedVAOL->idxSize, passedComposite);
+		EM_ASM({console.log($0 + " --- VAO properly added " + $1 + " " + $2 + " " + $3);}, passedFrame, passedVAOL->vao, passedVAOL->idxSize, passedComposite);
 	} else {
 		if (isLayer) {
 			passedVAOL->layersComposite = passedComposite;
@@ -548,7 +550,7 @@ struct FrameCompositionRef* addToSequence(struct FrameCompositionRef* passedSequ
 	return passedSequence;
 }
 
-struct VAOList* iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem, glm::mat4* passedP) {
+struct VAOList* iterateK(struct PropertiesShapeProp* passedK, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem, glm::mat4 &passedP) {
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedK != NULL && passedK->buffers_v != NULL && passedK->buffers_v->vao != NULL) {
@@ -566,7 +568,7 @@ struct VAOList* iterateK(struct PropertiesShapeProp* passedK, struct VAOList* pa
 	return passedVAOL;
 }
 
-struct VAOList* iterateKS(struct PropertiesShape* passedKS, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem, glm::mat4* passedP) {
+struct VAOList* iterateKS(struct PropertiesShape* passedKS, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem, glm::mat4 &passedP) {
 	//passedKS = passedKS->start;
 	bool exhausted = false;
 	while (! exhausted) {
@@ -583,7 +585,7 @@ struct VAOList* iterateKS(struct PropertiesShape* passedKS, struct VAOList* pass
 	return passedVAOL;
 }
 
-struct VAOList* iterateShapesItem(struct ShapesItem* passedShapesItem, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, glm::mat4* passedP) {
+struct VAOList* iterateShapesItem(struct ShapesItem* passedShapesItem, struct VAOList* passedVAOL, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int frame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, glm::mat4 &passedP) {
 	//passedShapesItem = passedShapesItem->start;
 	bool exhausted = false;
 	while (! exhausted) {
@@ -870,6 +872,45 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		}
 		//passedTransform->composite->transform = glm::mat4(1.0f);
 
+		if (sCompFound) {
+			passedTransform->composite->scaleSet = true;
+			tempSMatrix = glm::scale(identityMatrix, tempS);
+			passedTransform->composite->scale = tempSMatrix;
+		}
+
+		if (pCompInitFound) {
+			passedTransform->composite->transformSet = true;
+			passedTransform->composite->positionVec = tempP;
+
+			if (isLayers) {
+				//passedTransform->composite->positionVec.x = ( (((passedTransform->composite->positionVec.x - layersBB->initXc) * theAnimation->scaleFactorX) / theAnimation->w)) ;
+				//passedTransform->composite->positionVec.y = (( (((passedTransform->composite->positionVec.y - layersBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h)) ) * -1;
+				
+				passedTransform->composite->positionVec.x = ( ((2 * ((passedTransform->composite->positionVec.x * theAnimation->scaleFactorX) / theAnimation->w)) - 1)
+									- ((2 * ((passedLayers->currentBB->initX * theAnimation->scaleFactorX) / theAnimation->w)) - 1) ) ;
+				passedTransform->composite->positionVec.y = ((2 * ((passedTransform->composite->positionVec.y * theAnimation->scaleFactorY) / theAnimation->h)) - 1)
+									- ((2 * ((passedLayers->currentBB->initY * theAnimation->scaleFactorY) / theAnimation->h)) - 1);
+				passedTransform->composite->positionVec.y = passedTransform->composite->positionVec.y * -1;
+				//passedTransform->composite->positionVec.x = (2 * (((passedTransform->composite->positionVec.x) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
+				//passedTransform->composite->positionVec.y = ((2 * (((passedTransform->composite->positionVec.y) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
+				//passedTransform->composite->positionVec.x = ( (((passedTransform->composite->positionVec.x) * theAnimation->scaleFactorX) / theAnimation->w));
+				//passedTransform->composite->positionVec.y = (( (((passedTransform->composite->positionVec.y) * theAnimation->scaleFactorY) / theAnimation->h)));
+				//tempPMatrix = glm::translate(identityMatrix, passedTransform->composite->positionVec);
+				
+				//tempPMatrix = glm::translate(identityMatrix, passedTransform->composite->positionVec);
+				tempPMatrix = glm::translate(identityMatrix, passedTransform->composite->positionVec);
+				passedTransform->composite->transform = identityMatrix;
+				EM_ASM_({console.log("====> position pre --> " + $0 + " : " + $1 + " / " + $2 + " : " + $3);}, passedTransform->composite->positionVec.x, passedTransform->composite->positionVec.y, tempP.x, tempP.y);	
+			}
+
+			/*
+			if (tempPos == NULL) {
+				tempPMatrix = glm::translate(identityMatrix, tempP);
+			} else {
+				tempPMatrix = glm::translate(identityMatrix, glm::vec3(tempP.x + tempPos->layers->x, tempP.y + tempPos->layers->y, tempP.z));
+			}
+			*/
+		}
 
 		if (rCompFound) {
 			passedTransform->composite->rotateSet = true;
@@ -887,8 +928,10 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				//tempRMatrix = glm::translate(identityMatrix, glm::vec3(tempP.x, tempP.y, 0))
 				//		* glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f))
 				//		* glm::translate(identityMatrix, glm::vec3((tempP.x * -1), (tempP.y * -1), 0));
-				tempRMatrix = glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
-				//tempRMatrix = identityMatrix;
+				//tempRMatrix = glm::translate(identityMatrix, glm::vec3(tempP.x, tempP.y, 0))
+				//
+				//tempRMatrix = glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+				tempRMatrix = identityMatrix;
 			} else {
 				//tempRMatrix = glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
 			}
@@ -900,32 +943,6 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 			passedTransform->composite->rotate = tempRMatrix;
 			passedTransform->composite->rotateAngle = tempAngle;
 			passedTransform->composite->rotateAxisOffset = glm::vec3(passedShapesItem->currentBB->anchorX, passedShapesItem->currentBB->anchorY, passedShapesItem->currentBB->anchorZ);
-		}
-
-		if (sCompFound) {
-			passedTransform->composite->scaleSet = true;
-			tempSMatrix = glm::scale(identityMatrix, tempS);
-			passedTransform->composite->scale = tempSMatrix;
-		}
-
-		if (pCompInitFound) {
-			passedTransform->composite->transformSet = true;
-			passedTransform->composite->positionVec = tempP;
-			EM_ASM_({console.log("====> position pre --> " + $0 + " : " + $1);}, tempP.x, tempP.y);	
-
-			if (isLayers) {
-				passedTransform->composite->positionVec.x = (2 * (((passedTransform->composite->positionVec.x - layersBB->initXc) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
-				passedTransform->composite->positionVec.y = ((2 * (((passedTransform->composite->positionVec.y - layersBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
-				tempPMatrix = glm::translate(identityMatrix, passedTransform->composite->positionVec);
-			}
-
-			/*
-			if (tempPos == NULL) {
-				tempPMatrix = glm::translate(identityMatrix, tempP);
-			} else {
-				tempPMatrix = glm::translate(identityMatrix, glm::vec3(tempP.x + tempPos->layers->x, tempP.y + tempPos->layers->y, tempP.z));
-			}
-			*/
 		}
 
 		if (pCompFound) {
@@ -958,10 +975,10 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 
 			if (isLayers) {
 				//EM_ASM_({console.log("---------------==============adding to array ");});
-				animationSequence->vaol = iterateShapesItem(passedShapesItem, animationSequence->vaol, passedTransform->composite, animationSequence, i, isLayers, passedLayers, parentLayers, &tempPMatrix);
+				animationSequence->vaol = iterateShapesItem(passedShapesItem, animationSequence->vaol, passedTransform->composite, animationSequence, i, isLayers, passedLayers, parentLayers, tempPMatrix);
 			} else {
 				//EM_ASM_({console.log("---------------==============adding to prop ");});
-				animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, passedTransform->composite, animationSequence, i, isLayers, passedLayers, parentLayers, passedShapesItem, &tempPMatrix);
+				animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, passedTransform->composite, animationSequence, i, isLayers, passedLayers, parentLayers, passedShapesItem, tempPMatrix);
 			}
 			transformationSet = true;
 		}
@@ -976,10 +993,10 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 					}
 					if (isLayers) {
 						EM_ASM_({console.log("---------------==============adding instigated to array ");});
-						animationSequence->vaol = iterateShapesItem(passedShapesItem, animationSequence->vaol, NULL, animationSequence, i, isLayers, passedLayers, parentLayers, &tempPMatrix);
+						animationSequence->vaol = iterateShapesItem(passedShapesItem, animationSequence->vaol, NULL, animationSequence, i, isLayers, passedLayers, parentLayers, tempPMatrix);
 					} else {
 						EM_ASM_({console.log("---------------==============adding instigated to prop ");});
-						animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, NULL, animationSequence, i, isLayers, passedLayers, parentLayers, passedShapesItem, &tempPMatrix);
+						animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, NULL, animationSequence, i, isLayers, passedLayers, parentLayers, passedShapesItem, tempPMatrix);
 					}
 					animationSequence->vaol->instigated = true;
 			}
