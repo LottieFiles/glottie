@@ -469,11 +469,11 @@ int prepLayers(struct Layers* passedLayers) {
 			getBoundingBox(passedLayers->shapes->start, passedLayers->currentBB);
 			//if (passedLayers->currentBB->w > 0 && passedLayers->currentBB->h > 0) {
 			if (passedLayers->currentBB->anchorSet) {
-				passedLayers->currentBB->initXc = passedLayers->currentBB->initX - passedLayers->currentBB->anchorX;
-				passedLayers->currentBB->initYc = passedLayers->currentBB->initY - passedLayers->currentBB->anchorY;
+				passedLayers->currentBB->initXc = passedLayers->currentBB->initX + passedLayers->currentBB->anchorX;
+				passedLayers->currentBB->initYc = passedLayers->currentBB->initY + passedLayers->currentBB->anchorY;
 			} else {
-				passedLayers->currentBB->initXc = passedLayers->currentBB->initX - (passedLayers->currentBB->w / 2);
-				passedLayers->currentBB->initYc = passedLayers->currentBB->initY - (passedLayers->currentBB->h / 2);
+				passedLayers->currentBB->initXc = passedLayers->currentBB->initX + (passedLayers->currentBB->w / 2);
+				passedLayers->currentBB->initYc = passedLayers->currentBB->initY + (passedLayers->currentBB->h / 2);
 			}
 			prepShapesItem(passedLayers->shapes->start, NULL, true, passedLayers->currentBB);
 			//if (passedLayers->ks != NULL) {
