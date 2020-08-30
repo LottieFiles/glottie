@@ -363,6 +363,13 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			struct ReturnPosition* tempPos = getRelativePosition(passedShapesItem->currentBB, currentBB, true);
 			passedShapesItem->currentBB->translatedX = tempPos->layers->x + tempPos->shapes->x;
 			passedShapesItem->currentBB->translatedY = tempPos->layers->y + tempPos->shapes->y;
+			if (passedShapesItem->currentBB->anchorSet) {
+				passedShapesItem->currentBB->initXc = passedShapesItem->currentBB->initX + passedShapesItem->currentBB->anchorX;
+				passedShapesItem->currentBB->initYc = passedShapesItem->currentBB->initY + passedShapesItem->currentBB->anchorY;
+			} else {
+				passedShapesItem->currentBB->initXc = passedShapesItem->currentBB->initX + (passedShapesItem->currentBB->w / 2);
+				passedShapesItem->currentBB->initYc = passedShapesItem->currentBB->initY + (passedShapesItem->currentBB->h / 2);
+			}
 			getBBPropShape(passedShapesItem->ks->start, passedShapesItem->currentBB);
 
 			prepPropertiesShape(passedShapesItem->ks, passedShapesItem, currentBB, passedShapesItem->currentBB);

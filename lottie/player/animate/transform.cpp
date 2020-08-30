@@ -886,11 +886,11 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				
 				passedTransform->composite->positionVec.x = ((2 * ((passedTransform->composite->positionVec.x * theAnimation->scaleFactorX) / theAnimation->w)) - 1)
 									- ((2 * ((passedLayers->currentBB->initXc * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
-				passedTransform->composite->positionVec.y = ((2 * ((passedTransform->composite->positionVec.y * theAnimation->scaleFactorY) / theAnimation->h)) - 1)
-									- ((2 * ((passedLayers->currentBB->initYc * theAnimation->scaleFactorY) / theAnimation->h)) - 1);
-				passedTransform->composite->positionVec.y = passedTransform->composite->positionVec.y * -1;
+				passedTransform->composite->positionVec.y = (((2 * ((passedTransform->composite->positionVec.y * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1)
+									- (((2 * ((passedLayers->currentBB->initYc * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
+				//passedTransform->composite->positionVec.y = passedTransform->composite->positionVec.y * -1;
 
-				lastPositionVec = passedTransform->composite->positionVec;
+				//lastPositionVec = passedTransform->composite->positionVec;
 				//passedTransform->composite->positionVec.x = (2 * (((passedTransform->composite->positionVec.x) * theAnimation->scaleFactorX) / theAnimation->w)) - 1;
 				//passedTransform->composite->positionVec.y = ((2 * (((passedTransform->composite->positionVec.y) * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
 				//passedTransform->composite->positionVec.x = ( (((passedTransform->composite->positionVec.x) * theAnimation->scaleFactorX) / theAnimation->w));
@@ -898,10 +898,23 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				//tempPMatrix = glm::translate(identityMatrix, passedTransform->composite->positionVec);
 				
 				//tempPMatrix = glm::translate(identityMatrix, passedTransform->composite->positionVec);
-				tempPMatrix = glm::translate(identityMatrix, passedTransform->composite->positionVec);
-				passedTransform->composite->transform = identityMatrix;
-				EM_ASM_({console.log("====> position pre --> " + $0 + " : " + $1 + " / " + $2 + " : " + $3);}, passedTransform->composite->positionVec.x, passedTransform->composite->positionVec.y, tempP.x, tempP.y);	
+				//tempPMatrix = glm::translate(identityMatrix, passedTransform->composite->positionVec);
+				//passedTransform->composite->transform = identityMatrix;
+				//EM_ASM_({console.log("====> position pre --> " + $0 + " : " + $1 + " / " + $2 + " : " + $3);}, passedTransform->composite->positionVec.x, passedTransform->composite->positionVec.y, tempP.x, tempP.y);	
+			} else {
+				passedTransform->composite->positionVec.x = ((2 * ((passedTransform->composite->positionVec.x * theAnimation->scaleFactorX) / theAnimation->w)) - 1)
+									- ((2 * ((passedShapesItem->currentBB->initXc * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
+				passedTransform->composite->positionVec.y = (((2 * ((passedTransform->composite->positionVec.y * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1)
+									- (((2 * ((passedShapesItem->currentBB->initYc * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
+				//passedTransform->composite->positionVec.y = passedTransform->composite->positionVec.y * -1;
+
+
 			}
+			lastPositionVec = passedTransform->composite->positionVec;
+
+			tempPMatrix = glm::translate(identityMatrix, passedTransform->composite->positionVec);
+			passedTransform->composite->transform = identityMatrix;
+			EM_ASM_({console.log("====> position pre --> " + $0 + " : " + $1 + " / " + $2 + " : " + $3);}, passedTransform->composite->positionVec.x, passedTransform->composite->positionVec.y, tempP.x, tempP.y);	
 
 			tempVec.x = ((2 * ((tempP.x * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
 			tempVec.y = ((2 * ((tempP.y * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
@@ -917,7 +930,14 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 
 		if (sCompFound) {
 			passedTransform->composite->scaleSet = true;
-			tempSMatrix = glm::scale(identityMatrix, tempS);
+			//tempSMatrix = glm::scale(identityMatrix, tempS);
+			//passedTransform->composite->scale = tempSMatrix;
+			if (pCompFound) {
+				tempSMatrix = glm::translate(identityMatrix, glm::vec3(tempVec.x, tempVec.y, 0));
+				tempSMatrix = glm::scale(tempSMatrix, tempS);
+				tempSMatrix = glm::translate(tempSMatrix, glm::vec3((tempVec.x * -1), (tempVec.y * -1), 0));
+			}
+
 			passedTransform->composite->scale = tempSMatrix;
 
 				//tempRMatrix = glm::translate(identityMatrix, glm::vec3((tempVec.x * -1), (tempVec.y * -1), 0));
@@ -948,12 +968,12 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				//
 				//tempRMatrix = glm::rotate(identityMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
 				//tempRMatrix = identityMatrix;
-				tempVec.x = ((2 * ((tempP.x * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
-				tempVec.y = ((2 * ((tempP.y * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
+				//tempVec.x = ((2 * ((tempP.x * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
+				//tempVec.y = ((2 * ((tempP.y * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1;
 
 				//tempRMatrix = glm::translate(identityMatrix, glm::vec3((tempVec.x * -1), (tempVec.y * -1), 0));
 				tempRMatrix = glm::translate(identityMatrix, glm::vec3(tempVec.x, tempVec.y, 0));
-				tempRMatrix = glm::rotate(tempRMatrix, glm::radians(tempAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+				tempRMatrix = glm::rotate(tempRMatrix, glm::radians(tempAngle * -1), glm::vec3(0.0f, 0.0f, 1.0f));
 				tempRMatrix = glm::translate(tempRMatrix, glm::vec3((tempVec.x * -1), (tempVec.y * -1), 0));
 				//tempRMatrix = glm::translate(tempRMatrix, glm::vec3(tempVec.x, tempVec.y, 0));
 			} else {
