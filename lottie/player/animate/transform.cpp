@@ -936,6 +936,18 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				tempSMatrix = glm::translate(identityMatrix, glm::vec3(tempVec.x, tempVec.y, 0));
 				tempSMatrix = glm::scale(tempSMatrix, tempS);
 				tempSMatrix = glm::translate(tempSMatrix, glm::vec3((tempVec.x * -1), (tempVec.y * -1), 0));
+			} else {
+				if (isLayers) {
+					tempVec.x = ((2 * ((passedLayers->currentBB->initXc * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
+					tempVec.y = (((2 * ((passedLayers->currentBB->initYc * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
+				} else {
+					tempVec.x = ((2 * ((passedShapesItem->currentBB->initXc * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
+					tempVec.y = (((2 * ((passedShapesItem->currentBB->initYc * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
+				}
+				
+				tempSMatrix = glm::translate(identityMatrix, glm::vec3(tempVec.x, tempVec.y, 0));
+				tempSMatrix = glm::scale(tempSMatrix, tempS);
+				tempSMatrix = glm::translate(tempSMatrix, glm::vec3((tempVec.x * -1), (tempVec.y * -1), 0));
 			}
 
 			passedTransform->composite->scale = tempSMatrix;
