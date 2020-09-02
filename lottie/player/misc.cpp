@@ -1231,26 +1231,34 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 
 		//float segSize = 0.10;
 		segCounter++;
+		float distNow;
 		if (autoSegSize) {
-			float distNow = distanceBetweenPoints(v->prev->vertex, v->vertex);
+			distNow = distanceBetweenPoints(v->prev->vertex, v->vertex);
 			if (distNow < 0) {
 				distNow = distNow * -1;
 			}
-			if (distNow >= 8) {
-				segSize = 1 / (distNow / 4);
+			if (distNow >= 4) {
+				segSize = 1 / (distNow / 2);
 			} else {
 				continue;
 			}
+			/*
+			if (distNow >= 2) {
+				segSize = 1 / (distNow / 2);
+			} else {
+				continue;
+			}
+			*/
 		} else {
 			segSize = *(segSizePassed + segCounter);
 		}
-		if (segSize == 0 || segSize < 0.00001) {
+		if (segSize == 0 || segSize < 0.000001) {
 			continue;
 		}
 		float segments = 1 / segSize;
 		//float segNow = segSize;
 		float segNow = segSize;
-		//EM_ASM_({console.log("segnow and segsize " + $0 + " " + $1);}, segNow, segSize);
+		EM_ASM_({console.log("segnow, segsize, distNow " + $0 + ", " + $1 + ". " + $2);}, segNow, segSize, distNow);
 
 		float p1x;
 		float p2x;
