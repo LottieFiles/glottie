@@ -4,8 +4,9 @@
 #/Users/shaafiee/emsdk/fastcomp/emscripten/emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=512MB -s ASSERTIONS=1 -s SAFE_HEAP=1 -o player.js 
 
 if [ "$(uname)" == "Linux" ]; then
-    #emcc main.cpp -std=c++17 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s EXPORTED_FUNCTIONS="['_loadJson', '_main']" -s EXTRA_EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" -s WASM=1 -s USE_SDL=2 -O3 -fsanitize=undefined -s ALLOW_MEMORY_GROWTH=1 -o player.js 
+    #emcc main.cpp -std=c++17 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s EXPORTED_FUNCTIONS="['_loadJson', '_main']" -s EXTRA_EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" -s WASM=1 -s USE_SDL=2 -O1 -s ASSERTIONS=1 -s SAFE_HEAP=1 -fsanitize=undefined -s ALLOW_MEMORY_GROWTH=1 -o player.js 
     emcc main.cpp -std=c++17 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s EXPORTED_FUNCTIONS="['_loadJson', '_main']" -s EXTRA_EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" -s WASM=1 -s USE_SDL=2 -Oz -s ASSERTIONS=1 -s SAFE_HEAP=1 -fsanitize=undefined -s ALLOW_MEMORY_GROWTH=1 -o player.js 
+
     #emcc main.cpp -std=c++17 -s LEGACY_GL_EMULATION=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s EXPORTED_FUNCTIONS="['_loadJson', '_main']" -s EXTRA_EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -s SAFE_HEAP=1 -fsanitize=undefined -s ALLOW_MEMORY_GROWTH=1 -o player.js 
     #emcc main.cpp -std=c++17 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s EXPORTED_FUNCTIONS="['_simpleFunction', '_doMain','_main']" -s EXTRA_EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -s SAFE_HEAP=1 -fsanitize=undefined -s ALLOW_MEMORY_GROWTH=1 -s TOTAL_MEMORY=1024MB -o player.js 
     #emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -s SAFE_HEAP=1 -fsanitize=undefined -s ALLOW_MEMORY_GROWTH=1 -o player.js 
@@ -13,7 +14,9 @@ if [ "$(uname)" == "Linux" ]; then
     #emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -s SAFE_HEAP=1 -fsanitize=undefined -s ALLOW_MEMORY_GROWTH=1 -I -o player.js 
     #emcc main.cpp -std=c++17 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -s SAFE_HEAP=1 -o player.js 
 else
-    emcc main.cpp -std=c++17 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s EXPORTED_FUNCTIONS="['_loadJson', '_main']" -s EXTRA_EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -s SAFE_HEAP=1 -fsanitize=undefined -s ALLOW_MEMORY_GROWTH=1 -o player.js 
+    #emcc main.cpp -std=c++17 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s EXPORTED_FUNCTIONS="['_loadJson', '_main']" -s EXTRA_EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" -s WASM=1 -s USE_SDL=2 -O1 -s ASSERTIONS=1 -s SAFE_HEAP=1 -fsanitize=undefined -s ALLOW_MEMORY_GROWTH=1 -o player.js 
+    emcc main.cpp -std=c++17 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s EXPORTED_FUNCTIONS="['_loadJson', '_main']" -s EXTRA_EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" -s WASM=1 -s USE_SDL=2 -Oz -s ASSERTIONS=1 -s SAFE_HEAP=1 -fsanitize=undefined -s ALLOW_MEMORY_GROWTH=1 -o player.js 
+
     #emcc main.cpp -std=c++17 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -s ALLOW_MEMORY_GROWTH=1 -s SAFE_HEAP=1 -s WARN_UNALIGNED=1 -Wcast-align -Wover-aligned -o player.js 
     #emcc main.cpp -std=c++17 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -fsanitize=address -s ALLOW_MEMORY_GROWTH=1 -o player.js 
     #emcc main.cpp -std=c++17 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s WASM=1 -s USE_SDL=2 -O3 -s ASSERTIONS=1 -s SAFE_HEAP=1 -fsanitize=address -s ALLOW_MEMORY_GROWTH=1 -o player.js 
