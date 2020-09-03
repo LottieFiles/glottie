@@ -945,7 +945,7 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 // common functions related to geometry
 
 float distanceBetweenPoints(struct Vertex* pointA, struct Vertex* pointB) {
-	float distance = ( sqrt(pow(((float)pointA->x - (float)pointB->x), 2) + pow(((float)pointA->y - (float)pointB->y), 2)) );
+	float distance = ( sqrt(pow(( ((float)pointA->x * 2) - ((float)pointB->x) * 2), 2) + pow(( ((float)pointA->y * 2) - ((float)pointB->y * 2)), 2)) );
 	//EM_ASM_({console.log("    ///////////> " + $0 + " " + $1 + " " + $2 + " " + $3 + " " + $4);}, distance, pointA->x, pointB->x, pointA->y, pointB->y);
 	return distance;
 }
@@ -1252,7 +1252,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 		} else {
 			segSize = *(segSizePassed + segCounter);
 		}
-		if (segSize == 0 || segSize < 0.000001) {
+		if (segSize == 0 || segSize < 0.0001) {
 			continue;
 		}
 		float segments = 1 / segSize;
@@ -1286,7 +1286,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 
 		intermediateStart = NULL;
 		lastIntermediate = NULL;
-		while (segNow < 1) {
+		while (segNow <= 1) {
 			intermediate = new ArrayOfVertex;
 			intermediate->vertex = new Vertex;
 			intermediate->start = v->start;
