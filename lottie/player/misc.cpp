@@ -1454,6 +1454,29 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 		
 		if (currentBB != NULL) {
 			if (currentBB->anchorSet) {
+				temp->layers->x = currentBB->anchorX;
+				temp->layers->y = currentBB->anchorY;
+			} else {
+				temp->layers->x = (currentBB->w / 2);
+				temp->layers->y = (currentBB->h / 2);
+			}
+
+		}
+
+		if (currentShapesBB != NULL) {
+			if (currentShapesBB->anchorSet) {
+				temp->shapes->x = currentShapesBB->anchorX;
+				temp->shapes->y = currentShapesBB->anchorY;
+			} else {
+
+				temp->shapes->x = (currentShapesBB->w / 2);
+				temp->shapes->y = (currentShapesBB->h / 2);
+			}
+		}
+
+		/*
+		if (currentBB != NULL) {
+			if (currentBB->anchorSet) {
 				temp->layers->x = currentBB->anchorX * -1;
 				temp->layers->y = currentBB->anchorY * -1;
 			} else {
@@ -1473,6 +1496,7 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 				temp->shapes->y = (currentShapesBB->h / 2) * -1;
 			}
 		}
+		*/
 
 	}
 

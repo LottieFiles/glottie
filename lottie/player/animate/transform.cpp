@@ -695,6 +695,8 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		EM_ASM({console.log("parent included");});
 		tempLayers = tempLayers->parentLayers;
 		if (tempLayers->transform != NULL) {
+			passedLayers->currentBB->initXc = passedLayers->currentBB->initXc + tempLayers->currentBB->initXc;
+			passedLayers->currentBB->initYc = passedLayers->currentBB->initYc + tempLayers->currentBB->initYc;
 			if (tempLayers->transform->maxTime > passedLayers->instigatedMaxTime) {
 				EM_ASM({console.log("instigation max time");});
 				passedLayers->instigatedMaxTime = tempLayers->transform->maxTime;

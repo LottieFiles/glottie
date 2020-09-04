@@ -364,11 +364,11 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			passedShapesItem->currentBB->translatedX = tempPos->layers->x + tempPos->shapes->x;
 			passedShapesItem->currentBB->translatedY = tempPos->layers->y + tempPos->shapes->y;
 			if (passedShapesItem->currentBB->anchorSet) {
-				passedShapesItem->currentBB->initXc = passedShapesItem->currentBB->initX + passedShapesItem->currentBB->anchorX;
-				passedShapesItem->currentBB->initYc = passedShapesItem->currentBB->initY + passedShapesItem->currentBB->anchorY;
+				passedShapesItem->currentBB->initXc = passedShapesItem->currentBB->initX - passedShapesItem->currentBB->anchorX;
+				passedShapesItem->currentBB->initYc = passedShapesItem->currentBB->initY - passedShapesItem->currentBB->anchorY;
 			} else {
-				passedShapesItem->currentBB->initXc = passedShapesItem->currentBB->initX + (passedShapesItem->currentBB->w / 2);
-				passedShapesItem->currentBB->initYc = passedShapesItem->currentBB->initY + (passedShapesItem->currentBB->h / 2);
+				passedShapesItem->currentBB->initXc = passedShapesItem->currentBB->initX - (passedShapesItem->currentBB->w / 2);
+				passedShapesItem->currentBB->initYc = passedShapesItem->currentBB->initY - (passedShapesItem->currentBB->h / 2);
 			}
 			getBBPropShape(passedShapesItem->ks->start, passedShapesItem->currentBB);
 
@@ -476,11 +476,11 @@ int prepLayers(struct Layers* passedLayers) {
 			getBoundingBox(passedLayers->shapes->start, passedLayers->currentBB);
 			//if (passedLayers->currentBB->w > 0 && passedLayers->currentBB->h > 0) {
 			if (passedLayers->currentBB->anchorSet) {
-				passedLayers->currentBB->initXc = passedLayers->currentBB->initX + passedLayers->currentBB->anchorX;
-				passedLayers->currentBB->initYc = passedLayers->currentBB->initY + passedLayers->currentBB->anchorY;
+				passedLayers->currentBB->initXc = passedLayers->currentBB->initX - passedLayers->currentBB->anchorX;
+				passedLayers->currentBB->initYc = passedLayers->currentBB->initY - passedLayers->currentBB->anchorY;
 			} else {
-				passedLayers->currentBB->initXc = passedLayers->currentBB->initX + (passedLayers->currentBB->w / 2);
-				passedLayers->currentBB->initYc = passedLayers->currentBB->initY + (passedLayers->currentBB->h / 2);
+				passedLayers->currentBB->initXc = passedLayers->currentBB->initX - (passedLayers->currentBB->w / 2);
+				passedLayers->currentBB->initYc = passedLayers->currentBB->initY - (passedLayers->currentBB->h / 2);
 			}
 			prepShapesItem(passedLayers->shapes->start, NULL, true, passedLayers->currentBB);
 			//if (passedLayers->ks != NULL) {
