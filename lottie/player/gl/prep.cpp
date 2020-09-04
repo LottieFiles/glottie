@@ -231,7 +231,7 @@ int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape, struct Sh
 	while (! exhausted) {
 		if (passedPropertiesShape->isKeyframe) {
 			//EM_ASM({console.log("SHAPEPROPKEYFRAME found");});
-			prepPropertiesShapeProp(passedPropertiesShape->keyframe->s, passedShapesItem, currentBB, currentShapesBB);
+			//prepPropertiesShapeProp(passedPropertiesShape->keyframe->s, passedShapesItem, currentBB, currentShapesBB);
 			prepPropertiesShapeProp(passedPropertiesShape->keyframe->e, passedShapesItem, currentBB, currentShapesBB);
 		} else {
 			//EM_ASM({console.log("SHAPEPROP found");});

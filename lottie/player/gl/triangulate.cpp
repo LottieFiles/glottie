@@ -348,7 +348,6 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	currentShapesBB->initX = currentXPosition;
 	currentShapesBB->initY = currentYPosition;
 
-	//if (currentShapesBB->w > 0 && currentShapesBB->h > 0) {
 	if (currentShapesBB->anchorSet) {
 		currentShapesBB->initXc = currentXPosition + currentShapesBB->anchorX;
 		currentShapesBB->initYc = currentYPosition + currentShapesBB->anchorY;
@@ -357,6 +356,8 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		currentShapesBB->initYc = currentYPosition + (currentShapesBB->h / 2);
 	}
 
+	//currentXPosition = currentBB->initXc + currentShapesBB->initXc;
+	//currentYPosition = currentBB->initYc + currentShapesBB->initYc;
 
 	/*
 		if (currentBB->anchorX != 0 || currentBB->anchorY != 0) {
