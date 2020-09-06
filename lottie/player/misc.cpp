@@ -1258,7 +1258,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 		float segments = 1 / segSize;
 		//float segNow = segSize;
 		float segNow = segSize;
-		EM_ASM_({console.log("segnow, segsize, distNow " + $0 + ", " + $1 + ". " + $2);}, segNow, segSize, distNow);
+		//EM_ASM_({console.log("segnow, segsize, distNow " + $0 + ", " + $1 + ". " + $2);}, segNow, segSize, distNow);
 
 		float p1x;
 		float p2x;

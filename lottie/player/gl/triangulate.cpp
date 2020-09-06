@@ -340,7 +340,6 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 
 
 
-	/*
 	struct ReturnPosition* tempPos = getRelativePosition(currentBB, currentShapesBB, false);
 
 	currentXPosition = tempPos->layers->x + tempPos->shapes->x;
@@ -349,15 +348,17 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	currentShapesBB->initX = currentXPosition;
 	currentShapesBB->initY = currentYPosition;
 
-	if (currentShapesBB->anchorSet) {
-		currentShapesBB->initXc = currentXPosition + currentShapesBB->anchorX;
-		currentShapesBB->initYc = currentYPosition + currentShapesBB->anchorY;
-	} else {
-		currentShapesBB->initXc = currentXPosition + (currentShapesBB->w / 2);
-		currentShapesBB->initYc = currentYPosition + (currentShapesBB->h / 2);
+	if (currentShapesBB != NULL) {
+		currentShapesBB->initXc = currentXPosition;
+		currentShapesBB->initYc = currentYPosition;
 	}
-	*/
 
+	if (currentBB != NULL) {
+		currentShapesBB->initXc = tempPos->layers->x;
+		currentShapesBB->initYc = tempPos->layers->y;
+	}
+
+	/*
 	if (currentBB != NULL) {
 		currentXPosition = currentBB->initXc + currentShapesBB->initXc;
 		currentYPosition = currentBB->initYc + currentShapesBB->initYc;
@@ -365,6 +366,7 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 		currentXPosition = currentShapesBB->initXc;
 		currentYPosition = currentShapesBB->initYc;
 	}
+	*/
 
 	if (currentBB != NULL) {
 		EM_ASM_({console.log("shapes position --> " + $0 + " : " + $1 + "  /  " + $2 + " : " + $3);}, currentShapesBB->initXc, currentShapesBB->initYc, currentBB->initXc, currentBB->initYc);
