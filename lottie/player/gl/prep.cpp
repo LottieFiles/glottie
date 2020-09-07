@@ -16,7 +16,7 @@ struct ShaderProgram* newShaderProgram() {
 
 //int prepVAO(GLfloat* vertices, unsigned int* indices, GLfloat* colors, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count, int idxCount) {
 void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices, std::vector<GLfloat>& colors, struct ShaderProgram* passedShaderProgram, struct Buffers* passedBuffers, int count, int idxCount) {
-	//EM_ASM_({console.log("VAO 1.0 " + $0 + " " + $1);}, count, passedBuffers->idxCount);
+	EM_ASM_({console.log("VAO 1.0 " + $0 + " " + $1);}, count, passedBuffers->idxCount);
 	//int refIndex = lastRefIndex + 1;
 
 	GLuint tvao, tvbo, tibo, tcbo;
@@ -72,17 +72,16 @@ void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 	passedBuffers->shapesTransform = currentShapesTransform;
 	passedBuffers->layersTransform = currentLayersTransform;
 
-	//EM_ASM_({console.log("--......--> done loading buffers " + $0 + " " + $1);}, idxCount, indices.size());
+	EM_ASM_({console.log("--......--> done loading buffers " + $0 + " " + $1);}, idxCount, indices.size());
 
 	//passedBuffers->vao = tvao;
 	//passedBuffers->vbo = tvbo;
 	//passedBuffers->ibo = tibo;
 
-	//EM_ASM({console.log("--......--> done loading buffers 1.0");});
 	passedBuffers->idx = indices;
-	//EM_ASM({console.log("--......--> done loading buffers 1.1");});
+	EM_ASM({console.log("--......--> done loading buffers 1.1");});
 	passedBuffers->idxCount = idxCount;
-	//EM_ASM({console.log("--......--> done loading buffers 1.2");});
+	EM_ASM({console.log("--......--> done loading buffers 1.2");});
 	glBindVertexArrayOES(0);
 
 	//return refIndex;
@@ -99,10 +98,10 @@ float* getFill(struct ShapesItem* passedShapesItem) {
 	bool exhausted = false;
 	while (! exhausted) {
 		if (tempShapesItem->ty == _fill) {
-			//EM_ASM({console.log("////-------> looking for color");});
+			EM_ASM({console.log("////-------> looking for color");});
 			if (tempShapesItem->c != NULL) {
 				if (tempShapesItem->c->k_count > 0) {
-					//EM_ASM_({console.log("////-------> color " + $0 + " " + $1 + " " + $2);}, *(tempShapesItem->c->k), *(tempShapesItem->c->k + 1), *(tempShapesItem->c->k + 2));
+					EM_ASM_({console.log("////-------> color " + $0 + " " + $1 + " " + $2);}, *(tempShapesItem->c->k), *(tempShapesItem->c->k + 1), *(tempShapesItem->c->k + 2));
 					*(tempFloat + 0) = *(tempShapesItem->c->k + 0);
 					*(tempFloat + 1) = *(tempShapesItem->c->k + 1);
 					*(tempFloat + 2) = *(tempShapesItem->c->k + 2);
@@ -144,7 +143,7 @@ float* getFill(struct ShapesItem* passedShapesItem) {
 
 struct Buffers* newBuffers() {
 	struct Buffers* tempBuffers;
-	//EM_ASM({console.log("creating buffer 1");});
+	EM_ASM({console.log("creating buffer 1");});
 	if (lastBuffersCreated == NULL) {
 		tempBuffers = new Buffers;
 		tempBuffers->start = tempBuffers;
@@ -156,12 +155,12 @@ struct Buffers* newBuffers() {
 		tempBuffers->start = lastBuffersCreated->start;
 		lastBuffersCreated->next = tempBuffers;
 		tempBuffers->prev = lastBuffersCreated;
-		//EM_ASM({console.log("creating buffer 1");});
+		EM_ASM({console.log("creating buffer 1");});
 	}
 	tempBuffers->next = tempBuffers->start;
 	tempBuffers->start->prev = tempBuffers;
 	lastBuffersCreated = tempBuffers;
-	//EM_ASM({console.log("creating buffer 2");});
+	EM_ASM({console.log("creating buffer 2");});
 	return lastBuffersCreated;
 }
 
@@ -179,16 +178,16 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	while (! exhausted) {
 		elementCount++;
 
-		//EM_ASM({console.log("tracing 3 ");});
+		EM_ASM({console.log("tracing 3 ");});
 		if (passedPropertiesShapeProp->v_count > 2 && ! passedPropertiesShapeProp->prepped) {
 			passedPropertiesShapeProp->buffers_v = newBuffers();
-			//EM_ASM({console.log("tracing 4 ");});
+			EM_ASM({console.log("tracing 4 ");});
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
 			//prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, passedShapesItem->order, passedPropertiesShapeProp, currentBB, currentShapesBB);
 			universalOrder++;
 			currentShapesBB->anchorZ = universalOrder;
 			prepTriangulate(passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v, defaultFill, universalOrder, passedPropertiesShapeProp, currentBB, currentShapesBB);
-			//EM_ASM({console.log("tracing 5 ");});
+			EM_ASM({console.log("tracing 5 ");});
 			//if (tempTriangulateReturn == NULL) {return 0;}
 			
 			//passedPropertiesShapeProp->gl_v = tempTriangulateReturn->vbo;
@@ -203,7 +202,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//	lastBuffersCreated->filled = true;
 			//}
 
-			//EM_ASM({console.log("tracing 6 ");});
+			EM_ASM({console.log("tracing 6 ");});
 			//} else {
 			//passedPropertiesShapeProp->buffers_v = NULL;
 			//}
@@ -217,7 +216,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		}
 	}
 	delete defaultFill;
-	//EM_ASM({console.log("all prep done");});
+	EM_ASM({console.log("all prep done");});
 	
 	return 1;
 }
@@ -230,11 +229,11 @@ int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape, struct Sh
 	passedPropertiesShape = passedPropertiesShape->start;
 	while (! exhausted) {
 		if (passedPropertiesShape->isKeyframe) {
-			//EM_ASM({console.log("SHAPEPROPKEYFRAME found");});
+			EM_ASM({console.log("SHAPEPROPKEYFRAME found");});
 			//prepPropertiesShapeProp(passedPropertiesShape->keyframe->s, passedShapesItem, currentBB, currentShapesBB);
 			prepPropertiesShapeProp(passedPropertiesShape->keyframe->e, passedShapesItem, currentBB, currentShapesBB);
 		} else {
-			//EM_ASM({console.log("SHAPEPROP found");});
+			EM_ASM({console.log("SHAPEPROP found");});
 			prepPropertiesShapeProp(passedPropertiesShape->k, passedShapesItem, currentBB, currentShapesBB);
 		}
 		if (passedPropertiesShape->next == NULL) {
@@ -247,14 +246,14 @@ int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape, struct Sh
 }
 
 struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB) {
-	//EM_ASM({console.log("///// entering findShapesTransform ");});
+	EM_ASM({console.log("///// entering findShapesTransform ");});
 	bool exhausted = false;
 	passedShapesItem = passedShapesItem->start;
 	currentShapesTransform = NULL;
 	while (! exhausted) {
-		//EM_ASM_({console.log("shape type " + $0);}, passedShapesItem->ty);
+		EM_ASM_({console.log("shape type " + $0);}, passedShapesItem->ty);
 		if (passedShapesItem->ty == _transform) {
-			//EM_ASM({console.log("SHAPEPROP TRANSFORM found");});
+			EM_ASM({console.log("SHAPEPROP TRANSFORM found");});
 
 			/*shapesPosition.x = passedShapesItem->p->k[0];
 			shapesPosition.y = passedShapesItem->p->k[1];
@@ -278,11 +277,11 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem, stru
 			shapesPosition.y = passedShapesItem->p->k[1];
 			shapesAnchor.x = passedShapesItem->a->k[0];
 			shapesAnchor.y = passedShapesItem->a->k[1];*/
-			//EM_ASM_({console.log("SHAPE TRANSFORM found " + $0 + " " + $1 + " " + $2 + " " + $3);}, shapesPosition.x, shapesPosition.y, shapesAnchor.x, shapesAnchor.y);
+			EM_ASM_({console.log("SHAPE TRANSFORM found " + $0 + " " + $1 + " " + $2 + " " + $3);}, shapesPosition.x, shapesPosition.y, shapesAnchor.x, shapesAnchor.y);
 			if (currentShapesTransform != NULL && currentShapesTransform->p != NULL) {
-				//EM_ASM({console.log("///// exiting findShapesTransform ");});
+				EM_ASM({console.log("///// exiting findShapesTransform ");});
 				if (currentShapesTransform->p->startTime == 0) {
-					//EM_ASM({console.log("///// exiting findShapesTransform2 ");});
+					EM_ASM({console.log("///// exiting findShapesTransform2 ");});
 					//shapesPosition.x = shapesPosition.x + currentShapesTransform->p->v->start->vertex->x;
 					//shapesPosition.y = shapesPosition.y + currentShapesTransform->p->v->start->vertex->y;
 				}
@@ -295,17 +294,14 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem, stru
 			passedShapesItem = passedShapesItem->next;
 		}
 	}
-	//EM_ASM({console.log("///// exiting findShapesTransform ");});
+	EM_ASM({console.log("///// exiting findShapesTransform ");});
 
 	return NULL;
 }
 
 int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempBaseTransform, bool freshStart, struct BoundingBox* currentBB) {
 	currentShapesTransform = NULL;
-	//EM_ASM({console.log("SHAPESITEM found pre 1.0");});
-	//EM_ASM({console.log("----- entering prepShapesItem ");});
 	if (passedShapesItem == NULL) {
-		//EM_ASM({console.log("----- exiting NULL prepShapesItem ");});
 		return 0;
 	}
 	bool exhausted = false;
@@ -319,14 +315,12 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			freshStart = false;
 	}
 
-	//EM_ASM({console.log("LAYERS found 1.0.2");});
-
 	struct ShapesItem* currentBaseTransform = findShapesTransform(passedShapesItem, currentBB);
 	
 	passedShapesItem = passedShapesItem->start;
 	float currentShapesPosX, currentShapesPosY, currentShapesAncX, currentShapesAncY;
 	while (! exhausted) {
-		//EM_ASM({console.log("SHAPESITEM found");});
+		EM_ASM({console.log("SHAPESITEM found");});
 		if (passedShapesItem->currentBB == NULL) {
 			passedShapesItem->currentBB = new BoundingBox;
 		}
@@ -386,7 +380,7 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			passedShapesItem = passedShapesItem->next;
 		}
 	}
-	//EM_ASM({console.log("----- exiting prepShapesItem ");});
+	EM_ASM({console.log("exiting prepShapesItem ");});
 
 	return 1;
 }
@@ -402,7 +396,6 @@ void findLayersTransform(struct Layers* passedLayers) {
 				layersPosition.y = passedLayers->ks->p->k[1];
 				passedLayers->currentBB->initX = passedLayers->ks->p->k[0];
 				passedLayers->currentBB->initY = passedLayers->ks->p->k[1];
-				//EM_ASM({console.log("TRANSFORM LAYERS found 1.0.1");});
 			}
 			if (passedLayers->ks->a != NULL && passedLayers->ks->a->k != NULL) {
 				layersAnchor.x = passedLayers->ks->a->k[0];
@@ -424,7 +417,7 @@ void findLayersTransform(struct Layers* passedLayers) {
 			currentLayersTransform = currentLayersTransformReturn->transform;
 		}
 		if (currentLayersTransform != NULL && currentLayersTransform->p != NULL && currentLayersTransform->p->startTime == 0) {
-			//EM_ASM({console.log("///// layer transform applied ");});
+			EM_ASM({console.log("///// layer transform applied ");});
 			//layersPosition.x = layersPosition.x + currentLayersTransform->p->v->start->vertex->x;
 			//layersPosition.y = layersPosition.y + currentLayersTransform->p->v->start->vertex->y;
 			//layersPosition.x = layersPosition.x + currentLayersTransform->p->vertex.at(0)->x;
@@ -434,20 +427,17 @@ void findLayersTransform(struct Layers* passedLayers) {
 		if (passedLayers->next == NULL) {
 			exhausted = true;
 		} else {
-			//EM_ASM({console.log("LAYERS found 1.1");});
+			EM_ASM({console.log("LAYERS found 1.1");});
 			passedLayers = passedLayers->next;
 		}
 	}*/
 }
 
 int prepLayers(struct Layers* passedLayers) {
-	//EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- LAYERS found pre 1.0");});
 
 	if (passedLayers == NULL || passedLayers->shapes == NULL) {
 		return 0;
 	}
-	//EM_ASM({console.log("LAYERS found pre 1.1");});
-
 
 
 	passedLayers = passedLayers->start;
@@ -494,11 +484,10 @@ int prepLayers(struct Layers* passedLayers) {
 		if (passedLayers->next == NULL) {
 			exhausted = true;
 		} else {
-			//EM_ASM({console.log("LAYERS found 1.1");});
 			passedLayers = passedLayers->next;
 		}
 	}
-	//EM_ASM_({console.log("LAYERS found 1.2 " + $0 +  " " + $1);}, passedLayers->currentBB->w, passedLayers->currentBB->h);
+	EM_ASM_({console.log("LAYERS found 1.2 " + $0 +  " " + $1);}, passedLayers->currentBB->w, passedLayers->currentBB->h);
 
 	return 1;
 }
@@ -509,10 +498,9 @@ int prepAssets(struct Assets* passedAssets) {
 	}
 
 	passedAssets = passedAssets->start;
-	//EM_ASM({console.log("ASSETS found pre 1.1");});
 	bool exhausted = false;
 	while (! exhausted) {
-		//EM_ASM({console.log("PRECOMP found");});
+		EM_ASM({console.log("PRECOMP found");});
 		if (passedAssets->precomps != NULL) {
 			prepLayers(passedAssets->precomps->start);
 		}
@@ -522,7 +510,7 @@ int prepAssets(struct Assets* passedAssets) {
 			passedAssets = passedAssets->next;
 		}
 	}
-	//EM_ASM({console.log("PRECOMP done");});
+	EM_ASM({console.log("PRECOMP done");});
 
 	return 1;
 }
