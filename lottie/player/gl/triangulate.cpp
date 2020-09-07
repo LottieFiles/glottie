@@ -354,8 +354,8 @@ void prepTriangulate(int count, struct Buffers* passedBuffers, struct ArrayOfVer
 	}
 
 	if (currentBB != NULL) {
-		currentShapesBB->initXc = tempPos->layers->x;
-		currentShapesBB->initYc = tempPos->layers->y;
+		currentBB->initXc = tempPos->layers->x;
+		currentBB->initYc = tempPos->layers->y;
 	}
 
 	/*

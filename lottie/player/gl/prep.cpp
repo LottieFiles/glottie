@@ -363,6 +363,7 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			struct ReturnPosition* tempPos = getRelativePosition(passedShapesItem->currentBB, currentBB, true);
 			passedShapesItem->currentBB->translatedX = tempPos->layers->x + tempPos->shapes->x;
 			passedShapesItem->currentBB->translatedY = tempPos->layers->y + tempPos->shapes->y;
+			/*
 			if (passedShapesItem->currentBB->anchorSet) {
 				passedShapesItem->currentBB->initXc = passedShapesItem->currentBB->initX - passedShapesItem->currentBB->anchorX;
 				passedShapesItem->currentBB->initYc = passedShapesItem->currentBB->initY - passedShapesItem->currentBB->anchorY;
@@ -370,6 +371,7 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 				passedShapesItem->currentBB->initXc = passedShapesItem->currentBB->initX - (passedShapesItem->currentBB->w / 2);
 				passedShapesItem->currentBB->initYc = passedShapesItem->currentBB->initY - (passedShapesItem->currentBB->h / 2);
 			}
+			*/
 			getBBPropShape(passedShapesItem->ks->start, passedShapesItem->currentBB);
 
 			prepPropertiesShape(passedShapesItem->ks, passedShapesItem, currentBB, passedShapesItem->currentBB);
@@ -410,8 +412,10 @@ void findLayersTransform(struct Layers* passedLayers) {
 				passedLayers->currentBB->anchorSet = true;
 			}
 			struct ReturnPosition* tempPos = getRelativePosition(passedLayers->currentBB, NULL, true);
-			passedLayers->currentBB->initX = tempPos->layers->x;
-			passedLayers->currentBB->initY = tempPos->layers->y;
+			passedLayers->currentBB->initX = layersPosition.x;
+			passedLayers->currentBB->initY = layersPosition.y;
+			passedLayers->currentBB->initXc = tempPos->layers->x;
+			passedLayers->currentBB->initYc = tempPos->layers->y;
 			passedLayers->currentBB->translatedX = tempPos->layers->x;
 			passedLayers->currentBB->translatedY = tempPos->layers->y;
 			currentLayersTransformReturn = fillTransformLayers(passedLayers, passedLayers->currentBB, passedLayers, passedLayers->parentLayers);
