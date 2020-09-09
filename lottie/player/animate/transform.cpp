@@ -606,6 +606,26 @@ struct VAOList* iterateShapesItem(struct ShapesItem* passedShapesItem, struct VA
 	return passedVAOL;
 }
 
+void adjustShapesItem(struct ShapesItem* passedShapesItem) {
+	struct ShapesItem* tempShapesItem;
+	tempShapesItem = passedShapesItem;
+	bool exhausted;
+	while (tempShapesItem->parent != NULL) {
+		tempShapesItem = tempShapesItem->parent;
+		if (tempShapesItem->parent != NULL) {
+			adjustShapesItem(tempShapesItem);
+		}
+		if (tempShapesItem->transform != NULL && tempShapesItem->transform->p != NULL) {
+			exhausted = false;
+			while (! exhausted) {
+				if (tempShapesItem->transform->p) {
+					
+				}
+			}
+		}
+	}
+}
+
 void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTransform, struct ShapesItem* passedShapesItem, bool isArray, bool isLayers, struct BoundingBox* layersBB, struct Layers* passedLayers, struct Layers* parentLayers) {
 	bool pFound = false;
 	bool sFound = false;
@@ -715,6 +735,9 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		}
 	}
 
+
+	adjustShapesItem(passedShapesItem);
+	
 
 	float sinHalfAngle;
 	float cosHalfAngle;

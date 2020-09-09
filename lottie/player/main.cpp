@@ -69,6 +69,7 @@ glm::mat4 identityMatrix;
 #include "gl/parentage.cpp"
 #include "gl/prep.cpp"
 #include "gl/prep_transform.cpp"
+//#include "gl/it_adjust.cpp"
 //#include "animate/prep_parent.cpp"
 
 extern "C" {
@@ -101,8 +102,13 @@ void loadJson(char* buffer, int theLength) {
 	EM_ASM({console.log("////> gl init done");});
 
 	glInitShaders(0);
+
 	EM_ASM({console.log("////> start of parenting shapes");});
 	parentShapes();
+
+	//EM_ASM({console.log("////> start of prepping shapes");});
+	//itAdjust();
+
 	EM_ASM({console.log("////> start of prepping shapes");});
 	prepShapes();
 

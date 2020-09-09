@@ -401,28 +401,27 @@ void wrapShape(bool inGroup) {
 			//EM_ASM({console.log("-//***----> unwrapped to parent_ _ _ " + $0);}, closureCount);
 			currentShapesItem = newShapesItem(currentShapesItem, false);
 		}
-	} else {
-		if (currentShapesItem != NULL) {
-			if (currentShapesItem->parent == NULL) {
-				//EM_ASM({console.log("-//*****************************----> reset closureCount " + $0);}, closureCount);
-				closureCount = 0;
-			}
-			if (inGroup) {
-				currentShapesItem = newShapesItem(currentShapesItem, inGroup);
-				shapesItemRelated = 1;
-			} else {
-				//if (currentShapesItem->parent == NULL) {
-					closureCount = 0;
-				//}
-				currentShapesItem = newShapesItem(currentShapesItem, false);
-				shapesItemRelated = 2;
-			}
-		} else {
-			//EM_ASM({console.log("-//********************-------------------------------------------> new shapesitem in layer " + $0);}, closureCount);
-			currentLayers->shapes = newShapesItem(currentShapesItem, false);
+	} else if (currentShapesItem != NULL && currentShapesItem->parent == NULL) {
+		if (currentShapesItem->parent == NULL) {
+			//EM_ASM({console.log("-//*****************************----> reset closureCount " + $0);}, closureCount);
 			closureCount = 0;
+		}
+		if (inGroup) {
+			currentShapesItem = newShapesItem(currentShapesItem, inGroup);
+			shapesItemRelated = 1;
+		} else {
+			//if (currentShapesItem->parent == NULL) {
+				closureCount = 0;
+			//}
+			currentShapesItem = newShapesItem(currentShapesItem, false);
 			shapesItemRelated = 2;
 		}
+//	} else if (currentShapesItem == NULL) {
+	} else {
+		//EM_ASM({console.log("-//********************-------------------------------------------> new shapesitem in layer " + $0);}, closureCount);
+		currentLayers->shapes = newShapesItem(currentShapesItem, false);
+		closureCount = 0;
+		shapesItemRelated = 2;
 	}
 	if (closureCount > 0) {
 		closureCount--;
