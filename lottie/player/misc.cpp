@@ -1439,14 +1439,18 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 
 		if (currentShapesBB != NULL) {
 			if (currentShapesBB->anchorSet) {
-				temp->shapes->x = shapesPosition.x - currentShapesBB->anchorX;
-				temp->shapes->y = shapesPosition.y - currentShapesBB->anchorY;
+				//temp->shapes->x = shapesPosition.x - currentShapesBB->anchorX;
+				//temp->shapes->y = shapesPosition.y - currentShapesBB->anchorY;
+				temp->shapes->x = cumulativeShapesDelta.x - currentShapesBB->anchorX;
+				temp->shapes->y = cumulativeShapesDelta.y - currentShapesBB->anchorY;
 			} else {
 				//temp->shapes->x = shapesPosition.x;
 				//temp->shapes->y = shapesPosition.x;
 
-				temp->shapes->x = shapesPosition.x - (currentShapesBB->w / 2);
-				temp->shapes->y = shapesPosition.y - (currentShapesBB->h / 2);
+				//temp->shapes->x = shapesPosition.x - (currentShapesBB->w / 2);
+				//temp->shapes->y = shapesPosition.y - (currentShapesBB->h / 2);
+				temp->shapes->x = cumulativeShapesDelta.x - (currentShapesBB->w / 2);
+				temp->shapes->y = cumulativeShapesDelta.y - (currentShapesBB->h / 2);
 			}
 		}
 	
