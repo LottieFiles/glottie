@@ -316,11 +316,13 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem, stru
 	return NULL;
 }
 
-int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempBaseTransform, bool freshStart, struct BoundingBox* currentBB) {
-	currentShapesDelta.x = 0;
-	currentShapesDelta.y = 0;
-	cumulativeShapesDelta.x = 0;
-	cumulativeShapesDelta.y = 0;
+int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempBaseTransform, bool freshStart, struct BoundingBox* currentBB, bool itIndent) {
+	if (! itIndent) {
+		currentShapesDelta.x = 0;
+		currentShapesDelta.y = 0;
+		cumulativeShapesDelta.x = 0;
+		cumulativeShapesDelta.y = 0;
+	}
 
 	currentShapesTransform = NULL;
 	if (passedShapesItem == NULL) {
@@ -338,6 +340,7 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 	}
 
 	struct ShapesItem* currentBaseTransform = findShapesTransform(passedShapesItem, currentBB);
+	struct MainOffset previousShapesDelta;
 	
 	passedShapesItem = passedShapesItem->start;
 	float currentShapesPosX, currentShapesPosY, currentShapesAncX, currentShapesAncY;
@@ -347,10 +350,12 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			passedShapesItem->currentBB = new BoundingBox;
 		}
 		if (passedShapesItem->it != NULL) {
+			/*
 			currentShapesPosX = shapesPosition.x;
 			currentShapesPosY = shapesPosition.y;
 			currentShapesAncX = shapesAnchor.x;
 			currentShapesAncY = shapesAnchor.y;
+			*/
 			/*
 			shapesPosition.x = 0;
 			shapesPosition.y = 0;
@@ -363,11 +368,21 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 				passedShapesItem->currentBB->anchorY = shapesAnchor.y;
 				passedShapesItem->currentBB->anchorSet = true;
 			}
-			prepShapesItem(passedShapesItem->it, currentBaseTransform, freshStart, currentBB);
+
+			previousShapesDelta.x = cumulativeShapesDelta.x;
+			previousShapesDelta.y = cumulativeShapesDelta.y;
+
+			prepShapesItem(passedShapesItem->it, currentBaseTransform, freshStart, currentBB, true);
+
+			cumulativeShapesDelta.x = previousShapesDelta.x;
+			cumulativeShapesDelta.y = previousShapesDelta.y;
+
+			/*
 			shapesPosition.x = currentShapesPosX;
 			shapesPosition.y = currentShapesPosY;
 			shapesAnchor.x = currentShapesAncX;
 			shapesAnchor.y = currentShapesAncY;
+			*/
 		}
 		if (passedShapesItem->ks != NULL) {
 			if (shapesAnchor.isSet) {
@@ -498,7 +513,7 @@ int prepLayers(struct Layers* passedLayers) {
 				passedLayers->currentBB->initXc = passedLayers->currentBB->initX - (passedLayers->currentBB->w / 2);
 				passedLayers->currentBB->initYc = passedLayers->currentBB->initY - (passedLayers->currentBB->h / 2);
 			}
-			prepShapesItem(passedLayers->shapes->start, NULL, true, passedLayers->currentBB);
+			prepShapesItem(passedLayers->shapes->start, NULL, true, passedLayers->currentBB, false);
 			//if (passedLayers->ks != NULL) {
 			//	composeTransformLayers(passedLayers, currentLayersTransformReturn->minTime, currentLayersTransformReturn->maxTime);
 			//}
