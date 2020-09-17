@@ -377,6 +377,11 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			cumulativeShapesDelta.x = previousShapesDelta.x;
 			cumulativeShapesDelta.y = previousShapesDelta.y;
 
+			if (passedShapesItem->currentBB->anchorSet) {
+				shapesAnchor.x = passedShapesItem->currentBB->anchorX;
+				shapesAnchor.y = passedShapesItem->currentBB->anchorY;
+			}
+
 			/*
 			shapesPosition.x = currentShapesPosX;
 			shapesPosition.y = currentShapesPosY;
