@@ -447,8 +447,12 @@ void findLayersTransform(struct Layers* passedLayers) {
 				passedLayers->currentBB->anchorSet = true;
 			}
 			struct ReturnPosition* tempPos = getRelativePosition(passedLayers->currentBB, NULL, true);
+			//passedLayers->currentBB->baseX = layersPosition.x;
+			//passedLayers->currentBB->baseY = layersPosition.y;
+
 			passedLayers->currentBB->initX = layersPosition.x;
 			passedLayers->currentBB->initY = layersPosition.y;
+
 			passedLayers->currentBB->initXc = tempPos->layers->x;
 			passedLayers->currentBB->initYc = tempPos->layers->y;
 			passedLayers->currentBB->translatedX = tempPos->layers->x;

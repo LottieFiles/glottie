@@ -1,3 +1,21 @@
+/*int parentShapes(struct ShapesItem* passedShapesItem, struct BoundingBox* passedLayersBB) {
+	bool exhausted = false;
+
+	while (! exhausted) {
+		if (passedShapesItem->currentBB != NULL) {
+			if (passedLayersBB != NULL) {
+				passedShapesItem->currentBB->initXc = passedShapesItem->currentBB->initXc + passedLayersBB->cu;
+			}
+		}
+
+		if (passedShapesItem->next != NULL) {
+			passedShapesItem = passedShapesItem->next;
+		} else {
+			exhausted = true;
+		}
+	}
+
+}*/
 
 int parentLayers(struct Layers* passedLayers, bool findIndex, int indexToFind, struct Layers* parentRef) {
 	//EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- LAYERS found pre 1.0");});

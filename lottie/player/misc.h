@@ -185,6 +185,11 @@ struct alignas(ALIGNSIZE) IndexArray {
 struct alignas(ALIGNSIZE) BoundingBox {
 	float w = 0; // width
 	float h = 0; // height
+	// without layer offset
+	//float baseX = 0; // only the x-axis value
+	//float baseY = 0; // only the y-axis value
+
+	// with layer offset
 	float initX = 0; // top of bounding box
 	float initY = 0; // left  of bounding box
 	float initXc = 0; // center of bounding box
