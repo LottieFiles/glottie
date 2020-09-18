@@ -266,7 +266,7 @@ int associateKeyValues() {
 		}
 	} else if (theScope->scope == _p) {
 		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
-			//EM_ASM({console.log("//----------------> filling multidim p");});
+			EM_ASM({console.log("//----------------> filling multidim p");});
 			fillPropertiesMultiDimensional(currentShapesItem->p);
 		} else if (strcmp(theScope->prev->currentTy, "rc") == 0 && theScope->prev->prev->scope != _layers) {
 			//EM_ASM({console.log("//----------------> filling multidim p rc");});

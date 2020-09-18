@@ -527,6 +527,7 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 		if (isLayer) {
 			passedVAOL->layersComposite = passedComposite;
 		} else {
+			EM_ASM_({console.log("--- ADDED COMP " + $0);}, passedVAO);
 			passedVAOL->shapesComposite = passedComposite;
 		}
 		passedVAOL = passedVAOL->start->prev;
@@ -1133,7 +1134,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 		}
 	}
 	if (passedShapesItem->s != NULL && passedShapesItem->s->keyframe != NULL) {
-		//EM_ASM_({console.log("---------------===================SCALE TRANSFORM BEGINS ");});
+		EM_ASM_({console.log("---------------===================SCALE TRANSFORM BEGINS ");});
 		tempAOV = createSegmentP(passedShapesItem->s->keyframe->start, passedShapesItem->currentBB, 2, false);
 		passedShapesItem->transform->s = tempAOV;
 		if (tempAOV->v_count > 1) {
@@ -1191,7 +1192,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 		fillCompositeAnimation(minTime, maxTime, passedShapesItem->transform, passedShapesItem, false, false, passedShapesItem->currentBB, passedLayers, parentLayers);
 		EM_ASM_({console.log("---------------===================TRANSFORM shapes done ");});
 	}
-	//EM_ASM_({console.log("---------------===================TRANSFORM shapes done done ");});
+	EM_ASM_({console.log("---------------===================TRANSFORM shapes done done ");});
 
 	return passedShapesItem->transform;
 }
