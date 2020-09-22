@@ -184,7 +184,7 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 				//_1 = (2 * ((*(passedKeyframe->s + 0) + tempX) * theAnimation->scaleFactorX)) / w;
 				//_2 = 0.0f;
 				//_3 = 0.0f;
-				_1 = *(passedKeyframe->s + 0);
+				_1 = *(passedKeyframe->s + 0) + currentBB->offsetX;
 				_2 = 0.0f;
 				_3 = 0.0f;
 			} else if (type == 2) {
@@ -197,8 +197,8 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 				//_1 = (2 * ((*(passedKeyframe->s + 0) + tempX) * theAnimation->scaleFactorX)) / w;
 				//_2 = (2 * (((*(passedKeyframe->s + 1) + tempY) * theAnimation->scaleFactorY) / h)) * -1;
 				//_3 = 0.0f;
-				_1 = *(passedKeyframe->s + 0);
-				_2 = *(passedKeyframe->s + 1);
+				_1 = *(passedKeyframe->s + 0) + currentBB->offsetX;
+				_2 = *(passedKeyframe->s + 1) + currentBB->offsetY;
 				_3 = 0.0f;
 			} else if (type == 2) {
 				_1 = *(passedKeyframe->s + 0) / 100;
@@ -210,10 +210,10 @@ struct TransformAOV* createSegmentP(struct PropertiesOffsetKeyframe* passedKeyfr
 				//_1 = (2 * ((*(passedKeyframe->s + 0) + tempX) * theAnimation->scaleFactorX)) / w;
 				//_2 = (2 * (((*(passedKeyframe->s + 1) + tempY) * theAnimation->scaleFactorY) / h)) * -1;
 				//_3 = 2 * (((*(passedKeyframe->s + 3) + tempZ) * theAnimation->scaleFactorZ) / z);
-				_1 = *(passedKeyframe->s + 0);
-				_2 = *(passedKeyframe->s + 1);
+				_1 = *(passedKeyframe->s + 0) + currentBB->offsetX;
+				_2 = *(passedKeyframe->s + 1) + currentBB->offsetY;
 				if (tempZ != 0) {
-					_3 = 2 * ((*(passedKeyframe->s + 2) * theAnimation->scaleFactorZ) / z);
+					_3 = 2 * (( (*(passedKeyframe->s + 2) + currentBB->offsetZ) * theAnimation->scaleFactorZ) / z);
 				} else {
 					_3 = 0;
 				}
@@ -716,8 +716,8 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 		EM_ASM({console.log("parent included");});
 		tempLayers = tempLayers->parentLayers;
 		if (tempLayers->transform != NULL) {
-			passedLayers->currentBB->initXc = passedLayers->currentBB->initXc + tempLayers->currentBB->initXc;
-			passedLayers->currentBB->initYc = passedLayers->currentBB->initYc + tempLayers->currentBB->initYc;
+			//passedLayers->currentBB->initXc = passedLayers->currentBB->initXc + tempLayers->currentBB->initXc;
+			//passedLayers->currentBB->initYc = passedLayers->currentBB->initYc + tempLayers->currentBB->initYc;
 			if (tempLayers->transform->maxTime > passedLayers->instigatedMaxTime) {
 				EM_ASM({console.log("instigation max time");});
 				passedLayers->instigatedMaxTime = tempLayers->transform->maxTime;
@@ -911,9 +911,9 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				//passedTransform->composite->positionVec.y = (( (((passedTransform->composite->positionVec.y - layersBB->initYc) * theAnimation->scaleFactorY) / theAnimation->h)) ) * -1;
 				
 				passedTransform->composite->positionVec.x = ((2 * ((passedTransform->composite->positionVec.x * theAnimation->scaleFactorX) / theAnimation->w)) - 1)
-									- ((2 * ((passedLayers->currentBB->initX * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
+									- ((2 * ((passedLayers->currentBB->initXf * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
 				passedTransform->composite->positionVec.y = (((2 * ((passedTransform->composite->positionVec.y * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1)
-									- (((2 * ((passedLayers->currentBB->initY * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
+									- (((2 * ((passedLayers->currentBB->initYf * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
 				//passedTransform->composite->positionVec.y = passedTransform->composite->positionVec.y * -1;
 
 				//lastPositionVec = passedTransform->composite->positionVec;
@@ -929,9 +929,9 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				//EM_ASM_({console.log("====> position pre --> " + $0 + " : " + $1 + " / " + $2 + " : " + $3);}, passedTransform->composite->positionVec.x, passedTransform->composite->positionVec.y, tempP.x, tempP.y);	
 			} else {
 				passedTransform->composite->positionVec.x = ((2 * ((passedTransform->composite->positionVec.x * theAnimation->scaleFactorX) / theAnimation->w)) - 1)
-									- ((2 * ((passedShapesItem->currentBB->initX * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
+									- ((2 * ((passedShapesItem->currentBB->initXf * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
 				passedTransform->composite->positionVec.y = (((2 * ((passedTransform->composite->positionVec.y * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1)
-									- (((2 * ((passedShapesItem->currentBB->initY * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
+									- (((2 * ((passedShapesItem->currentBB->initYf * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
 				//passedTransform->composite->positionVec.y = passedTransform->composite->positionVec.y * -1;
 
 
@@ -977,11 +977,11 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 				tempSMatrix = glm::translate(tempSMatrix, glm::vec3((tempVec.x * -1), (tempVec.y * -1), 0));
 			} else {
 				if (isLayers) {
-					tempVec.x = ((2 * ((passedLayers->currentBB->initXc * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
-					tempVec.y = (((2 * ((passedLayers->currentBB->initYc * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
+					tempVec.x = ((2 * ((passedLayers->currentBB->initXfc * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
+					tempVec.y = (((2 * ((passedLayers->currentBB->initYfc * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
 				} else {
-					tempVec.x = ((2 * ((passedShapesItem->currentBB->initXc * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
-					tempVec.y = (((2 * ((passedShapesItem->currentBB->initYc * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
+					tempVec.x = ((2 * ((passedShapesItem->currentBB->initXfc * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
+					tempVec.y = (((2 * ((passedShapesItem->currentBB->initYfc * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
 				}
 				
 				tempSMatrix = glm::translate(identityMatrix, glm::vec3(tempVec.x, tempVec.y, 0));
@@ -1012,11 +1012,11 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 
 			} else {
 				if (isLayers) {
-					tempVec.x = ((2 * ((passedLayers->currentBB->initXc * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
-					tempVec.y = (((2 * ((passedLayers->currentBB->initYc * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
+					tempVec.x = ((2 * ((passedLayers->currentBB->initXfc * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
+					tempVec.y = (((2 * ((passedLayers->currentBB->initYfc * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
 				} else {
-					tempVec.x = ((2 * ((passedShapesItem->currentBB->initXc * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
-					tempVec.y = (((2 * ((passedShapesItem->currentBB->initYc * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
+					tempVec.x = ((2 * ((passedShapesItem->currentBB->initXfc * theAnimation->scaleFactorX) / theAnimation->w)) - 1);
+					tempVec.y = (((2 * ((passedShapesItem->currentBB->initYfc * theAnimation->scaleFactorY) / theAnimation->h)) - 1) * -1);
 				}
 
 				tempRMatrix = glm::translate(identityMatrix, glm::vec3(tempVec.x, tempVec.y, 0));

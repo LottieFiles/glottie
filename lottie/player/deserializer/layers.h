@@ -4,7 +4,7 @@ struct alignas(ALIGNSIZE) Layers {
         struct Layers* start = NULL;
         struct Layers* prev = NULL;
         struct Layers* next = NULL;
-        struct Layers* parentLayers; //parent
+        struct Layers* parentLayers = NULL; //parent
       
 	struct Mask* maskProperties = NULL;
         //struct Index* ef = NULL; // effects
@@ -12,7 +12,7 @@ struct alignas(ALIGNSIZE) Layers {
 
         struct ShapesItem* shapes = NULL;
 
-        struct LayersText* text;
+        struct LayersText* text = NULL;
 
         struct HelpersTransform* ks = NULL; //transform
 

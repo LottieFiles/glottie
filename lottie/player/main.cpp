@@ -112,6 +112,9 @@ void loadJson(char* buffer, int theLength) {
 	EM_ASM({console.log("////> start of prepping shapes");});
 	prepShapes();
 
+	EM_ASM({console.log("////> start of offsetting parented shapes");});
+	parentOffsetShapes();
+
 //	EM_ASM({console.log("////> start of prepping transforms for shapes");});
 //	prepParentShapes();
 

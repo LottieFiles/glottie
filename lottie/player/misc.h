@@ -186,19 +186,35 @@ struct alignas(ALIGNSIZE) BoundingBox {
 	float w = 0; // width
 	float h = 0; // height
 	// without layer offset
-	//float baseX = 0; // only the x-axis value
-	//float baseY = 0; // only the y-axis value
+	float baseX = 0; // only the x-axis value
+	float baseY = 0; // only the y-axis value
+	float baseZ = 0; // only the z-axis value
+
+	float offsetX = 0; // the offset to apply (due to parents)
+	float offsetY = 0; // 
+	float offsetZ = 0; // 
 
 	// with layer offset
 	float initX = 0; // top of bounding box
 	float initY = 0; // left  of bounding box
 	float initXc = 0; // center of bounding box
 	float initYc = 0; // center of bounding box
+
+	float initXf = 0; // center of bounding box
+	float initYf = 0; // center of bounding box
+
+	float initXfc = 0; // center of bounding box
+	float initYfc = 0; // center of bounding box
+
 	float anchorX = 0;
 	float anchorY = 0;
+
 	float translatedX = 0;
 	float translatedY = 0;
-	bool anchorSet = false;
+
 	float anchorZ = 0;
+
+	bool anchorSet = false;
+	bool offsetSet = false;
 };
 

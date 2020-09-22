@@ -272,6 +272,9 @@ struct ShapesItem* findShapesTransform(struct ShapesItem* passedShapesItem, stru
 				currentShapesDelta.x = passedShapesItem->p->k[0];
 				currentShapesDelta.y = passedShapesItem->p->k[1];
 
+				currentShapesBase.x = passedShapesItem->p->k[0];
+				currentShapesBase.y = passedShapesItem->p->k[1];
+
 				cumulativeShapesDelta.x = cumulativeShapesDelta.x + passedShapesItem->p->k[0];
 				cumulativeShapesDelta.y = cumulativeShapesDelta.y + passedShapesItem->p->k[1];
 
@@ -363,6 +366,9 @@ int prepShapesItem(struct ShapesItem* passedShapesItem, struct ShapesItem* tempB
 			shapesAnchor.y = 0;
 			*/
 
+			passedShapesItem->currentBB->baseX = currentShapesBase.x;
+			passedShapesItem->currentBB->baseY = currentShapesBase.y;
+
 			if (shapesAnchor.isSet) {
 				passedShapesItem->currentBB->anchorX = shapesAnchor.x;
 				passedShapesItem->currentBB->anchorY = shapesAnchor.y;
@@ -450,6 +456,9 @@ void findLayersTransform(struct Layers* passedLayers) {
 			//passedLayers->currentBB->baseX = layersPosition.x;
 			//passedLayers->currentBB->baseY = layersPosition.y;
 
+			passedLayers->currentBB->baseX = layersPosition.x;
+			passedLayers->currentBB->baseY = layersPosition.y;
+
 			passedLayers->currentBB->initX = layersPosition.x;
 			passedLayers->currentBB->initY = layersPosition.y;
 
@@ -522,6 +531,7 @@ int prepLayers(struct Layers* passedLayers) {
 				passedLayers->currentBB->initXc = passedLayers->currentBB->initX - (passedLayers->currentBB->w / 2);
 				passedLayers->currentBB->initYc = passedLayers->currentBB->initY - (passedLayers->currentBB->h / 2);
 			}
+
 			prepShapesItem(passedLayers->shapes->start, NULL, true, passedLayers->currentBB, false);
 			//if (passedLayers->ks != NULL) {
 			//	composeTransformLayers(passedLayers, currentLayersTransformReturn->minTime, currentLayersTransformReturn->maxTime);
