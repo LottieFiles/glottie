@@ -492,7 +492,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		firstPass = true;
 	}
 
-	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+	glClearColor(1.0f, 0.6f, 0.6f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 
