@@ -54,7 +54,7 @@
 			}
 			buffer = Module._malloc(typedArray.length * typedArray.BYTES_PER_ELEMENT)
 			Module.HEAP8.set(typedArray, buffer)
-			result = Module.ccall("loadJson", null, ["number", "number"], [buffer, thejson.length])
+			result = Module.ccall("loadJson", null, ["number", "number", "number", "number", "number", "number"], [buffer, thejson.length, 0.0, 0.0, 0.0, 0.0])
 		} catch (e) {
 			error = e
 		} finally {
@@ -67,14 +67,6 @@
 	//window.document.onLoad=function(){loadJson('https://assets4.lottiefiles.com/packages/lf20_KO70yq.json')}
     </script>
 
-	<div style='display:inline-block; float: left;'>
-    <h1>URL here</h1>
-    <input type='text' id='theurl' onChange='loadJson("")'></input>
-    <br />
-    <br />
-    <h1>Raw JSON here:</h1>
-    <textarea onChange='loadRawJson()' id='thejson' rows=10 cols=50></textarea>
-	</div>
 
 	<div style='display:inline-block; float: left;'>
     <!-- Create the canvas that the C++ code will draw into -->
