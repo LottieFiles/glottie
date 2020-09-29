@@ -492,7 +492,12 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		firstPass = true;
 	}
 
-	glClearColor(1.0f, 0.6f, 0.6f, 0.0f);
+	glClearColor(
+			globalBackground.red, 
+			globalBackground.green,
+			globalBackground.blue, 
+			globalBackground.alpha
+		);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 

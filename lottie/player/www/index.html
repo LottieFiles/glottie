@@ -38,6 +38,12 @@
 
 	function jsonLoaded(thejson) {
 		//const thejson = Array.from(document.getElementById('thejson').value);
+		var thecolor = document.getElementById("thecolor").value
+		var red = parseInt(thecolor.slice(0,2), 16) / 255
+		var green = parseInt(thecolor.slice(2,4), 16) / 255
+		//alert(green)
+		var blue = parseInt(thecolor.slice(4,6), 16) / 255
+		var alpha = parseInt(thecolor.slice(6,8), 16) / 255
 		let buffer
 		let error
 		let result
@@ -49,7 +55,8 @@
 			}
 			buffer = Module._malloc(typedArray.length * typedArray.BYTES_PER_ELEMENT)
 			Module.HEAP8.set(typedArray, buffer)
-			result = Module.ccall("loadJson", null, ["number", "number"], [buffer, thejson.length])
+			result = Module.ccall("loadJson", null, ["number", "number", "number", "number", "number", "number"], [buffer, thejson.length, red, green, blue, alpha])
+			//result = Module.ccall("loadJson", null, ["number", "number", "number", "number", "number", "number"], [buffer, thejson.length, 0.0, 0.0, 0.0, 0.0])
 		} catch (e) {
 			error = e
 		} finally {
@@ -68,6 +75,11 @@
     <br />
     <h1>Raw JSON here:</h1>
     <textarea onChange='loadRawJson()' id='thejson' rows=10 cols=50></textarea>
+    <br />
+    <br />
+    <h1>Hex color (without #)</h1>
+    <input type='text' id='thecolor'></input>
+
 	</div>
 
 	<div style='display:inline-block; float: left;'>

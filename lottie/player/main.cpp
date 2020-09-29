@@ -21,8 +21,8 @@
 //#include </usr/include/glm/gtc/type_ptr.hpp> // glm::mat4
 #include "glm/gtc/matrix_transform.hpp" // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include "glm/gtc/type_ptr.hpp" // glm::mat4
-#include "glm/gtc/quaternion.hpp"
-#include "glm/gtx/quaternion.hpp"
+//#include "glm/gtc/quaternion.hpp"
+//#include "glm/gtx/quaternion.hpp"
 //#include <GLES2/gl2.h>
 //#include <GL/gl.h>
 //#include <GL/glu.h>
@@ -52,6 +52,13 @@ alignas(256) GLint* posAttrib[1024];
 
 glm::mat4 identityMatrix;
 
+struct alignas(ALIGNSIZE) BackgroundColor {
+	float red = 0.0f;
+	float green = 0.0f;
+	float blue = 0.0f;
+	float alpha = 0.0f;
+} globalBackground;
+
 #include "main.h"
 #include "gl/gl.h"
 #include "misc.h"
@@ -71,6 +78,8 @@ glm::mat4 identityMatrix;
 #include "gl/prep_transform.cpp"
 //#include "gl/it_adjust.cpp"
 //#include "animate/prep_parent.cpp"
+
+
 
 extern "C" {
 
@@ -93,7 +102,23 @@ void mainloop() {
 	currentFrame++;
 }
 
-void loadJson(char* buffer, int theLength) {
+
+
+void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgBlue, float bgAlpha) {
+
+	if (bgRed > 0.0) {
+		globalBackground.red = bgRed;
+	}
+	if (bgGreen > 0.0) {
+		globalBackground.green = bgGreen;
+	}
+	if (bgBlue > 0.0) {
+		globalBackground.blue = bgBlue;
+	}
+	if (bgAlpha > 0.0) {
+		globalBackground.alpha = bgAlpha;
+	}
+
 	identityMatrix = glm::mat4(1.0f);
 
 	deserializeChar(buffer, theLength);

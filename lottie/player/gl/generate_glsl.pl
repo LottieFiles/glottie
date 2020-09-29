@@ -90,7 +90,7 @@ for ($i = 0; $i < 16; $i++) {
     "          } else if (shapesPositionSet['.$i.'] == 1) {\n"
     "            gltemp = shapesRotate['.$i.'] * (shapesScale['.$i.'] * (shapesTransform['.$i.'] * gltemp)); \n"
     "          } \n"
-    "            tempOpValue = objectOpacity['.$i.']; \n"
+    "          tempOpValue = objectOpacity['.$i.']; \n"
     "        } \n"
     "      } \n"
 ';

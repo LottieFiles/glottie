@@ -268,15 +268,15 @@ int associateKeyValues() {
 		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
 			EM_ASM({console.log("//----------------> filling multidim p");});
 			fillPropertiesMultiDimensional(currentShapesItem->p);
-		} else if (strcmp(theScope->prev->currentTy, "el") == 0) {
-			fillPropertiesMultiDimensional(currentShapesItem->p);
-		} else if (strcmp(theScope->prev->currentTy, "rc") == 0) {
+		} else if (strcmp(theScope->prev->currentTy, "rc") == 0 && theScope->prev->prev->scope != _layers) {
 			fillPropertiesMultiDimensional(currentShapesItem->p);
 		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
 			//EM_ASM({console.log("//----------------> filling multidim p in layer");});
 			fillPropertiesMultiDimensional(currentLayers->ks->p);
-		} else if (theScope->prev->scope == _shapes) {
+		} else if (strcmp(theScope->prev->currentTy, "el") == 0) {
 			fillPropertiesMultiDimensional(currentShapesItem->p);
+		//} else if (theScope->prev->scope == _shapes) {
+		//	fillPropertiesMultiDimensional(currentShapesItem->p);
 		}
 	} else if (theScope->scope == _r) {
 		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
@@ -617,6 +617,9 @@ int prepareContainer(bool arrayOfObjects) {
 
 		} else if ((theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _shapes) || (theScope->prev->scope == _k && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _it)) { // PropertiesShapePropKeyframe
 			currentShapesItem->ks->keyframe->s = newPropertiesShapeProp(currentShapesItem->ks, currentShapesItem->ks->keyframe->s, true);
+		} else if (strcmp(theScope->prev->currentTy, "tr") == 0) {
+			//EM_ASM({console.log("-----------------> TRANSFORM s");});
+			currentShapesItem->s = newPropertiesMultiDimensional();
 
 		}
 	} else if (theScope->scope == _a) {
@@ -635,17 +638,14 @@ int prepareContainer(bool arrayOfObjects) {
 		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
 			//EM_ASM({console.log("-----------------> TRANSFORM p in shape in LAYER");});
 			currentShapesItem->p = newPropertiesMultiDimensional();
+		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			//EM_ASM({console.log("-----------------> TRANSFORM p in LAYER");});
+			currentLayers->ks->p = newPropertiesMultiDimensional();
 		} else if (strcmp(theScope->prev->currentTy, "el") == 0) {
 			//EM_ASM({console.log("-----------------> TRANSFORM p in shape");});
 			currentShapesItem->p = newPropertiesMultiDimensional();
 		} else if (strcmp(theScope->prev->currentTy, "rc") == 0) {
 			EM_ASM({console.log("-----------------> TRANSFORM p in rc shape");});
-			currentShapesItem->p = newPropertiesMultiDimensional();
-		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
-			//EM_ASM({console.log("-----------------> TRANSFORM p in LAYER");});
-			currentLayers->ks->p = newPropertiesMultiDimensional();
-		} else if (theScope->prev->scope == _shapes) {
-			EM_ASM({console.log("-----------------> TRANSFORM p in generic shape");});
 			currentShapesItem->p = newPropertiesMultiDimensional();
 
 		}
@@ -653,7 +653,7 @@ int prepareContainer(bool arrayOfObjects) {
 		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
 			//EM_ASM({console.log("-----------------> TRANSFORM r");});
 			currentShapesItem->r = newPropertiesValue();
-		} else if (strcmp(theScope->prev->currentTy, "rc") == 0) {
+		} else if (strcmp(theScope->prev->currentTy, "rc") == 0 && theScope->prev->prev->scope != _layers) {
 			//EM_ASM({console.log("-----------------> TRANSFORM r");});
 			currentShapesItem->r = newPropertiesValue();
 		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {

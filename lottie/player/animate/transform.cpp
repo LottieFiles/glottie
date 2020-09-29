@@ -1459,7 +1459,7 @@ void matchParentVAO() {
 	while (! exhausted) {
 		if (animationSequence == NULL || animationSequence->vaol == NULL) {
 			break;
-		}	
+		}
 		baseExhausted = false;
 		baseVAOL = animationSequence->vaol->start;	
 		//EM_ASM_({console.log("---------------==== matching - starting secondary iteration ");});
