@@ -107,7 +107,7 @@ int fillAnimation() {
 	theAnimation->h = theAnimation->h * theAnimation->scaleFactorY;
 	theAnimation->w = theAnimation->w * theAnimation->scaleFactorX;
 
-	EM_ASM_({console.log("========================> theAnimation " + $0 + " " + $1);}, theAnimation->ip, theAnimation->op);
+	//EM_ASM_({console.log("========================> theAnimation " + $0 + " " + $1);}, theAnimation->ip, theAnimation->op);
 	//deleteKeyValues(theScope->currentKeyValueTrail);
 
 	return 1;

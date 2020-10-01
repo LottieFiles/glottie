@@ -343,6 +343,7 @@ void fillAnimation(struct TransformAOV* passedAOV, int type, struct BoundingBox*
 				}
 				break;
 			case 3: //rotate
+				//EM_ASM({console.log("rotating --- ");});
 				if (passedAOV->s_count >= 1) {
 					passedAOV->transformMatrix = newTransformMatrix(passedAOV->transformMatrix);
 					//struct ReturnPosition* tempPos = getRelativePosition(currentBB, NULL, false);
@@ -412,7 +413,7 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 		bool exhausted = false;
 		while (! exhausted) {
 			if (passedVAOL->vao == passedVAO) {
-				EM_ASM_({console.log("--- VAO exists " + $0 + " " + $1);}, passedVAOL->vao, passedVAO);
+				//EM_ASM_({console.log("--- VAO exists " + $0 + " " + $1);}, passedVAOL->vao, passedVAO);
 				foundVAOL = passedVAOL;
 				break;
 			}
@@ -527,7 +528,7 @@ struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, i
 		if (isLayer) {
 			passedVAOL->layersComposite = passedComposite;
 		} else {
-			EM_ASM_({console.log("--- ADDED COMP " + $0);}, passedVAO);
+			//EM_ASM_({console.log("--- ADDED COMP " + $0);}, passedVAO);
 			passedVAOL->shapesComposite = passedComposite;
 		}
 		passedVAOL = passedVAOL->start->prev;
@@ -713,22 +714,22 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 	struct Layers* tempLayers;
 	tempLayers = passedLayers;
 	while (tempLayers->parentLayers != NULL) {
-		EM_ASM({console.log("parent included");});
+		//EM_ASM({console.log("parent included");});
 		tempLayers = tempLayers->parentLayers;
 		if (tempLayers->transform != NULL) {
 			//passedLayers->currentBB->initXc = passedLayers->currentBB->initXc + tempLayers->currentBB->initXc;
 			//passedLayers->currentBB->initYc = passedLayers->currentBB->initYc + tempLayers->currentBB->initYc;
 			if (tempLayers->transform->maxTime > passedLayers->instigatedMaxTime) {
-				EM_ASM({console.log("instigation max time");});
+				//EM_ASM({console.log("instigation max time");});
 				passedLayers->instigatedMaxTime = tempLayers->transform->maxTime;
 			}
 			if (tempLayers->transform->maxTime > 0) {
 				if (passedLayers->instigatedMinTime == -1) {
-					EM_ASM({console.log("instigation min time init");});
+					//EM_ASM({console.log("instigation min time init");});
 					passedLayers->instigatedMinTime = tempLayers->transform->minTime;
 				} else {
 					if (tempLayers->transform->minTime < passedLayers->instigatedMinTime) {
-						EM_ASM({console.log("instigation min time");});
+						//EM_ASM({console.log("instigation min time");});
 						passedLayers->instigatedMinTime = tempLayers->transform->minTime;
 					}
 				}
@@ -1076,10 +1077,10 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 						animationSequence->vaol->start->prev = animationSequence->vaol;
 					}
 					if (isLayers) {
-						EM_ASM_({console.log("---------------==============adding instigated to array ");});
+						//EM_ASM_({console.log("---------------==============adding instigated to array ");});
 						animationSequence->vaol = iterateShapesItem(passedShapesItem, animationSequence->vaol, NULL, animationSequence, i, isLayers, passedLayers, parentLayers, tempPMatrix);
 					} else {
-						EM_ASM_({console.log("---------------==============adding instigated to prop ");});
+						//EM_ASM_({console.log("---------------==============adding instigated to prop ");});
 						animationSequence->vaol = iterateKS(passedShapesItem->ks, animationSequence->vaol, NULL, animationSequence, i, isLayers, passedLayers, parentLayers, passedShapesItem, tempPMatrix);
 					}
 					animationSequence->vaol->instigated = true;
@@ -1097,7 +1098,7 @@ void fillCompositeAnimation(int minTime, int maxTime, struct Transform* passedTr
 	passedTransform->startTime = minTime;
 	passedTransform->endTime = maxTime;
 	/*if (animationSequence->vaol != NULL) {
-		EM_ASM_({console.log("---------------===================TRANSFORM composite done ");}, animationSequence->vaol->start->prev->prev->vao);
+		//EM_ASM_({console.log("---------------===================TRANSFORM composite done ");}, animationSequence->vaol->start->prev->prev->vao);
 	}*/
 
 	//buildVAO(passedTransform->composite->buffers, true);
@@ -1125,7 +1126,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 			bezierSegment(tempAOV->v, tempAOV->i, tempAOV->o, &(tempAOV->v_count), &(tempAOV->bezier_count), tempAOV->segSize, true, false, false, 3, false);
 		}
 		fillAnimation(passedShapesItem->transform->p, 1, passedShapesItem->currentBB, false);
-		EM_ASM_({console.log("---------------===================TRANSFORM shapes position ENDS ");});
+		//EM_ASM_({console.log("---------------===================TRANSFORM shapes position ENDS ");});
 		if (tempAOV->startTime < minTime || minTime == -1) {
 			minTime = tempAOV->startTime;
 		}
@@ -1134,7 +1135,7 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 		}
 	}
 	if (passedShapesItem->s != NULL && passedShapesItem->s->keyframe != NULL) {
-		EM_ASM_({console.log("---------------===================SCALE TRANSFORM BEGINS ");});
+		//EM_ASM_({console.log("---------------===================SCALE TRANSFORM BEGINS ");});
 		tempAOV = createSegmentP(passedShapesItem->s->keyframe->start, passedShapesItem->currentBB, 2, false);
 		passedShapesItem->transform->s = tempAOV;
 		if (tempAOV->v_count > 1) {
@@ -1190,9 +1191,9 @@ struct Transform* fillTransformShapes(struct ShapesItem* passedShapesItem, struc
 
 	if (maxTime > minTime) {
 		fillCompositeAnimation(minTime, maxTime, passedShapesItem->transform, passedShapesItem, false, false, passedShapesItem->currentBB, passedLayers, parentLayers);
-		EM_ASM_({console.log("---------------===================TRANSFORM shapes done ");});
+		//EM_ASM_({console.log("---------------===================TRANSFORM shapes done ");});
 	}
-	EM_ASM_({console.log("---------------===================TRANSFORM shapes done done ");});
+	//EM_ASM_({console.log("---------------===================TRANSFORM shapes done done ");});
 
 	return passedShapesItem->transform;
 }
@@ -1500,7 +1501,7 @@ void matchParentVAO() {
 			animationSequence = animationSequence->next;
 		}
 	}
-	EM_ASM_({console.log("---------------==== matching DONE ");});
+	//EM_ASM_({console.log("---------------==== matching DONE ");});
 }
 
 void composeTransformLayers(struct Layers* passedLayers, int minTime, int maxTime) {

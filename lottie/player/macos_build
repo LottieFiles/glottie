@@ -1,0 +1,3 @@
+#!/bin/sh
+
+g++ main.cpp -g -w -o player -I include -L lib -l SDL2-2.0.12_1 -framework OpenGL

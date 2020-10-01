@@ -1,15 +1,10 @@
 //// properties
 
-/*
+#ifdef EMT
 struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
-	float e; //end
-	float s; //start
-	float t; //time
-
-	struct Vertex* i; // bezier curve interpolation in value
-} *currentPropertiesValueKeyframe;
-*/
-struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
+#else
+struct PropertiesValueKeyframe {
+#endif
 	struct PropertiesValueKeyframe* start = NULL;
 	struct PropertiesValueKeyframe* next = NULL;
 	struct PropertiesValueKeyframe* prev = NULL;
@@ -25,7 +20,11 @@ struct alignas(ALIGNSIZE) PropertiesValueKeyframe {
 	int to_count;
 } *currentPropertiesValueKeyframe;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) PropertiesValue {
+#else
+struct PropertiesValue {
+#endif
 	struct PropertiesValueKeyframe* keyframe = NULL;
 
 	struct textBlock* ix;
@@ -38,7 +37,11 @@ struct alignas(ALIGNSIZE) PropertiesValue {
 	//string x; //expression
 } *currentPropertiesValue;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) PropertiesOffsetKeyframe {
+#else
+struct PropertiesOffsetKeyframe {
+#endif
 	struct PropertiesOffsetKeyframe* start = NULL;
 	struct PropertiesOffsetKeyframe* next = NULL;
 	struct PropertiesOffsetKeyframe* prev = NULL;
@@ -54,14 +57,22 @@ struct alignas(ALIGNSIZE) PropertiesOffsetKeyframe {
 	int to_count;
 } *currentPropertiesOffsetKeyframe;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) PropertiesMultiDimensionalKeyframe {
+#else
+struct PropertiesMultiDimensionalKeyframe {
+#endif
 	float* e; // end - array of numbers
 	int e_count;
 	float* s;
 	int s_count;
 } *currentPropertiesMultiDimensionalKeyframe;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) PropertiesMultiDimensional {
+#else
+struct PropertiesMultiDimensional {
+#endif
 	struct PropertiesOffsetKeyframe* keyframe = NULL;
 
 	float* k = NULL;
@@ -77,7 +88,11 @@ struct alignas(ALIGNSIZE) PropertiesMultiDimensional {
 	//struct PropertiesMultiDimensionalKeyframe* keyframe=NULL;
 } *currentPropertiesMultiDimensional;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) PropertiesShapeKeyframed {
+#else
+struct PropertiesShapeKeyframed {
+#endif
 	string x;
 	string ix;
 	int a; //animated
@@ -88,8 +103,11 @@ struct alignas(ALIGNSIZE) PropertiesShapeKeyframed {
 	struct PropertiesShapePropKeyframe* k;	
 } *currentPropertiesShapeKeyframed;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) PropertiesShapeProp {
-//struct PropertiesShapeProp {
+#else
+struct PropertiesShapeProp {
+#endif
 	struct PropertiesShapeProp* start = NULL;
 	struct PropertiesShapeProp* next = NULL;
 	struct PropertiesShapeProp* prev = NULL;
@@ -155,13 +173,20 @@ struct alignas(ALIGNSIZE) PropertiesShapeProp {
 	*/
 } *currentPropertiesShapeProp;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) PropertiesShapePropKeyframe {
+#else
+struct PropertiesShapePropKeyframe {
+#endif
 	struct PropertiesShapeProp* e=NULL;
 	struct PropertiesShapeProp* s=NULL;
 } *currentPropertiesShapePropKeyframe;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) PropertiesShape {
-//struct PropertiesShape {
+#else
+struct PropertiesShape {
+#endif
 	struct PropertiesShape* start=NULL;
 	struct PropertiesShape* next=NULL;
 	struct PropertiesShape* prev=NULL;

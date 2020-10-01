@@ -298,21 +298,21 @@ void createEllipse(struct ShapesItem* passedShapesItem) {
 
 
 void createRectangle(struct ShapesItem* passedShapesItem) {
-	EM_ASM({console.log("trying");});
+	//EM_ASM({console.log("trying");});
 	if (passedShapesItem->basicShapeGenerated == true) {
 		return;
 	}
-	EM_ASM({console.log("filled rectangle 1");});
+	//EM_ASM({console.log("filled rectangle 1");});
 	if (passedShapesItem->p == NULL || passedShapesItem->s == NULL) {
 		return;
 	}
-	EM_ASM({console.log("found rectangle 2");});
+	//EM_ASM({console.log("found rectangle 2");});
 	passedShapesItem->basicShapeGenerated = true;
 
 	passedShapesItem->ks = newPropertiesShape(passedShapesItem->ks);
-	EM_ASM({console.log("found rectangle 3");});
+	//EM_ASM({console.log("found rectangle 3");});
 	passedShapesItem->ks->k = newPropertiesShapeProp(passedShapesItem->ks, passedShapesItem->ks->k, false);
-	EM_ASM({console.log("found rectangle 4");});
+	//EM_ASM({console.log("found rectangle 4");});
 	//passedShapesItem->p -- position (PropertiesMultiDimensional*)
 	//passedShapesItem->s -- size (PropertiesMultiDimensional*)
 
@@ -325,18 +325,18 @@ void createRectangle(struct ShapesItem* passedShapesItem) {
 		width = height;
 	}
 
-	EM_ASM({console.log("found rectangle pre1");});
+	//EM_ASM({console.log("found rectangle pre1");});
 	struct ArrayOfVertex* currVertex = NULL;
-	EM_ASM({console.log("found rectangle pre2");});
+	//EM_ASM({console.log("found rectangle pre2");});
 	currVertex = new ArrayOfVertex;
 	currVertex->vertex = new Vertex;
-	EM_ASM({console.log("found rectangle pre3");});
+	//EM_ASM({console.log("found rectangle pre3");});
 	currVertex->start = currVertex;
-	EM_ASM({console.log("found rectangle pre4");});
+	//EM_ASM({console.log("found rectangle pre4");});
 	currVertex->vertex->x = xorig;
-	EM_ASM({console.log("found rectangle pre5");});
+	//EM_ASM({console.log("found rectangle pre5");});
 	currVertex->vertex->y = yorig;
-	EM_ASM({console.log("found rectangle 5");});
+	//EM_ASM({console.log("found rectangle 5");});
 
 	currVertex->next = new ArrayOfVertex;
 	currVertex->next->vertex = new Vertex;
@@ -345,7 +345,7 @@ void createRectangle(struct ShapesItem* passedShapesItem) {
 	currVertex = currVertex->next;
 	currVertex->vertex->x = xorig + width;
 	currVertex->vertex->y = yorig;
-	EM_ASM({console.log("found rectangle 6");});
+	//EM_ASM({console.log("found rectangle 6");});
 
 	currVertex->next = new ArrayOfVertex;
 	currVertex->next->vertex = new Vertex;
@@ -354,7 +354,7 @@ void createRectangle(struct ShapesItem* passedShapesItem) {
 	currVertex = currVertex->next;
 	currVertex->vertex->x = xorig + width;
 	currVertex->vertex->y = yorig + height;
-	EM_ASM({console.log("found rectangle 7");});
+	//EM_ASM({console.log("found rectangle 7");});
 
 	currVertex->next = new ArrayOfVertex;
 	currVertex->next->vertex = new Vertex;
@@ -368,7 +368,7 @@ void createRectangle(struct ShapesItem* passedShapesItem) {
 	currVertex->start->prev = currVertex;
 
 	passedShapesItem->ks->k->v = currVertex->start;
-	EM_ASM({console.log("found rectangle 8");});
+	//EM_ASM({console.log("found rectangle 8");});
 
 
 	currVertex = new ArrayOfVertex;
@@ -411,6 +411,6 @@ void createRectangle(struct ShapesItem* passedShapesItem) {
 	passedShapesItem->ks->k->v_count = 4;
 	passedShapesItem->ks->k->i_count = 4;
 	passedShapesItem->ks->k->o_count = 4;
-	EM_ASM({console.log("filled rectangle");});
+	//EM_ASM({console.log("filled rectangle");});
 }
 

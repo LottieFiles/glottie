@@ -20,7 +20,11 @@ enum ShapesTy {
 		_noshape = 200
 	};
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) ShapesItem {
+#else
+struct ShapesItem {
+#endif
 	char mn[KVLEN]; // match name
 	char nm[KVLEN]; // name
 
@@ -94,31 +98,4 @@ struct alignas(ALIGNSIZE) ShapesItem {
 } *currentShapesItem;
 
 
-
-/*
-struct alignas(ALIGNSIZE) ShapesGroup {
-	string mn; // match name
-	string nm; // name
-	string np; // number of properties
-
-	enum ShapesTy ty = gr;
-
-	struct ShapesItem* it; // item
-
-	struct ShapesGroup* parentGroup;
-} *currentShapesGroup;
-
-struct alignas(ALIGNSIZE) ShapesShape {
-	string mn; // match name
-	string nm; // name
-	int d; // direction
-
-	enum ShapesTy ty = sh;
-
-	struct PropertiesShape* ks;
-	struct PropertiesShapeKeyframed* ksKeyframed;
-
-	struct ShapesGroup *parentGroup;
-} *currentShapesShape;
-*/
 

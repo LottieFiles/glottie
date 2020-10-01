@@ -13,7 +13,7 @@ int prepParentLayers(struct Layers* passedLayers) {
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedLayers->parentLayers != NULL) {
-			EM_ASM({console.log("composition prepping ");});
+			//EM_ASM({console.log("composition prepping ");});
 			composeParentTransformLayers(passedLayers, passedLayers->parentLayers);
 		}
 

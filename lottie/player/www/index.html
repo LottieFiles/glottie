@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="https://unpkg.com/@lottiefiles/lottie-player@0.4.0/dist/lottie-player.js"></script>
 </head>
 
 <body>
@@ -13,6 +14,7 @@
 		let url
 		//if (typeof passedURL !== 'undefined' || passedURL.length <= 0) {
 			url = document.getElementById("theurl").value;
+			document.getElementById("lottie_old").setAttribute("src", url);
 		//} else {
 		//	url = passedURL
 		//}
@@ -105,6 +107,16 @@
         canv.addEventListener('click',    _toggle_background_color, false);
         canv.addEventListener('touchend', _toggle_background_color, false);
     </script>
+	</div>
+	<div style='display:inline-block; float: left;'>
+<lottie-player
+  id="lottie_old"
+  autoplay
+  controls
+  loop
+  mode="normal"
+>
+</lottie-player>
 	</div>
 
 </body>

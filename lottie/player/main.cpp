@@ -1,18 +1,38 @@
+#define APPLE 1
+
 #define KVLEN 128
+
+#ifdef EMT
 #define ALIGNSIZE 256
+#endif
+
 #define TEXTBLOCK 220
 
+//#include <functional>
 
-#include <functional>
-
+#ifdef EMT
 #include <emscripten.h> // emscripten
 #include <emscripten/html5.h> // emscripten
+#else
+	#ifdef APPLE
+		#include <OpenGL/glu.h>
+	#else
+		#include <GL/glx.h>
+		#include <GL/gl.h>
+		#include <GL/glut.h>
+	#endif
+#endif
+
+
 #include <SDL2/SDL.h> // emscripten
 //#include <SDL2/SDL.h>
 
+#ifdef EMT
+#include <SDL_opengles2.h> // empscripten
+#endif
+
 #define GLM_ENABLE_EXPERIMENTAL
 #define GL_GLEXT_PROTOTYPES 1
-#include <SDL_opengles2.h> // empscripten
 //#include <glm/glm.hpp>
 #include "glm/glm.hpp" // glm::vec3
 //#include </usr/include/glm/vec3.hpp> // glm::vec3
@@ -52,7 +72,11 @@ alignas(256) GLint* posAttrib[1024];
 
 glm::mat4 identityMatrix;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) BackgroundColor {
+#else
+struct BackgroundColor {
+#endif
 	float red = 0.0f;
 	float green = 0.0f;
 	float blue = 0.0f;
@@ -81,9 +105,10 @@ struct alignas(ALIGNSIZE) BackgroundColor {
 
 
 
+#ifdef EMT
 extern "C" {
-
 EMSCRIPTEN_KEEPALIVE
+#endif
 
 /*
 EM_BOOL mainloop(double time, void* userData) {
@@ -92,7 +117,11 @@ EM_BOOL mainloop(double time, void* userData) {
 	return 1;
 }
 */
+
 int currentFrame = 0;
+struct timeval tempTime;
+long lastTime;
+
 void mainloop() {
 	if (currentFrame >= theAnimation->op) {
 		currentFrame = 0;
@@ -102,7 +131,23 @@ void mainloop() {
 	currentFrame++;
 }
 
+void standaloneLoop() {
+	long currentTime;
+	while (1) {
+		gettimeofday(&tempTime, NULL);
+		currentTime = (tempTime.tv_sec * 1000) + (tempTime.tv_usec / 1000);
 
+		if (currentTime - lastTime > theAnimation->frameTime) {
+			if (currentFrame >= theAnimation->op) {
+				currentFrame = 0;
+			}
+			glDraw(NULL, NULL, currentFrame);
+			//EM_ASM({console.log("////> init done");});
+			currentFrame++;
+			lastTime = currentTime;
+		}
+	}
+}
 
 void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgBlue, float bgAlpha) {
 
@@ -122,33 +167,33 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 	identityMatrix = glm::mat4(1.0f);
 
 	deserializeChar(buffer, theLength);
-	EM_ASM({console.log("////> init done");});
+	//EM_ASM({console.log("////> init done");});
 	glInit();
-	EM_ASM({console.log("////> gl init done");});
+	//EM_ASM({console.log("////> gl init done");});
 
 	glInitShaders(0);
 
-	EM_ASM({console.log("////> start of parenting shapes");});
+	//EM_ASM({console.log("////> start of parenting shapes");});
 	parentShapes();
 
 	//EM_ASM({console.log("////> start of prepping shapes");});
 	//itAdjust();
 
-	EM_ASM({console.log("////> start of prepping shapes");});
+	//EM_ASM({console.log("////> start of prepping shapes");});
 	prepShapes();
 
-	EM_ASM({console.log("////> start of offsetting parented shapes");});
+	//EM_ASM({console.log("////> start of offsetting parented shapes");});
 	parentOffsetShapes();
 
-//	EM_ASM({console.log("////> start of prepping transforms for shapes");});
+//	//EM_ASM({console.log("////> start of prepping transforms for shapes");});
 //	prepParentShapes();
 
-	EM_ASM({console.log("////> start of prepping transforms for shapes");});
+	//EM_ASM({console.log("////> start of prepping transforms for shapes");});
 	prepTransformShapes();
-	EM_ASM({console.log("////> matching VAOs");});
+	//EM_ASM({console.log("////> matching VAOs");});
 	matchParentVAO();
 
-	EM_ASM({console.log("////> done prepping shapes " + $0);}, theAnimation->frameTimeMS);
+	//EM_ASM({console.log("////> done prepping shapes " + $0);}, theAnimation->frameTimeMS);
 	redrawRequired = true;
 
 	//gettimeofday(&timeRef, NULL);
@@ -160,11 +205,11 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 		lastBuffersCreated = lastBuffersCreated->prev;
 	}
 	lastBuffersCreated->next = lastBuffersCreated->start;
-	EM_ASM({console.log("////> pre-starting");});
+	//EM_ASM({console.log("////> pre-starting");});
 	lastBuffersCreated->start->prev = lastBuffersCreated;
 	*/
 
-	EM_ASM({console.log("////> starting");});
+	//EM_ASM({console.log("////> starting");});
 	struct Buffers* buffersToRender;
 /*	if (lastBuffersCreated != NULL) {
 		buffersToRender = lastBuffersCreated->start->next->next;
@@ -195,7 +240,13 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 		animationSequence = animationSequence->start;
 	}
 
+	#ifdef EMT
 	emscripten_set_main_loop(mainloop, theAnimation->fr, 0);
+	#else
+	gettimeofday(&tempTime, NULL);
+	lastTime = (tempTime.tv_sec * 1000) + (tempTime.tv_usec / 1000);
+	standaloneLoop();
+	#endif
 }
 
 
@@ -216,14 +267,14 @@ int doMain(char someChar[]) {
 	identityMatrix = glm::mat4(1.0f);
 
 	deserialize();
-	EM_ASM({console.log("////> init done");});
+	//EM_ASM({console.log("////> init done");});
 	glInit();
-	EM_ASM({console.log("////> gl init done");});
+	//EM_ASM({console.log("////> gl init done");});
 
 	glInitShaders(0);
-	EM_ASM({console.log("////> start of prepping shapes");});
+	//EM_ASM({console.log("////> start of prepping shapes");});
 	prepShapes();
-	EM_ASM({console.log("////> done prepping shapes");});
+	//EM_ASM({console.log("////> done prepping shapes");});
 
 	redrawRequired = true;
 
@@ -237,12 +288,14 @@ int doMain(char someChar[]) {
 
 
 
-	EM_ASM({console.log("////> done drawing " + $0 + " " + $1);}, theAnimation->w, theAnimation->h);
+	//EM_ASM({console.log("////> done drawing " + $0 + " " + $1);}, theAnimation->w, theAnimation->h);
 
 	return 1;
 }
 
+#ifdef EMT
 }
+#endif
 
 int main(int argc, char *argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);

@@ -162,10 +162,10 @@ void glInitShaders(int refIndex) {
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &vertexSuccess);
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &fragmentSuccess);
 	if (vertexSuccess == GL_FALSE) {
-		EM_ASM({console.log("..................> vertex shader failed")});
+		//EM_ASM({console.log("..................> vertex shader failed")});
 	}
 	if (fragmentSuccess == GL_FALSE) {
-		EM_ASM({console.log("..................> fragment shader failed")});
+		//EM_ASM({console.log("..................> fragment shader failed")});
 	}
 
 	// Link the vertex and fragment shader into a shader program

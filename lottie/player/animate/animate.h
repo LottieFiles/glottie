@@ -1,4 +1,8 @@
+#ifdef EMT
 struct alignas(ALIGNSIZE) TransformMatrix {
+#else
+struct TransformMatrix {
+#endif
 	struct TransformMatrix* start = NULL;
 	struct TransformMatrix* prev = NULL;
 	struct TransformMatrix* next = NULL; 
@@ -19,7 +23,11 @@ struct alignas(ALIGNSIZE) TransformMatrix {
 	int endTime = -1;
 } *defaultTransformMatrix = NULL;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) VAOChildren {
+#else
+struct VAOChildren {
+#endif
 	struct VAOChildren* start = NULL;
 	struct VAOChildren* prev = NULL;
 	struct VAOChildren* next = NULL;
@@ -27,7 +35,11 @@ struct alignas(ALIGNSIZE) VAOChildren {
 	struct VAOList* vaol = NULL;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) VAOList {
+#else
+struct VAOList {
+#endif
 	struct VAOList* start = NULL;
 	struct VAOList* prev = NULL;
 	struct VAOList* next = NULL;
@@ -51,7 +63,11 @@ struct alignas(ALIGNSIZE) VAOList {
 
 } *boundVAO = NULL;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) BuffersList {
+#else
+struct BuffersList {
+#endif
 	struct BuffersList* start = NULL;
 	struct BuffersList* prev = NULL;
 	struct BuffersList* next = NULL;
@@ -65,8 +81,11 @@ struct alignas(ALIGNSIZE) BuffersList {
 	struct Buffers* buffers_v = NULL;
 };
 
-// might become redundant
+#ifdef EMT
 struct alignas(ALIGNSIZE) CompositionList {
+#else
+struct CompositionList {
+#endif
 	struct CompositionList* start = NULL;
 	struct CompositionList* prev = NULL;
 	struct CompositionList* next = NULL;
@@ -74,7 +93,11 @@ struct alignas(ALIGNSIZE) CompositionList {
 	struct CompositeArray* composite = NULL;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) FrameCompositionRef {
+#else
+struct FrameCompositionRef {
+#endif
 	struct FrameCompositionRef* start = NULL;
 	struct FrameCompositionRef* prev = NULL;
 	struct FrameCompositionRef* next = NULL;
@@ -85,7 +108,11 @@ struct alignas(ALIGNSIZE) FrameCompositionRef {
 	int frame;
 } *layersAnimationSequence = NULL, *shapesAnimationSequence = NULL, *animationSequence = NULL;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) CompositeArray {
+#else
+struct CompositeArray {
+#endif
 	struct CompositeArray* start = NULL;
 	struct CompositeArray* prev = NULL;
 	struct CompositeArray* next = NULL;
@@ -128,7 +155,11 @@ struct alignas(ALIGNSIZE) CompositeArray {
 	bool isPrecomputed = false;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) Transform {
+#else
+struct Transform {
+#endif
 	struct TransformAOV* p = NULL;
 	struct TransformAOV* r = NULL;
 	struct TransformAOV* s = NULL;
@@ -154,7 +185,11 @@ struct alignas(ALIGNSIZE) Transform {
 	int frame = -1;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) TransformAOV {
+#else
+struct TransformAOV {
+#endif
 	struct ArrayOfVertex* v = NULL;
 	struct ArrayOfVertex* i = NULL;
 	struct ArrayOfVertex* o = NULL;
@@ -171,7 +206,11 @@ struct alignas(ALIGNSIZE) TransformAOV {
 
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) FillTransformReturn {
+#else
+struct FillTransformReturn {
+#endif
 	struct Transform* transform;
 	int minTime = -1;
 	int maxTime = -1;

@@ -1,18 +1,30 @@
+#ifdef EMT
 struct alignas(ALIGNSIZE) HelpersLineCap { // usually only one of
+#else
+struct HelpersLineCap { // usually only one of
+#endif
 	struct HelpersLineCap* start = NULL;
 	struct HelpersLineCap* prev = NULL;
 	struct HelpersLineCap* next = NULL;
 
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) HelpersLineJoin { // usually only one of
+#else
+struct HelpersLineJoin { // usually only one of
+#endif
 	struct HelpersLineJoin* start = NULL;
 	struct HelpersLineJoin* prev = NULL;
 	struct HelpersLineJoin* next = NULL;
 
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) HelpersTransform { // usually only one of
+#else
+struct HelpersTransform { // usually only one of
+#endif
 	struct HelpersTransform* start = NULL;
 	struct HelpersTransform* prev = NULL;
 	struct HelpersTransform* next = NULL;

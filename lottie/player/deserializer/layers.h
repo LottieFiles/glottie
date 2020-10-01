@@ -1,6 +1,10 @@
 //// layers
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) Layers {
+#else
+struct Layers {
+#endif
         struct Layers* start = NULL;
         struct Layers* prev = NULL;
         struct Layers* next = NULL;
@@ -50,26 +54,51 @@ struct alignas(ALIGNSIZE) Layers {
 	bool created; // internal flag to indicate this object has already been created
 } *currentLayers;
 
+
+#ifdef EMT
+struct alignas(ALIGNSIZE) LayersSolid {
+#else
 struct LayersSolid {
+#endif
 };
 
+#ifdef EMT
+struct alignas(ALIGNSIZE) LayersPrecomp {
+#else
 struct LayersPrecomp {
+#endif
 
 };
 
+#ifdef EMT
+struct alignas(ALIGNSIZE) LayersImage {
+#else
 struct LayersImage {
+#endif
 
 };
 
+#ifdef EMT
+struct alignas(ALIGNSIZE) LayersNull {
+#else
 struct LayersNull {
+#endif
 
 };
 
+#ifdef EMT
+struct alignas(ALIGNSIZE) LayersText {
+#else
 struct LayersText {
+#endif
 
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) Assets {
+#else
+struct Assets {
+#endif
 	struct Assets* start = NULL;
 	struct Assets* prev = NULL;
 	struct Assets* next = NULL;
@@ -82,8 +111,11 @@ struct alignas(ALIGNSIZE) Assets {
         struct Layers* precomps = NULL;
 } *currentAssets;
 
-//struct alignas(128) Layers {
+#ifdef EMT
 struct alignas(ALIGNSIZE) Layers_old {
+#else
+struct Layers_old {
+#endif
         struct Layers* start = NULL;
         struct Layers* prev = NULL;
         struct Layers* next = NULL;
@@ -99,7 +131,11 @@ struct alignas(ALIGNSIZE) Layers_old {
         struct LayersText* text = NULL;
 } *currentLayers_old;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) Animation {
+#else
+struct Animation {
+#endif
         string v; // Bodymovin (exporter) version
         string nm; // name of animation
         struct Layers* layers = NULL;

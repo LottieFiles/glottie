@@ -266,13 +266,13 @@ int associateKeyValues() {
 		}
 	} else if (theScope->scope == _p) {
 		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
-			EM_ASM({console.log("//----------------> filling multidim p");});
-			fillPropertiesMultiDimensional(currentShapesItem->p);
-		} else if (strcmp(theScope->prev->currentTy, "rc") == 0 && theScope->prev->prev->scope != _layers) {
+			//EM_ASM({console.log("//----------------> filling multidim p");});
 			fillPropertiesMultiDimensional(currentShapesItem->p);
 		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
 			//EM_ASM({console.log("//----------------> filling multidim p in layer");});
 			fillPropertiesMultiDimensional(currentLayers->ks->p);
+		} else if (strcmp(theScope->prev->currentTy, "rc") == 0) {
+			fillPropertiesMultiDimensional(currentShapesItem->p);
 		} else if (strcmp(theScope->prev->currentTy, "el") == 0) {
 			fillPropertiesMultiDimensional(currentShapesItem->p);
 		//} else if (theScope->prev->scope == _shapes) {
@@ -281,10 +281,10 @@ int associateKeyValues() {
 	} else if (theScope->scope == _r) {
 		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
 			fillPropertiesValue(currentShapesItem->r);
-		} else if (strcmp(theScope->prev->currentTy, "rc") == 0 && theScope->prev->prev->scope != _layers) {
-			fillPropertiesValue(currentShapesItem->r);
 		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
 			fillPropertiesValue(currentLayers->ks->r);
+		} else if (strcmp(theScope->prev->currentTy, "rc") == 0) {
+			fillPropertiesValue(currentShapesItem->r);
 
 		}
 	} else if (theScope->scope == _o) {
@@ -431,7 +431,7 @@ void wrapShape(bool inGroup) {
 int prepareContainer(bool arrayOfObjects) {
 	if (theScope->scope == _animation) {
 		preSwitch[0] = 0;
-		EM_ASM({console.log("-----------------> animation");});
+		//EM_ASM({console.log("-----------------> animation");});
 		currentLayers = NULL;
 		theAnimation = new Animation;
 	} else if (theScope->scope == _assets) {
@@ -441,7 +441,7 @@ int prepareContainer(bool arrayOfObjects) {
 		theAnimation->assets = newAssets(theAnimation->assets);
 	} else if (theScope->scope == _layers) {
 		preSwitch[1] = 0;
-		EM_ASM({console.log("-----------------> layers");});
+		//EM_ASM({console.log("-----------------> layers");});
 		if (theScope->prev->scope == _assets) {
 			theAnimation->assets->precomps = newLayers(theAnimation->assets->precomps);
 			currentLayers = theAnimation->assets->precomps;
@@ -479,7 +479,7 @@ int prepareContainer(bool arrayOfObjects) {
 		if (theScope->prev->scope == _layers) {
 			if (currentShapesItem != NULL && currentShapesItem->parent != NULL) {
 				currentShapesItem = currentShapesItem->parent;
-				EM_ASM({console.log("-//***----> unwrapped to parent_ _ _ _ " + $0);}, closureCount);
+				//EM_ASM({console.log("-//***----> unwrapped to parent_ _ _ _ " + $0);}, closureCount);
 			}
 			wrapShape(false);
 		} else if (theScope->prev->scope == _k) {
@@ -491,7 +491,7 @@ int prepareContainer(bool arrayOfObjects) {
 		} else if (theScope->prev->scope == _it) {
 			wrapShape(true);
 		}
-		EM_ASM({console.log("-//***----> shapes found_ _ _ _ " + $0);}, closureCount);
+		//EM_ASM({console.log("-//***----> shapes found_ _ _ _ " + $0);}, closureCount);
 		/*if (closureCount > 0) {
 			closureCount--;
 		}*/
@@ -645,7 +645,7 @@ int prepareContainer(bool arrayOfObjects) {
 			//EM_ASM({console.log("-----------------> TRANSFORM p in shape");});
 			currentShapesItem->p = newPropertiesMultiDimensional();
 		} else if (strcmp(theScope->prev->currentTy, "rc") == 0) {
-			EM_ASM({console.log("-----------------> TRANSFORM p in rc shape");});
+			//EM_ASM({console.log("-----------------> TRANSFORM p in rc shape");});
 			currentShapesItem->p = newPropertiesMultiDimensional();
 
 		}
@@ -653,11 +653,13 @@ int prepareContainer(bool arrayOfObjects) {
 		if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {
 			//EM_ASM({console.log("-----------------> TRANSFORM r");});
 			currentShapesItem->r = newPropertiesValue();
-		} else if (strcmp(theScope->prev->currentTy, "rc") == 0 && theScope->prev->prev->scope != _layers) {
-			//EM_ASM({console.log("-----------------> TRANSFORM r");});
-			currentShapesItem->r = newPropertiesValue();
+
 		} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {
+			//EM_ASM({console.log("-----------------> TRANSFORM r layers ");});
 			currentLayers->ks->r = newPropertiesValue();
+		} else if (strcmp(theScope->prev->currentTy, "rc") == 0) {
+			//EM_ASM({console.log("-----------------> TRANSFORM r found in rc");});
+			currentShapesItem->r = newPropertiesValue();
 
 		}
 		/*if (strcmp(theScope->prev->currentTy, "tr") == 0 && theScope->prev->prev->scope != _layers) {

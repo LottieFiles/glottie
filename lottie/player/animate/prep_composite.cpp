@@ -13,7 +13,7 @@ int prepTransformLayers(struct Layers* passedLayers) {
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedLayers->ks != NULL) {
-			EM_ASM({console.log("composition prepping ");});
+			//EM_ASM({console.log("composition prepping ");});
 			composeTransformLayers(passedLayers, passedLayers->minTime, passedLayers->maxTime);
 		}
 

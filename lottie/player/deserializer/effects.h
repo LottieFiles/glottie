@@ -17,7 +17,11 @@ enum EffectsTy {
 		_tritone = 23
 	};
 
+#ifdef EMT
+struct alignas(ALIGNSIZE) Effects {
+#else
 struct Effects {
+#endif
 	struct Effects* start =  NULL;
 	struct Effects* prev = NULL;
 	struct Effects* next = NULL;

@@ -9,34 +9,50 @@ enum Phase {
 		_passedMinY
 	};
 
+#ifdef EMT
+struct alignas(ALIGNSIZE) XY {
+#else
 struct XY {
+#endif
 	int x;
 	int y;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) BezierCurve {
+#else
+struct BezierCurve {
+#endif
 	float* x = 0;
 	float* y = 0;
 	float* z = 0;
 };
 
-//struct alignas(alignof(struct Vertex*)) Vertex {
+#ifdef EMT
 struct alignas(ALIGNSIZE) Vertex {
-//struct Vertex {
+#else
+struct Vertex {
+#endif
 	//GLfloat position[4];
 	GLfloat x,y,z,a;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) ReturnPosition {
+#else
+struct ReturnPosition {
+#endif
 	struct Vertex* layers = NULL;
 	struct Vertex* shapes = NULL;
 	//struct Vertex* layersTranslated = NULL;
 	//struct Vertex* shapesTranslated = NULL;
 };
 
-//struct alignas(alignof(struct ArrayOfVertex*)) ArrayOfVertex {
+#ifdef EMT
 struct alignas(ALIGNSIZE) ArrayOfVertex {
-//struct ArrayOfVertex {
+#else
+struct ArrayOfVertex {
+#endif
 	struct ArrayOfVertex* start = NULL;
 	struct ArrayOfVertex* next = NULL;
 	struct ArrayOfVertex* prev = NULL;
@@ -53,7 +69,11 @@ struct alignas(ALIGNSIZE) ArrayOfVertex {
 	bool bezier = false;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) ArrayOfArrayOfVertex {
+#else
+struct ArrayOfArrayOfVertex {
+#endif
 	struct ArrayOfArrayOfVertex* start = NULL;
 	struct ArrayOfArrayOfVertex* next = NULL;
 	struct ArrayOfArrayOfVertex* prev = NULL;
@@ -64,7 +84,11 @@ struct alignas(ALIGNSIZE) ArrayOfArrayOfVertex {
 	bool translated = false;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) Dimensions {
+#else
+struct Dimensions {
+#endif
 	struct ArrayOfVertex* topVertex = NULL;
 
 	GLfloat maxXval = 0;
@@ -87,9 +111,11 @@ struct ArrayOfFloat {
 } *currentArrayOfFloat;
 */
 
-//struct alignas(alignof(struct ValuesVector*)) ValuesVector {
+#ifdef EMT
 struct alignas(ALIGNSIZE) ValuesVector {
-//struct ValuesVector {
+#else
+struct ValuesVector {
+#endif
 	char value[KVLEN];
 	struct ValuesVector* start = NULL;
 	struct ValuesVector* prev = NULL;
@@ -103,9 +129,11 @@ struct alignas(ALIGNSIZE) ValuesVector {
 	//string value;
 };
 
-//struct alignas(alignof(struct ArrayOfString*)) ArrayOfString {
+#ifdef EMT
 struct alignas(ALIGNSIZE) ArrayOfString {
-//struct ArrayOfString {
+#else
+struct ArrayOfString {
+#endif
 	struct ArrayOfString* root = NULL;
 
 	//float isSubArray = false;
@@ -116,9 +144,11 @@ struct alignas(ALIGNSIZE) ArrayOfString {
 	bool closed = false;
 } *currentArrayOfString;
 
-//struct alignas(alignof(struct KeyValue*)) KeyValue {
+#ifdef EMT
 struct alignas(ALIGNSIZE) KeyValue {
-//struct KeyValue {
+#else
+struct KeyValue {
+#endif
 	//string key;
 	char key[KVLEN];
 	//string value = NULL;
@@ -130,10 +160,11 @@ struct alignas(ALIGNSIZE) KeyValue {
 	struct ArrayOfString* arrayValue = NULL;
 } *currentKeyValue;
 
-//struct alignas(alignof(struct KeyValueTrail*)) KeyValueTrail {
-//struct alignas(16777216) KeyValueTrail {
+#ifdef EMT
 struct alignas(ALIGNSIZE) KeyValueTrail {
-//struct KeyValueTrail {
+#else
+struct KeyValueTrail {
+#endif
 	struct KeyValueTrail* start = NULL;
 	struct KeyValueTrail* next = NULL;
 	struct KeyValueTrail* prev = NULL;
@@ -141,7 +172,11 @@ struct alignas(ALIGNSIZE) KeyValueTrail {
 	struct KeyValue* keyValue = NULL;
 } *currentKeyValueTrail;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) textBlock {
+#else
+struct textBlock {
+#endif
 	struct textBlock* start = NULL;
 	struct textBlock* next = NULL;
 	struct textBlock* prev = NULL;
@@ -149,7 +184,11 @@ struct alignas(ALIGNSIZE) textBlock {
 	char text[TEXTBLOCK];
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) TriangulateReturn {
+#else
+struct TriangulateReturn {
+#endif
 	//GLfloat* vbo;
 	//struct Vertex* vbo;
 	//struct Vertex* cbo;
@@ -160,29 +199,49 @@ struct alignas(ALIGNSIZE) TriangulateReturn {
 	int idxCount;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) ColorsReturn {
+#else
+struct ColorsReturn {
+#endif
 	GLfloat* cbo;
 	int cboLength;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) FloatArrayReturn {
+#else
+struct FloatArrayReturn {
+#endif
 	float* floatArray;
 	int count;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) IntArrayReturn {
+#else
+struct IntArrayReturn {
+#endif
 	int* intArray;
 	int count;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) IndexArray {
+#else
+struct IndexArray {
+#endif
 	//unsigned int position[3];
 	int x;
 	int y;
 	int z;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) BoundingBox {
+#else
+struct BoundingBox {
+#endif
 	float w = 0; // width
 	float h = 0; // height
 	// without layer offset

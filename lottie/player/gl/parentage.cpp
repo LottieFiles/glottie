@@ -40,7 +40,7 @@ int parentLayers(struct Layers* passedLayers, bool findIndex, int indexToFind, s
 			}
 		} else {
 			if (passedLayers->ind == indexToFind) {
-				EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- parent found " + $0);}, passedLayers->ind);
+				//EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- parent found " + $0);}, passedLayers->ind);
 
 				childRef->parentLayers = passedLayers;
 
@@ -149,7 +149,7 @@ int parentOffsetLayers(struct Layers* passedLayers, bool findIndex, int indexToF
 	bool exhausted = false;
 	while (! exhausted) {
 		if (passedLayers->parentLayers != NULL) {
-			EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- parent found " + $0);}, passedLayers->ind);
+			//EM_ASM({console.log("{{{{{{{{{{{{{{----------------------- parent found " + $0);}, passedLayers->ind);
 
 			parentOffsetCumulate(passedLayers);
 

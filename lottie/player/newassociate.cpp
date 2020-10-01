@@ -456,7 +456,7 @@ int prepareContainer(bool arrayOfObjects) {
 			currentLayers->ks->a->keyframe = newPropertiesOffsetKeyframe();
 
 		} else if (theScope->prev->scope == _p && strcmp(theScope->prev->prev->currentTy, "tr") == 0) {
-			EM_ASM({console.log("-//***----> OffsetKeyframe in p");});
+			//EM_ASM({console.log("-//***----> OffsetKeyframe in p");});
 			currentShapesItem->p->keyframe = newPropertiesOffsetKeyframe();
 		} else if (theScope->prev->scope == _p && theScope->prev->prev->scope == _ks && theScope->prev->prev->prev->scope == _layers) {
 			//EM_ASM({console.log("-//***----> OffsetKeyframe in p in layers ");});

@@ -12,7 +12,11 @@ bool redrawRequired = false;
 struct Transform* currentShapesTransform = NULL;
 struct Transform* currentLayersTransform = NULL;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) RedrawBuffers {
+#else
+struct RedrawBuffers {
+#endif
 	struct RedrawBuffers* start;
 	struct RedrawBuffers* next;
 	struct RedrawBuffers* prev;
@@ -20,7 +24,11 @@ struct alignas(ALIGNSIZE) RedrawBuffers {
 	struct Buffers* buffers;
 } *redrawList = NULL;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) ShaderProgram {
+#else
+struct ShaderProgram {
+#endif
 	struct ShaderProgram* start = NULL;
 	struct ShaderProgram* next = NULL;
 	struct ShaderProgram* prev = NULL;
@@ -28,7 +36,11 @@ struct alignas(ALIGNSIZE) ShaderProgram {
 	GLuint* shader;
 } *lastShaderProgramCreated;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) Buffers {
+#else
+struct Buffers {
+#endif
 	struct Buffers* start = NULL;
 	struct Buffers* next = NULL;
 	struct Buffers* prev = NULL;

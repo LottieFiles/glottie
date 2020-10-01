@@ -1,6 +1,7 @@
 int globalObjCount;
 
-#include "jsonstring.h"
+//#include "jsonstring.h"
+string jsonString;
 
 enum Scopes {
 	_noscope = 0,
@@ -59,9 +60,11 @@ enum KeyValueState {Key, Value};
 
 enum KeyValueState kvState = Key;
 
-//struct alignas(alignof(struct StateTrail*)) StateTrail {
+#ifdef EMT
 struct alignas(ALIGNSIZE) StateTrail {
-//struct StateTrail {
+#else
+struct StateTrail {
+#endif
 	char reservedKey[KVLEN];
 	struct StateTrail* start = NULL;
 	struct StateTrail* prev = NULL;
@@ -71,9 +74,11 @@ struct alignas(ALIGNSIZE) StateTrail {
 	bool keyEncountered = false;
 } *theState;
 
-//struct alignas(alignof(struct ScopeTrail*)) ScopeTrail {
+#ifdef EMT
 struct alignas(ALIGNSIZE) ScopeTrail {
-//struct ScopeTrail {
+#else
+struct ScopeTrail {
+#endif
 	char currentTy[KVLEN];
 
 	struct ScopeTrail* start = NULL;
@@ -85,7 +90,11 @@ struct alignas(ALIGNSIZE) ScopeTrail {
 	enum Scopes scope;
 } *theScope;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) CurrentValues {
+#else
+struct CurrentValues {
+#endif
 	char currentValue[KVLEN];
 	char currentReadKey[KVLEN];
 	char currentReadValue[KVLEN];
@@ -121,7 +130,11 @@ int closureCount = 0;
 
 struct timeval timeRef;
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) ArrayTrail {
+#else
+struct ArrayTrail {
+#endif
 	struct ArrayTrail* start = NULL;
 	struct ArrayTrail* prev = NULL;
 	struct ArrayTrail* next = NULL;
@@ -129,12 +142,20 @@ struct alignas(ALIGNSIZE) ArrayTrail {
 	struct ScopeTrail scopeHere;
 } *arrayNow; 
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) ScopeBefore {
+#else
+struct ScopeBefore {
+#endif
 	struct ScopeTrail* scopeNow;
 	long objectCount = 0;
 };
 
+#ifdef EMT
 struct alignas(ALIGNSIZE) MainOffset {
+#else
+struct MainOffset {
+#endif
 	float x = 0;
 	float y = 0;
 	float z = 0;
