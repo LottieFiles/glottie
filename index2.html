@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="https://unpkg.com/@lottiefiles/lottie-player@0.4.0/dist/lottie-player.js"></script>
 </head>
 
 <body>
@@ -54,7 +55,7 @@
 			}
 			buffer = Module._malloc(typedArray.length * typedArray.BYTES_PER_ELEMENT)
 			Module.HEAP8.set(typedArray, buffer)
-			result = Module.ccall("loadJson", null, ["number", "number", "number", "number", "number", "number"], [buffer, thejson.length, 0.0, 0.0, 0.0, 0.0])
+			result = Module.ccall("loadJson", null, ["number", "number", "number", "number", "number", "number"], [buffer, thejson.length, 1.0, 1.0, 1.0, 1.0])
 		} catch (e) {
 			error = e
 		} finally {
@@ -91,6 +92,17 @@
         canv.addEventListener('click',    _toggle_background_color, false);
         canv.addEventListener('touchend', _toggle_background_color, false);
     </script>
+	</div>
+
+	<div style='display:inline-block; float: left;'>
+<lottie-player
+  autoplay
+  controls
+  loop
+  mode="normal"
+  src="https://assets6.lottiefiles.com/private_files/lf30_AGoC3n.json"
+>
+</lottie-player>
 	</div>
 
 </body>
