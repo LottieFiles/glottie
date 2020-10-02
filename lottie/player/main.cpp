@@ -15,7 +15,9 @@
 #include <emscripten/html5.h> // emscripten
 #else
 	#ifdef APPLE
+		#include <OpenGL/gl.h>
 		#include <OpenGL/glu.h>
+		#include <GLUT/glut.h>
 	#else
 		#include <GL/glx.h>
 		#include <GL/gl.h>
@@ -260,6 +262,7 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 	#ifdef EMT
 	emscripten_set_main_loop(mainloop, theAnimation->fr, 0);
 	#else
+	cout << "Starting main loop... \n";
 	gettimeofday(&tempTime, NULL);
 	lastTime = (tempTime.tv_sec * 1000) + (tempTime.tv_usec / 1000);
 	standaloneLoop();

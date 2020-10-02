@@ -16,12 +16,12 @@ struct PropertiesShape* newPropertiesShape(struct PropertiesShape* passedPropert
 
 struct PropertiesShapeProp* newPropertiesShapeProp(struct PropertiesShape* passedPropertiesShape, struct PropertiesShapeProp* passedPropertiesShapeProp, bool isKeyframe) {
 	cout << "--- 1 \n";
-	if (passedPropertiesShapeProp == NULL) {
+	//if (passedPropertiesShapeProp == NULL) {
 		cout << "--- 2 \n";
 		passedPropertiesShapeProp = new PropertiesShapeProp;
 		cout << "--- 3 \n";
 		passedPropertiesShapeProp->start = passedPropertiesShapeProp;
-	} else {
+	/*} else {
 		cout << "--- 4 \n";
 		passedPropertiesShapeProp->next = new PropertiesShapeProp;
 		cout << "--- 5 \n";
@@ -30,7 +30,7 @@ struct PropertiesShapeProp* newPropertiesShapeProp(struct PropertiesShape* passe
 		passedPropertiesShapeProp->next->prev = passedPropertiesShapeProp;
 		cout << "--- 7 \n";
 		passedPropertiesShapeProp = passedPropertiesShapeProp->next;
-	}
+	}*/
 	if (isKeyframe && passedPropertiesShape != NULL) {
 		cout << "--- 8 \n";
 		passedPropertiesShape->isKeyframe = true;
