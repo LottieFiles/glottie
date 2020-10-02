@@ -7,3 +7,4 @@ Run ./serve_this within lottie/player/www
 Run ./custom_build in lottie/player
 <br />
 
+author: Shafiee (aka d.o.s)
