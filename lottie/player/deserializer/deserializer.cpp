@@ -401,6 +401,10 @@ enum States lastStateBeforeReading() {
 
 int checkCharacter(char& currentChar) {
 	//EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $1 + " ] " + String.fromCharCode($0) + " " + $2 + " - " + $3 + " " + $4);}, currentChar, readingArray,theScope->currentKeyValueTrail, colonEncountered, justStartedArray);
+	#ifdef EMT
+	#else
+		cout << currentChar;
+	#endif
 	switch (currentChar) {
 		case '{':
 			//EM_ASM_({console.log("__________________======================================__________OPENING object " + $0 + " " + String.fromCharCode($1));}, theState->stateNow, theState->reservedKey[0]);
@@ -755,6 +759,10 @@ int deserializeChar(char* theString, int theLength) {
 	//EM_ASM_({console.log("start state " + $0 + " " + $1);}, theState, theLength);
 
 
+	#ifdef EMT
+	#else
+		cout << "Deserializing begins here... \n";
+	#endif
 	for(int i = 0; i < theLength; i++) {
 		//EM_ASM_({console.log("deserializing" + String.fromCharCode($0));}, theString[i]);
 

@@ -20,8 +20,18 @@ void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 	//int refIndex = lastRefIndex + 1;
 
 	GLuint tvao, tvbo, tibo, tcbo;
-	glGenVertexArraysOES(1, &tvao);
-	glBindVertexArrayOES(tvao);
+	#ifdef EMT
+		glGenVertexArraysOES(1, &tvao);
+		glBindVertexArrayOES(tvao);
+	#else
+		#ifdef APPLE
+			glGenVertexArraysAPPLE(1, &tvao);
+			glBindVertexArrayAPPLE(tvao);
+		#else
+			glGenVertexArrays(1, &tvao);
+			glBindVertexArray(tvao);
+		#endif
+	#endif
 
 
 	GLuint tempShaderProgram;
@@ -82,7 +92,16 @@ void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 	//EM_ASM({console.log("--......--> done loading buffers 1.1");});
 	passedBuffers->idxCount = idxCount;
 	//EM_ASM({console.log("--......--> done loading buffers 1.2");});
-	glBindVertexArrayOES(0);
+
+	#ifdef EMT
+		glBindVertexArrayOES(0);
+	#else
+		#ifdef APPLE
+			glBindVertexArrayAPPLE(0);
+		#else
+			glBindVertexArray(0);
+		#endif
+	#endif
 
 	//return refIndex;
 }

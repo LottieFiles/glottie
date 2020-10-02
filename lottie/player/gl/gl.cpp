@@ -576,10 +576,26 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 			if (! tempBuffers->addedToComposition) {
 
 
-				glBindVertexArrayOES(*(tempBuffers->vao));
+				#ifdef EMT
+					glBindVertexArrayOES(*(tempBuffers->vao));
+				#else
+					#ifdef APPLE
+						glBindVertexArrayAPPLE(*(tempBuffers->vao));
+					#else
+						glBindVertexArray(*(tempBuffers->vao));
+					#endif
+				#endif
 				glDrawElements(GL_TRIANGLES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
 				//glDrawElements(GL_LINES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
-				glBindVertexArrayOES(0);
+				#ifdef EMT
+					glBindVertexArrayOES(0);
+				#else
+					#ifdef APPLE
+						glBindVertexArrayAPPLE(0);
+					#else
+						glBindVertexArray(0);
+					#endif
+				#endif
 			}
 
 			if (tempBuffers->prev == tempBuffers->start->prev && _firstCycleDone) {
@@ -650,10 +666,26 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 					glUniform1i(transformationsCountLoc, currentTransformationsCount);
 
-					glBindVertexArrayOES(*(currentVAOL->vao));
+					#ifdef EMT
+						glBindVertexArrayOES(*(currentVAOL->vao));
+					#else
+						#ifdef APPLE
+							glBindVertexArrayAPPLE(*(currentVAOL->vao));
+						#else
+							glBindVertexArray(*(currentVAOL->vao));
+						#endif
+					#endif
 					glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
 					//glDrawElements(GL_LINES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
-					glBindVertexArrayOES(0);
+					#ifdef EMT
+						glBindVertexArrayOES(0);
+					#else
+						#ifdef APPLE
+							glBindVertexArrayAPPLE(0);
+						#else
+							glBindVertexArray(0);
+						#endif
+					#endif
 					//EM_ASM({console.log("no buffers!");});
 
 				}

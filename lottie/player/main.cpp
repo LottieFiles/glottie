@@ -166,14 +166,31 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 
 	identityMatrix = glm::mat4(1.0f);
 
+	#ifdef EMT
+	#else
+	cout << "Deserializing... \n";
+	#endif
 	deserializeChar(buffer, theLength);
 	//EM_ASM({console.log("////> init done");});
+
+	#ifdef EMT
+	#else
+	cout << "GL init... \n";
+	#endif
 	glInit();
 	//EM_ASM({console.log("////> gl init done");});
 
+	#ifdef EMT
+	#else
+	cout << "Initializing shaders... \n";
+	#endif
 	glInitShaders(0);
 
 	//EM_ASM({console.log("////> start of parenting shapes");});
+	#ifdef EMT
+	#else
+	cout << "Associating parents... \n";
+	#endif
 	parentShapes();
 
 	//EM_ASM({console.log("////> start of prepping shapes");});
@@ -297,8 +314,39 @@ int doMain(char someChar[]) {
 }
 #endif
 
+void readFromStdin(float bgRed, float bgGreen, float bgBlue, float bgAlpha) {
+	for (std::string line; std::getline(std::cin, line);) {
+		cout << "Reading JSON \n";
+		jsonString = jsonString + line;
+		//std::cout << line << std::endl;
+	}
+	if (jsonString.size() > 0) {
+		cout << "Loading animation \n";
+		loadJson(strdup(jsonString.c_str()), jsonString.size(), bgRed, bgGreen, bgBlue, bgAlpha);
+	} else {
+		cout << "Nothing \n";
+	}
+	cout << "Done \n";
+}
+
 int main(int argc, char *argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
+
+	#ifdef EMT
+	#else
+		cout << "Attempting standalone \n";
+		if (argc == 5) {
+			readFromStdin(
+					atof(argv[1]),
+					atof(argv[2]),
+					atof(argv[3]),
+					atof(argv[4])
+				);
+		} else {
+			cout << "Pass 3 colours and alpha value please \n";
+		}
+	#endif
+
 	//doMain(NULL);
 }
 

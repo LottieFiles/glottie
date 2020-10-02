@@ -429,6 +429,10 @@ void wrapShape(bool inGroup) {
 }
 
 int prepareContainer(bool arrayOfObjects) {
+	#ifdef EMT
+	#else
+	cout << "Preparing container...\n";
+	#endif
 	if (theScope->scope == _animation) {
 		preSwitch[0] = 0;
 		//EM_ASM({console.log("-----------------> animation");});
@@ -511,6 +515,11 @@ int prepareContainer(bool arrayOfObjects) {
 			currentLayers->ks = newHelpersTransform(currentLayers->ks);
 		}
 	} else if (theScope->scope == _k) {
+			#ifdef EMT
+			#else
+				cout << "START Creating container for k...\n";
+			#endif
+
 		//EM_ASM({console.log("-//***----> k discovered " + $0);}, theScope->prev->scope);
 		if (theScope->prev->scope == _a && strcmp(theScope->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->scope != _layers) {
 			//EM_ASM({console.log("-//***----> OffsetKeyframe in a");});
@@ -556,10 +565,24 @@ int prepareContainer(bool arrayOfObjects) {
 
 
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
+
 			currentShapesItem->ks->k = newPropertiesShapeProp(currentShapesItem->ks, currentShapesItem->ks->k, false);
+
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _it)) { // PropertiesShapeProp
+			#ifdef EMT
+			#else
+				cout << "Creating container for k...\n";
+			#endif
 			currentShapesItem->ks->k = newPropertiesShapeProp(currentShapesItem->ks, currentShapesItem->ks->k, false);
+			#ifdef EMT
+			#else
+				cout << "Done.\n";
+			#endif
 		}
+			#ifdef EMT
+			#else
+				cout << "K Done.\n";
+			#endif
 	} else if (theScope->scope == _i) {
 
 		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
