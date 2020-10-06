@@ -1,3 +1,4 @@
+
 #define APPLE 1
 
 #define KVLEN 128
@@ -16,8 +17,9 @@
 #else
 	#ifdef APPLE
 		#include <OpenGL/gl.h>
-		#include <OpenGL/glu.h>
-		#include <GLUT/glut.h>
+		//#include <OpenGL/glu.h>
+		//#include <OpenGL/glext.h>
+		//#include <GLUT/glut.h>
 	#else
 		#include <GL/glx.h>
 		#include <GL/gl.h>
@@ -31,10 +33,13 @@
 
 #ifdef EMT
 #include <SDL_opengles2.h> // empscripten
+#define GL_GLEXT_PROTOTYPES
+#include <GLES2/gl2ext.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
 #endif
 
-#define GLM_ENABLE_EXPERIMENTAL
-#define GL_GLEXT_PROTOTYPES 1
+//#define GLM_ENABLE_EXPERIMENTAL
 //#include <glm/glm.hpp>
 #include "glm/glm.hpp" // glm::vec3
 //#include </usr/include/glm/vec3.hpp> // glm::vec3
@@ -45,7 +50,6 @@
 #include "glm/gtc/type_ptr.hpp" // glm::mat4
 //#include "glm/gtc/quaternion.hpp"
 //#include "glm/gtx/quaternion.hpp"
-//#include <GLES2/gl2.h>
 //#include <GL/gl.h>
 //#include <GL/glu.h>
 //#include <GL/glut.h>
@@ -123,6 +127,7 @@ EM_BOOL mainloop(double time, void* userData) {
 int currentFrame = 0;
 struct timeval tempTime;
 long lastTime;
+bool quitProgram = false;
 
 void mainloop() {
 	if (currentFrame >= theAnimation->op) {
@@ -134,19 +139,52 @@ void mainloop() {
 }
 
 void standaloneLoop() {
+const int WIDTH = 20;
+const int HEIGHT = 20;
+const int SQUARE_SIZE = 20;
+    SDL_Rect rect = {
+        (WIDTH - SQUARE_SIZE) / 2,
+        (HEIGHT - SQUARE_SIZE) / 2,
+        SQUARE_SIZE,
+        SQUARE_SIZE
+    };
 	long currentTime;
-	while (1) {
-		gettimeofday(&tempTime, NULL);
-		currentTime = (tempTime.tv_sec * 1000) + (tempTime.tv_usec / 1000);
-
-		if (currentTime - lastTime > theAnimation->frameTime) {
-			if (currentFrame >= theAnimation->op) {
-				currentFrame = 0;
+	SDL_Event e;
+	cout << theAnimation->frameTime << " is frame time \n";
+	while (! quitProgram) {
+		while (SDL_PollEvent(&e)){
+			if (e.type == SDL_QUIT){
+				quitProgram = true;
 			}
-			glDraw(NULL, NULL, currentFrame);
-			//EM_ASM({console.log("////> init done");});
-			currentFrame++;
-			lastTime = currentTime;
+			if (e.type == SDL_KEYDOWN){
+				quitProgram = true;
+			}
+			if (e.type == SDL_MOUSEBUTTONDOWN){
+				quitProgram = true;
+			}
+			gettimeofday(&tempTime, NULL);
+			currentTime = (tempTime.tv_sec * 1000) + (tempTime.tv_usec / 1000);
+
+			if (currentTime - lastTime > theAnimation->frameTime) {
+				if (currentFrame >= theAnimation->op) {
+					currentFrame = 0;
+				}
+				SDL_RenderClear(rdr);
+				glDraw(NULL, NULL, currentFrame);
+       				SDL_RenderPresent(rdr);
+				/*SDL_SetRenderDrawColor(rdr, 0, 0, 0, SDL_ALPHA_OPAQUE);
+				SDL_RenderClear(rdr);
+				SDL_SetRenderDrawColor(rdr, 0, 255, 255, SDL_ALPHA_OPAQUE);
+				SDL_RenderFillRect(rdr, &rect);
+       				SDL_RenderPresent(rdr);
+				*/
+				//SDL_GL_SwapWindow(wnd);
+				//SDL_UpdateWindowSurface(wnd);
+				//EM_ASM({console.log("////> init done");});
+				currentFrame++;
+				lastTime = currentTime;
+			}
+			SDL_Delay(theAnimation->frameTime / 3);
 		}
 	}
 }
@@ -333,7 +371,7 @@ void readFromStdin(float bgRed, float bgGreen, float bgBlue, float bgAlpha) {
 }
 
 int main(int argc, char *argv[]) {
-	SDL_Init(SDL_INIT_EVERYTHING);
+	//SDL_Init(SDL_INIT_EVERYTHING);
 
 	#ifdef EMT
 	#else

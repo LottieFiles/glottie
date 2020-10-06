@@ -21,8 +21,10 @@ void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 
 	GLuint tvao, tvbo, tibo, tcbo;
 	#ifdef EMT
-		glGenVertexArraysOES(1, &tvao);
-		glBindVertexArrayOES(tvao);
+		//glGenVertexArraysOES(1, &tvao);
+		//glBindVertexArrayOES(tvao);
+		glGenVertexArrays(1, &tvao);
+		glBindVertexArray(tvao);
 	#else
 		#ifdef APPLE
 			glGenVertexArraysAPPLE(1, &tvao);
@@ -94,7 +96,8 @@ void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 	//EM_ASM({console.log("--......--> done loading buffers 1.2");});
 
 	#ifdef EMT
-		glBindVertexArrayOES(0);
+		//glBindVertexArrayOES(0);
+		glBindVertexArray(0);
 	#else
 		#ifdef APPLE
 			glBindVertexArrayAPPLE(0);

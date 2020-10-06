@@ -195,7 +195,24 @@ void glInit() {
 	//int* someInt = new int[5000000]();
 	//delete[] someInt;
 	//wnd = new SDL_Window;
-	SDL_Init(SDL_INIT_EVERYTHING);
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+		printf("SDL_Init failed: %s\n", SDL_GetError());
+	}
+
+	#ifdef EMT
+	#else
+		//const SDL_VideoInfo* videoInfo;
+		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+			cout << "Failed to initialize video \n";
+			exit(1);
+		}
+	
+		/*videoInfo = SDL_GetVideoInfo();
+		if (!videoInfo) {
+			cout << "Couldn't get video info \n";
+			exit(1);
+		}*/
+	#endif
 
 	int scaledWidth = theAnimation->w;
 	int scaledHeight = theAnimation->h;
@@ -205,18 +222,42 @@ void glInit() {
 	//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	//wnd = new SDL_Window();
-SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
+
+	#ifdef EMT
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+		SDL_GL_SetSwapInterval(0);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+	#else
+		#ifdef APPLE
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+			//SDL_GL_SetSwapInterval(0);
+			//SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+		#else
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	
+			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+		#endif
+	#endif
 
 
-	/*SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);*/
+	#ifdef EMT
+	#else
+		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+	#endif
 
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
@@ -224,28 +265,76 @@ SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	//SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1); 
 
 	//EM_ASM({console.log("glinit 1.1");});
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 	//EM_ASM({console.log("glinit 1.2");});
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+
 	//EM_ASM({console.log("glinit 1.3");});
-	SDL_GL_SetSwapInterval(0);
 	//EM_ASM({console.log("glinit 1.4");});
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	//EM_ASM({console.log("glinit 1.5");});
 
 	//glEnable(GL_MULTISAMPLE);
 	//EM_ASM({console.log("glinit 1.6 " + $0);}, wnd);
-	glc = SDL_GL_CreateContext(wnd);
+
+	#ifdef EMT
+		wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
+	#else
+		//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+		wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+	#endif
+	if (!wnd) {
+		#ifdef EMT
+		#else
+			cout << "Failed to create window \n";
+		#endif
+		exit(1);
+	}
+
+
+
+	#ifdef EMT
+		glc = SDL_GL_CreateContext(wnd);
+		rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED);
+		SDL_SetWindowSize(wnd, theAnimation->w, theAnimation->h);
+		SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
+	#else
+		#ifdef APPLE
+			SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
+			//rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED);
+			rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_SOFTWARE);
+			SDL_RendererInfo rendererInfo;
+			SDL_GetRendererInfo(rdr, &rendererInfo);
+			cout << "Renderer: " << rendererInfo.name << "\n";
+			glc = SDL_GL_CreateContext(wnd);
+			//SDL_SetWindowSize(wnd, theAnimation->w, theAnimation->h);
+			//SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
+		#else
+		#endif
+
+		/*SDL_Surface *window_surface = SDL_GetWindowSurface(wnd);
+		if (!window_surface) {
+			#ifdef EMT
+			#else
+				cout << "Failed to create window surface \n";
+			#endif
+			exit(1);
+		}
+		SDL_UpdateWindowSurface(wnd);*/
+	#endif
+/*	
+		glDrawSurface = SDL_SetVideoMode(scaledWidth, scaledHeight, NULL);
+		glViewport(0, 0, scaledWidth, scaledHeight);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluPerspective(120, 4.0f / 3.0f, .00001, 100);
+		glMatrixMode(GL_MODELVIEW);
+*/
 
 	//EM_ASM({console.log("glinit 1.7");});
 	//rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
-	rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED);
-	SDL_SetWindowSize(wnd, theAnimation->w, theAnimation->h);
-	SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
+
 	//SDL_RenderSetScale(rdr, theAnimation->scaleFactorX, theAnimation->scaleFactorY);
 	//EM_ASM({console.log("glinit 1.8");});
-	glEnable(GL_BLEND); 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glEnable(GL_BLEND); 
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 float _xPos = 0;
@@ -503,7 +592,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-
 		tempBuffers = lastBuffersCreated->start->prev;
 
 
@@ -580,7 +668,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 
 				#ifdef EMT
-					glBindVertexArrayOES(*(tempBuffers->vao));
+					//glBindVertexArrayOES(*(tempBuffers->vao));
+					glBindVertexArray(*(tempBuffers->vao));
 				#else
 					#ifdef APPLE
 						glBindVertexArrayAPPLE(*(tempBuffers->vao));
@@ -591,7 +680,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 				glDrawElements(GL_TRIANGLES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
 				//glDrawElements(GL_LINES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
 				#ifdef EMT
-					glBindVertexArrayOES(0);
+					//glBindVertexArrayOES(0);
+					glBindVertexArray(0);
 				#else
 					#ifdef APPLE
 						glBindVertexArrayAPPLE(0);
@@ -670,7 +760,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					glUniform1i(transformationsCountLoc, currentTransformationsCount);
 
 					#ifdef EMT
-						glBindVertexArrayOES(*(currentVAOL->vao));
+						//glBindVertexArrayOES(*(currentVAOL->vao));
+						glBindVertexArray(*(currentVAOL->vao));
 					#else
 						#ifdef APPLE
 							glBindVertexArrayAPPLE(*(currentVAOL->vao));
@@ -681,7 +772,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
 					//glDrawElements(GL_LINES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
 					#ifdef EMT
-						glBindVertexArrayOES(0);
+						//glBindVertexArrayOES(0);
+						glBindVertexArray(0);
 					#else
 						#ifdef APPLE
 							glBindVertexArrayAPPLE(0);
