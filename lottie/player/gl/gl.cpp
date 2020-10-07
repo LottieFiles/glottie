@@ -151,16 +151,19 @@ void glInitShaders(int refIndex) {
 	#ifdef EMT
 	#else
 		//glutInitDisplayMode(GLUT_RGB);
-		GLenum err = glewInit();
-		if (err != GLEW_OK) {
-			cout << "GLEW not ok: " << glewGetErrorString(err) << "\n";
-			exit(1);
-		}
-		if (!GLEW_VERSION_2_1) {
-			cout << "GLEW version mismatch \n";
-			exit(1);
-		}
-		cout << "About to create shader \n";
+		#ifdef APPLE
+		#else
+			GLenum err = glewInit();
+			if (err != GLEW_OK) {
+				cout << "GLEW not ok: " << glewGetErrorString(err) << "\n";
+				exit(1);
+			}
+			if (!GLEW_VERSION_2_1) {
+				cout << "GLEW version mismatch \n";
+				exit(1);
+			}
+			cout << "About to create shader \n";
+		#endif
 	#endif
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	#ifdef EMT
@@ -275,7 +278,7 @@ void glInit() {
 	#else
 		#ifdef APPLE
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 			//SDL_GL_SetSwapInterval(0);
 			//SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
@@ -343,11 +346,13 @@ void glInit() {
 		#ifdef APPLE
 			SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
 			//rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED);
-			rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_SOFTWARE);
-			SDL_RendererInfo rendererInfo;
-			SDL_GetRendererInfo(rdr, &rendererInfo);
-			cout << "Renderer: " << rendererInfo.name << "\n";
+
+			//rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_SOFTWARE);
+			//SDL_RendererInfo rendererInfo;
+			//SDL_GetRendererInfo(rdr, &rendererInfo);
+			//cout << "Renderer: " << rendererInfo.name << "\n";
 			glc = SDL_GL_CreateContext(wnd);
+
 			//SDL_SetWindowSize(wnd, theAnimation->w, theAnimation->h);
 			//SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
 		#else

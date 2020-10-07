@@ -1,4 +1,4 @@
 #!/bin/sh
 
-g++ main.cpp -std=c++11 -w -g -o lottieplayer -lSDL2  -framework OpenGL
+g++ main.cpp -std=c++11 -w -g -o lottieplayer -I include -L lib -l SDL2  -framework OpenGL
 #g++ main.cpp -std=c++11 -w -g -o lottieplayer -framework SDL2  -framework OpenGL

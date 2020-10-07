@@ -15,6 +15,7 @@ const GLchar* vertexSource =
     "#define counter_13  13\n"
     "#define counter_14  14\n"
     "#define counter_15  15\n"
+    "#version 140\n"
     "attribute vec4 position; \n"
     "attribute vec4 color; \n"
     "varying vec4 vcolors; \n"

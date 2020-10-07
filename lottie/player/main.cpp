@@ -1,3 +1,4 @@
+#define APPLE 1
 
 #define KVLEN 128
 
