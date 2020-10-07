@@ -8,8 +8,8 @@ for ($i = 0; $i < 16; $i++) {
 	print FILE '    "#define counter_'.$i.'  '.$i.'\n"'."\n";
 }
 
-print FILE '    "#version 140 \n"
-    "attribute vec4 position; \n"
+#print FILE '    "#version 150\n"
+print FILE '    "attribute vec4 position; \n"
     "attribute vec4 color; \n"
     "varying vec4 vcolors; \n"
     "uniform int transformationsCount; \n"

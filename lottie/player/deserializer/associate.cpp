@@ -97,6 +97,11 @@ int associateKeyValues() {
 	*/
 	//popKeyValueTrail();
 
+	#ifdef EMT
+	#else
+		cout << " " << theScope->scope << "\n";
+	#endif
+
 	if (theScope->scope == _animation) {
 		//EM_ASM({console.log("//----------------> filling animation");});
 		fillAnimation();
@@ -111,6 +116,10 @@ int associateKeyValues() {
 		} else if (theScope->prev->scope == _layers) { // PropertiesShape
 		}
 	} else if (theScope->scope == _k) {
+	#ifdef EMT
+	#else
+		cout << "kpop \n";
+	#endif
 		if (theScope->prev->scope == _a && strcmp(theScope->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->scope != _layers) {
 			//EM_ASM({console.log("-//***----> fill OffsetKeyframe in a");});
 			fillPropertiesOffsetKeyframe(currentShapesItem->a->keyframe);
@@ -154,11 +163,23 @@ int associateKeyValues() {
 
 
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _shapes)) {
+	#ifdef EMT
+	#else
+		cout << "attempting store \n";
+	#endif
 			//EM_ASM({console.log("//---------------> k within ks within shapes");});
 			fillPropertiesShapeProp(currentShapesItem->ks->k);
 		} else if ((theScope->prev->scope == _ks && theScope->prev->prev->scope == _it)) { // PropertiesShapeProp
+	#ifdef EMT
+	#else
+		cout << "attempting store 1\n";
+	#endif
 			//EM_ASM({console.log("//----------------> k within ks within it");});
 			fillPropertiesShapeProp(currentShapesItem->ks->k);
+	#ifdef EMT
+	#else
+		cout << "attempting store 2\n";
+	#endif
 		}
 	} else if (theScope->scope == _i) {
 
@@ -431,7 +452,7 @@ void wrapShape(bool inGroup) {
 int prepareContainer(bool arrayOfObjects) {
 	#ifdef EMT
 	#else
-	cout << "Preparing container...\n";
+		//cout << "Preparing container...\n";
 	#endif
 	if (theScope->scope == _animation) {
 		preSwitch[0] = 0;

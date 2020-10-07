@@ -101,14 +101,26 @@ struct BezierCurve* newBezierCurve() {
 
 int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapeProp) {
 	//EM_ASM({console.log("[[[[[[[[[[[[[========================> entered");});
+	#ifdef EMT
+	#else
+		cout << "fillshapeprop 1 \n";
+	#endif
 	bool exhausted = false;
 	struct KeyValue* tempKeyValue;
 	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
 	struct ArrayOfString* tempArrayValue; 
+	#ifdef EMT
+	#else
+		cout << "fillshapeprop 2 \n";
+	#endif
 	while (! exhausted) {
 		if (tempKeyValue) {
 			//EM_ASM({console.log("========================> iteration");});
 		}
+		#ifdef EMT
+		#else
+			cout << "fillshapeprop 3 \n";
+		#endif
 		if (strlen(tempKeyValue->key) == 0) {
 			//EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
@@ -118,7 +130,15 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			}
 			continue;
 		}
+		#ifdef EMT
+		#else
+			cout << "fillshapeprop 4 \n";
+		#endif
 		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "c") == 0) {
+			#ifdef EMT
+			#else
+				cout << "fillshapeprop 4.1 \n";
+			#endif
 			//EM_ASM({console.log("========================> fill 80.1");});
 				if (strcmp(tempKeyValue->value, "true") == 0) {
 					passedPropertiesShapeProp->c = true;
@@ -127,18 +147,30 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 				}
 				//EM_ASM({console.log("========================> fill 80.1.1");});
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "i") == 0) {
+			#ifdef EMT
+			#else
+				cout << "fillshapeprop 4.2 \n";
+			#endif
 			//EM_ASM({console.log("========================> fill 80.2 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->i = 
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->i, passedPropertiesShapeProp);
 			passedPropertiesShapeProp->i_count = currentUniversalCount;
 
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "o") == 0) {
+			#ifdef EMT
+			#else
+				cout << "fillshapeprop 4.3 \n";
+			#endif
 			//EM_ASM({console.log("========================> fill 80.3 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->o = 
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->o, passedPropertiesShapeProp);
 			passedPropertiesShapeProp->o_count = currentUniversalCount;
 
 		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "v") == 0) {
+			#ifdef EMT
+			#else
+				cout << "fillshapeprop 4.4 \n";
+			#endif
 			//EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
 			passedPropertiesShapeProp->v = 
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->v, passedPropertiesShapeProp);
@@ -147,7 +179,9 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 
 	
 			bool subExhausted = false;
-			passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->start;
+			if (passedPropertiesShapeProp->v != NULL) {
+				passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->start;
+			}
 			/*
 			while (! subExhausted) {
 				//EM_ASM_({console.log("**** associating values " + $0 + " " + $1 + " " + $2 + " " + $3);}, passedPropertiesShapeProp->v->vertex->x, passedPropertiesShapeProp->v->vertex->y, passedPropertiesShapeProp->lowestX, passedPropertiesShapeProp->lowestY);
@@ -179,6 +213,10 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->count);
 		}
 
+		#ifdef EMT
+		#else
+			cout << "fillshapeprop 5 \n";
+		#endif
 
 
 		if (tempKeyValue->next == NULL) {

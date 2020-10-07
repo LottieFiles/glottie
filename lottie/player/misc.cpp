@@ -788,6 +788,10 @@ int stringToInt(char* passedString) {
 //////////// helpers for populating json objects
 
 struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, struct ArrayOfVertex* targetVertex, struct PropertiesShapeProp* passedPropertiesShapeProp) {
+	#ifdef EMT
+	#else
+		cout << "popvert \n";
+	#endif
 	struct ValuesVector* baseVector;
 	if (traceArrayValue == NULL) {
 		return 0;
@@ -797,6 +801,7 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 
 	bool exhausted = false;
 	currentUniversalCount = 0;
+
 	while (! exhausted) {
 		if (baseVector->child == NULL) {
 			break;
@@ -842,8 +847,20 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 			baseVector = baseVector->next;
 		}
 	}
-	targetVertex->next = targetVertex->start;
-	targetVertex->start->prev = targetVertex;
+
+	#ifdef EMT
+	#else
+		cout << "popvert 1 \n";
+	#endif
+	if (targetVertex != NULL) {
+		targetVertex->next = targetVertex->start;
+		targetVertex->start->prev = targetVertex;
+	}
+	#ifdef EMT
+	#else
+		cout << "popvert 2 \n";
+	#endif
+
 	if (targetVertex != NULL) {
 		return targetVertex->start;
 	} else {

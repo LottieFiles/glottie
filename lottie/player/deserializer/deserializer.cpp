@@ -461,6 +461,7 @@ int checkCharacter(char& currentChar) {
 					prepareContainer(false);
 			}
 
+
 			struct KeyValueTrail* tempKeyValueTrail;
 			//EM_ASM({console.log("new key value 1.0");});
 			tempKeyValueTrail = newKeyValueTrail(theScope->currentKeyValueTrail);
@@ -476,11 +477,19 @@ int checkCharacter(char& currentChar) {
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			//EM_ASM_({console.log("OPENED object " + $0);}, theState->stateNow);
 			previousScopeClosure = false;
+			#ifdef EMT
+			#else
+				cout << "containerized \n";
+			#endif
 			break;
 		case '}':
 			/*if (currentShapesItem != NULL && currentShapesItem->parent != NULL) {
 				closureCount++;
 			}*/
+			#ifdef EMT
+			#else
+				cout << "closing begins \n";
+			#endif
 			justStartedArray = false;
 			colonEncountered = false;
 
@@ -492,8 +501,20 @@ int checkCharacter(char& currentChar) {
 			}
 			//EM_ASM_({console.log("CLOSING reading done " + $0);}, theState->stateNow);
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
+			#ifdef EMT
+			#else
+				cout << "closing 1 \n";
+			#endif
 			associateKeyValues();
+			#ifdef EMT
+			#else
+				cout << "closing 2 \n";
+			#endif
 			removeScope();
+			#ifdef EMT
+			#else
+				cout << "closing 3 \n";
+			#endif
 			removeState();
 			currentKeyValueTrail = theScope->currentKeyValueTrail;
 
@@ -519,6 +540,10 @@ int checkCharacter(char& currentChar) {
 
 			//EM_ASM_({console.log("___________________________________________________________________CLOSED object " + $0 + " " + String.fromCharCode($1));}, theState->stateNow, theState->reservedKey[0]);
 			previousScopeClosure = true;
+			#ifdef EMT
+			#else
+				cout << "closed \n";
+			#endif
 			break;
 		case '[':
 			if (colonEncountered) {
@@ -700,6 +725,7 @@ int checkCharacter(char& currentChar) {
 	}
 
 	//EM_ASM({console.log("DEFAULT 10.4 ");});
+
 
 	return 1;
 }

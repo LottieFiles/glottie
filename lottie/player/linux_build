@@ -1,0 +1,5 @@
+#!/bin/sh
+
+clang++ main.cpp -std=c++17 -w -g -o lottieplayer -lglfw -lGLEW -lGL -lglut -I/usr/include/SDL2 -lSDL2
+
+#g++ main.cpp -std=c++11 -w -g -o lottieplayer -framework SDL2  -framework OpenGL

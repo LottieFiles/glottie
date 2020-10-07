@@ -1,6 +1,4 @@
 
-#define APPLE 1
-
 #define KVLEN 128
 
 #ifdef EMT
@@ -21,14 +19,23 @@
 		//#include <OpenGL/glext.h>
 		//#include <GLUT/glut.h>
 	#else
-		#include <GL/glx.h>
-		#include <GL/gl.h>
-		#include <GL/glut.h>
+		#include <GL/glew.h>
+		#include <GLFW/glfw3.h>
+		//#include <GL/gl.h>
+		//#include <GL/glx.h>
+		//#include <GL/glu.h>
+		//#include <GL/glut.h>
+		//#include <GL/freeglut.h>
 	#endif
 #endif
 
 
-#include <SDL2/SDL.h> // emscripten
+#ifdef EMT
+	#include <SDL2/SDL.h> // emscripten
+#else
+	#include <SDL2/SDL.h> // emscripten
+	#include <SDL2/SDL_opengl.h>
+#endif
 //#include <SDL2/SDL.h>
 
 #ifdef EMT
@@ -63,10 +70,11 @@
 
 using namespace std;
 
+#ifdef EMT
 std::function<void()> loop;
 void main_loop() { loop(); }
 void _doMain() { loop(); }
-
+#endif
 
 /*
 alignas(256) GLuint* vao[1024];
@@ -108,7 +116,6 @@ struct BackgroundColor {
 #include "gl/prep_transform.cpp"
 //#include "gl/it_adjust.cpp"
 //#include "animate/prep_parent.cpp"
-
 
 
 #ifdef EMT
@@ -162,16 +169,19 @@ const int SQUARE_SIZE = 20;
 			if (e.type == SDL_MOUSEBUTTONDOWN){
 				quitProgram = true;
 			}
-			gettimeofday(&tempTime, NULL);
-			currentTime = (tempTime.tv_sec * 1000) + (tempTime.tv_usec / 1000);
 
-			if (currentTime - lastTime > theAnimation->frameTime) {
+		}
+			//gettimeofday(&tempTime, NULL);
+			//currentTime = (tempTime.tv_sec * 1000) + (tempTime.tv_usec / 1000);
+
+			//if (currentTime - lastTime > theAnimation->frameTimeMS) {
 				if (currentFrame >= theAnimation->op) {
 					currentFrame = 0;
 				}
-				SDL_RenderClear(rdr);
+				//SDL_RenderClear(rdr);
 				glDraw(NULL, NULL, currentFrame);
-       				SDL_RenderPresent(rdr);
+       				//SDL_RenderPresent(rdr);
+				SDL_GL_SwapWindow(wnd);
 				/*SDL_SetRenderDrawColor(rdr, 0, 0, 0, SDL_ALPHA_OPAQUE);
 				SDL_RenderClear(rdr);
 				SDL_SetRenderDrawColor(rdr, 0, 255, 255, SDL_ALPHA_OPAQUE);
@@ -182,10 +192,9 @@ const int SQUARE_SIZE = 20;
 				//SDL_UpdateWindowSurface(wnd);
 				//EM_ASM({console.log("////> init done");});
 				currentFrame++;
-				lastTime = currentTime;
-			}
-			SDL_Delay(theAnimation->frameTime / 3);
-		}
+				//lastTime = currentTime;
+			//}
+			SDL_Delay(theAnimation->frameTimeMS);
 	}
 }
 
@@ -237,6 +246,10 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 	//itAdjust();
 
 	//EM_ASM({console.log("////> start of prepping shapes");});
+	#ifdef EMT
+	#else
+	cout << "Prepping shapes... \n";
+	#endif
 	prepShapes();
 
 	//EM_ASM({console.log("////> start of offsetting parented shapes");});
@@ -246,9 +259,19 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 //	prepParentShapes();
 
 	//EM_ASM({console.log("////> start of prepping transforms for shapes");});
+	#ifdef EMT
+	#else
+	cout << "Prepping transform shapes... \n";
+	#endif
 	prepTransformShapes();
 	//EM_ASM({console.log("////> matching VAOs");});
-	matchParentVAO();
+	#ifdef EMT
+	#else
+	cout << "Match parent VAOs... \n";
+	#endif
+	if (animationSequence != NULL) {
+		matchParentVAO();
+	}
 
 	//EM_ASM({console.log("////> done prepping shapes " + $0);}, theAnimation->frameTimeMS);
 	redrawRequired = true;
@@ -293,8 +316,18 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 	*/
 	//layersAnimationSequence = layersAnimationSequence->start;
 	//shapesAnimationSequence = shapesAnimationSequence->start;
+	#ifdef EMT
+	#else
+	cout << "Start animating... \n";
+	#endif
 	if (animationSequence != NULL) {
 		animationSequence = animationSequence->start;
+	} else {
+		#ifdef EMT
+		#else
+			cout << "No animations found... \n";
+		#endif
+		exit(1);
 	}
 
 	#ifdef EMT
@@ -371,11 +404,25 @@ void readFromStdin(float bgRed, float bgGreen, float bgBlue, float bgAlpha) {
 }
 
 int main(int argc, char *argv[]) {
-	//SDL_Init(SDL_INIT_EVERYTHING);
+	SDL_Init(SDL_INIT_EVERYTHING);
 
 	#ifdef EMT
 	#else
+		cout << SDL_GetError() << "\n";
 		cout << "Attempting standalone \n";
+		//glutInit(&argc, argv);
+		//glutCreateWindow("test");
+		/*glutInitDisplayMode(GLUT_RGB);
+		GLenum err = glewInit();
+		if (err != GLEW_OK) {
+			cout << "GLEW not ok: " << glewGetErrorString(err) << "\n";
+			exit(1);
+		}
+		if (!GLEW_VERSION_2_1) {
+			cout << "GLEW version mismatch \n";
+			exit(1);
+		}*/
+
 		if (argc == 5) {
 			readFromStdin(
 					atof(argv[1]),

@@ -10,7 +10,7 @@ struct Layers {
         struct Layers* next = NULL;
         struct Layers* parentLayers = NULL; //parent
       
-	struct Mask* maskProperties = NULL;
+	//struct Mask* maskProperties = NULL;
         //struct Index* ef = NULL; // effects
         struct Effects* ef = NULL; // effects
 
@@ -142,7 +142,7 @@ struct Animation {
         struct Assets* assets = NULL;
         struct Char* chars = NULL;
         struct Player* players = NULL;
-        struct Font* fonts = NULL;
+        //struct Font* fonts = NULL;
         float ip; // entry frame number
         float op; // exit frame number
         float fr; // frame rate

@@ -148,14 +148,44 @@ const GLchar* fragmentSource =
 void glInitShaders(int refIndex) {
 	GLuint tempShaderProgram;
 	// Create and compile the vertex shader
+	#ifdef EMT
+	#else
+		//glutInitDisplayMode(GLUT_RGB);
+		GLenum err = glewInit();
+		if (err != GLEW_OK) {
+			cout << "GLEW not ok: " << glewGetErrorString(err) << "\n";
+			exit(1);
+		}
+		if (!GLEW_VERSION_2_1) {
+			cout << "GLEW version mismatch \n";
+			exit(1);
+		}
+		cout << "About to create shader \n";
+	#endif
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	#ifdef EMT
+	#else
+		cout << "Ready to get source \n";
+	#endif
 	glShaderSource(vertexShader, 1, &vertexSource, NULL);
+	#ifdef EMT
+	#else
+		cout << "Ready to compile \n";
+	#endif
 	glCompileShader(vertexShader);
+	#ifdef EMT
+	#else
+		cout << "Vertex shader compiled \n";
+	#endif
 
 	// Create and compile the fragment shader
 	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
 	glCompileShader(fragmentShader);
+	#ifdef EMT
+	#else
+		cout << "Fragment shader compiled \n";
+	#endif
 
 	GLint vertexSuccess = 0;
 	GLint fragmentSuccess = 0;
@@ -167,6 +197,10 @@ void glInitShaders(int refIndex) {
 	if (fragmentSuccess == GL_FALSE) {
 		//EM_ASM({console.log("..................> fragment shader failed")});
 	}
+	#ifdef EMT
+	#else
+		cout << "Shaders tested \n";
+	#endif
 
 	// Link the vertex and fragment shader into a shader program
 	tempShaderProgram = glCreateProgram();
@@ -175,7 +209,15 @@ void glInitShaders(int refIndex) {
 	glAttachShader(tempShaderProgram, fragmentShader);
 	// glBindFragDataLocation(shaderProgram, 0, "outColor");
 	glLinkProgram(tempShaderProgram);
+	#ifdef EMT
+	#else
+		cout << "Shaders linked \n";
+	#endif
 	glUseProgram(tempShaderProgram);
+	#ifdef EMT
+	#else
+		cout << "Using shaders \n";
+	#endif
 
 	if (refIndex == 0) {
 		mainShader = tempShaderProgram;
@@ -240,7 +282,7 @@ void glInit() {
 			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 		#else
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	
 			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
@@ -278,7 +320,9 @@ void glInit() {
 		wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
 	#else
 		//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+		//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
 		wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+		cout << "Done creating SDL window \n";
 	#endif
 	if (!wnd) {
 		#ifdef EMT
@@ -307,6 +351,11 @@ void glInit() {
 			//SDL_SetWindowSize(wnd, theAnimation->w, theAnimation->h);
 			//SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
 		#else
+			glc = SDL_GL_CreateContext(wnd);
+			cout << "Created GLC \n";
+			//rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED);
+			//SDL_SetWindowSize(wnd, theAnimation->w, theAnimation->h);
+			//SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
 		#endif
 
 		/*SDL_Surface *window_surface = SDL_GetWindowSurface(wnd);
@@ -335,6 +384,10 @@ void glInit() {
 	//EM_ASM({console.log("glinit 1.8");});
 	//glEnable(GL_BLEND); 
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	#ifdef EMT
+	#else
+		cout << "Done GL init \n";
+	#endif
 }
 
 float _xPos = 0;

@@ -1449,6 +1449,10 @@ void addChildToVAOL(struct VAOList* baseVAOL, struct VAOList* childVAOL) {
 }
 
 void matchParentVAO() {
+	#ifdef EMT
+	#else
+		cout << "MatchVAO 1 \n";
+	#endif
 	animationSequence = animationSequence->start;
 
 	struct VAOList* baseVAOL;
@@ -1456,6 +1460,10 @@ void matchParentVAO() {
 	bool exhausted = false;
 	bool baseExhausted = false;
 	bool refExhausted = false;
+	#ifdef EMT
+	#else
+		cout << "MatchVAO 1 \n";
+	#endif
 	//EM_ASM_({console.log("---------------==== matching - starting iteration ");});
 	while (! exhausted) {
 		if (animationSequence == NULL || animationSequence->vaol == NULL) {
@@ -1509,6 +1517,10 @@ void composeTransformLayers(struct Layers* passedLayers, int minTime, int maxTim
 
 	//if (maxTime > minTime) {
 	if (passedLayers != NULL && passedLayers->shapes != NULL) {
+		#ifdef EMT
+		#else
+			cout << "Starting layer transformations...\n";
+		#endif
 		fillCompositeAnimation(minTime, maxTime, passedLayers->transform, passedLayers->shapes->start, true, true, passedLayers->currentBB, passedLayers, passedLayers->parentLayers);
 	}
 		//EM_ASM_({console.log("---------------===================TRANSFORM layers done ");});
