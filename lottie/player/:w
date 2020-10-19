@@ -240,22 +240,18 @@ void glInit() {
 	//int* someInt = new int[5000000]();
 	//delete[] someInt;
 	//wnd = new SDL_Window;
-
+	/*
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+		printf("SDL_Init failed: %s\n", SDL_GetError());
+	}
+	*/
 
 	#ifdef EMT
-		/*if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 			cout << "Failed to initialize video \n";
 			exit(1);
-		}*/
-		if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-			printf("SDL_Init failed: %s\n", SDL_GetError());
 		}
 	#else
-		/*
-		if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-			printf("SDL_Init failed: %s\n", SDL_GetError());
-		}
-		*/
 		//const SDL_VideoInfo* videoInfo;
 		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 			cout << "Failed to initialize video \n";
@@ -277,15 +273,6 @@ void glInit() {
 	//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	//wnd = new SDL_Window();
-
-	#ifdef EMT
-		wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
-	#else
-		//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-		//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
-		wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-		cout << "Done creating SDL window \n";
-	#endif
 
 	#ifdef EMT
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -338,7 +325,14 @@ void glInit() {
 	//glEnable(GL_MULTISAMPLE);
 	//EM_ASM({console.log("glinit 1.6 " + $0);}, wnd);
 
-
+	#ifdef EMT
+		wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
+	#else
+		//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+		//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
+		wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+		cout << "Done creating SDL window \n";
+	#endif
 	if (!wnd) {
 		#ifdef EMT
 		#else
@@ -399,8 +393,8 @@ void glInit() {
 
 	//SDL_RenderSetScale(rdr, theAnimation->scaleFactorX, theAnimation->scaleFactorY);
 	//EM_ASM({console.log("glinit 1.8");});
-	glEnable(GL_BLEND); 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glEnable(GL_BLEND); 
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	#ifdef EMT
 	#else
 		cout << "Done GL init \n";
@@ -739,7 +733,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 				#ifdef EMT
 					//glBindVertexArrayOES(*(tempBuffers->vao));
-					glBindVertexArrayOES(*(tempBuffers->vao));
+					glBindVertexArray(*(tempBuffers->vao));
 				#else
 					#ifdef APPLE
 						glBindVertexArrayAPPLE(*(tempBuffers->vao));
@@ -750,8 +744,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 				glDrawElements(GL_TRIANGLES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
 				//glDrawElements(GL_LINES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
 				#ifdef EMT
-					glBindVertexArrayOES(0);
-					//glBindVertexArray(0);
+					//glBindVertexArrayOES(0);
+					glBindVertexArray(0);
 				#else
 					#ifdef APPLE
 						glBindVertexArrayAPPLE(0);
@@ -804,7 +798,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 				currentTransformationsCount = 0;
 
 				if (currentVAOL->vao != NULL) {
-					//EM_ASM({console.log("no buffers!");});
 
 					lastShapesO = 1.0f;
 					lastLayersO = 1.0f;
@@ -832,7 +825,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 
 					#ifdef EMT
 						//glBindVertexArrayOES(*(currentVAOL->vao));
-						glBindVertexArrayOES(*(currentVAOL->vao));
+						glBindVertexArray(*(currentVAOL->vao));
 					#else
 						#ifdef APPLE
 							glBindVertexArrayAPPLE(*(currentVAOL->vao));
@@ -843,8 +836,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
 					//glDrawElements(GL_LINES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
 					#ifdef EMT
-						glBindVertexArrayOES(0);
-						//glBindVertexArray(0);
+						//glBindVertexArrayOES(0);
+						glBindVertexArray(0);
 					#else
 						#ifdef APPLE
 							glBindVertexArrayAPPLE(0);
@@ -852,6 +845,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							glBindVertexArray(0);
 						#endif
 					#endif
+					//EM_ASM({console.log("no buffers!");});
 
 				}
 

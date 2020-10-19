@@ -1,4 +1,5 @@
-#define APPLE 1
+
+#define EMT 1
 
 #define KVLEN 128
 
@@ -13,6 +14,11 @@
 #ifdef EMT
 #include <emscripten.h> // emscripten
 #include <emscripten/html5.h> // emscripten
+#endif
+
+
+
+#ifdef EMT
 #else
 	#ifdef APPLE
 		#include <OpenGL/gl.h>
@@ -21,30 +27,32 @@
 		//#include <GLUT/glut.h>
 	#else
 		#include <GL/glew.h>
+		//#include <GL/glfw3.h>
 		#include <GLFW/glfw3.h>
-		//#include <GL/gl.h>
-		//#include <GL/glx.h>
 		//#include <GL/glu.h>
+		//#include <GL/glext.h>
+		//#include <GL/glx.h>
+		//#include <GL/gl.h>
 		//#include <GL/glut.h>
 		//#include <GL/freeglut.h>
 	#endif
 #endif
 
-
 #ifdef EMT
+	#define GL_GLEXT_PROTOTYPES
 	#include <SDL2/SDL.h> // emscripten
+	#include <SDL_opengles2.h> // empscripten
 #else
 	#include <SDL2/SDL.h> // emscripten
 	#include <SDL2/SDL_opengl.h>
 #endif
-//#include <SDL2/SDL.h>
 
 #ifdef EMT
-#include <SDL_opengles2.h> // empscripten
-#define GL_GLEXT_PROTOTYPES
-#include <GLES2/gl2ext.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
+//#include <SDL2/SDL.h>
+//#define GL_GLEXT_PROTOTYPES
+//#include <GLES2/gl2ext.h>
+//#include <GL/glu.h>
+//#include <GL/glut.h>
 #endif
 
 //#define GLM_ENABLE_EXPERIMENTAL
@@ -72,9 +80,11 @@
 using namespace std;
 
 #ifdef EMT
+/*
 std::function<void()> loop;
-void main_loop() { loop(); }
+void mainloop() { loop(); }
 void _doMain() { loop(); }
+*/
 #endif
 
 /*
@@ -147,15 +157,16 @@ void mainloop() {
 }
 
 void standaloneLoop() {
-const int WIDTH = 20;
-const int HEIGHT = 20;
-const int SQUARE_SIZE = 20;
+/*	const int WIDTH = 20;
+	const int HEIGHT = 20;
+	const int SQUARE_SIZE = 20;
     SDL_Rect rect = {
         (WIDTH - SQUARE_SIZE) / 2,
         (HEIGHT - SQUARE_SIZE) / 2,
         SQUARE_SIZE,
         SQUARE_SIZE
-    };
+    };*/
+
 	long currentTime;
 	SDL_Event e;
 	cout << theAnimation->frameTime << " is frame time \n";
@@ -332,6 +343,7 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 	}
 
 	#ifdef EMT
+	EM_ASM_({console.log("Starting display");});
 	emscripten_set_main_loop(mainloop, theAnimation->fr, 0);
 	#else
 	cout << "Starting main loop... \n";
@@ -405,7 +417,7 @@ void readFromStdin(float bgRed, float bgGreen, float bgBlue, float bgAlpha) {
 }
 
 int main(int argc, char *argv[]) {
-	SDL_Init(SDL_INIT_EVERYTHING);
+	//SDL_Init(SDL_INIT_EVERYTHING);
 
 	#ifdef EMT
 	#else
