@@ -69,9 +69,14 @@
     </script>
 
 
-	<div style='display:inline-block; float: left;'>
     <!-- Create the canvas that the C++ code will draw into -->
-    <canvas id="canvas" oncontextmenu="event.preventDefault()" style="border: 1px solid #000000;"></canvas>
+
+	<div style='display:inline-block; float: left;'>
+		<div style="float: left;">
+	OpenGL player
+		</div>
+    <canvas id="canvas" oncontextmenu="event.preventDefault()" style="border: 1px solid #000000;float: left;"></canvas>
+	</div>
 
     <!-- Allow the C++ to access the canvas element --> 
     <script type='text/javascript'>
@@ -92,9 +97,11 @@
         canv.addEventListener('click',    _toggle_background_color, false);
         canv.addEventListener('touchend', _toggle_background_color, false);
     </script>
-	</div>
 
 	<div style='display:inline-block; float: left;'>
+		<div style="float: left;">
+		Current lottie web player
+		</div>
 <lottie-player
   autoplay
   controls
