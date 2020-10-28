@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/glottie.dir/main.cpp.o  -o glottie  /usr/lib/x86_64-linux-gnu/libGLEW.so /usr/lib/x86_64-linux-gnu/libGL.so /usr/lib/x86_64-linux-gnu/libGLU.so -lSDL2 

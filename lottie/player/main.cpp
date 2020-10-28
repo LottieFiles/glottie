@@ -1,5 +1,4 @@
 
-#define EMT 1
 
 #define KVLEN 128
 
@@ -10,6 +9,8 @@
 #define TEXTBLOCK 220
 
 //#include <functional>
+
+#include "configure.h"
 
 #ifdef EMT
 #include <emscripten.h> // emscripten
