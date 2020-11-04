@@ -127,3 +127,9 @@ CMakeFiles/glottie.dir/main.cpp.o
  /home/shaafiee/lottie/glottie/lottie/player/main.h
  /home/shaafiee/lottie/glottie/lottie/player/misc.cpp
  /home/shaafiee/lottie/glottie/lottie/player/misc.h
+ /usr/include/SDL2/SDL_config.h
+ /usr/include/SDL2/SDL_opengles2.h
+ /usr/include/SDL2/SDL_opengles2_gl2.h
+ /usr/include/SDL2/SDL_opengles2_gl2ext.h
+ /usr/include/SDL2/SDL_opengles2_gl2platform.h
+ /usr/include/SDL2/SDL_opengles2_khrplatform.h

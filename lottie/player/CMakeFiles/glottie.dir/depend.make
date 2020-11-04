@@ -126,4 +126,10 @@ CMakeFiles/glottie.dir/main.cpp.o: main.cpp
 CMakeFiles/glottie.dir/main.cpp.o: main.h
 CMakeFiles/glottie.dir/main.cpp.o: misc.cpp
 CMakeFiles/glottie.dir/main.cpp.o: misc.h
+CMakeFiles/glottie.dir/main.cpp.o: /usr/include/SDL2/SDL_config.h
+CMakeFiles/glottie.dir/main.cpp.o: /usr/include/SDL2/SDL_opengles2.h
+CMakeFiles/glottie.dir/main.cpp.o: /usr/include/SDL2/SDL_opengles2_gl2.h
+CMakeFiles/glottie.dir/main.cpp.o: /usr/include/SDL2/SDL_opengles2_gl2ext.h
+CMakeFiles/glottie.dir/main.cpp.o: /usr/include/SDL2/SDL_opengles2_gl2platform.h
+CMakeFiles/glottie.dir/main.cpp.o: /usr/include/SDL2/SDL_opengles2_khrplatform.h
 

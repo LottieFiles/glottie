@@ -1,4 +1,7 @@
 
+#define LINUX 1
+
+#define DEBUG 1
 
 #define KVLEN 128
 
@@ -18,7 +21,6 @@
 #endif
 
 
-
 #ifdef EMT
 #else
 	#ifdef APPLE
@@ -27,15 +29,33 @@
 		//#include <OpenGL/glext.h>
 		//#include <GLUT/glut.h>
 	#else
+		//#include <GL/glu.h>
+		//#include <GL/glext.h>
+		//#include <GL/glx.h>
+		//#include <GL/glxext.h>
+		//#include <GL/gl.h>
+		//#define glXGetProcAddress(x) (*glXGetProcAddressARB)((const GLubyte*)x)
+
 		#include <GL/glew.h>
-		//#include <GL/glfw3.h>
 		#include <GLFW/glfw3.h>
+
+		//#include <GL/glu.h>
+		//#include <GL/glext.h>
+		//#include <GL/glx.h>
+		//#include <GL/glxext.h>
+
+		//#include <GL/glfw3.h>
+		//#include <GLFW/glfw3.h>
 		//#include <GL/glu.h>
 		//#include <GL/glext.h>
 		//#include <GL/glx.h>
 		//#include <GL/gl.h>
+
+		//#include <GL/glew.h>
 		//#include <GL/glut.h>
 		//#include <GL/freeglut.h>
+		//#include <GL/gl.h>
+		//#include <GL/glu.h>
 	#endif
 #endif
 
@@ -47,6 +67,7 @@
 	#include <SDL2/SDL.h> // emscripten
 	#include <SDL2/SDL_opengl.h>
 #endif
+
 
 #ifdef EMT
 //#include <SDL2/SDL.h>
@@ -86,6 +107,7 @@ std::function<void()> loop;
 void mainloop() { loop(); }
 void _doMain() { loop(); }
 */
+#else
 #endif
 
 /*
@@ -230,6 +252,7 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 
 	#ifdef EMT
 	#else
+	cout << buffer[0] << "\n";
 	cout << "Deserializing... \n";
 	#endif
 	deserializeChar(buffer, theLength);
@@ -410,7 +433,13 @@ void readFromStdin(float bgRed, float bgGreen, float bgBlue, float bgAlpha) {
 	}
 	if (jsonString.size() > 0) {
 		cout << "Loading animation \n";
-		loadJson(strdup(jsonString.c_str()), jsonString.size(), bgRed, bgGreen, bgBlue, bgAlpha);
+		int theLength = jsonString.length();
+		char jString[theLength];
+		std::strcat(jString, jsonString.c_str());
+		//char* jsonCharString = strdup(jsonString.c_str());
+		jsonString.clear();
+
+		loadJson(strdup(jString), theLength, bgRed, bgGreen, bgBlue, bgAlpha);
 	} else {
 		cout << "Nothing \n";
 	}
@@ -422,6 +451,7 @@ int main(int argc, char *argv[]) {
 
 	#ifdef EMT
 	#else
+		glewExperimental = GL_TRUE;
 		cout << SDL_GetError() << "\n";
 		cout << "Attempting standalone \n";
 		//glutInit(&argc, argv);
@@ -445,7 +475,13 @@ int main(int argc, char *argv[]) {
 					atof(argv[4])
 				);
 		} else {
-			cout << "Pass 3 colours and alpha value please \n";
+			readFromStdin(
+					1,
+					1,
+					1,
+					1
+				);
+			//cout << "Pass 3 colours and alpha value please \n";
 		}
 	#endif
 

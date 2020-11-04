@@ -3,26 +3,78 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
-int assignReadValue() {
-	input->currentReadValue[0] = '\0';
-	strcat(input->currentReadValue, input->currentValue);
-	input->currentValue[0] = '\0';
-	return 1;
-}
-
-int assignReadKey() {
-	input->currentReadKey[0] = '\0';
-	strcat(input->currentReadKey, input->currentValue);
-	input->currentValue[0] = '\0';
-	return 1;
-}
-
 int resetCurrentValue() {
 	input->currentValueLength = 0;
 	input->currentValue[0] = '\0';
 
 	return 1;
 }
+
+int assignReadValue() {
+	#ifdef DEBUG
+		#ifdef EMT
+		#else
+			cout << "reset currentReadValue\n";
+		#endif
+	#endif
+	input->currentReadValue[0] = '\0';
+	#ifdef DEBUG
+		#ifdef EMT
+		#else
+			cout << "copy to currentReadValue\n";
+		#endif
+	#endif
+	
+	if (input->currentValueLength > 0) {
+		strcpy(input->currentReadValue, input->currentValue);
+	} else {
+		input->currentReadValue[0] = '\0';
+	}
+	#ifdef DEBUG
+		#ifdef EMT
+		#else
+			cout << "reset currentValue\n";
+		#endif
+	#endif
+	resetCurrentValue();
+	return 1;
+}
+
+int assignReadKey() {
+	#ifdef DEBUG
+		#ifdef EMT
+		#else
+			cout << "reset currentReadKey\n";
+		#endif
+	#endif
+	input->currentReadKey[0] = '\0';
+	#ifdef DEBUG
+		#ifdef EMT
+		#else
+			cout << "copy to currentReadKey\n";
+		#endif
+	#endif
+	if (input->currentValueLength > 0) {
+		strcpy(input->currentReadKey, input->currentValue);
+	} else {
+		#ifdef DEBUG
+			#ifdef EMT
+			#else
+				cout << "empty key\n";
+			#endif
+		#endif
+		input->currentReadKey[0] = '\0';
+	}
+	#ifdef DEBUG
+		#ifdef EMT
+		#else
+			cout << "reset currentValue\n";
+		#endif
+	#endif
+	resetCurrentValue();
+	return 1;
+}
+
 
 int appendCurrentValue(char passedChar) {
 	if (input->currentValueLength >= KVLEN - 1) {
@@ -356,22 +408,58 @@ bool isReadingDone() {
 				//EM_ASM({console.log("reading 100.2");});
 				if (kvState == Value) {
 					//currentReadValue = input->currentValue;
+					#ifdef DEBUG
+						#ifdef EMT
+						#else
+							cout << "assigning read values\n";
+						#endif
+					#endif
 					assignReadValue();
 					lastTypeEncountered[0] = '\0';
+					#ifdef DEBUG
+						#ifdef EMT
+						#else
+							cout << "strcat\n";
+						#endif
+					#endif
 					strcat(lastTypeEncountered, input->currentReadValue);
 					//EM_ASM({console.log("reading 100.2.1");});
+					#ifdef DEBUG
+						#ifdef EMT
+						#else
+							cout << "reading done\n";
+						#endif
+					#endif
 					readingDone();
 					//EM_ASM({console.log("reading 100.2.2");});
 					//currentValue.clear();
 					//input->currentValue[0] = '\0';
+					#ifdef DEBUG
+						#ifdef EMT
+						#else
+							cout << "reset current value\n";
+						#endif
+					#endif
 					resetCurrentValue();
 					//EM_ASM({console.log("reading 100.3");});
 				} else {
 					//currentReadKey = input->currentValue;
+					#ifdef DEBUG
+						#ifdef EMT
+						#else
+							cout << "assign read key\n";
+						#endif
+					#endif
 					assignReadKey();
 					//EM_ASM_({console.log($0);}, (int)theScope->scope);
 					//currentValue.clear();
 					//input->currentValue[0] = '\0';
+					#ifdef DEBUG
+						#ifdef EMT
+						#else
+							cout << "reset current value\n";
+						#endif
+					#endif
 					resetCurrentValue();
 				}
 				//EM_ASM_({console.log("post-reading " + $0);}, theState->stateNow);
@@ -399,18 +487,30 @@ enum States lastStateBeforeReading() {
 	return tempState->stateNow;
 }
 
-int checkCharacter(char& currentChar) {
+int checkCharacter(char currentChar) {
 	//EM_ASM_({console.log("YAC +++++++++++++++++++++++++++++++++++++++> " + " [ " + $1 + " ] " + String.fromCharCode($0) + " " + $2 + " - " + $3 + " " + $4);}, currentChar, readingArray,theScope->currentKeyValueTrail, colonEncountered, justStartedArray);
 	#ifdef EMT
 	#else
-		cout << currentChar;
+		cout << currentChar << " -- \n";
 	#endif
 	switch (currentChar) {
 		case '{':
+			#ifdef DEBUG
+				#ifdef EMT
+				#else
+					cout << "opening object\n";
+				#endif
+			#endif
 			//EM_ASM_({console.log("__________________======================================__________OPENING object " + $0 + " " + String.fromCharCode($1));}, theState->stateNow, theState->reservedKey[0]);
 			colonEncountered = false;
 			//EM_ASM_({console.log("OPENING object " + $0);}, theState->stateNow);
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
+			#ifdef DEBUG
+				#ifdef EMT
+				#else
+					cout << "reading states\n";
+				#endif
+			#endif
 			if (isReadingDone()) {
 				//readingDone();
 				removeReadStates();
@@ -423,9 +523,27 @@ int checkCharacter(char& currentChar) {
 				//EM_ASM_({console.log("DONE adding new key value trail in array " + $0);}, currentKeyValueTrail);
 			//}
 
+			#ifdef DEBUG
+				#ifdef EMT
+				#else
+					cout << "checking states\n";
+				#endif
+			#endif
 			if (theState->reservedKeySet && theState->stateNow == ArrayOpen) {
 				input->currentReadKey[0] = '\0';
+				#ifdef DEBUG
+					#ifdef EMT
+					#else
+						cout << "before strcat\n";
+					#endif
+				#endif
 				strcat(input->currentReadKey, theState->reservedKey);
+				#ifdef DEBUG
+					#ifdef EMT
+					#else
+						cout << "after strcat\n";
+					#endif
+				#endif
 				if (strcmp(input->currentReadKey, "k") == 0) {
 					//EM_ASM({console.log("                     k in readkey");});
 				}
@@ -477,9 +595,11 @@ int checkCharacter(char& currentChar) {
 			//EM_ASM_({console.log($0);}, (int)theState->stateNow);
 			//EM_ASM_({console.log("OPENED object " + $0);}, theState->stateNow);
 			previousScopeClosure = false;
-			#ifdef EMT
-			#else
-				cout << "containerized \n";
+			#ifdef DEBUG
+				#ifdef EMT
+				#else
+					cout << "closing object\n";
+				#endif
 			#endif
 			break;
 		case '}':
@@ -725,6 +845,12 @@ int checkCharacter(char& currentChar) {
 	}
 
 	//EM_ASM({console.log("DEFAULT 10.4 ");});
+			#ifdef DEBUG
+				#ifdef EMT
+				#else
+					cout << "character processed\n";
+				#endif
+			#endif
 
 
 	return 1;
@@ -785,15 +911,25 @@ int deserializeChar(char* theString, int theLength) {
 	//EM_ASM_({console.log("start state " + $0 + " " + $1);}, theState, theLength);
 
 
-	#ifdef EMT
-	#else
-		cout << "Deserializing begins here... \n";
+	#ifdef DEBUG
+		#ifdef EMT
+		#else
+			cout << "Deserializing begins here... " << theLength << "\n";
+		#endif
 	#endif
+	char tempChar;
 	for(int i = 0; i < theLength; i++) {
+		tempChar = theString[i];
+		#ifdef DEBUG
+			#ifdef EMT
+			#else
+				cout << tempChar << "\n";
+			#endif
+		#endif
 		//EM_ASM_({console.log("deserializing" + String.fromCharCode($0));}, theString[i]);
 
-		checkCharacter(theString[i]);
-		
+		//std::strcat(tempChar, theString[i]);
+		checkCharacter(tempChar);
 	}
 	return 1;
 }

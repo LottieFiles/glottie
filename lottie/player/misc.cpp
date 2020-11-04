@@ -1,6 +1,33 @@
 
 // functions
 
+void rawcopy(char* targetChar, char* sourceChar) {
+	/*if (sourceChar >= 1) {
+	} else {
+		targetChar = 0;
+		*targetChar = '\0';
+		return;
+	}*/
+	targetChar = 0;
+	#ifdef DEBUG
+		#ifdef EMT
+		#else
+			std::cout << "starting copy\n";
+		#endif
+	#endif
+	for (sourceChar = 0; *sourceChar != '\0'; sourceChar++) {
+		#ifdef DEBUG
+			#ifdef EMT
+			#else
+				std::cout << "copying " << sourceChar;
+			#endif
+		#endif
+		*targetChar = *sourceChar;
+		targetChar++;
+	}
+	*targetChar = '\0';
+}
+
 int stringToInt(string inputString) {
 	stringstream streamer(inputString);
 	int outputInt;

@@ -1,5 +1,7 @@
 #!/bin/sh
 
-clang++ main.cpp -std=c++17 -w -g -o lottieplayer -lglfw -lGLEW -lGL -I/usr/include/SDL2 -D_REENTRANT -lSDL2
+clang++ main.cpp -std=c++17 -w -g -o lottieplayer -lglfw -lGLEW -lGL -lglut -I/usr/include/SDL2 -lSDL2
+#clang++ main.cpp -std=c++17 -w -g -o lottieplayer -I/usr/include/SDL2 -lSDL2 -lGL -lglut -lGLEW
+#clang++ main.cpp -std=c++17 -w -g -o lottieplayer -I/usr/include/SDL2 -lSDL2 -lGL -lglu -lGLX_nvidia
 
 #g++ main.cpp -std=c++11 -w -g -o lottieplayer -framework SDL2  -framework OpenGL

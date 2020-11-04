@@ -4,6 +4,7 @@ project(glottie VERSION 0.1)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_FLAGS "-g")
 
 find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
