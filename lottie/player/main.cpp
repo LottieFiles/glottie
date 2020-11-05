@@ -1,5 +1,5 @@
 
-#define LINUX 1
+#define EMT 1
 
 #define DEBUG 1
 
