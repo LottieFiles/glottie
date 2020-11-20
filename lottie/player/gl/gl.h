@@ -88,13 +88,17 @@ struct Buffers {
 	GLint* posAttrib = NULL;
 	GLint* colAttrib = NULL;
 
+#ifdef WINDOWS
+	struct CVAO* vao = NULL;
+#else
 	GLuint* vao = NULL;
+#endif
 	GLuint* vbo = NULL;
 	GLuint* cbo = NULL;
 	GLuint* ibo = NULL;
 	std::vector<unsigned int> idx; // array of triangulation data
 	int idxCount;
-	bool preppedFrame = -1;
+	bool preppedFrame = false;
 
 	bool firstFrameRendered = false;
 
@@ -106,5 +110,14 @@ struct Buffers {
 	bool filled = false;
 
 	bool addedToComposition = false;
-} *lastBuffersCreated;
+} *lastBuffersCreated = NULL;
 
+struct CVAO {
+	GLint* posAttrib = NULL;
+	GLint* colAttrib = NULL;
+
+	GLuint* vao = NULL;
+	GLuint* vbo = NULL;
+	GLuint* cbo = NULL;
+	GLuint* ibo = NULL;
+};

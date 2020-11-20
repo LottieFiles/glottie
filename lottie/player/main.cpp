@@ -1,9 +1,21 @@
 
-#define LINUX 1
+#define WINDOWS 1
 
-#define DEBUG 1
+//#define DEBUG 1
+//#define DEBUG2 1
+#define DEBUG3 1
+#define DEBUGPOPULATEVERTICES 1
+//#define DEBUGREADARRAY 1
+
+//#define ISDLL 1
 
 #define KVLEN 128
+
+#pragma once
+#ifdef WINRT
+#include <unknwn.h>
+#include <winrt/Windows.Foundation.h>
+#endif
 
 #ifdef EMT
 #define ALIGNSIZE 256
@@ -15,9 +27,37 @@
 
 #include "configure.h"
 
+#ifdef ISDLL
+	#include "dllrelated.h"
+#endif
+
 #ifdef EMT
 #include <emscripten.h> // emscripten
 #include <emscripten/html5.h> // emscripten
+#endif
+
+
+#ifdef EMT
+#define GL_GLEXT_PROTOTYPES
+#include <SDL2/SDL.h> // emscripten
+#include <SDL_opengles2.h> // empscripten
+#else
+#ifdef WINDOWS
+#include <Windows.h>
+//#include <Wia.h>
+	//#include <sdl/SDL_egl.h> // emscripten
+	//#include <sdl/SDL_opengl.h>
+//#include <sdl/SDL_egl.h>
+//#include <sdl/SDL_opengles2.h>
+#include <sdl/SDL.h>
+#include <sdl/SDL_syswm.h>
+		//#include <sdl/SDL_syswm.h>
+#endif
+
+#ifdef LINUX
+#include <SDL2/SDL.h> // emscripten
+#include <SDL2/SDL_opengl.h>
+#endif
 #endif
 
 
@@ -36,8 +76,8 @@
 		//#include <GL/gl.h>
 		//#define glXGetProcAddress(x) (*glXGetProcAddressARB)((const GLubyte*)x)
 
-		#include <GL/glew.h>
-		#include <GLFW/glfw3.h>
+		//#include <GL/glew.h>
+		//#include <GLFW/glfw3.h>
 
 		//#include <GL/glu.h>
 		//#include <GL/glext.h>
@@ -51,21 +91,21 @@
 		//#include <GL/glx.h>
 		//#include <GL/gl.h>
 
-		//#include <GL/glew.h>
+		//#include <GL/glew.h>jjj
 		//#include <GL/glut.h>
 		//#include <GL/freeglut.h>
 		//#include <GL/gl.h>
 		//#include <GL/glu.h>
-	#endif
-#endif
 
-#ifdef EMT
-	#define GL_GLEXT_PROTOTYPES
-	#include <SDL2/SDL.h> // emscripten
-	#include <SDL_opengles2.h> // empscripten
-#else
-	#include <SDL2/SDL.h> // emscripten
-	#include <SDL2/SDL_opengl.h>
+		#ifdef WINDOWS
+			//#include <EGL/egl.h>
+
+		#include <GLES2/gl2.h>
+		#include <GLES2/gl2ext.h>
+
+		#endif
+
+	#endif
 #endif
 
 
@@ -96,10 +136,27 @@
 #include <vector>
 #include <sstream>
 #include <cmath>
-#include <sys/time.h>
+//#include <sys/time.h>
+
+#ifdef WINDOWS
+#pragma comment(lib,"user32.lib") 
+#endif
+
+#ifdef WINRT
+struct __declspec(uuid("ddc36e02-18ac-47c4-ae17-d420eece2281")) IMyComInterface : ::IUnknown
+{
+	virtual HRESULT __stdcall Call() = 0;
+};
+#endif
 
 
 using namespace std;
+
+#ifdef WINRT
+using namespace winrt;
+using namespace Windows::Foundation;
+#endif
+
 
 #ifdef EMT
 /*
@@ -130,6 +187,15 @@ struct BackgroundColor {
 	float blue = 0.0f;
 	float alpha = 0.0f;
 } globalBackground;
+
+
+#ifdef EGLWINDOWS
+struct EGLVariables {
+	EGLDisplay display;
+	EGLSurface surface;
+} *eglVars;
+#endif
+
 
 #include "main.h"
 #include "gl/gl.h"
@@ -166,7 +232,7 @@ EM_BOOL mainloop(double time, void* userData) {
 */
 
 int currentFrame = 0;
-struct timeval tempTime;
+//struct timeval tempTime;
 long lastTime;
 bool quitProgram = false;
 
@@ -192,7 +258,7 @@ void standaloneLoop() {
 
 	long currentTime;
 	SDL_Event e;
-	cout << theAnimation->frameTime << " is frame time \n";
+	//cout << theAnimation->frameTime << " is frame time \n";
 	while (! quitProgram) {
 		while (SDL_PollEvent(&e)){
 			if (e.type == SDL_QUIT){
@@ -214,9 +280,16 @@ void standaloneLoop() {
 					currentFrame = 0;
 				}
 				//SDL_RenderClear(rdr);
+				#ifdef WINDOWS
+					//glClear(GL_COLOR_BUFFER_BIT);
+				#endif
 				glDraw(NULL, NULL, currentFrame);
        				//SDL_RenderPresent(rdr);
-				SDL_GL_SwapWindow(wnd);
+				#ifdef EGLWINDOWS
+				eglSwapBuffers(eglVars->display, eglVars->surface);
+				#else
+					SDL_GL_SwapWindow(wnd);
+				#endif
 				/*SDL_SetRenderDrawColor(rdr, 0, 0, 0, SDL_ALPHA_OPAQUE);
 				SDL_RenderClear(rdr);
 				SDL_SetRenderDrawColor(rdr, 0, 255, 255, SDL_ALPHA_OPAQUE);
@@ -262,7 +335,7 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 	#else
 	cout << "GL init... \n";
 	#endif
-	glInit();
+	glInit(NULL);
 	//EM_ASM({console.log("////> gl init done");});
 
 	#ifdef EMT
@@ -312,46 +385,9 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 	//EM_ASM({console.log("////> done prepping shapes " + $0);}, theAnimation->frameTimeMS);
 	redrawRequired = true;
 
-	//gettimeofday(&timeRef, NULL);
-	//double currentTime = (double)timeRef.tv_sec + ((double)timeRef.tv_usec / 1000000);
-	//EM_ASM({console.log("////> TIME " + $0 + " ");}, currentTime);
 
-	/*
-	if (! lastBuffersCreated->filled) {
-		lastBuffersCreated = lastBuffersCreated->prev;
-	}
-	lastBuffersCreated->next = lastBuffersCreated->start;
-	//EM_ASM({console.log("////> pre-starting");});
-	lastBuffersCreated->start->prev = lastBuffersCreated;
-	*/
-
-	//EM_ASM({console.log("////> starting");});
 	struct Buffers* buffersToRender;
-/*	if (lastBuffersCreated != NULL) {
-		buffersToRender = lastBuffersCreated->start->next->next;
-		buffersToRender->start = buffersToRender;
-		buffersToRender->next = NULL;
-		//glDraw(NULL, NULL);
-	}*/
-	//emscripten_set_main_loop(mainloop, 0, 1);
 
-	//emscripten_request_animation_frame_loop(mainloop, 0);
-	//double currentTime = 0;
-	/*
-	int currentFrame = 0;
-	while (1) {
-		if (currentFrame >= theAnimation->op) {
-			currentFrame = 0;
-		}
-		double lastTime = seconds();
-		mainloop(lastTime, (void *)currentFrame);
-		//SDL_Delay(theAnimation->frameTimeMS);
-		SDL_Delay(1000);
-		currentFrame++;
-	}
-	*/
-	//layersAnimationSequence = layersAnimationSequence->start;
-	//shapesAnimationSequence = shapesAnimationSequence->start;
 	#ifdef EMT
 	#else
 	cout << "Start animating... \n";
@@ -371,32 +407,20 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 	emscripten_set_main_loop(mainloop, theAnimation->fr, 0);
 	#else
 	cout << "Starting main loop... \n";
-	gettimeofday(&tempTime, NULL);
-	lastTime = (tempTime.tv_sec * 1000) + (tempTime.tv_usec / 1000);
+	//gettimeofday(&tempTime, NULL);
+	//lastTime = (tempTime.tv_sec * 1000) + (tempTime.tv_usec / 1000);
 	standaloneLoop();
 	#endif
 }
 
 
 int doMain(char someChar[]) {
-	/*
-	if (someChar == NULL || strlen(someChar) <= 0) {
-	} else {
-		jsonString.assign(someChar);
-	}
-	*/
-	//if (someChar.length() > 0) {
-	//	return someChar.length();
-	//}
-	//if (strlen(someChar) > 0) {
-	//	return strlen(someChar);
-	//}
 
 	identityMatrix = glm::mat4(1.0f);
 
 	deserialize();
 	//EM_ASM({console.log("////> init done");});
-	glInit();
+	glInit(NULL);
 	//EM_ASM({console.log("////> gl init done");});
 
 	glInitShaders(0);
@@ -407,16 +431,6 @@ int doMain(char someChar[]) {
 	redrawRequired = true;
 
 	struct Buffers* buffersToRender;
-/*	if (lastBuffersCreated != NULL) {
-		buffersToRender = lastBuffersCreated->start->next->next;
-		buffersToRender->start = buffersToRender;
-		buffersToRender->next = NULL;
-		//glDraw(NULL, NULL);
-	}*/
-
-
-
-	//EM_ASM({console.log("////> done drawing " + $0 + " " + $1);}, theAnimation->w, theAnimation->h);
 
 	return 1;
 }
@@ -434,24 +448,44 @@ void readFromStdin(float bgRed, float bgGreen, float bgBlue, float bgAlpha) {
 	if (jsonString.size() > 0) {
 		cout << "Loading animation \n";
 		int theLength = jsonString.length();
-		char jString[theLength];
-		std::strcat(jString, jsonString.c_str());
+		char* jString = new char[theLength];
+		std::strcpy(jString, jsonString.c_str());
 		//char* jsonCharString = strdup(jsonString.c_str());
 		jsonString.clear();
 
-		loadJson(strdup(jString), theLength, bgRed, bgGreen, bgBlue, bgAlpha);
+		loadJson(jString, theLength, bgRed, bgGreen, bgBlue, bgAlpha);
 	} else {
 		cout << "Nothing \n";
 	}
 	cout << "Done \n";
 }
 
+#ifdef ISDLL
+extern "C"
+{
+	__declspec(dllexport) void jsonAndColor(char* buffer, float bgRed, float bgGreen, float bgBlue, float bgAlpha) {
+		
+	}
+
+	__declspec(dllexport) void json(char* buffer) {
+	}
+
+}
+#endif
+
 int main(int argc, char *argv[]) {
+	#ifdef WINRT
+		winrt::init_apartment();
+	#endif
+
 	//SDL_Init(SDL_INIT_EVERYTHING);
+	#ifdef EGLWINDOWS
+		eglVars = new struct EGLVariables;
+	#endif
 
 	#ifdef EMT
 	#else
-		glewExperimental = GL_TRUE;
+		//glewExperimental = GL_TRUE;
 		cout << SDL_GetError() << "\n";
 		cout << "Attempting standalone \n";
 		//glutInit(&argc, argv);
@@ -486,5 +520,6 @@ int main(int argc, char *argv[]) {
 	#endif
 
 	//doMain(NULL);
+	return 1;
 }
 

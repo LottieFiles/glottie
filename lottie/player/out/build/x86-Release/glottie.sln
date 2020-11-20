@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALL_BUILD", "ALL_BUILD.vcxproj", "{7BF07CD5-EC33-36D5-B33E-793CA20D2CD2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1A04FD78-5744-35AB-9D68-7F605721BA4E} = {1A04FD78-5744-35AB-9D68-7F605721BA4E}
+		{E37228AC-C2F4-3C30-A5A2-69B49D0EDC26} = {E37228AC-C2F4-3C30-A5A2-69B49D0EDC26}
+		{87EAFD45-273E-3EF0-897E-70B5F22365D0} = {87EAFD45-273E-3EF0-897E-70B5F22365D0}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZERO_CHECK", "ZERO_CHECK.vcxproj", "{1A04FD78-5744-35AB-9D68-7F605721BA4E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glottie", "glottie.vcxproj", "{E37228AC-C2F4-3C30-A5A2-69B49D0EDC26}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1A04FD78-5744-35AB-9D68-7F605721BA4E} = {1A04FD78-5744-35AB-9D68-7F605721BA4E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libglottie", "libglottie.vcxproj", "{87EAFD45-273E-3EF0-897E-70B5F22365D0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1A04FD78-5744-35AB-9D68-7F605721BA4E} = {1A04FD78-5744-35AB-9D68-7F605721BA4E}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7BF07CD5-EC33-36D5-B33E-793CA20D2CD2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1A04FD78-5744-35AB-9D68-7F605721BA4E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1A04FD78-5744-35AB-9D68-7F605721BA4E}.Debug|Win32.Build.0 = Debug|Win32
+		{E37228AC-C2F4-3C30-A5A2-69B49D0EDC26}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E37228AC-C2F4-3C30-A5A2-69B49D0EDC26}.Debug|Win32.Build.0 = Debug|Win32
+		{87EAFD45-273E-3EF0-897E-70B5F22365D0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{87EAFD45-273E-3EF0-897E-70B5F22365D0}.Debug|Win32.Build.0 = Debug|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DCAC0DCF-0484-3F3D-88BF-D7E0EA39D9BE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

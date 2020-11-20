@@ -1,0 +1,34 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 16
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALL_BUILD", "ALL_BUILD.vcxproj", "{71819347-DE07-3966-81DA-7FF92B836F48}"
+	ProjectSection(ProjectDependencies) = postProject
+		{98C240D6-1CCE-3E5A-97B3-1B4703A4DD59} = {98C240D6-1CCE-3E5A-97B3-1B4703A4DD59}
+		{A9EB3D5D-ADE7-31F6-94E1-3F921FC65119} = {A9EB3D5D-ADE7-31F6-94E1-3F921FC65119}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZERO_CHECK", "ZERO_CHECK.vcxproj", "{98C240D6-1CCE-3E5A-97B3-1B4703A4DD59}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glottie", "glottie.vcxproj", "{A9EB3D5D-ADE7-31F6-94E1-3F921FC65119}"
+	ProjectSection(ProjectDependencies) = postProject
+		{98C240D6-1CCE-3E5A-97B3-1B4703A4DD59} = {98C240D6-1CCE-3E5A-97B3-1B4703A4DD59}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{71819347-DE07-3966-81DA-7FF92B836F48}.Release|Win32.ActiveCfg = Release|Win32
+		{98C240D6-1CCE-3E5A-97B3-1B4703A4DD59}.Release|Win32.ActiveCfg = Release|Win32
+		{98C240D6-1CCE-3E5A-97B3-1B4703A4DD59}.Release|Win32.Build.0 = Release|Win32
+		{A9EB3D5D-ADE7-31F6-94E1-3F921FC65119}.Release|Win32.ActiveCfg = Release|Win32
+		{A9EB3D5D-ADE7-31F6-94E1-3F921FC65119}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4A06E3C9-AEA0-32D8-AA87-7E9830E8B053}
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
