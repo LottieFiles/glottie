@@ -30,8 +30,13 @@ void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 			glGenVertexArraysAPPLE(1, &tvao);
 			glBindVertexArrayAPPLE(tvao);
 		#else
-			glGenVertexArrays(1, &tvao);
-			glBindVertexArray(tvao);
+			#ifdef WINDOWS
+				//glGenVertexArraysOES(1, &tvao);
+				//glBindVertexArrayOES(tvao);
+			#else
+				glGenVertexArrays(1, &tvao);
+				glBindVertexArray(tvao);
+			#endif
 		#endif
 	#endif
 
@@ -71,15 +76,33 @@ void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 	passedBuffers->posAttrib = &tempPosAttrib;
 	passedBuffers->colAttrib = &tempColAttrib;
 
+#ifdef WINDOWS
+#else
 	passedBuffers->vao = new GLuint;
+#endif
 	passedBuffers->vbo = new GLuint;
 	passedBuffers->ibo = new GLuint;
 	passedBuffers->cbo = new GLuint;
-
-	*(passedBuffers->vao) = tvao;
+	
 	*(passedBuffers->vbo) = tvbo;
 	*(passedBuffers->ibo) = tibo;
 	*(passedBuffers->cbo) = tcbo;
+#ifdef DEBUG2
+#endif
+#ifdef WINDOWS
+	//cout << "Created VAO\n";
+	passedBuffers->vao = new struct CVAO;
+	passedBuffers->vao->posAttrib = &tempPosAttrib;
+	passedBuffers->vao->colAttrib = &tempColAttrib;
+	passedBuffers->vao->vbo = new GLuint;
+	passedBuffers->vao->ibo = new GLuint;
+	passedBuffers->vao->cbo = new GLuint;
+	*(passedBuffers->vao->vbo) = tvbo;
+	*(passedBuffers->vao->ibo) = tibo;
+	*(passedBuffers->vao->cbo) = tcbo;
+#else
+	*(passedBuffers->vao) = tvao;
+#endif
 
 	passedBuffers->shapesTransform = currentShapesTransform;
 	passedBuffers->layersTransform = currentLayersTransform;
@@ -102,7 +125,11 @@ void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 		#ifdef APPLE
 			glBindVertexArrayAPPLE(0);
 		#else
-			glBindVertexArray(0);
+			#ifdef WINDOWS
+				//glBindVertexArray(0);
+			#else
+				glBindVertexArray(0);
+			#endif
 		#endif
 	#endif
 
@@ -183,6 +210,9 @@ struct Buffers* newBuffers() {
 	tempBuffers->start->prev = tempBuffers;
 	lastBuffersCreated = tempBuffers;
 	//EM_ASM({console.log("creating buffer 2");});
+#ifdef DEBUG2
+	std::cout << "buffer: " << lastBuffersCreated << "\n";
+#endif
 	return lastBuffersCreated;
 }
 
@@ -202,6 +232,9 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 
 		//EM_ASM({console.log("tracing 3 ");});
 		if (passedPropertiesShapeProp->v_count > 2 && ! passedPropertiesShapeProp->prepped) {
+#ifdef DEBUG3
+			cout << "prepPropertiesShapeProp";
+#endif
 			passedPropertiesShapeProp->buffers_v = newBuffers();
 			//EM_ASM({console.log("tracing 4 ");});
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->v_count);
@@ -221,7 +254,7 @@ int prepPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//if (passedPropertiesShapeProp->buffers_v->filled) {
 				prepVAO(passedPropertiesShapeProp->gl_v, passedPropertiesShapeProp->gl_v_idx, passedPropertiesShapeProp->gl_v_fill, NULL, passedPropertiesShapeProp->buffers_v, passedPropertiesShapeProp->v_count, passedPropertiesShapeProp->buffers_v->idxCount);
 				passedPropertiesShapeProp->prepped = true;
-			//	lastBuffersCreated->filled = true;
+				//	lastBuffersCreated->filled = true;
 			//}
 
 			//EM_ASM({console.log("tracing 6 ");});
@@ -247,6 +280,7 @@ int prepPropertiesShape(struct PropertiesShape* passedPropertiesShape, struct Sh
 	if (passedPropertiesShape == NULL) {
 		return 0;
 	}
+
 	bool exhausted = false;
 	passedPropertiesShape = passedPropertiesShape->start;
 	while (! exhausted) {

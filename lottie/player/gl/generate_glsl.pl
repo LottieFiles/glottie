@@ -8,7 +8,7 @@ for ($i = 0; $i < 16; $i++) {
 	print FILE '    "#define counter_'.$i.'  '.$i.'\n"'."\n";
 }
 
-#print FILE '    "#version 140\n"
+#print FILE '    "#version 100\n"
 #    "attribute vec4 position; \n"
 #print FILE '    "#version 150\n"
 print FILE '    "attribute vec4 position; \n"

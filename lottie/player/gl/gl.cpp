@@ -3,68 +3,7 @@
 
 #include "vertexShader.cpp"
 
-// Shader sources
-/*
-const GLchar* vertexSource =
-    "attribute vec4 position; \n"
-    "attribute vec4 color; \n"
-    "varying vec4 vcolors; \n"
-    "uniform int transformationsCount; \n"
-    "uniform int preAnimation; \n"
-    "uniform int layersPositionSet[16]; \n"
-    "uniform int shapesPositionSet[16]; \n"
-    "uniform mat4 layersRotate[16]; \n"
-    "uniform mat4 shapesRotate[16]; \n"
-    "uniform mat4 layersScale[16]; \n"
-    "uniform mat4 shapesScale[16]; \n"
-    "uniform mat4 layersTransform[16]; \n"
-    "uniform mat4 shapesTransform[16]; \n"
-    "uniform float objectOpacity[16]; \n"
-    "uniform float rotateLayersAngle[16]; \n"
-    "uniform vec3 rotateLayersAxisOffset[16]; \n"
-    "uniform int rotateLayersAngleSet[16]; \n"
-    "uniform float rotateShapesAngle[16]; \n"
-    "uniform vec3 rotateShapesAxisOffset[16]; \n"
-    "uniform int rotateShapesAngleSet[16]; \n"
-    "vec4 quat_from_axis_angle(vec3 axis, float angle) \n"
-    "{ \n"
-    "  vec4 qr; \n"
-    "  float half_angle = (angle * 0.5) * 3.14159 / 180.0; \n"
-    "  qr.x = axis.x * sin(half_angle); \n"
-    "  qr.y = axis.y * sin(half_angle); \n"
-    "  qr.z = axis.z * sin(half_angle); \n"
-    "  qr.w = cos(half_angle); \n"
-    "  return qr; \n"
-    "} \n"
-    "vec3 rotate_vertex_position(vec3 passedPosition, vec3 axis, float angle) \n"
-    "{ \n"
-    "  vec4 q = quat_from_axis_angle(axis, angle); \n"
-    "  vec3 v = passedPosition.xyz; \n"
-    "  return v + 2.0 * cross(q.xyz, cross(q.xyz, v) + q.w * v); \n"
-    "} \n"
-    "void main() \n"
-    "{ \n"
-    "  vec4 glpre; \n"
-    "  vec4 gltemp; \n"
-    "  if (preAnimation == 1) { \n"
-    "    gl_Position = position; \n"
-    "  } else { \n"
-    "    glpre = position; \n"
-    "    for (int i = 0; i < int(transformationsCount); i++) { \n"
-    "      int counter = i; \n"
-    "      if (shapesPositionSet[counter] == 1 && layersPositionSet[counter] == 1) { \n"
-    "        gltemp = ((layersRotate[counter] * shapesRotate[counter]) * (layersScale[counter] * shapesScale[counter]) * (layersTransform[counter] * shapesTransform[counter])) * glpre; \n"
-    "      } else if (layersPositionSet[counter] == 1) {\n"
-    "        gltemp = layersRotate[counter] * ((layersScale[counter] * layersTransform[counter]) * glpre); \n"
-    "      } else if (shapesPositionSet[counter] == 1) {\n"
-    "        gltemp = (shapesRotate[counter] * shapesScale[counter] * shapesTransform[counter]) * glpre; \n"
-    "      } \n"
-    "    } \n"
-    "    gl_Position = gltemp; \n"
-    "  } \n"
-    "  vcolors = vec4(color.xyz, objectOpacity[0]); \n"
-    "} \n";
-*/
+
 
 const GLchar* fragmentSource =
     "precision mediump float; \n"
@@ -74,76 +13,96 @@ const GLchar* fragmentSource =
     "  gl_FragColor = vcolors; \n"
     "} \n";
 
+
 /*
+int Init_Angle_EGL(SDL_Window* win, EGL_Swap* swap)
+{
+	EGLint configAttribList[] =
+	{
+		EGL_RED_SIZE, 8,
+		EGL_GREEN_SIZE, 8,
+		EGL_BLUE_SIZE, 8,
+		EGL_ALPHA_SIZE, 8,
+		EGL_DEPTH_SIZE, 8,
+		EGL_STENCIL_SIZE, 8,
+		EGL_SAMPLE_BUFFERS, 1,
+		EGL_NONE
+};
+	EGLint surfaceAttribList[] =
+	{
+		EGL_POST_SUB_BUFFER_SUPPORTED_NV, EGL_FALSE,
+		EGL_NONE, EGL_NONE };
 
+	EGLint numConfigs;
+	EGLint majorVersion;
+	EGLint minorVersion;
+	EGLDisplay display;
+	EGLContext context;
+	EGLSurface surface;
+	EGLConfig config;
+	EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
 
-    "  if (preAnimation == 1) { \n"
-    "    if (shapesPositionSet[0] == 1 && layersPositionSet[0] == 1) { \n"
-    "      glpre = ((layersRotate[0] * shapesRotate[0]) * (layersScale[0] * shapesScale[0]) * (layersTransform[0] * shapesTransform[0])) * position; \n"
-    "    } else if (layersPositionSet[0] == 1) {\n"
-    "      glpre = layersRotate[0] * ((layersScale[0] * layersTransform[0]) * position); \n"
-    "    } else if (shapesPositionSet[0] == 1) {\n"
-    "      glpre = (shapesRotate[0] * shapesScale[0] * shapesTransform[0]) * position; \n"
-    "    } else {\n"
-    "      glpre = position; \n"
-    "    } \n"
-    "  } \n"
+	SDL_SysWMinfo info;
+	SDL_VERSION(&info.version); // initialize info structure with SDL version info
+	SDL_bool get_win_info = SDL_GetWindowWMInfo(win, &info);
+	SDL_assert_release(get_win_info);
+	EGLNativeWindowType hWnd = info.info.win.window;
+
+	// Get Display
+	display = eglGetDisplay(GetDC(hWnd)); // EGL_DEFAULT_DISPLAY
+	if (display == EGL_NO_DISPLAY)
+	{
+		return EGL_FALSE;
+	}
+
+	// Initialize EGL
+	if (!eglInitialize(display, &majorVersion, &minorVersion))
+	{
+		return EGL_FALSE;
+	}
+
+	// Get configs
+	if (!eglGetConfigs(display, NULL, 0, &numConfigs))
+	{
+		return EGL_FALSE;
+	}
+
+	// Choose config
+	if (!eglChooseConfig(display, configAttribList, &config, 1, &numConfigs))
+	{
+		return EGL_FALSE;
+	}
+
+	// Create a surface
+	surface = eglCreateWindowSurface(display, config, (EGLNativeWindowType)hWnd, surfaceAttribList);
+	if (surface == EGL_NO_SURFACE)
+	{
+		return EGL_FALSE;
+	}
+
+	// Create a GL context
+	context = eglCreateContext(display, config, EGL_NO_CONTEXT, contextAttribs);
+	if (context == EGL_NO_CONTEXT)
+	{
+		return EGL_FALSE;
+	}
+
+	// Make the context current
+	if (!eglMakeCurrent(display, surface, surface, context))
+	{
+		return EGL_FALSE;
+	}
+
+	printf("GL_RENDERER: %s\n", glGetString(GL_RENDERER));
+	printf("GL_VERSION: %s\n", glGetString(GL_VERSION));
+	printf("GL_SHADING_LANGUAGE_VERSION: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	swap->display = display;
+	swap->surface = surface;
+	return EGL_TRUE;
+}
 */
 
-//    "  if (shapesPositionSet == 1 && layersPositionSet == 1) {\n"
-//    "    gl_Position = ((layersRotate * shapesRotate) * (layersScale * shapesScale) * (layersTransform * shapesTransform)) * position; \n"
-//    "  } else if (layersPositionSet == 1) {\n"
-//    "    gl_Position = layersRotate * ((layersScale * layersTransform) * position); \n"
-//    "  } else if (shapesPositionSet == 1) {\n"
-//    "    gl_Position = (shapesRotate * shapesScale * shapesTransform) * position; \n"
-//    "  } else {\n"
-//    "    gl_Position = position; \n"
-//    "  }\n"
 
-
-//    "  if (rotateShapesAngleSet == 1) { \n"
-//    "    glpre = vec4(rotate_vertex_position(vec3(glpre.xyz), vec3(0, 0, 1), rotateShapesAngle), 1.0); \n"
-//    "  } \n"
-//    "  if (rotateLayersAngleSet == 1) { \n"
-//    "    glpre = vec4(rotate_vertex_position(vec3(glpre.xyz), vec3(0, 0, 1), rotateLayersAngle), 1.0); \n"
-//    "  } \n"
-//    "  gl_Position = glpre;\n"
-
-
-/* in precomputed transformations are needed
-    "uniform mat4 layersPrecomputed[16]; \n"
-    "uniform int isLayersPrecomputed[16]; \n"
-    "uniform mat4 shapesPrecomputed[16]; \n"
-    "uniform int isShapesPrecomputed[16]; \n"
-*/
-
-
-//    "  if (isLayersPrecomputed == 1) {\n"
-//    "      gl_Position = layersPrecomputed * position; \n"
-//    "  } else if (isShapesPrecomputed == 1) {\n"
-//    "      gl_Position = shapesPrecomputed * position; \n"
-//    "  } else if (isShapesPrecomputed == 1 && isLayersPrecomputed == 1) {\n"
-//    "      gl_Position = layersPrecomputed * (shapesPrecomputed * position); \n"
-//    "  } else {\n"
-//    "      gl_Position = position; \n"
-//    "  }\n"
-
-//    "  vcolors = color; \n"
-//    "  gl_Position = (layersTransform * shapesTransform) * position; \n"
-//    "uniform mat4 shapesTranslate; \n"
-//    "uniform mat4 shapesScale; \n"
-//    "uniform mat4 shapesRotate; \n"
-//    "uniform mat4 layersTranslate; \n"
-//    "uniform mat4 layersScale; \n"
-//    "uniform mat4 layersRotate; \n"
-//    "  gl_Position = (layersScale * layersTranslate * layersRotate) * ((shapesScale * shapesTranslate * shapesRotate) * position); \n"
-//    "  gl_Position = ( (shapesScale * layersTranslate) * ((layersScale * layersTranslate) * position) ); \n"
-//    "  gl_Position = ((shapesScale * layersScale) * (shapesTranslate * layersTranslate)) * position; \n"
-//    "  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); \n"
-//    "  gl_FragColor = vcolors; \n"
-//    "out vec4 FragColor; \n"
-//    "precision mediump float; \n"
-//    "precision mediump float; \n"
 
 void glInitShaders(int refIndex) {
 	GLuint tempShaderProgram;
@@ -153,17 +112,19 @@ void glInitShaders(int refIndex) {
 		//glutInitDisplayMode(GLUT_RGB);
 		#ifdef APPLE
 		#else
-			glewExperimental = GL_TRUE;
-			GLenum err = glewInit();
-			if (err != GLEW_OK) {
-				cout << "GLEW not ok: " << glewGetErrorString(err) << "\n";
-				exit(1);
-			}
-			if (!GLEW_VERSION_2_1) {
-				cout << "GLEW version mismatch \n";
-				exit(1);
-			}
-			cout << "About to create shader \n";
+			#ifdef LINUX
+				glewExperimental = GL_TRUE;
+				GLenum err = glewInit();
+				if (err != GLEW_OK) {
+					cout << "GLEW not ok: " << glewGetErrorString(err) << "\n";
+					exit(1);
+				}
+				if (!GLEW_VERSION_2_1) {
+					cout << "GLEW version mismatch \n";
+					exit(1);
+				}
+				cout << "About to create shader \n";
+			#endif
 		#endif
 	#endif
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -232,7 +193,103 @@ void glInitShaders(int refIndex) {
 	}
 }
 
-void glInit() {   
+
+#ifdef EGLWINDOWS
+int initAngleEGL(SDL_Window* win, EGLVariables* swap)
+{
+	EGLint configAttribList[] =
+	{
+		EGL_RED_SIZE, 8,
+		EGL_GREEN_SIZE, 8,
+		EGL_BLUE_SIZE, 8,
+		EGL_ALPHA_SIZE, 8,
+		EGL_DEPTH_SIZE, 8,
+		EGL_STENCIL_SIZE, 8,
+		EGL_SAMPLE_BUFFERS, 1,
+		EGL_NONE };
+	EGLint surfaceAttribList[] =
+	{
+		EGL_POST_SUB_BUFFER_SUPPORTED_NV, EGL_FALSE,
+		EGL_NONE, EGL_NONE };
+
+	EGLint numConfigs;
+	EGLint majorVersion;
+	EGLint minorVersion;
+	EGLDisplay display;
+	EGLContext context;
+	EGLSurface surface;
+	EGLConfig config;
+	EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
+
+	SDL_SysWMinfo info;
+	SDL_VERSION(&info.version); // initialize info structure with SDL version info
+	SDL_bool get_win_info = SDL_GetWindowWMInfo(win, &info);
+	SDL_assert_release(get_win_info);
+	EGLNativeWindowType hWnd = info.info.win.window;
+
+	// Get Display
+	display = eglGetDisplay(GetDC(hWnd)); // EGL_DEFAULT_DISPLAY
+	if (display == EGL_NO_DISPLAY)
+	{
+		return EGL_FALSE;
+	}
+	cout << "Display created \n";
+
+	// Initialize EGL
+	//if (!eglInitialize(display, &majorVersion, &minorVersion))
+	if (!eglInitialize(display, NULL, NULL))
+	{
+		return EGL_FALSE;
+	}
+	cout << "EGL initialized \n";
+
+	// Get configs
+	if (!eglGetConfigs(display, NULL, 0, &numConfigs))
+	{
+		return EGL_FALSE;
+	}
+	cout << "Got config \n";
+
+	// Choose config
+	if (!eglChooseConfig(display, configAttribList, &config, 1, &numConfigs))
+	{
+		return EGL_FALSE;
+	}
+	cout << "Config chosen \n";
+
+	// Create a surface
+	//surface = eglCreateWindowSurface(display, config, (EGLNativeWindowType)hWnd, surfaceAttribList);
+	surface = eglCreateWindowSurface(display, config, (EGLNativeWindowType)hWnd, NULL);
+	if (surface == EGL_NO_SURFACE)
+	{
+		return EGL_FALSE;
+	}
+	cout << "Surface created \n";
+
+	// Create a GL context
+	context = eglCreateContext(display, config, EGL_NO_CONTEXT, contextAttribs);
+	if (context == EGL_NO_CONTEXT)
+	{
+		return EGL_FALSE;
+	}
+	cout << "Context created \n";
+
+	// Make the context current
+	if (!eglMakeCurrent(display, surface, surface, context))
+	{
+		return EGL_FALSE;
+	}
+
+	printf("GL_RENDERER: %s\n", glGetString(GL_RENDERER));
+	printf("GL_VERSION: %s\n", glGetString(GL_VERSION));
+	printf("GL_SHADING_LANGUAGE_VERSION: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	swap->display = display;
+	swap->surface = surface;
+	return EGL_TRUE;
+}
+#endif
+
+void glInit(HWND passedWindow) {   
 	//EM_ASM_({console.log("glinit 1.0 " + $0 + " " + $1 + " " + $2);}, theAnimation->w, theAnimation->h, theAnimation->scaleFactor);
 	//SDL_Init(SDL_INIT_VIDEO);
 
@@ -262,6 +319,9 @@ void glInit() {
 			cout << "Failed to initialize video \n";
 			exit(1);
 		}
+#ifdef WINDOWS
+		SDL_SetHint(SDL_HINT_OPENGL_ES_DRIVER, "1");
+#endif
 	
 		/*videoInfo = SDL_GetVideoInfo();
 		if (!videoInfo) {
@@ -279,14 +339,6 @@ void glInit() {
 	//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	//wnd = new SDL_Window();
 
-	#ifdef EMT
-		wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
-	#else
-		//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-		//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
-		wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-		cout << "Done creating SDL window \n";
-	#endif
 
 	#ifdef EMT
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -305,27 +357,38 @@ void glInit() {
 			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 		#else
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+			#ifdef WINDOWS
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+				SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+			#else
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+				SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+			#endif
 	
-			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 		#endif
 	#endif
 
 
 	#ifdef EMT
 	#else
-		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+		#ifdef WINDOWS
+		#else
+			SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+			SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+			SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+			SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+			SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+			SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+		#endif
 	#endif
 
 
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
+	#ifdef WINDOWS
+	#else
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
+	#endif
 
 	//SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1); 
 
@@ -339,16 +402,35 @@ void glInit() {
 	//glEnable(GL_MULTISAMPLE);
 	//EM_ASM({console.log("glinit 1.6 " + $0);}, wnd);
 
+	#ifdef EMT
+	#else
+		cout << "Done GL init \n";
+	#endif
 
-	if (!wnd) {
+	#ifdef EMT
+		wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
+	#else
+		//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+		//wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, 0);
+		#ifdef ISDLL
+			wnd = SDL_CreateWindowFrom(passedWindow);
+		#else
+			wnd = SDL_CreateWindow("lottie", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, scaledWidth, scaledHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+		#endif
+		cout << "Done creating SDL window \n";
+		if (!wnd) {
 		#ifdef EMT
 		#else
 			cout << "Failed to create window \n";
 		#endif
-		exit(1);
-	}
-
-
+			exit(1);
+		}	
+	#endif
+//#ifdef WINDOWS
+//		initAngleEGL(wnd, eglVars);
+//		cout << "EGL\n";
+//		return;
+#//endif
 
 	#ifdef EMT
 		glc = SDL_GL_CreateContext(wnd);
@@ -369,12 +451,23 @@ void glInit() {
 			//SDL_SetWindowSize(wnd, theAnimation->w, theAnimation->h);
 			//SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
 		#else
+
 			glc = SDL_GL_CreateContext(wnd);
 			cout << "Created GLC \n";
-			//rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED);
-			//SDL_SetWindowSize(wnd, theAnimation->w, theAnimation->h);
-			//SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
-		#endif
+
+				//rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED);
+				//SDL_SetWindowSize(wnd, theAnimation->w, theAnimation->h);
+				//SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
+			SDL_GL_MakeCurrent(wnd, glc);
+
+			PFNGLGETSTRINGPROC glGetString = (PFNGLGETSTRINGPROC)SDL_GL_GetProcAddress("glGetString");
+			PFNGLCLEARCOLORPROC glClearColor = (PFNGLCLEARCOLORPROC)SDL_GL_GetProcAddress("glClearColor");
+			PFNGLCLEARPROC glClear = (PFNGLCLEARPROC)SDL_GL_GetProcAddress("glClear");
+			
+			printf("GL_VERSION = %s\n", glGetString(GL_VERSION));
+			printf("GL_VENDOR = %s\n", glGetString(GL_VENDOR));
+			printf("GL_RENDERER = %s\n", glGetString(GL_RENDERER));
+#endif
 
 		/*SDL_Surface *window_surface = SDL_GetWindowSurface(wnd);
 		if (!window_surface) {
@@ -400,12 +493,8 @@ void glInit() {
 
 	//SDL_RenderSetScale(rdr, theAnimation->scaleFactorX, theAnimation->scaleFactorY);
 	//EM_ASM({console.log("glinit 1.8");});
-	glEnable(GL_BLEND); 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	#ifdef EMT
-	#else
-		cout << "Done GL init \n";
-	#endif
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 float _xPos = 0;
@@ -663,14 +752,13 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-		tempBuffers = lastBuffersCreated->start->prev;
-
 
 		//struct Buffers* tempBuffers = lastBuffersCreated->start;
 		if (lastBuffersCreated == NULL) {
 			//EM_ASM({console.log("no buffers!");});
 			return;
 		}
+		tempBuffers = lastBuffersCreated->start->prev;
 
 
 		if (passedShaderProgram == NULL) {
@@ -738,14 +826,25 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 			if (! tempBuffers->addedToComposition) {
 
 
-				#ifdef EMT
+				#ifdef EMT 
 					//glBindVertexArrayOES(*(tempBuffers->vao));
 					glBindVertexArrayOES(*(tempBuffers->vao));
 				#else
 					#ifdef APPLE
 						glBindVertexArrayAPPLE(*(tempBuffers->vao));
 					#else
-						glBindVertexArray(*(tempBuffers->vao));
+						#ifdef WINDOWS
+							glEnableVertexAttribArray(*(tempBuffers->vao->posAttrib));
+							glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vao->vbo));
+							glVertexAttribPointer(*(tempBuffers->vao->posAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
+							glEnableVertexAttribArray(*(tempBuffers->vao->colAttrib));
+							glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vao->cbo));
+							glVertexAttribPointer(*(tempBuffers->vao->colAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
+							glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(tempBuffers->vao->ibo));
+							cout << tempBuffers->vao << "\n";
+						#else
+							glBindVertexArray(*(tempBuffers->vao));
+						#endif
 					#endif
 				#endif
 				glDrawElements(GL_TRIANGLES, tempBuffers->idx.size(), GL_UNSIGNED_INT, 0);
@@ -757,7 +856,14 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					#ifdef APPLE
 						glBindVertexArrayAPPLE(0);
 					#else
-						glBindVertexArray(0);
+						#ifdef WINDOWS
+							glDisableVertexAttribArray(*(tempBuffers->vao->posAttrib));
+							glDisableVertexAttribArray(*(tempBuffers->vao->colAttrib));
+							glBindBuffer(GL_ARRAY_BUFFER, 0);
+							glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+						#else
+							glBindVertexArray(0);
+						#endif
 					#endif
 				#endif
 			}
@@ -810,7 +916,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 					lastShapesO = 1.0f;
 					lastLayersO = 1.0f;
 
-
 					associateShaderAttributes(0);
 					glUniform1i(preAnimationLoc, 0);
 					pushShaderAttributes(currentVAOL, 0);
@@ -838,7 +943,18 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						#ifdef APPLE
 							glBindVertexArrayAPPLE(*(currentVAOL->vao));
 						#else
-							glBindVertexArray(*(currentVAOL->vao));
+							#ifdef WINDOWS
+								glEnableVertexAttribArray(*(currentVAOL->vao->posAttrib));
+								glBindBuffer(GL_ARRAY_BUFFER, *(currentVAOL->vao->vbo));
+								glVertexAttribPointer(*(currentVAOL->vao->posAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
+								glEnableVertexAttribArray(*(currentVAOL->vao->colAttrib));
+								glBindBuffer(GL_ARRAY_BUFFER, *(currentVAOL->vao->cbo));
+								glVertexAttribPointer(*(currentVAOL->vao->colAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
+								glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(currentVAOL->vao->ibo));
+								//cout << currentVAOL->vao << "\n";
+							#else
+								glBindVertexArray(*(tempBuffers->vao));
+							#endif
 						#endif
 					#endif
 					glDrawElements(GL_TRIANGLES, currentVAOL->idxSize, GL_UNSIGNED_INT, 0);
@@ -850,7 +966,14 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						#ifdef APPLE
 							glBindVertexArrayAPPLE(0);
 						#else
-							glBindVertexArray(0);
+							#ifdef WINDOWS
+								glDisableVertexAttribArray(*(currentVAOL->vao->posAttrib));
+								glDisableVertexAttribArray(*(currentVAOL->vao->colAttrib));
+								glBindBuffer(GL_ARRAY_BUFFER, 0);
+								glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+							#else		
+								glBindVertexArray(0);
+							#endif
 						#endif
 					#endif
 

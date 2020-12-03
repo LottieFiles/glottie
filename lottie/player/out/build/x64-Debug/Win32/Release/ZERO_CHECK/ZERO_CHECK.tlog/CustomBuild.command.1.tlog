@@ -1,0 +1,10 @@
+^C:\LOTTIE\GIT\GLOTTIE\LOTTIE\PLAYER\OUT\BUILD\X64-DEBUG\CMAKEFILES\CE6A3D208C3C17D23314C9972F6474C3\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/lottie/git/glottie/lottie/player -BC:/lottie/git/glottie/lottie/player/out/build/x64-Debug --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/lottie/git/glottie/lottie/player/out/build/x64-Debug/glottie.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

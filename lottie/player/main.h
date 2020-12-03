@@ -128,7 +128,7 @@ int universalOrder = 0;
 enum States lastClosedScope;
 int closureCount = 0;
 
-struct timeval timeRef;
+//struct timeval timeRef;
 
 #ifdef EMT
 struct alignas(ALIGNSIZE) ArrayTrail {

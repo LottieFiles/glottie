@@ -53,7 +53,13 @@ struct VAOList {
 
 	struct VAOChildren* children = NULL;
 
+#ifdef WINDOWS
+	struct CVAO* vao = NULL;
+#else
 	GLuint *vao = NULL;
+#endif
+	struct Buffers* associatedBuffers;
+
 	int idxSize;
 
 	int frame;

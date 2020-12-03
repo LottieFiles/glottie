@@ -3,24 +3,22 @@ struct PropertiesShape* newPropertiesShape(struct PropertiesShape* passedPropert
 	if (passedPropertiesShape == NULL) {
 		passedPropertiesShape = new PropertiesShape;
 		passedPropertiesShape->start = passedPropertiesShape;
-	} else {
+	}
+	else {
 		passedPropertiesShape->next = new PropertiesShape;
 		passedPropertiesShape->next->start = passedPropertiesShape->start;
 		passedPropertiesShape->next->prev = passedPropertiesShape;
 		passedPropertiesShape = passedPropertiesShape->next;
 	}
 	passedPropertiesShape->keyframe = new PropertiesShapePropKeyframe;
-	
+
 	return passedPropertiesShape;
 }
 
 struct PropertiesShapeProp* newPropertiesShapeProp(struct PropertiesShape* passedPropertiesShape, struct PropertiesShapeProp* passedPropertiesShapeProp, bool isKeyframe) {
-	cout << "--- 1 \n";
 	//if (passedPropertiesShapeProp == NULL) {
-		cout << "--- 2 \n";
-		passedPropertiesShapeProp = new PropertiesShapeProp;
-		cout << "--- 3 \n";
-		passedPropertiesShapeProp->start = passedPropertiesShapeProp;
+	passedPropertiesShapeProp = new PropertiesShapeProp;
+	passedPropertiesShapeProp->start = passedPropertiesShapeProp;
 	/*} else {
 		cout << "--- 4 \n";
 		passedPropertiesShapeProp->next = new PropertiesShapeProp;
@@ -32,11 +30,9 @@ struct PropertiesShapeProp* newPropertiesShapeProp(struct PropertiesShape* passe
 		passedPropertiesShapeProp = passedPropertiesShapeProp->next;
 	}*/
 	if (isKeyframe && passedPropertiesShape != NULL) {
-		cout << "--- 8 \n";
 		passedPropertiesShape->isKeyframe = true;
 	}
 
-		cout << "--- 9 \n";
 	return passedPropertiesShapeProp;
 }
 
@@ -67,7 +63,8 @@ struct PropertiesOffsetKeyframe* newPropertiesOffsetKeyframe() {
 	if (currentPropertiesOffsetKeyframe == NULL) {
 		currentPropertiesOffsetKeyframe = new PropertiesOffsetKeyframe;
 		currentPropertiesOffsetKeyframe->start = currentPropertiesOffsetKeyframe;
-	} else {
+	}
+	else {
 		currentPropertiesOffsetKeyframe->next = new PropertiesOffsetKeyframe;
 		currentPropertiesOffsetKeyframe->next->start = currentPropertiesOffsetKeyframe->start;
 		currentPropertiesOffsetKeyframe->next->prev = currentPropertiesOffsetKeyframe;
@@ -81,7 +78,8 @@ struct PropertiesValueKeyframe* newPropertiesValueKeyframe() {
 	if (currentPropertiesValueKeyframe == NULL) {
 		currentPropertiesValueKeyframe = new PropertiesValueKeyframe;
 		currentPropertiesValueKeyframe->start = currentPropertiesValueKeyframe;
-	} else {
+	}
+	else {
 		currentPropertiesValueKeyframe->next = new PropertiesValueKeyframe;
 		currentPropertiesValueKeyframe->next->start = currentPropertiesValueKeyframe->start;
 		currentPropertiesValueKeyframe->next->prev = currentPropertiesValueKeyframe;
@@ -101,83 +99,65 @@ struct BezierCurve* newBezierCurve() {
 
 int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapeProp) {
 	//EM_ASM({console.log("[[[[[[[[[[[[[========================> entered");});
-	#ifdef EMT
-	#else
-		cout << "fillshapeprop 1 \n";
-	#endif
 	bool exhausted = false;
 	struct KeyValue* tempKeyValue;
 	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
-	struct ArrayOfString* tempArrayValue; 
-	#ifdef EMT
-	#else
-		cout << "fillshapeprop 2 \n";
-	#endif
-	while (! exhausted) {
+	struct ArrayOfString* tempArrayValue;
+	while (!exhausted) {
 		if (tempKeyValue) {
 			//EM_ASM({console.log("========================> iteration");});
 		}
-		#ifdef EMT
-		#else
-			cout << "fillshapeprop 3 \n";
-		#endif
 		if (strlen(tempKeyValue->key) == 0) {
 			//EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
 				exhausted = true;
-			} else {
+			}
+			else {
 				tempKeyValue = tempKeyValue->next;
 			}
 			continue;
 		}
-		#ifdef EMT
-		#else
-			cout << "fillshapeprop 4 \n";
-		#endif
 		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "c") == 0) {
-			#ifdef EMT
-			#else
-				cout << "fillshapeprop 4.1 \n";
-			#endif
 			//EM_ASM({console.log("========================> fill 80.1");});
-				if (strcmp(tempKeyValue->value, "true") == 0) {
-					passedPropertiesShapeProp->c = true;
-				} else {
-					passedPropertiesShapeProp->c = false;
-				}
-				//EM_ASM({console.log("========================> fill 80.1.1");});
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "i") == 0) {
-			#ifdef EMT
-			#else
-				cout << "fillshapeprop 4.2 \n";
-			#endif
+			if (strcmp(tempKeyValue->value, "true") == 0) {
+				passedPropertiesShapeProp->c = true;
+			}
+			else {
+				passedPropertiesShapeProp->c = false;
+			}
+			//EM_ASM({console.log("========================> fill 80.1.1");});
+		}
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "i") == 0) {
 			//EM_ASM({console.log("========================> fill 80.2 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
-			passedPropertiesShapeProp->i = 
+			passedPropertiesShapeProp->i =
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->i, passedPropertiesShapeProp);
 			passedPropertiesShapeProp->i_count = currentUniversalCount;
 
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "o") == 0) {
-			#ifdef EMT
-			#else
-				cout << "fillshapeprop 4.3 \n";
-			#endif
+		}
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "o") == 0) {
 			//EM_ASM({console.log("========================> fill 80.3 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
-			passedPropertiesShapeProp->o = 
+			passedPropertiesShapeProp->o =
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->o, passedPropertiesShapeProp);
 			passedPropertiesShapeProp->o_count = currentUniversalCount;
 
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "v") == 0) {
-			#ifdef EMT
-			#else
-				cout << "fillshapeprop 4.4 \n";
-			#endif
+		}
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "v") == 0) {
 			//EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
-			passedPropertiesShapeProp->v = 
+			passedPropertiesShapeProp->v =
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->v, passedPropertiesShapeProp);
 			passedPropertiesShapeProp->v_count = currentUniversalCount;
+#ifdef DEBUGPOPULATEVERTICES
+			if (theScope->prev->scope == _ks && (theScope->prev->prev->scope == _shapes || theScope->prev->prev->scope == _it)) {
+				cout << "v_count for shapeProp in shapes/it: " << passedPropertiesShapeProp->v_count << "\n";
+				if (tempKeyValue->arrayValue->vector == NULL) {
+					cout << "No v data\n";
+				}
+			}
+#endif
 
 
-	
+
+
 			bool subExhausted = false;
 			if (passedPropertiesShapeProp->v != NULL) {
 				passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->start;
@@ -213,15 +193,12 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->count);
 		}
 
-		#ifdef EMT
-		#else
-			cout << "fillshapeprop 5 \n";
-		#endif
 
 
 		if (tempKeyValue->next == NULL) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			tempKeyValue = tempKeyValue->next;
 		}
 	}
@@ -231,9 +208,9 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		return 1;
 	}
 
-//void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed, bool fillNulls, bool isGeometry, bool autoSegSize) {
-			//passedPropertiesShapeProp->v_count++;
-			//passedPropertiesShapeProp->bezier_count++;
+	//void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed, bool fillNulls, bool isGeometry, bool autoSegSize) {
+				//passedPropertiesShapeProp->v_count++;
+				//passedPropertiesShapeProp->bezier_count++;
 	float segSize = 0.1;
 	bezierSegment(passedPropertiesShapeProp->v, passedPropertiesShapeProp->i, passedPropertiesShapeProp->o, &(passedPropertiesShapeProp->v_count), &(passedPropertiesShapeProp->bezier_count), &segSize, false, true, true, 3, false);
 	return 1;
@@ -252,7 +229,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 	struct PropertiesShapeProp* p1;
 	struct PropertiesShapeProp* p2;
 	*/
-	struct ArrayOfVertex *o1, *o2, *p1, *p2;
+	struct ArrayOfVertex* o1, * o2, * p1, * p2;
 
 	/*
 	int xoff = 0;
@@ -286,62 +263,65 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 
 	float oneTcube, oneTsquare, Tcube, Tsquare, oneT;
 
-	while (! exhausted) {
+	while (!exhausted) {
 		if (passedPropertiesShapeProp->v == startPoint && startedCycling == true) {
-						break;
+			break;
 			//continue;
-				if (
-						(
-							passedPropertiesShapeProp->i->vertex->x == 0 && 
-							passedPropertiesShapeProp->i->vertex->y == 0 &&
-							passedPropertiesShapeProp->o->vertex->x == 0 &&
-							passedPropertiesShapeProp->o->vertex->y == 0
-						) &&
-						(
-							passedPropertiesShapeProp->i->prev->vertex->x == 0 && 
-							passedPropertiesShapeProp->i->prev->vertex->y == 0 &&
-							passedPropertiesShapeProp->o->prev->vertex->x == 0 &&
-							passedPropertiesShapeProp->o->prev->vertex->y == 0
-						)
-					) {
-						break;
-				} else {
-					passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
-					passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
-					passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
-					//EM_ASM({console.log("breakout ");});
-					exhausted = true;
+			if (
+				(
+					passedPropertiesShapeProp->i->vertex->x == 0 &&
+					passedPropertiesShapeProp->i->vertex->y == 0 &&
+					passedPropertiesShapeProp->o->vertex->x == 0 &&
+					passedPropertiesShapeProp->o->vertex->y == 0
+					) &&
+				(
+					passedPropertiesShapeProp->i->prev->vertex->x == 0 &&
+					passedPropertiesShapeProp->i->prev->vertex->y == 0 &&
+					passedPropertiesShapeProp->o->prev->vertex->x == 0 &&
+					passedPropertiesShapeProp->o->prev->vertex->y == 0
+					)
+				) {
+				break;
+			}
+			else {
+				passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
+				passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
+				passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
+				//EM_ASM({console.log("breakout ");});
+				exhausted = true;
+			}
+		}
+		else {
+			if (
+				(
+					passedPropertiesShapeProp->i->vertex->x == 0 &&
+					passedPropertiesShapeProp->i->vertex->y == 0 &&
+					passedPropertiesShapeProp->o->vertex->x == 0 &&
+					passedPropertiesShapeProp->o->vertex->y == 0
+					) &&
+				(
+					passedPropertiesShapeProp->i->prev->vertex->x == 0 &&
+					passedPropertiesShapeProp->i->prev->vertex->y == 0 &&
+					passedPropertiesShapeProp->o->prev->vertex->x == 0 &&
+					passedPropertiesShapeProp->o->prev->vertex->y == 0
+					)
+				) {
+				passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
+				passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
+				passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
+				if (passedPropertiesShapeProp->v == startPoint && startedCycling == true) {
+					break;
 				}
-		} else {
-				if (
-						(
-							passedPropertiesShapeProp->i->vertex->x == 0 && 
-							passedPropertiesShapeProp->i->vertex->y == 0 &&
-							passedPropertiesShapeProp->o->vertex->x == 0 &&
-							passedPropertiesShapeProp->o->vertex->y == 0
-						) &&
-						(
-							passedPropertiesShapeProp->i->prev->vertex->x == 0 && 
-							passedPropertiesShapeProp->i->prev->vertex->y == 0 &&
-							passedPropertiesShapeProp->o->prev->vertex->x == 0 &&
-							passedPropertiesShapeProp->o->prev->vertex->y == 0
-						)
-					) {
-						passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
-						passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
-						passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
-						if (passedPropertiesShapeProp->v == startPoint && startedCycling == true) {
-							break;
-						}
-						//EM_ASM({console.log("non-bezier ");});
-						startedCycling = true;
-						continue;
-				} else {
-					passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
-					passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
-					passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
-					//EM_ASM({console.log("breakout ");});
-				}
+				//EM_ASM({console.log("non-bezier ");});
+				startedCycling = true;
+				continue;
+			}
+			else {
+				passedPropertiesShapeProp->i = passedPropertiesShapeProp->i->next;
+				passedPropertiesShapeProp->o = passedPropertiesShapeProp->o->next;
+				passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
+				//EM_ASM({console.log("breakout ");});
+			}
 
 		}
 		startedCycling = true;
@@ -376,22 +356,22 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			oneTcube = pow(oneT, 3);
 			oneTsquare = pow(oneT, 2);
 
-			intermediate->vertex->x = 	(oneTcube * 			o1->vertex->x) + 
-							(3 * oneTsquare * segNow * 	p1x) + 
-							(3 * oneT * Tsquare * 		p2x) + 
-							(Tcube * 			o2->vertex->x);
+			intermediate->vertex->x = (oneTcube * o1->vertex->x) +
+				(3 * oneTsquare * segNow * p1x) +
+				(3 * oneT * Tsquare * p2x) +
+				(Tcube * o2->vertex->x);
 
-			intermediate->vertex->y = 	(oneTcube * 			o1->vertex->y) + 
-							(3 * oneTsquare * segNow * 	p1y) + 
-							(3 * oneT * Tsquare * 		p2y) + 
-							(Tcube * 			o2->vertex->y);
+			intermediate->vertex->y = (oneTcube * o1->vertex->y) +
+				(3 * oneTsquare * segNow * p1y) +
+				(3 * oneT * Tsquare * p2y) +
+				(Tcube * o2->vertex->y);
 			//EM_ASM_({console.log("[[[[[[[[[[[[[========================> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
 			intermediate->vertex->z = 0;
 			intermediate->vertex->a = 1;
 
 			intermediate->bezier = true;
 
-			
+
 			if (lastIntermediate != NULL) {
 				lastIntermediate->next = intermediate;
 				intermediate->prev = lastIntermediate;
@@ -426,7 +406,7 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		if (passedPropertiesShapeProp->v->next == passedPropertiesShapeProp->v->start) {
 			exhausted = true;
 		} else {
-			passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;	
+			passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
 		}
 	}
 	*/
@@ -443,9 +423,9 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 	struct KeyValue* tempKeyValue;
 	struct FloatArrayReturn* tempFloatArray = NULL;
 	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
-	struct ArrayOfString* tempArrayValue; 
+	struct ArrayOfString* tempArrayValue;
 	//EM_ASM({console.log("========================> entered");});
-	while (! exhausted) {
+	while (!exhausted) {
 		if (tempKeyValue) {
 			//EM_ASM({console.log("========================> iteration 99");});
 		}
@@ -453,7 +433,8 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 			//EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
 				exhausted = true;
-			} else {
+			}
+			else {
 				tempKeyValue = tempKeyValue->next;
 			}
 			continue;
@@ -467,44 +448,47 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 				passedPropertiesMultiDimensional->k_count = tempFloatArray->count;
 				//EM_ASM_({console.log("========================> found k " + $0 + " " + $1);}, passedPropertiesMultiDimensional->k[0], passedPropertiesMultiDimensional->k[1]);
 			}
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ti") == 0) {
+		}
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ti") == 0) {
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, false);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesMultiDimensional->ti = tempFloatArray->floatArray;
 				passedPropertiesMultiDimensional->ti_count = tempFloatArray->count;
 			}
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "to") == 0) {
+		}
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "to") == 0) {
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, false);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesMultiDimensional->to = tempFloatArray->floatArray;
 				passedPropertiesMultiDimensional->to_count = tempFloatArray->count;
 			}
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "a") == 0) {
-			passedPropertiesMultiDimensional->a = stringToInt(tempKeyValue->value);
-		/*
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "e") == 0) {
-			if (passedPropertiesMultiDimensional->keyframe == NULL) {
-				passedPropertiesMultiDimensional->keyframe = new PropertiesMultiDimensionalKeyframe;
-			}
-			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
-			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
-				passedPropertiesMultiDimensional->keyframe->e = tempFloatArray->floatArray;
-				passedPropertiesMultiDimensional->keyframe->e_count = tempFloatArray->count;
-			}
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "s") == 0) {
-			if (passedPropertiesMultiDimensional->keyframe == NULL) {
-				passedPropertiesMultiDimensional->keyframe = new PropertiesMultiDimensionalKeyframe;
-			}
-			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
-			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
-				passedPropertiesMultiDimensional->keyframe->s = tempFloatArray->floatArray;
-				passedPropertiesMultiDimensional->keyframe->s_count = tempFloatArray->count;
-			}
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "x") == 0) {
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ix") == 0) {
-		*/
 		}
-		
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "a") == 0) {
+			passedPropertiesMultiDimensional->a = stringToInt(tempKeyValue->value);
+			/*
+			} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "e") == 0) {
+				if (passedPropertiesMultiDimensional->keyframe == NULL) {
+					passedPropertiesMultiDimensional->keyframe = new PropertiesMultiDimensionalKeyframe;
+				}
+				tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
+				if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
+					passedPropertiesMultiDimensional->keyframe->e = tempFloatArray->floatArray;
+					passedPropertiesMultiDimensional->keyframe->e_count = tempFloatArray->count;
+				}
+			} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "s") == 0) {
+				if (passedPropertiesMultiDimensional->keyframe == NULL) {
+					passedPropertiesMultiDimensional->keyframe = new PropertiesMultiDimensionalKeyframe;
+				}
+				tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
+				if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
+					passedPropertiesMultiDimensional->keyframe->s = tempFloatArray->floatArray;
+					passedPropertiesMultiDimensional->keyframe->s_count = tempFloatArray->count;
+				}
+			} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "x") == 0) {
+			} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ix") == 0) {
+			*/
+		}
+
 
 		if (tempFloatArray != NULL) {
 			delete tempFloatArray;
@@ -513,7 +497,8 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 
 		if (tempKeyValue->next == NULL) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			tempKeyValue = tempKeyValue->next;
 		}
 	}
@@ -527,8 +512,8 @@ int fillPropertiesValue(struct PropertiesValue* passedPropertiesValue) {
 	struct KeyValue* tempKeyValue;
 	struct FloatArrayReturn* tempFloatArray = NULL;
 	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
-	struct ArrayOfString* tempArrayValue; 
-	while (! exhausted) {
+	struct ArrayOfString* tempArrayValue;
+	while (!exhausted) {
 		if (tempKeyValue) {
 			//EM_ASM({console.log("========================> iteration 99");});
 		}
@@ -536,7 +521,8 @@ int fillPropertiesValue(struct PropertiesValue* passedPropertiesValue) {
 			//EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
 				exhausted = true;
-			} else {
+			}
+			else {
 				tempKeyValue = tempKeyValue->next;
 			}
 			continue;
@@ -547,10 +533,12 @@ int fillPropertiesValue(struct PropertiesValue* passedPropertiesValue) {
 			if (strlen(tempKeyValue->value) > 0) {
 				passedPropertiesValue->k = populateFloat(tempKeyValue->value);
 			}
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "x") == 0) {
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ix") == 0) {
 		}
-		
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "x") == 0) {
+		}
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ix") == 0) {
+		}
+
 
 		if (tempFloatArray != NULL) {
 			delete tempFloatArray;
@@ -559,7 +547,8 @@ int fillPropertiesValue(struct PropertiesValue* passedPropertiesValue) {
 
 		if (tempKeyValue->next == NULL) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			tempKeyValue = tempKeyValue->next;
 		}
 	}
@@ -571,8 +560,8 @@ int fillPropertiesOffsetKeyframe(struct PropertiesOffsetKeyframe* passedProperti
 	struct KeyValue* tempKeyValue;
 	struct FloatArrayReturn* tempFloatArray = NULL;
 	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
-	struct ArrayOfString* tempArrayValue; 
-	while (! exhausted) {
+	struct ArrayOfString* tempArrayValue;
+	while (!exhausted) {
 		if (tempKeyValue != NULL) {
 			//EM_ASM({console.log("========================> OffsetKeyframe " + String.fromCharCode($0));}, tempKeyValue->value[0]);
 		}
@@ -580,7 +569,8 @@ int fillPropertiesOffsetKeyframe(struct PropertiesOffsetKeyframe* passedProperti
 			//EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
 				exhausted = true;
-			} else {
+			}
+			else {
 				tempKeyValue = tempKeyValue->next;
 			}
 			continue;
@@ -592,24 +582,27 @@ int fillPropertiesOffsetKeyframe(struct PropertiesOffsetKeyframe* passedProperti
 				passedPropertiesOffsetKeyframe->s = tempFloatArray->floatArray;
 				passedPropertiesOffsetKeyframe->s_count = tempFloatArray->count;
 			}
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "t") == 0) {
+		}
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "t") == 0) {
 			if (strlen(tempKeyValue->value) > 0) {
 				passedPropertiesOffsetKeyframe->t = populateFloat(tempKeyValue->value);
 			}
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ti") == 0) {
+		}
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ti") == 0) {
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesOffsetKeyframe->ti = tempFloatArray->floatArray;
 				passedPropertiesOffsetKeyframe->ti_count = tempFloatArray->count;
 			}
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "to") == 0) {
+		}
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "to") == 0) {
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesOffsetKeyframe->to = tempFloatArray->floatArray;
 				passedPropertiesOffsetKeyframe->to_count = tempFloatArray->count;
 			}
 		}
-		
+
 
 		if (tempFloatArray != NULL) {
 			delete tempFloatArray;
@@ -618,7 +611,8 @@ int fillPropertiesOffsetKeyframe(struct PropertiesOffsetKeyframe* passedProperti
 
 		if (tempKeyValue->next == NULL) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			tempKeyValue = tempKeyValue->next;
 		}
 	}
@@ -630,8 +624,8 @@ int fillPropertiesValueKeyframe(struct PropertiesValueKeyframe* passedProperties
 	struct KeyValue* tempKeyValue;
 	struct FloatArrayReturn* tempFloatArray = NULL;
 	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
-	struct ArrayOfString* tempArrayValue; 
-	while (! exhausted) {
+	struct ArrayOfString* tempArrayValue;
+	while (!exhausted) {
 		if (tempKeyValue != NULL) {
 			//EM_ASM({console.log("========================> OffsetKeyframe " + String.fromCharCode($0));}, tempKeyValue->value[0]);
 		}
@@ -639,7 +633,8 @@ int fillPropertiesValueKeyframe(struct PropertiesValueKeyframe* passedProperties
 			//EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
 				exhausted = true;
-			} else {
+			}
+			else {
 				tempKeyValue = tempKeyValue->next;
 			}
 			continue;
@@ -652,24 +647,27 @@ int fillPropertiesValueKeyframe(struct PropertiesValueKeyframe* passedProperties
 				passedPropertiesValueKeyframe->s = tempFloatArray->floatArray;
 				passedPropertiesValueKeyframe->s_count = tempFloatArray->count;
 			}
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "t") == 0) {
+		}
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "t") == 0) {
 			if (strlen(tempKeyValue->value) > 0) {
 				passedPropertiesValueKeyframe->t = populateFloat(tempKeyValue->value);
 			}
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ti") == 0) {
+		}
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ti") == 0) {
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesValueKeyframe->ti = tempFloatArray->floatArray;
 				passedPropertiesValueKeyframe->ti_count = tempFloatArray->count;
 			}
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "to") == 0) {
+		}
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "to") == 0) {
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesValueKeyframe->to = tempFloatArray->floatArray;
 				passedPropertiesValueKeyframe->to_count = tempFloatArray->count;
 			}
 		}
-		
+
 
 		if (tempFloatArray != NULL) {
 			delete tempFloatArray;
@@ -678,7 +676,8 @@ int fillPropertiesValueKeyframe(struct PropertiesValueKeyframe* passedProperties
 
 		if (tempKeyValue->next == NULL) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			tempKeyValue = tempKeyValue->next;
 		}
 	}
@@ -693,8 +692,8 @@ int fillBezierCurve(struct BezierCurve* passedBezierCurve) {
 	struct KeyValue* tempKeyValue;
 	struct FloatArrayReturn* tempFloatArray = NULL;
 	tempKeyValue = theScope->currentKeyValueTrail->keyValue->start;
-	struct ArrayOfString* tempArrayValue; 
-	while (! exhausted) {
+	struct ArrayOfString* tempArrayValue;
+	while (!exhausted) {
 		if (tempKeyValue) {
 			//EM_ASM({console.log("========================> iteration 99");});
 		}
@@ -702,7 +701,8 @@ int fillBezierCurve(struct BezierCurve* passedBezierCurve) {
 			//EM_ASM({console.log("========================> empty");});
 			if (tempKeyValue->next == NULL) {
 				exhausted = true;
-			} else {
+			}
+			else {
 				tempKeyValue = tempKeyValue->next;
 			}
 			continue;
@@ -714,22 +714,25 @@ int fillBezierCurve(struct BezierCurve* passedBezierCurve) {
 				if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 					passedBezierCurve->x = tempFloatArray->floatArray;
 				}
-			} else if (strlen(tempKeyValue->value) > 0) {
+			}
+			else if (strlen(tempKeyValue->value) > 0) {
 				passedBezierCurve->x = new float[1];
 				*(passedBezierCurve->x + 0) = populateFloat(tempKeyValue->value);
 			}
-		} else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "y") == 0) {
+		}
+		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "y") == 0) {
 			if (tempKeyValue->arrayValue != NULL) {
 				tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, false);
 				if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 					passedBezierCurve->y = tempFloatArray->floatArray;
 				}
-			} else if (strlen(tempKeyValue->value) > 0) {
+			}
+			else if (strlen(tempKeyValue->value) > 0) {
 				passedBezierCurve->y = new float[1];
 				*(passedBezierCurve->y + 0) = populateFloat(tempKeyValue->value);
 			}
 		}
-		
+
 
 		if (tempFloatArray != NULL) {
 			delete tempFloatArray;
@@ -738,10 +741,10 @@ int fillBezierCurve(struct BezierCurve* passedBezierCurve) {
 
 		if (tempKeyValue->next == NULL) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			tempKeyValue = tempKeyValue->next;
 		}
 	}
 	return 1;
 }
-

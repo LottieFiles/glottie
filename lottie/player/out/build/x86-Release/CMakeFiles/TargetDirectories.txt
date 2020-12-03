@@ -1,0 +1,4 @@
+C:/lottie/git/glottie/lottie/player/out/build/x86-Release/CMakeFiles/libglottie.dir
+C:/lottie/git/glottie/lottie/player/out/build/x86-Release/CMakeFiles/glottie.dir
+C:/lottie/git/glottie/lottie/player/out/build/x86-Release/CMakeFiles/ALL_BUILD.dir
+C:/lottie/git/glottie/lottie/player/out/build/x86-Release/CMakeFiles/ZERO_CHECK.dir

@@ -9,20 +9,20 @@ void rawcopy(char* targetChar, char* sourceChar) {
 		return;
 	}*/
 	targetChar = 0;
-	#ifdef DEBUG
-		#ifdef EMT
-		#else
-			std::cout << "starting copy\n";
-		#endif
-	#endif
+#ifdef DEBUG
+#ifdef EMT
+#else
+	std::cout << "starting copy\n";
+#endif
+#endif
 	for (sourceChar = 0; *sourceChar != '\0'; sourceChar++) {
-		#ifdef DEBUG
-			#ifdef EMT
-			#else
-				std::cout << "copying " << sourceChar;
-			#endif
-		#endif
-		*targetChar = *sourceChar;
+#ifdef DEBUG
+#ifdef EMT
+#else
+		std::cout << "copying " << sourceChar;
+#endif
+#endif
+		* targetChar = *sourceChar;
 		targetChar++;
 	}
 	*targetChar = '\0';
@@ -54,7 +54,7 @@ bool keyFound(struct KeyValue* tempKeyValue, string key) {
 }
 
 //struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
-	
+
 //}
 
 struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
@@ -69,14 +69,16 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 		traceKeyValue->arrayValue->root = tempArrayOfString;
 		//EM_ASM_({console.log("addingchildarray 901.91 " + $0);}, traceKeyValue->arrayValue);
 		return traceKeyValue;
-	} else {
+	}
+	else {
 		if (traceKeyValue->arrayValue == NULL) {
 			traceKeyValue->arrayValue = tempArrayOfString;
 			tempArrayOfString->root = tempArrayOfString;
 			traceKeyValue->arrayValue->root = tempArrayOfString;
 			//EM_ASM_({console.log("addingchildarray 901.92 " + $0);}, traceKeyValue->arrayValue);
 			return traceKeyValue;
-		} else if (traceKeyValue->arrayValue->closed == true) {
+		}
+		else if (traceKeyValue->arrayValue->closed == true) {
 			if (traceKeyValue->arrayValue->parent == NULL) {
 				struct KeyValue* tempKeyValue;
 				tempKeyValue = new KeyValue;
@@ -86,9 +88,10 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 				tempArrayOfString->root = traceKeyValue->arrayValue->root;
 				//tempArrayOfString->root = tempArrayOfString;
 				tempKeyValue->arrayValue = tempArrayOfString;
-				
+
 				traceKeyValue = tempKeyValue;
-			} else {
+			}
+			else {
 				struct ValuesVector* tempValuesVector;
 				tempValuesVector = new ValuesVector;
 				//tempValuesVector->start = traceKeyValue->arrayValue->parent->start;
@@ -110,23 +113,9 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 		}
 	}
 
-	/*if (traceKeyValue->arrayValue->child != NULL) {
-		tempArrayOfString->root = traceKeyValue->arrayValue->root;
-		traceKeyValue->arrayValue = tempArrayOfString;
-		traceKeyValue->arrayValue->root = ;
-		tempArrayOfString = new ArrayOfString;
-	}*/
 
 	tempArrayOfString->root = traceKeyValue->arrayValue->root;
-	//EM_ASM({console.log("addingchildarray 901.15");});
-	//struct KeyValue* tempKeyValue;
-	//tempKeyValue = traceKeyValue;
 
-
-
-
-	// if an ArrayOfString already exists, then add a ValuesVector to it
-	// and add a fresh ArrayOfString to the latter.
 
 	struct ValuesVector* tempVectorValue;
 	tempVectorValue = new ValuesVector;
@@ -134,7 +123,8 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 	if (traceKeyValue->arrayValue->vector == NULL) {
 		//EM_ASM_({console.log("addingchildarray 901.10 " + $0 + " from " + $1);}, tempArrayOfString, traceKeyValue->arrayValue);
 		tempVectorValue->start = tempVectorValue;
-	} else {
+	}
+	else {
 		//EM_ASM_({console.log("addingchildarray 901.11 " + $0 + " from " + $1);}, tempArrayOfString, traceKeyValue->arrayValue);
 		tempVectorValue->start = traceKeyValue->arrayValue->vector->start;
 		tempVectorValue->prev = traceKeyValue->arrayValue->vector;
@@ -173,7 +163,8 @@ struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
 				traceKeyValue->arrayValue = traceKeyValue->arrayValue->parent->parent;
 				currentArrayOfString = traceKeyValue->arrayValue;
 			}
-		} else {
+		}
+		else {
 			//EM_ASM_({console.log("toparent closed " + $0);}, traceKeyValue->arrayValue);
 			traceKeyValue->arrayValue->closed = true;
 		}
@@ -207,7 +198,8 @@ struct KeyValueTrail* newKeyValueTrail(struct KeyValueTrail* traceKeyValueTrail)
 		traceKeyValueTrail->start = traceKeyValueTrail;
 		traceKeyValueTrail->next = NULL;
 		traceKeyValueTrail->prev = NULL;
-	} else {
+	}
+	else {
 		//EM_ASM({console.log("newkvtrail 402.1");});
 		struct KeyValueTrail* tempKeyValueTrail;
 		tempKeyValueTrail = new KeyValueTrail;
@@ -217,7 +209,7 @@ struct KeyValueTrail* newKeyValueTrail(struct KeyValueTrail* traceKeyValueTrail)
 		traceKeyValueTrail = tempKeyValueTrail;
 	}
 	currentKeyValueTrail = traceKeyValueTrail;
-	
+
 	//currentKeyValueTrail = new KeyValueTrail;
 	return currentKeyValueTrail;
 }
@@ -236,20 +228,21 @@ int deleteArrayValuesVector(struct ValuesVector* passedValuesVector) {
 	bool exhausted = false;
 	struct ValuesVector* tempValuesVector;
 	//while (passedValuesVector != NULL && passedValuesVector->next != NULL) {
-	while (! exhausted) {
+	while (!exhausted) {
 		//EM_ASM({console.log("deletingArrayValuesVector 1.2");});
 		if (passedValuesVector->child != NULL) {
 			deleteArrayValue(passedValuesVector->child);
 		}
 		//EM_ASM({console.log("deletingArrayValuesVector 1.3");});
-		
+
 		tempValuesVector = passedValuesVector;
 		if (passedValuesVector->next != NULL) {
 			passedValuesVector = passedValuesVector->next;
-		} else {
+		}
+		else {
 			exhausted = true;
 		}
-		
+
 		delete tempValuesVector;
 		//delete passedValuesVector;
 	}
@@ -267,14 +260,14 @@ int deleteArrayValuesVector(struct ValuesVector* passedValuesVector) {
 int deleteArrayValue(struct ArrayOfString* passedArrayValue) {
 
 	if (passedArrayValue != NULL) {
-		if (passedArrayValue->vector != NULL) {	
+		if (passedArrayValue->vector != NULL) {
 			deleteArrayValuesVector(passedArrayValue->vector->start);
 			//EM_ASM({console.log("deletingArrayValues 1.2");});
 		}
 		delete passedArrayValue;
 	}
 	//EM_ASM({console.log("deletingArrayValues 1.3");});
-	
+
 	return 1;
 }
 
@@ -284,7 +277,7 @@ void deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail) {
 	char todisplay;
 	char valdisplay;
 
-	
+
 	if (passedKeyValueTrail == NULL || passedKeyValueTrail->keyValue == NULL) {
 		return;
 	}
@@ -292,35 +285,14 @@ void deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail) {
 	struct KeyValue* temptempKeyValue;
 	tempKeyValue = passedKeyValueTrail->keyValue;
 	tempKeyValue = tempKeyValue->start;
-	
+
 	int counter = 0;
 	//EM_ASM({console.log("deleting key values 802");});
 	//while (tempKeyValue != NULL && tempKeyValue->next != NULL) {
 	bool exhausted = false;
-	while (! exhausted) {
-		//EM_ASM({console.log("deleting key values 802.0");});
+	while (!exhausted) {
 
-		/*
-		if (strlen(tempKeyValue->key) > 0) {
-			todisplay = tempKeyValue->key[0];
-		} else {
-			todisplay = ' ';
-		}
-		
-		if (strlen(tempKeyValue->value) > 0) {
-			valdisplay = tempKeyValue->value[0];
-		} else {
-			valdisplay = ' ';
-		}
-		*/
-		
 		counter++;
-
-		if (strlen(tempKeyValue->key) > 0) {
-			//EM_ASM_({console.log("deleting key values 802.1 " + $0 + " : key: " + String.fromCharCode($2));}, tempKeyValue, tempKeyValue->key[0]);
-		} else {
-			//EM_ASM_({console.log("deleting key values 802.2 " + $0);}, tempKeyValue);
-		}
 
 		if (tempKeyValue->arrayValue != NULL) {
 			//EM_ASM({console.log("deleting key values 802.2.0");});
@@ -330,109 +302,61 @@ void deleteKeyValues(struct KeyValueTrail* passedKeyValueTrail) {
 					deleteArrayValue(tempKeyValue->arrayValue->root);
 					tempKeyValue->arrayValue = NULL;
 				}
-			} else {
+			}
+			else {
 				delete tempKeyValue->arrayValue;
 			}
 		}
-		
+
 		if (tempKeyValue->next == NULL) {
 			exhausted = true;
 			delete tempKeyValue;
 			tempKeyValue = NULL;
-		} else {
+		}
+		else {
 			temptempKeyValue = tempKeyValue;
 			tempKeyValue = tempKeyValue->next;
 			delete temptempKeyValue;
 		}
-		
-		/*
-		if (temptempKeyValue->arrayValue != NULL) {
-			//if (strlen(temptempKeyValue->value) < 1) {
-			//EM_ASM({console.log("deleting key values 802.2.0");});
-			if (temptempKeyValue->arrayValue->vector != NULL) {
-				//EM_ASM({console.log("deleting key values 802.2.1");});
-				if (temptempKeyValue->arrayValue->root != NULL) {
-					deleteArrayValue(temptempKeyValue->arrayValue->root);
-					temptempKeyValue->arrayValue = NULL;
-				}
-			} else {
-				delete temptempKeyValue->arrayValue;
-			}
-		}
-		*/
-		//EM_ASM({console.log("deleting key values 802.2.2");});
+
+
 	}
 	//EM_ASM({console.log("deleting key values 803");});
-	
+
 	if (tempKeyValue != NULL) {
 		//EM_ASM({console.log("deleting key values 803.1");});
 		if (strlen(tempKeyValue->key) > 0) {
 			todisplay = tempKeyValue->key[0];
-		} else {
+		}
+		else {
 			todisplay = ' ';
 		}
 		if (strlen(tempKeyValue->value) > 0) {
 			valdisplay = tempKeyValue->value[0];
-		} else {
+		}
+		else {
 			valdisplay = ' ';
 		}
-		
-		//EM_ASM_({console.log("deleting key values 802.3 " + $0 + " : " + $1 + " key: " + String.fromCharCode($2));}, tempKeyValue, tempKeyValue, tempKeyValue->key[0]);
-		//EM_ASM({console.log("deleting key values 803.2");});
-		/*if (tempKeyValue->arrayValue != NULL && tempKeyValue->arrayValue->root != NULL) {
-			//EM_ASM({console.log("deleting key values 803.2.1");});
-			if (tempKeyValue->arrayValue->root != NULL) {
-				deleteArrayValue(tempKeyValue->arrayValue->root);
-				tempKeyValue->arrayValue = NULL;
-			}
-		}*/
+
 		if (tempKeyValue->arrayValue != NULL) {
 			if (strlen(tempKeyValue->value) < 1) {
 				if (tempKeyValue->arrayValue->root != NULL) {
 					deleteArrayValue(tempKeyValue->arrayValue->root);
 					tempKeyValue->arrayValue = NULL;
 				}
-			} else {
+			}
+			else {
 				delete tempKeyValue->arrayValue;
 			}
 		}
-		
+
 		//EM_ASM_({console.log("deleting key values 803.3 " + $0);}, tempKeyValue);
 		//delete tempKeyValue->arrayValue;
 		delete tempKeyValue;
 	}
 
 
-	/*	
-	struct KeyValueTrail* temptempKeyValueTrail;
-	//EM_ASM({console.log("deleting key values 804");});
-	if (passedKeyValueTrail->prev != NULL) {
-		temptempKeyValueTrail = passedKeyValueTrail;
-		if (passedKeyValueTrail->next != NULL) {
-			passedKeyValueTrail->next->prev = passedKeyValueTrail->prev;
-			passedKeyValueTrail->prev->next = passedKeyValueTrail->next;
-		} else {
-			passedKeyValueTrail->prev->next = NULL;
-		}
-	} else {
-		temptempKeyValueTrail = NULL;
-	}
-	
-	//EM_ASM({console.log("deleting key values 805");});
-	if (passedKeyValueTrail->next != NULL) {
-		if (passedKeyValueTrail->prev != NULL) {
-			passedKeyValueTrail->prev->next = passedKeyValueTrail->next;
-			passedKeyValueTrail->next->prev = passedKeyValueTrail->prev;
-		} else {
-			passedKeyValueTrail->next->prev = NULL;
-		}
-		if (temptempKeyValueTrail != NULL) {
-			temptempKeyValueTrail = passedKeyValueTrail;
-		}
-	}
-	//delete passedKeyValueTrail;
-	*/
-	//return temptempKeyValueTrail;
+
 }
 
 int removeKeyValueTrail() { // to be called from within associateKeyValue()
@@ -476,20 +400,27 @@ int pushValuesVector(struct ArrayOfString* traceArrayOfString, string tempString
 		traceArrayOfString->vector->next = traceVector;
 		traceVector->prev = traceArrayOfString->vector;
 		//EM_ASM_({console.log("pushValuesVector 1.0 " + String.fromCharCode($0) + " : " + $1);}, traceArrayOfString->vector->value[0], traceArrayOfString->vector->next);	
-	} else {
+	}
+	else {
 		//EM_ASM({console.log("pushValuesVector 1.0 ");});
 		traceVector->start = traceVector;
+		traceVector->next = NULL;
+		traceVector->prev = NULL;
 	}
 
 	if (tempString.length() >= 20) {
-		strcpy(traceVector->value, tempString.substr(0,20).c_str());
-	} else {
+		strcpy(traceVector->value, tempString.substr(0, 20).c_str());
+	}
+	else {
 		strcpy(traceVector->value, tempString.c_str());
 	}
 
 	traceArrayOfString->vector = traceVector;
+#ifdef DEBUGREADARRAY
+	cout << traceArrayOfString->vector->value;
+#endif
 
-		//EM_ASM_({console.log("pushValuesVector 2.0 " + String.fromCharCode($0));}, traceArrayOfString->vector->value[0]);	
+	//EM_ASM_({console.log("pushValuesVector 2.0 " + String.fromCharCode($0));}, traceArrayOfString->vector->value[0]);	
 	return 1;
 }
 
@@ -503,7 +434,8 @@ string popValuesVector(struct ValuesVector* traceVector) {
 			traceVector = traceVector->prev;
 			traceVector->next = NULL;
 			return tempString;
-		} else {
+		}
+		else {
 			return tempString;
 		}
 		delete tempVector;
@@ -520,7 +452,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 
 	if (strcmp(key, "ty") == 0) {
 		/*if (strcmp(value, "tr") == 0) {
-			//EM_ASM({console.log("transform KV");});	
+			//EM_ASM({console.log("transform KV");});
 		}*/
 		memset(input->currentTy, 0, sizeof(input->currentTy));
 		strcat(input->currentTy, value);
@@ -535,32 +467,34 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 		//EM_ASM({console.log("adding key value 301.2");});	
 		if (keyFound(traceKeyValue, key)) {
 			//EM_ASM({console.log("adding key value 301.3");});	
-			
+
 			keyNode = traceKeyValue;
-		} else {
+		}
+		else {
 			//EM_ASM({console.log("adding key value new 301.3");});	
-			
-			while (! exhausted) {
-				
+
+			while (!exhausted) {
+
 				if (keyFound(tempKeyValue, key)) {
-					//EM_ASM({console.log("adding key value 301.4");});	
 					keyNode = tempKeyValue;
 				}
-				
+
 				if (tempKeyValue->next == NULL) {
 					endNode = tempKeyValue;
 					exhausted = true;
-				} else {
+				}
+				else {
 					tempKeyValue = tempKeyValue->next;
 				}
 			}
 		}
-		
-	} else {
+
+	}
+	else {
 		//EM_ASM({console.log("adding key value 302.1");});	
-		
+
 		createdKeyValue = new KeyValue;
-		
+
 		createdKeyValue->start = createdKeyValue;
 		createdKeyValue->prev = NULL;
 		createdKeyValue->next = NULL;
@@ -582,7 +516,7 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 		}
 		*/
 		strcpy(keyNode->key, key);
-		
+
 	}
 	//EM_ASM({console.log("adding key value 303.1");});	
 
@@ -592,18 +526,19 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			keyNode = traceKeyValue;
 			/*
 			if (key.length() >= 20) {
-				//EM_ASM({console.log("adding key value added 303.2");});	
+				//EM_ASM({console.log("adding key value added 303.2");});
 				strcpy(keyNode->key, key.substr(0,20).c_str());
 			} else {
 				strcpy(keyNode->key, key.c_str());
 			}
 			*/
 			strcpy(keyNode->key, key);
-		} else {
+		}
+		else {
 
 			//EM_ASM({console.log("adding key value 303.2");});	
 			keyNode = new KeyValue;
-			
+
 			//EM_ASM({console.log("adding key value 303.3");});	
 			if (endNode != NULL) {
 				endNode->next = keyNode;
@@ -611,38 +546,40 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 				keyNode->prev = endNode;
 				//EM_ASM({console.log("adding key value 303.5");});	
 				keyNode->start = endNode->start;
-			} else {
+			}
+			else {
 				//EM_ASM({console.log("adding key value 303.6");});	
 				keyNode->start = keyNode;
 			}
-	
+
 			//EM_ASM({console.log("adding key value 303.7");});	
 			/*
 			keyNode->arrayValue = new ArrayOfString;
 			if (endNode != NULL) {
-				//EM_ASM({console.log("adding key value 303.7.1");});	
+				//EM_ASM({console.log("adding key value 303.7.1");});
 				keyNode->arrayValue->root = endNode->arrayValue->root;
 			} else {
-				//EM_ASM({console.log("adding key value 303.7.2");});	
+				//EM_ASM({console.log("adding key value 303.7.2");});
 				keyNode->arrayValue->root = keyNode->arrayValue;
 			}
 			*/
-	
+
 			if (traceKeyValue != NULL) {
 				//EM_ASM({console.log("adding key value 303.7.3");});	
 				keyNode->start = traceKeyValue->start;
-			} else {
+			}
+			else {
 				//EM_ASM({console.log("adding key value 303.7.4");});	
 				keyNode->start = keyNode;
 			}
-			
+
 			//addChildArray(keyNode);
 			//keyNode->arrayValue = new ArrayOfString;
 			//EM_ASM({console.log("adding key value 303.8");});
 			/*
 			if (key.length() >= 20) {
-				//EM_ASM_({console.log("adding key value 303.7.5" + String.fromCharCode($0));}, key[0]);	
-				
+				//EM_ASM_({console.log("adding key value 303.7.5" + String.fromCharCode($0));}, key[0]);
+
 				strcpy(keyNode->key, key.substr(0,20).c_str());
 			} else {
 				strcpy(keyNode->key, key.c_str());
@@ -651,8 +588,14 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			strcpy(keyNode->key, key);
 		}
 	}
+
 	//EM_ASM({console.log("adding key value 303.8.1");});	
-	if (isArray && ! justStartedArray) {
+
+	if (strlen(value) <= 0) {
+		value = 0;
+	}
+	if (isArray && !justStartedArray) { // commented to remove justStartedArray
+	//if (isArray) {
 		if (keyNode->arrayValue == NULL) {
 			struct ArrayOfString* tempArrayOfString;
 			tempArrayOfString = new ArrayOfString;
@@ -666,8 +609,12 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			//keyNode->arrayValue->root = keyNode->arrayValue;
 		//}
 		pushValuesVector(keyNode->arrayValue, value);
+#ifdef DEBUGREADARRAY
+		cout << value;
+#endif
 		//EM_ASM_({console.log("adding key value by array 303.6 " + String.fromCharCode($0));}, value[0]);
-	} else {
+	}
+	else {
 		//EM_ASM({console.log("adding key value 303.8.2");});
 		/*
 		if (value.length() >= 20) {
@@ -676,14 +623,19 @@ struct KeyValue* addKeyValue(struct KeyValue* traceKeyValue, char* key, char* va
 			strcpy(keyNode->value, value.c_str());
 		}
 		*/
+
 		if (justStartedArray) {
 			if (strlen(value) <= 0) {
 				value = 0;
 			}
 		}
+
 		strcpy(keyNode->value, value);
+#ifdef DEBUGREADARRAY
+		cout << value;
+#endif
 		//EM_ASM_({console.log("adding key value 303.7 " + String.fromCharCode($0));}, value[0]);
-		
+
 	}
 	//traceKeyValue = keyNode;
 	//EM_ASM({console.log("adding key value 320.1");});	
@@ -702,7 +654,8 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 		//EM_ASM({console.log("found an empty vertex");};);
 		passedVertex = new ArrayOfVertex;
 		passedVertex->start = passedVertex;
-	} else {
+	}
+	else {
 		//EM_ASM({console.log("found a non-empty vertex");};);
 		//bool exhausted = false;
 		/*while (! exhausted) {
@@ -732,7 +685,8 @@ struct ArrayOfVertex* pushVertex(struct ArrayOfVertex* passedVertex, float verte
 
 	if (passedVertex->prev == NULL) {
 		passedVertex->order = 0;
-	} else {
+	}
+	else {
 		passedVertex->order = passedVertex->prev->order + 1;
 	}
 	//EM_ASM_({console.log("coords ))) " + $0 + " " + $1 + " :: " + $2);}, passedVertex->vertex->x, passedVertex->vertex->y, passedVertex->order);
@@ -769,7 +723,7 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 	//EM_ASM({console.log("vertextofloat 1.4");});
 	int index = 0;
 	//EM_ASM({console.log("-=-=-=-=> starting");});
-	while (! exhausted) {
+	while (!exhausted) {
 		*(tempArray + index) = (passedArrayOfVertex->vertex->x / theAnimation->w) - 0.5;
 		index = index + 1;
 		*(tempArray + index) = (passedArrayOfVertex->vertex->y / theAnimation->h) - 0.5;
@@ -778,10 +732,12 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 		if (theAnimation->ddd) {
 			if (theAnimation->z > 0) {
 				*(tempArray + index) = (passedArrayOfVertex->vertex->z / theAnimation->z) - 0.5;
-			} else {
+			}
+			else {
 				*(tempArray + index) = (passedArrayOfVertex->vertex->z / theAnimation->h) - 0.5;
 			}
-		} else {
+		}
+		else {
 			if (passedArrayOfVertex->order > 0) {
 				*(tempArray + index) = (passedArrayOfVertex->order / 10000);
 			}
@@ -791,7 +747,8 @@ GLfloat* vertexToGLfloat(struct ArrayOfVertex* passedArrayOfVertex, int sizeOfAr
 		index = index + 1;
 		if (passedArrayOfVertex->next == NULL) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			passedArrayOfVertex = passedArrayOfVertex->next;
 		}
 	}
@@ -815,10 +772,6 @@ int stringToInt(char* passedString) {
 //////////// helpers for populating json objects
 
 struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, struct ArrayOfVertex* targetVertex, struct PropertiesShapeProp* passedPropertiesShapeProp) {
-	#ifdef EMT
-	#else
-		cout << "popvert \n";
-	#endif
 	struct ValuesVector* baseVector;
 	if (traceArrayValue == NULL) {
 		return 0;
@@ -826,12 +779,27 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 
 	baseVector = traceArrayValue->vector->start;
 
+#ifdef DEBUGPOPULATEVERTICES
+	if (baseVector->child == NULL) {
+		cout << "No v data for sure\n";
+	}
+	else {
+		cout << "YAY found v data\n";
+	}
+#endif
+
 	bool exhausted = false;
 	currentUniversalCount = 0;
 
-	while (! exhausted) {
+	while (!exhausted) {
 		if (baseVector->child == NULL) {
-			break;
+			if (baseVector->next == NULL) {
+				break;
+			}
+			else {
+				baseVector = baseVector->next;
+				continue;
+			}
 		}
 		currentUniversalCount = currentUniversalCount + 1;
 
@@ -839,10 +807,12 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 		float xval = 0;
 		if (xvals.length() < 1) {
 			xval = 0;
-		} else {
-			if (! xvals.empty()) {
+		}
+		else {
+			if (!xvals.empty()) {
 				xval = stof(xvals);
-			} else {
+			}
+			else {
 				xval = 0;
 			}
 		}
@@ -850,14 +820,16 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 		float yval = 0;
 		if (yvals.length() < 1) {
 			yval = 0;
-		} else {
-			if (! yvals.empty()) {
+		}
+		else {
+			if (!yvals.empty()) {
 				yval = stof(yvals);
-			} else {
+			}
+			else {
 				yval = 0;
 			}
 		}
-		float vertex[4] = {xval, yval, 0.0f, 1.0f};
+		float vertex[4] = { xval, yval, 0.0f, 1.0f };
 		targetVertex = pushVertex(targetVertex, vertex);
 		if (xval < passedPropertiesShapeProp->lowestX) {
 			passedPropertiesShapeProp->lowestX = xval;
@@ -868,43 +840,43 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 
 		//EM_ASM_({console.log("**** populating values " + $0 + " " + $1);}, xval, yval);
 
-		if (baseVector->next == NULL) {	
+		if (baseVector->next == NULL) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			baseVector = baseVector->next;
 		}
 	}
 
-	#ifdef EMT
-	#else
-		cout << "popvert 1 \n";
-	#endif
+#ifdef DEBUG3
+	//cout << "populateVertices " << currentUniversalCount << "\n";
+#endif
+
 	if (targetVertex != NULL) {
 		targetVertex->next = targetVertex->start;
 		targetVertex->start->prev = targetVertex;
 	}
-	#ifdef EMT
-	#else
-		cout << "popvert 2 \n";
-	#endif
 
 	if (targetVertex != NULL) {
 		return targetVertex->start;
-	} else {
+	}
+	else {
 		return NULL;
 	}
 }
 
 float populateFloat(char* tempStr) {
 	string xvals(tempStr);
-	
+
 	float xval = 0;
 	if (xvals.length() < 1) {
 		xval = 0;
-	} else {
-	if (! xvals.empty()) {
+	}
+	else {
+		if (!xvals.empty()) {
 			xval = stof(xvals);
-		} else {
+		}
+		else {
 			xval = 0;
 		}
 	}
@@ -925,11 +897,12 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 
 	bool exhausted = false;
 	float* tempFloat;
-	while (! exhausted) {
+	while (!exhausted) {
 		tempCount++;
-		if (baseVector->next == NULL) {	
+		if (baseVector->next == NULL) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			baseVector = baseVector->next;
 		}
 	}
@@ -940,7 +913,7 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 	baseVector = traceArrayValue->vector->start;
 	exhausted = false;
 	currentUniversalCount = 0;
-	while (! exhausted) {
+	while (!exhausted) {
 		/*if (baseVector->child == NULL) {
 			break;
 		}*/
@@ -949,10 +922,12 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 		float xval = 0;
 		if (xvals.length() < 1) {
 			xval = 0;
-		} else {
-			if (! xvals.empty()) {
+		}
+		else {
+			if (!xvals.empty()) {
 				xval = stof(xvals);
-			} else {
+			}
+			else {
 				xval = 0;
 			}
 		}
@@ -976,9 +951,10 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 		currentUniversalCount = currentUniversalCount + 1;
 		//EM_ASM({console.log("->>-->> found k value " + $0);}, xval);
 
-		if (baseVector->next == NULL) {	
+		if (baseVector->next == NULL) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			baseVector = baseVector->next;
 		}
 	}
@@ -989,15 +965,15 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 // common functions related to geometry
 
 float distanceBetweenPoints(struct Vertex* pointA, struct Vertex* pointB) {
-	float distance = ( sqrt(pow(( ((float)pointA->x * 2) - ((float)pointB->x) * 2), 2) + pow(( ((float)pointA->y * 2) - ((float)pointB->y * 2)), 2)) );
+	float distance = (sqrt(pow((((float)pointA->x * 2) - ((float)pointB->x) * 2), 2) + pow((((float)pointA->y * 2) - ((float)pointB->y * 2)), 2)));
 	//EM_ASM_({console.log("    ///////////> " + $0 + " " + $1 + " " + $2 + " " + $3 + " " + $4);}, distance, pointA->x, pointB->x, pointA->y, pointB->y);
 	return distance;
 }
 
-void getBBArray (struct ArrayOfVertex* passedAOV, struct BoundingBox* currentBB) {
+void getBBArray(struct ArrayOfVertex* passedAOV, struct BoundingBox* currentBB) {
 	bool exhausted = false;
 	int count = 0;
-	while (! exhausted) {
+	while (!exhausted) {
 		if (passedAOV->vertex != NULL) {
 			//if ((passedAOV->vertex->x - currentBB->initX) > currentBB->w)
 			count++;
@@ -1012,35 +988,38 @@ void getBBArray (struct ArrayOfVertex* passedAOV, struct BoundingBox* currentBB)
 		}
 		if (passedAOV->next == passedAOV->start) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			passedAOV = passedAOV->next;
 		}
 	}
 }
 
-void getBBProp (struct PropertiesShapeProp* passedPropertiesShapeProp, struct BoundingBox* currentBB) {
+void getBBProp(struct PropertiesShapeProp* passedPropertiesShapeProp, struct BoundingBox* currentBB) {
 	bool exhausted = false;
-	while (! exhausted) {
+	while (!exhausted) {
 		if (passedPropertiesShapeProp->v != NULL) {
 			getBBArray(passedPropertiesShapeProp->v->start, currentBB);
 		}
 		if (passedPropertiesShapeProp->next == NULL) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			passedPropertiesShapeProp = passedPropertiesShapeProp->next;
 		}
 	}
 }
 
-void getBBPropShape (struct PropertiesShape* passedPropertiesShape, struct BoundingBox* currentBB) {
+void getBBPropShape(struct PropertiesShape* passedPropertiesShape, struct BoundingBox* currentBB) {
 	bool exhausted = false;
-	while (! exhausted) {
+	while (!exhausted) {
 		if (passedPropertiesShape->k != NULL) {
 			getBBProp(passedPropertiesShape->k->start, currentBB);
 		}
 		if (passedPropertiesShape->next == NULL) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			passedPropertiesShape = passedPropertiesShape->next;
 		}
 	}
@@ -1048,7 +1027,7 @@ void getBBPropShape (struct PropertiesShape* passedPropertiesShape, struct Bound
 
 void getBoundingBox(struct ShapesItem* passedShapesItem, struct BoundingBox* currentBB) {
 	bool exhausted = false;
-	while (! exhausted) {
+	while (!exhausted) {
 		if (passedShapesItem->it != NULL) {
 			getBoundingBox(passedShapesItem->it->start, currentBB);
 		}
@@ -1057,7 +1036,8 @@ void getBoundingBox(struct ShapesItem* passedShapesItem, struct BoundingBox* cur
 		}
 		if (passedShapesItem->next == NULL) {
 			exhausted = true;
-		} else {
+		}
+		else {
 			passedShapesItem = passedShapesItem->next;
 		}
 
@@ -1066,7 +1046,7 @@ void getBoundingBox(struct ShapesItem* passedShapesItem, struct BoundingBox* cur
 }
 
 struct ArrayOfVertex* bezierFillNulls(struct ArrayOfVertex* startV, struct ArrayOfVertex* endV, int segSize, int* v_count, int* bezier_count) {
-	float vStepX = (endV->vertex->x - startV->vertex->x) / segSize; 
+	float vStepX = (endV->vertex->x - startV->vertex->x) / segSize;
 	float vStepY = (endV->vertex->y - startV->vertex->y) / segSize;
 	struct ArrayOfVertex* intermediate;
 	struct ArrayOfVertex* lastIntermediate = NULL;
@@ -1076,7 +1056,8 @@ struct ArrayOfVertex* bezierFillNulls(struct ArrayOfVertex* startV, struct Array
 		if (lastIntermediate == NULL) {
 			startV->next = intermediate;
 			intermediate->prev = startV;
-		} else {
+		}
+		else {
 			lastIntermediate->next = intermediate;
 			intermediate->prev = lastIntermediate;
 		}
@@ -1107,7 +1088,7 @@ void adjustScale(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayO
 void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed, bool fillNulls, bool isGeometry, bool autoSegSize, int bezierType, bool doTranslation) {
 	/*
 		bezierType:
-			1 - linear 
+			1 - linear
 			2 - quadratic
 			3 - cubic
 	*/
@@ -1118,9 +1099,9 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 	v = v->start;
 	i = i->start;
 	o = o->start;
-	
+
 	//EM_ASM({console.log("BZ 2 ");});
-	struct ArrayOfVertex *o1, *o2, *p1, *p2;
+	struct ArrayOfVertex* o1, * o2, * p1, * p2;
 
 	bool startedCycling = false;
 	struct ArrayOfVertex* startPoint = v->start;
@@ -1136,7 +1117,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 	int cycleCount = 0;
 
 	int segCounter = 0;
-	while (! exhausted) {
+	while (!exhausted) {
 		i = i->next;
 		o = o->next;
 		v = v->next;
@@ -1156,116 +1137,119 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 			}
 		}
 		*/
-			//continue;
+		//continue;
+		/*
+			if (
+					(
+						i->vertex->x == 0 &&
+						i->vertex->y == 0 &&
+						o->vertex->x == 0 &&
+						o->vertex->y == 0
+					) &&
+					(
+						i->prev->vertex->x == 0 &&
+						i->prev->vertex->y == 0 &&
+						o->prev->vertex->x == 0 &&
+						o->prev->vertex->y == 0
+					)
+				) {
+					break;
+			} else {
+				i = i->next;
+				o = o->next;
+				v = v->next;
+				//EM_ASM({console.log("breakout ");});
+				if (v == startPoint && startedCycling == true) {
+					break;
+				}
+				exhausted = true;
+			}
+		*/
+		if (
+			(
+				i->vertex->x == 0 &&
+				i->vertex->y == 0 &&
+				o->vertex->x == 0 &&
+				o->vertex->y == 0
+				) &&
+			(
+				i->prev->vertex->x == 0 &&
+				i->prev->vertex->y == 0 &&
+				o->prev->vertex->x == 0 &&
+				o->prev->vertex->y == 0
+				)
+			) {
+			startedCycling = true;
+			segCounter++;
+			if (fillNulls) {
+				bezierFillNulls(v->prev, v, *(segSizePassed + segCounter), v_count, bezier_count);
+			}
 			/*
-				if (
-						(
-							i->vertex->x == 0 && 
-							i->vertex->y == 0 &&
-							o->vertex->x == 0 &&
-							o->vertex->y == 0
-						) &&
-						(
-							i->prev->vertex->x == 0 && 
-							i->prev->vertex->y == 0 &&
-							o->prev->vertex->x == 0 &&
-							o->prev->vertex->y == 0
-						)
-					) {
-						break;
-				} else {
-					i = i->next;
-					o = o->next;
-					v = v->next;
-					//EM_ASM({console.log("breakout ");});
-					if (v == startPoint && startedCycling == true) {
-						break;
-					}
-					exhausted = true;
-				}
+			i = i->next;
+			o = o->next;
+			v = v->next;
 			*/
-				if (
-						(
-							i->vertex->x == 0 && 
-							i->vertex->y == 0 &&
-							o->vertex->x == 0 &&
-							o->vertex->y == 0
-						) &&
-						(
-							i->prev->vertex->x == 0 && 
-							i->prev->vertex->y == 0 &&
-							o->prev->vertex->x == 0 &&
-							o->prev->vertex->y == 0
-						)
-					) {
-						startedCycling = true;
-						segCounter++;
-						if (fillNulls) {
-							bezierFillNulls(v->prev, v, *(segSizePassed + segCounter), v_count, bezier_count);
-						}
-						/*
-						i = i->next;
-						o = o->next;
-						v = v->next;
-						*/
-						/*
-						if (isGeometry) {
-							if (v == startPoint->next && cycleCount == 2) {
-								exhausted = true;
-								break;
-							}
-						} else {
-							if (v == startPoint->next && startedCycling) {
-								exhausted = true;
-								break;
-							}
-						}
-						*/
-						//EM_ASM({console.log("non-bezier ");});
-						if (isGeometry) {
-							if (v == startPoint->next && cycleCount == 2) {
-								exhausted = true;
-								break;
-							}
-						} else {
-							if (v == startPoint && cycleCount == 2) {
-								exhausted = true;
-								break;
-							}
-						}
-						continue;
-				} else {
-					/*
-					i = i->next;
-					o = o->next;
-					v = v->next;
-					*/
-					/*
-					if (isGeometry) {
-						if (v == startPoint->next && cycleCount == 2) {
-							exhausted = true;
-							break;
-						}
-					} else {
-						if (v == startPoint->next && startedCycling) {
-							exhausted = true;
-							break;
-						}
-					}
-					*/
-					//EM_ASM({console.log("breakout ");});
-					if (isGeometry) {
-						if (v == startPoint->next && cycleCount == 2) {
-							exhausted = true;
-							break;
-						}
-					} else {
-						if (v == startPoint && cycleCount == 2) {
-							exhausted = true;
-							break;
-						}
-					}
+			/*
+			if (isGeometry) {
+				if (v == startPoint->next && cycleCount == 2) {
+					exhausted = true;
+					break;
 				}
+			} else {
+				if (v == startPoint->next && startedCycling) {
+					exhausted = true;
+					break;
+				}
+			}
+			*/
+			//EM_ASM({console.log("non-bezier ");});
+			if (isGeometry) {
+				if (v == startPoint->next && cycleCount == 2) {
+					exhausted = true;
+					break;
+				}
+			}
+			else {
+				if (v == startPoint && cycleCount == 2) {
+					exhausted = true;
+					break;
+				}
+			}
+			continue;
+		}
+		else {
+			/*
+			i = i->next;
+			o = o->next;
+			v = v->next;
+			*/
+			/*
+			if (isGeometry) {
+				if (v == startPoint->next && cycleCount == 2) {
+					exhausted = true;
+					break;
+				}
+			} else {
+				if (v == startPoint->next && startedCycling) {
+					exhausted = true;
+					break;
+				}
+			}
+			*/
+			//EM_ASM({console.log("breakout ");});
+			if (isGeometry) {
+				if (v == startPoint->next && cycleCount == 2) {
+					exhausted = true;
+					break;
+				}
+			}
+			else {
+				if (v == startPoint && cycleCount == 2) {
+					exhausted = true;
+					break;
+				}
+			}
+		}
 
 		startedCycling = true;
 		o1 = v->prev;
@@ -1283,7 +1267,8 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 			}
 			if (distNow >= 4) {
 				segSize = 1 / (distNow / 2);
-			} else {
+			}
+			else {
 				continue;
 			}
 			/*
@@ -1293,7 +1278,8 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 				continue;
 			}
 			*/
-		} else {
+		}
+		else {
 			segSize = *(segSizePassed + segCounter);
 		}
 		if (segSize == 0 || segSize < 0.0001) {
@@ -1310,22 +1296,22 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 		float p2y;
 
 		switch (bezierType) {
-			case 1:
-				p1x = p1->vertex->x + o2->vertex->x;
-				p1y = p1->vertex->y + o2->vertex->y;
-				break;
-			case 2:
-				p1x = p1->vertex->x;
-				p2x = p2->vertex->x;
-				p1y = p1->vertex->y;
-				p2y = p2->vertex->y;
-				break;
-			case 3:
-				p1x = p1->vertex->x + o1->vertex->x;
-				p2x = p2->vertex->x + o2->vertex->x;
-				p1y = p1->vertex->y + o1->vertex->y;
-				p2y = p2->vertex->y + o2->vertex->y;
-				break;
+		case 1:
+			p1x = p1->vertex->x + o2->vertex->x;
+			p1y = p1->vertex->y + o2->vertex->y;
+			break;
+		case 2:
+			p1x = p1->vertex->x;
+			p2x = p2->vertex->x;
+			p1y = p1->vertex->y;
+			p2y = p2->vertex->y;
+			break;
+		case 3:
+			p1x = p1->vertex->x + o1->vertex->x;
+			p2x = p2->vertex->x + o2->vertex->x;
+			p1y = p1->vertex->y + o1->vertex->y;
+			p2y = p2->vertex->y + o2->vertex->y;
+			break;
 		}
 
 		intermediateStart = NULL;
@@ -1345,39 +1331,39 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 			oneTsquare = pow(oneT, 2);
 
 			switch (bezierType) {
-				case 1:
-					intermediate->vertex->x = 	(oneTsquare * 			o1->vertex->x) + 
-									(2 * oneT * segNow * 		p1x) + 
-									(Tsquare *	 		o2->vertex->x);
+			case 1:
+				intermediate->vertex->x = (oneTsquare * o1->vertex->x) +
+					(2 * oneT * segNow * p1x) +
+					(Tsquare * o2->vertex->x);
 
-					intermediate->vertex->y = 	(oneTsquare * 			o1->vertex->y) + 
-									(2 * oneT * segNow * 		p1y) + 
-									(Tsquare *	 		o2->vertex->y);
-			//EM_ASM_({console.log("[[[[[[[[[[[[[==========> ROTATE adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
+				intermediate->vertex->y = (oneTsquare * o1->vertex->y) +
+					(2 * oneT * segNow * p1y) +
+					(Tsquare * o2->vertex->y);
+				//EM_ASM_({console.log("[[[[[[[[[[[[[==========> ROTATE adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
 
-					break;
-				case 2:
-					intermediate->vertex->x = 	(oneTcube * 			o1->vertex->x) + 
-									(3 * oneTsquare * segNow * 	p1x) + 
-									(3 * oneT * Tsquare * 		p2x) + 
-									(Tcube * 			o2->vertex->x);
+				break;
+			case 2:
+				intermediate->vertex->x = (oneTcube * o1->vertex->x) +
+					(3 * oneTsquare * segNow * p1x) +
+					(3 * oneT * Tsquare * p2x) +
+					(Tcube * o2->vertex->x);
 
-					intermediate->vertex->y = 	(oneTcube * 			o1->vertex->y) + 
-									(3 * oneTsquare * segNow * 	p1y) + 
-									(3 * oneT * Tsquare * 		p2y) + 
-									(Tcube * 			o2->vertex->y);
-					break;
-				case 3:
-					intermediate->vertex->x = 	(oneTcube * 			o1->vertex->x) + 
-									(3 * oneTsquare * segNow * 	p1x) + 
-									(3 * oneT * Tsquare * 		p2x) + 
-									(Tcube * 			o2->vertex->x);
+				intermediate->vertex->y = (oneTcube * o1->vertex->y) +
+					(3 * oneTsquare * segNow * p1y) +
+					(3 * oneT * Tsquare * p2y) +
+					(Tcube * o2->vertex->y);
+				break;
+			case 3:
+				intermediate->vertex->x = (oneTcube * o1->vertex->x) +
+					(3 * oneTsquare * segNow * p1x) +
+					(3 * oneT * Tsquare * p2x) +
+					(Tcube * o2->vertex->x);
 
-					intermediate->vertex->y = 	(oneTcube * 			o1->vertex->y) + 
-									(3 * oneTsquare * segNow * 	p1y) + 
-									(3 * oneT * Tsquare * 		p2y) + 
-									(Tcube * 			o2->vertex->y);
-					break;
+				intermediate->vertex->y = (oneTcube * o1->vertex->y) +
+					(3 * oneTsquare * segNow * p1y) +
+					(3 * oneT * Tsquare * p2y) +
+					(Tcube * o2->vertex->y);
+				break;
 			}
 
 			//EM_ASM_({console.log("[[[[[[[[[[[[[==========> adding intermediate " + $0 + " " + $1);}, intermediate->vertex->x, intermediate->vertex->y);
@@ -1386,7 +1372,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 
 			intermediate->bezier = true;
 
-			
+
 			if (lastIntermediate != NULL) {
 				lastIntermediate->next = intermediate;
 				intermediate->prev = lastIntermediate;
@@ -1425,7 +1411,7 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 		exhausted = false;
 		float heightOffset = ((theAnimation->h * theAnimation->scaleFactorY) / theAnimation->h);
 		float widthOffset = ((theAnimation->w * theAnimation->scaleFactorX) / theAnimation->w);
-		while (! exhausted) {
+		while (!exhausted) {
 			//v->vertex->x = (2 * ((v->vertex->x * theAnimation->scaleFactorX) / theAnimation->w));
 			//v->vertex->y = ((2 * ((v->vertex->y * theAnimation->scaleFactorY) / theAnimation->h))) * -1;
 			//
@@ -1437,10 +1423,12 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 			if (cycleCount == 0) {
 				v = v->next;
 				cycleCount = 1;
-			} else {
+			}
+			else {
 				if (v->next == v->start) {
 					exhausted = true;
-				} else {
+				}
+				else {
 					v = v->next;
 				}
 			}
@@ -1449,10 +1437,11 @@ void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct Arra
 }
 
 double seconds() {
-	struct timeval tempRef;
+	/*struct timeval tempRef;
 	gettimeofday(&tempRef, NULL);
 
-	return (double)tempRef.tv_sec + ((double)tempRef.tv_usec / 1000000);
+	return (double)tempRef.tv_sec + ((double)tempRef.tv_usec / 1000000);*/
+	return 1;
 }
 
 struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct BoundingBox* currentShapesBB, bool onlyAnchor) {
@@ -1472,7 +1461,8 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 			if (currentBB->anchorSet) {
 				temp->layers->x = layersPosition.x - currentBB->anchorX;
 				temp->layers->y = layersPosition.y - currentBB->anchorY;
-			} else {
+			}
+			else {
 				temp->layers->x = layersPosition.x - (currentBB->w / 2);
 				temp->layers->y = layersPosition.y - (currentBB->h / 2);
 				//temp->layers->x = layersPosition.x;
@@ -1487,7 +1477,8 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 				//temp->shapes->y = shapesPosition.y - currentShapesBB->anchorY;
 				temp->shapes->x = cumulativeShapesDelta.x - currentShapesBB->anchorX;
 				temp->shapes->y = cumulativeShapesDelta.y - currentShapesBB->anchorY;
-			} else {
+			}
+			else {
 				//temp->shapes->x = shapesPosition.x;
 				//temp->shapes->y = shapesPosition.x;
 
@@ -1497,14 +1488,16 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 				temp->shapes->y = cumulativeShapesDelta.y - (currentShapesBB->h / 2);
 			}
 		}
-	
-	} else {
-		
+
+	}
+	else {
+
 		if (currentBB != NULL) {
 			if (currentBB->anchorSet) {
 				temp->layers->x = currentBB->anchorX;
 				temp->layers->y = currentBB->anchorY;
-			} else {
+			}
+			else {
 				temp->layers->x = (currentBB->w / 2);
 				temp->layers->y = (currentBB->h / 2);
 			}
@@ -1515,7 +1508,8 @@ struct ReturnPosition* getRelativePosition(struct BoundingBox* currentBB, struct
 			if (currentShapesBB->anchorSet) {
 				temp->shapes->x = currentShapesBB->anchorX;
 				temp->shapes->y = currentShapesBB->anchorY;
-			} else {
+			}
+			else {
 
 				temp->shapes->x = (currentShapesBB->w / 2);
 				temp->shapes->y = (currentShapesBB->h / 2);
