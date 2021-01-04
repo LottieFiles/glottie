@@ -2,10 +2,13 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "Debug/glottie.exe"
+			"path" : "Debug/libglottie.dll"
 		},
 		{
-			"path" : "Debug/glottie.pdb"
+			"path" : "Debug/libglottie.lib"
+		},
+		{
+			"path" : "Debug/libglottie.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -13,7 +16,7 @@
 	{
 		"commands" : 
 		[
-			"add_executable",
+			"add_library",
 			"link_directories",
 			"target_link_libraries",
 			"include_directories"
@@ -30,25 +33,25 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 30,
+				"line" : 49,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 27,
+				"line" : 47,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 38,
+				"line" : 57,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 26,
+				"line" : 46,
 				"parent" : 0
 			}
 		]
@@ -63,6 +66,12 @@
 				},
 				{
 					"fragment" : "-std:c++17"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"define" : "libglottie_EXPORTS"
 				}
 			],
 			"includes" : 
@@ -89,17 +98,13 @@
 			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "glottie::@6890427a1f51a3e7e1df",
+	"id" : "libglottie::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "-g /MDd /Zi /Ob0 /Od /RTC1",
-				"role" : "flags"
-			},
-			{
-				"fragment" : "/machine:X86 /debug /INCREMENTAL /subsystem:console",
+				"fragment" : "/machine:X86 /debug /INCREMENTAL",
 				"role" : "flags"
 			},
 			{
@@ -139,8 +144,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "glottie",
-	"nameOnDisk" : "glottie.exe",
+	"name" : "libglottie",
+	"nameOnDisk" : "libglottie.dll",
 	"paths" : 
 	{
 		"build" : ".",
@@ -165,5 +170,5 @@
 			"sourceGroupIndex" : 0
 		}
 	],
-	"type" : "EXECUTABLE"
+	"type" : "SHARED_LIBRARY"
 }

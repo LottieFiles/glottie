@@ -1,11 +1,30 @@
+/////////////////////////////////////////////////////////
+/////////                                       /////////
+/////////  ******            *****************  /////////
+/////////   ****              ***************   /////////
+/////////    ***               ***         **   /////////
+/////////    ***               ***              /////////
+/////////    ***               ***     **       /////////
+/////////    ***               **********       /////////
+/////////    ***               **********       /////////
+/////////    ***               ***     **       /////////
+/////////    ***               ***              /////////
+/////////    ***       **      ***              /////////
+/////////   **************    *****             /////////
+/////////  ****************  *******            /////////
+/////////                                       /////////
+/////////////////////////////////////////////////////////
+///////  Created by: https://github.com/shaafiee  ///////
+///////      Copyright 2020, lottiefiles.com      ///////
+/////////////////////////////////////////////////////////
 
-#define WINDOWS 1
+#ifdef __EMSCRIPTEN__
+#define EMT 1
 
-//#define DEBUG 1
-//#define DEBUG2 1
-#define DEBUG3 1
-#define DEBUGPOPULATEVERTICES 1
-//#define DEBUGREADARRAY 1
+#else
+
+
+#endif
 
 //#define ISDLL 1
 
@@ -44,14 +63,8 @@
 #else
 #ifdef WINDOWS
 #include <Windows.h>
-//#include <Wia.h>
-	//#include <sdl/SDL_egl.h> // emscripten
-	//#include <sdl/SDL_opengl.h>
-//#include <sdl/SDL_egl.h>
-//#include <sdl/SDL_opengles2.h>
 #include <sdl/SDL.h>
 #include <sdl/SDL_syswm.h>
-		//#include <sdl/SDL_syswm.h>
 #endif
 
 #ifdef LINUX
@@ -65,40 +78,9 @@
 #else
 	#ifdef APPLE
 		#include <OpenGL/gl.h>
-		//#include <OpenGL/glu.h>
-		//#include <OpenGL/glext.h>
-		//#include <GLUT/glut.h>
 	#else
-		//#include <GL/glu.h>
-		//#include <GL/glext.h>
-		//#include <GL/glx.h>
-		//#include <GL/glxext.h>
-		//#include <GL/gl.h>
-		//#define glXGetProcAddress(x) (*glXGetProcAddressARB)((const GLubyte*)x)
-
-		//#include <GL/glew.h>
-		//#include <GLFW/glfw3.h>
-
-		//#include <GL/glu.h>
-		//#include <GL/glext.h>
-		//#include <GL/glx.h>
-		//#include <GL/glxext.h>
-
-		//#include <GL/glfw3.h>
-		//#include <GLFW/glfw3.h>
-		//#include <GL/glu.h>
-		//#include <GL/glext.h>
-		//#include <GL/glx.h>
-		//#include <GL/gl.h>
-
-		//#include <GL/glew.h>jjj
-		//#include <GL/glut.h>
-		//#include <GL/freeglut.h>
-		//#include <GL/gl.h>
-		//#include <GL/glu.h>
 
 		#ifdef WINDOWS
-			//#include <EGL/egl.h>
 
 		#include <GLES2/gl2.h>
 		#include <GLES2/gl2ext.h>
@@ -117,26 +99,14 @@
 //#include <GL/glut.h>
 #endif
 
-//#define GLM_ENABLE_EXPERIMENTAL
-//#include <glm/glm.hpp>
 #include "glm/glm.hpp" // glm::vec3
-//#include </usr/include/glm/vec3.hpp> // glm::vec3
-//#include </usr/include/glm/vec4.hpp> // glm::vec4
-//#include </usr/include/glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
-//#include </usr/include/glm/gtc/type_ptr.hpp> // glm::mat4
 #include "glm/gtc/matrix_transform.hpp" // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include "glm/gtc/type_ptr.hpp" // glm::mat4
-//#include "glm/gtc/quaternion.hpp"
-//#include "glm/gtx/quaternion.hpp"
-//#include <GL/gl.h>
-//#include <GL/glu.h>
-//#include <GL/glut.h>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <sstream>
 #include <cmath>
-//#include <sys/time.h>
 
 #ifdef WINDOWS
 #pragma comment(lib,"user32.lib") 
@@ -206,6 +176,7 @@ struct EGLVariables {
 #include "deserializer/helpers.h"
 #include "animate/animate.h"
 //#include "emscripten/emscripten.cpp"
+#include "debugtools.cpp"
 #include "misc.cpp"
 #include "animate/transform.cpp"
 #include "deserializer/deserializer.cpp"
@@ -222,14 +193,6 @@ struct EGLVariables {
 extern "C" {
 EMSCRIPTEN_KEEPALIVE
 #endif
-
-/*
-EM_BOOL mainloop(double time, void* userData) {
-
-	glDraw(NULL, NULL, (int)userData);
-	return 1;
-}
-*/
 
 int currentFrame = 0;
 //struct timeval tempTime;
@@ -272,36 +235,22 @@ void standaloneLoop() {
 			}
 
 		}
-			//gettimeofday(&tempTime, NULL);
-			//currentTime = (tempTime.tv_sec * 1000) + (tempTime.tv_usec / 1000);
-
-			//if (currentTime - lastTime > theAnimation->frameTimeMS) {
-				if (currentFrame >= theAnimation->op) {
-					currentFrame = 0;
-				}
-				//SDL_RenderClear(rdr);
-				#ifdef WINDOWS
-					//glClear(GL_COLOR_BUFFER_BIT);
-				#endif
-				glDraw(NULL, NULL, currentFrame);
-       				//SDL_RenderPresent(rdr);
-				#ifdef EGLWINDOWS
-				eglSwapBuffers(eglVars->display, eglVars->surface);
-				#else
-					SDL_GL_SwapWindow(wnd);
-				#endif
-				/*SDL_SetRenderDrawColor(rdr, 0, 0, 0, SDL_ALPHA_OPAQUE);
-				SDL_RenderClear(rdr);
-				SDL_SetRenderDrawColor(rdr, 0, 255, 255, SDL_ALPHA_OPAQUE);
-				SDL_RenderFillRect(rdr, &rect);
-       				SDL_RenderPresent(rdr);
-				*/
-				//SDL_GL_SwapWindow(wnd);
-				//SDL_UpdateWindowSurface(wnd);
-				//EM_ASM({console.log("////> init done");});
-				currentFrame++;
-				//lastTime = currentTime;
-			//}
+			if (currentFrame >= theAnimation->op) {
+				currentFrame = 0;
+			}
+			//SDL_RenderClear(rdr);
+			#ifdef WINDOWS
+				//glClear(GL_COLOR_BUFFER_BIT);
+			#endif
+			glDraw(NULL, NULL, currentFrame);
+       			//SDL_RenderPresent(rdr);
+			#ifdef EGLWINDOWS
+			eglSwapBuffers(eglVars->display, eglVars->surface);
+			#else
+				SDL_GL_SwapWindow(wnd);
+			#endif
+			currentFrame++;
+			//lastTime = currentTime;
 			SDL_Delay(theAnimation->frameTimeMS);
 	}
 }
@@ -329,14 +278,12 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 	cout << "Deserializing... \n";
 	#endif
 	deserializeChar(buffer, theLength);
-	//EM_ASM({console.log("////> init done");});
 
 	#ifdef EMT
 	#else
 	cout << "GL init... \n";
 	#endif
 	glInit(NULL);
-	//EM_ASM({console.log("////> gl init done");});
 
 	#ifdef EMT
 	#else
@@ -344,36 +291,25 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 	#endif
 	glInitShaders(0);
 
-	//EM_ASM({console.log("////> start of parenting shapes");});
 	#ifdef EMT
 	#else
 	cout << "Associating parents... \n";
 	#endif
 	parentShapes();
 
-	//EM_ASM({console.log("////> start of prepping shapes");});
-	//itAdjust();
-
-	//EM_ASM({console.log("////> start of prepping shapes");});
 	#ifdef EMT
 	#else
 	cout << "Prepping shapes... \n";
 	#endif
 	prepShapes();
 
-	//EM_ASM({console.log("////> start of offsetting parented shapes");});
-	parentOffsetShapes();
+	parentOffsetShapes(); // account all position offsets from parentage
 
-//	//EM_ASM({console.log("////> start of prepping transforms for shapes");});
-//	prepParentShapes();
-
-	//EM_ASM({console.log("////> start of prepping transforms for shapes");});
 	#ifdef EMT
 	#else
 	cout << "Prepping transform shapes... \n";
 	#endif
 	prepTransformShapes();
-	//EM_ASM({console.log("////> matching VAOs");});
 	#ifdef EMT
 	#else
 	cout << "Match parent VAOs... \n";
@@ -382,7 +318,6 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 		matchParentVAO();
 	}
 
-	//EM_ASM({console.log("////> done prepping shapes " + $0);}, theAnimation->frameTimeMS);
 	redrawRequired = true;
 
 
@@ -407,8 +342,6 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 	emscripten_set_main_loop(mainloop, theAnimation->fr, 0);
 	#else
 	cout << "Starting main loop... \n";
-	//gettimeofday(&tempTime, NULL);
-	//lastTime = (tempTime.tv_sec * 1000) + (tempTime.tv_usec / 1000);
 	standaloneLoop();
 	#endif
 }
@@ -419,14 +352,10 @@ int doMain(char someChar[]) {
 	identityMatrix = glm::mat4(1.0f);
 
 	deserialize();
-	//EM_ASM({console.log("////> init done");});
 	glInit(NULL);
-	//EM_ASM({console.log("////> gl init done");});
 
 	glInitShaders(0);
-	//EM_ASM({console.log("////> start of prepping shapes");});
 	prepShapes();
-	//EM_ASM({console.log("////> done prepping shapes");});
 
 	redrawRequired = true;
 
@@ -443,14 +372,12 @@ void readFromStdin(float bgRed, float bgGreen, float bgBlue, float bgAlpha) {
 	for (std::string line; std::getline(std::cin, line);) {
 		cout << "Reading JSON \n";
 		jsonString = jsonString + line;
-		//std::cout << line << std::endl;
 	}
 	if (jsonString.size() > 0) {
 		cout << "Loading animation \n";
 		int theLength = jsonString.length();
 		char* jString = new char[theLength];
 		std::strcpy(jString, jsonString.c_str());
-		//char* jsonCharString = strdup(jsonString.c_str());
 		jsonString.clear();
 
 		loadJson(jString, theLength, bgRed, bgGreen, bgBlue, bgAlpha);
@@ -485,21 +412,8 @@ int main(int argc, char *argv[]) {
 
 	#ifdef EMT
 	#else
-		//glewExperimental = GL_TRUE;
 		cout << SDL_GetError() << "\n";
 		cout << "Attempting standalone \n";
-		//glutInit(&argc, argv);
-		//glutCreateWindow("test");
-		/*glutInitDisplayMode(GLUT_RGB);
-		GLenum err = glewInit();
-		if (err != GLEW_OK) {
-			cout << "GLEW not ok: " << glewGetErrorString(err) << "\n";
-			exit(1);
-		}
-		if (!GLEW_VERSION_2_1) {
-			cout << "GLEW version mismatch \n";
-			exit(1);
-		}*/
 
 		if (argc == 5) {
 			readFromStdin(
@@ -515,11 +429,9 @@ int main(int argc, char *argv[]) {
 					1,
 					1
 				);
-			//cout << "Pass 3 colours and alpha value please \n";
 		}
 	#endif
 
-	//doMain(NULL);
 	return 1;
 }
 
