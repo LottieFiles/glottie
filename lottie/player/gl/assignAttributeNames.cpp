@@ -1,19 +1,38 @@
-	const char* __layersTransform;
-	const char* __shapesTransform;
-	const char* __layersRotate;
-	const char* __shapesRotate;
-	const char* __layersScale;
-	const char* __shapesScale;
-	const char* __layersPositionSet;
-	const char* __shapesPositionSet;
-	const char* __rotateLayersAngle;
-	const char* __rotateLayersAngleSet;
-	const char* __rotateLayersAxisOffset;
-	const char* __rotateShapesAngle;
-	const char* __rotateShapesAngleSet;
-	const char* __rotateShapesAxisOffset;
-	const char* __opacityValue;
+/////////////////////////////////////////////////////////
+/////////                                       /////////
+/////////  ******            *****************  /////////
+/////////   ****              ***************   /////////
+/////////    ***               ***         **   /////////
+/////////    ***               ***              /////////
+/////////    ***               ***     **       /////////
+/////////    ***               **********       /////////
+/////////    ***               **********       /////////
+/////////    ***               ***     **       /////////
+/////////    ***               ***              /////////
+/////////    ***       **      ***              /////////
+/////////   **************    *****             /////////
+/////////  ****************  *******            /////////
+/////////                                       /////////
+/////////////////////////////////////////////////////////
+///////  Created by: https://github.com/shaafiee  ///////
+///////      Copyright 2020, lottiefiles.com      ///////
+/////////////////////////////////////////////////////////
 
+const char* __layersTransform;
+const char* __shapesTransform;
+const char* __layersRotate;
+const char* __shapesRotate;
+const char* __layersScale;
+const char* __shapesScale;
+const char* __layersPositionSet;
+const char* __shapesPositionSet;
+const char* __rotateLayersAngle;
+const char* __rotateLayersAngleSet;
+const char* __rotateLayersAxisOffset;
+const char* __rotateShapesAngle;
+const char* __rotateShapesAngleSet;
+const char* __rotateShapesAxisOffset;
+const char* __opacityValue;
 
 void assignAttributeNames(int passedIndex) {
 	if (passedIndex == 0) {
