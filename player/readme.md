@@ -1,3 +1,7 @@
+
+
+
+
 # Glottie
 
 **Glottie** is an OpenGL player for lottie animations. It is a C++ software that has been designed from ground-up for lightness and portability. Its scene graph builder, geometry generator and animation sequencer have been designed strictly for the scope of lottie, making it the leanest lottie player.
@@ -7,11 +11,11 @@
 Glottie is currently still under development and does not support all the features of the lottie format, as has been documented in at https://github.com/airbnb/lottie-web/tree/master/docs/json.
 
 This player can play lotties, but with the following limitations:
-- [Borders](docs/borders.md) are currently not supported.
-- [Tweening](docs/tweening.md) of basic shapes is not supported.
-- [Transformations](docs/transformations.md) of a parent layer or group (it) are not inherited.
-- [Shape items](docs/shapes.md) currently unsupported are gFill, gStroke, merge, repeater, stroke and trim.
-- The only [effects](docs/effects.md) currently supported are color and fill.
+- Borders are currently not supported.
+- Tweening of basic shapes is not supported.
+- Transformations of a parent layer or group (it) are not inherited.
+- Shape items currently unsupported are gFill, gStroke, merge, repeater, stroke and trim.
+- The only effects currently supported are color and fill.
 - No external sources are currently supported.
 
 ### Contributing

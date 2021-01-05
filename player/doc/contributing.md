@@ -1,10 +1,10 @@
-# Contributing
+## Contributing
 
 At LottieFiles, we are working hard to incorporate all features of lottie into Glottie. You are welcome to contribute to this work.
 
 There are no hard rules for contributions, except that code should be easily readable and commit messages sensible. Other than that, we prefer to let contributors express themselves.
 
-## Before you begin
+#### Before you begin
 
 We have provided some basic documentation to present the inner workings of Glottie.
 
@@ -12,9 +12,9 @@ The first of these explains the [execution sequence](executionsequence.md), by p
 
 The next important primer explains how [Glottie's state machine](statemachine.md) works.
 
-After that, you will need a primer on [how transformations are sequenced](animation.md).
+Once Glottie's state-machine builds a scene graph, the shape data is used to [compute geometries and transformations](geometry.md).
 
+Next, the [transformations are sequenced](animation.md).
 
-## Other useful docs
-
+Finally, the [geometries are rendered](render.md) as per the transformation sequences.
 
