@@ -1,3 +1,3 @@
 # Glottie
 
-[Click here](lottie/player/readme.md) for the README file.
+[Click here](player/readme.md) for the README file.

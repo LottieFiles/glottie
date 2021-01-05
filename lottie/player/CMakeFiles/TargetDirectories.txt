@@ -1,3 +1,0 @@
-/home/shaafiee/lottie/glottie/lottie/player/CMakeFiles/rebuild_cache.dir
-/home/shaafiee/lottie/glottie/lottie/player/CMakeFiles/edit_cache.dir
-/home/shaafiee/lottie/glottie/lottie/player/CMakeFiles/glottie.dir
