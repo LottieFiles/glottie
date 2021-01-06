@@ -20,7 +20,7 @@ This player can play lotties, but with the following limitations:
 
 ### Contributing
 
-Discover how you can [contribute to this project](doc/contributing.md).
+Learn how you can [contribute to this project](doc/contributing.md).
 
 ## Testing Glottie
 
