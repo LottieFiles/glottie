@@ -32,13 +32,13 @@ From a single codebase, Glottie can be compiled to:
 
 #### WASM
 
-Currently Glottie has a configuration to compile only for Emscripten. The script to compile for WASM is [wasm_build](wasm_build).
+Currently Glottie has a configuration to compile only with Emscripten. The script to compile for WASM is [wasm_build](wasm_build).
 
 The only prerequisite for running the *wasm_build* script is a working [Emscripten installation](https://emscripten.org/docs/getting_started/downloads.html).
 
 #### Windows
 
-Compilation to Windows has been set up to use *CMake*. A preconfigured [CMakeLists.text](CMakeLists.txt) is included in the Glottie codebase, which has been configured by default to compile for Windows 10.
+Compilation to Windows has been set up to use *CMake*. A preconfigured [CMakeLists.txt](CMakeLists.txt) is included in the Glottie codebase, which has been configured by default to compile for Windows 10.
 
 The *CMake* configuration uses [winclude](winclude) and [winlib](winlib) as the include and library directories, respectively.
 
