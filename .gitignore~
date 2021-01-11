@@ -5,7 +5,7 @@ libANGLE.lib
 .gitignore
 .git
 
-out/
+out/
 
 *dSYM
 
@@ -16,4 +16,6 @@ CMakeSettings.json
 .*
 
 dll/
+
+Makefile
 
