@@ -40,17 +40,17 @@ The only prerequisite for running the *wasm_build* script is a working [Emscript
 
 Compilation to Windows has been set up to use *CMake*. A preconfigured [CMakeLists.txt](CMakeLists.txt) is included in the Glottie codebase, which has been configured by default to compile for Windows 10.
 
-The *CMake* configuration uses [winclude](winclude) and [winlib](winlib) as the include and library directories, respectively.
+The *CMake* configuration uses [winclude](winclude) as the include directory.
 
-Glottie is compiled to Windows using [Google ANGLE](https://github.com/google/angle), and therefore uses ANGLE's EGL and GLES - with the compiler yielding a native DirectX player. The only other prerequisite library is SDL2, which has also been included in [winclude](winclude).
+Glottie is compiled to Windows using [Google ANGLE](https://github.com/google/angle), and therefore uses ANGLE's EGL and GLES - with the compiler yielding a native DirectX player. The only other prerequisite library is SDL2.
 
 #### Linux
 
-Compilation to Linux is facilitated by the *Bash* script [linux_build](linux_build). The *linux_build* script uses [include](include) and [lib](lib) as the include and library directories, respectively.
+Compilation to Linux is facilitated by the *Bash* script [linux_build](linux_build). The *linux_build* script uses [include](include) as the include directory.
 
 #### MacOS
 
-Compilation to MacOS is accomplished by running the script [macos_build](macos_build). The *macos_build* script uses [include](include) and [lib](lib) as the include and library directories, respectively.
+Compilation to MacOS is accomplished by running the script [macos_build](macos_build). The *macos_build* script uses [include](include) as the include directory.
 
 ## Testing Glottie
 
