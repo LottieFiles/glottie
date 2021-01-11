@@ -1,4 +1,15 @@
-libANGLE.lib
 .vs/
 .idea/
+libANGLE.lib
+
+.gitignore
+.git
+
+out
+
+*dSYM
+
+cmake_install.cmake
+
+CMakeSettings.json
 
