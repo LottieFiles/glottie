@@ -22,7 +22,7 @@ This player can play lotties, but with the following limitations:
 
 Learn how you can [contribute to this project](doc/contributing.md).
 
-## Testing Glottie
+## Compiling Glottie
 
 From a single codebase, Glottie can be compiled to:
 * WASM (using Emscripten)
@@ -52,4 +52,22 @@ Compilation to Linux is facilitated by the *Bash* script [linux_build](linux_bui
 
 Compilation to MacOS is accomplished by running the script [macos_build](macos_build). The *macos_build* script uses [include](include) and [lib](lib) as the include and library directories, respectively.
 
+## Testing Glottie
 
+For all platforms other than WASM, Glottie presently reads a JSON file from stdin. Hence, to run Glottie, simply pipe in a JSON file.
+
+#### Linux
+
+cat <JSONfile> | examples/linux/glottie
+
+#### MacOS
+
+cat <JSONfile> | examples/macos/glottie
+
+#### Windows
+
+type <JSONfile> | <CMAKE_INSTALL_PREFIX>/glottie.exe
+
+#### WASM
+
+The **index.html** file in *examples/wasm* is a base template for loading the WASM player.
