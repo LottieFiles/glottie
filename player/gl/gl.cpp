@@ -858,7 +858,7 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vao->cbo));
 							glVertexAttribPointer(*(tempBuffers->vao->colAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
 							glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(tempBuffers->vao->ibo));
-							cout << tempBuffers->vao << "\n";
+							//cout << tempBuffers->vao << "\n";
 						#else
 							glBindVertexArray(*(tempBuffers->vao));
 						#endif

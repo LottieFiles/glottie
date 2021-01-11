@@ -212,6 +212,7 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 
 				traceKeyValue->arrayValue->vector = new ValuesVector;
 				traceKeyValue->arrayValue->vector->start = traceKeyValue->arrayValue->vector;
+				traceKeyValue->arrayValue->vector->parent = traceKeyValue->arrayValue;
 
 				cout << "<add child - traceKeyValue->arrayValue->vector is NULL";
 
@@ -263,6 +264,25 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 	return traceKeyValue;
 
 }
+
+struct ArrayOfString* gotoParentArray(struct ArrayOfString* traceArrayValue) {
+	if (traceArrayValue == NULL) {
+		return NULL;
+	}
+
+	if (traceArrayValue->parent != NULL && traceArrayValue->parent->start->parent != NULL) {
+#ifdef DEBUGREADARRAY
+		cout << " <parent found>\n";
+#endif
+		return traceArrayValue->parent->start->parent;
+	}
+	else {
+		return traceArrayValue;
+	}
+
+	return NULL;
+}
+
 
 struct KeyValue* addChildArray_old(struct KeyValue* traceKeyValue) {
 	struct ArrayOfString* tempArrayOfString;
@@ -383,11 +403,9 @@ struct KeyValue* addChildArray_old(struct KeyValue* traceKeyValue) {
 }
 
 
-struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
-	if (traceKeyValue == NULL) {
-		return NULL;
-	}
 
+/*
+struct ArrayOfString* gotoParentArray(struct ArrayOfString* traceArrayValue) {
 #ifdef DEBUGREADARRAY
 	cout << " << going to parent";
 #endif
@@ -419,8 +437,9 @@ struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
 #endif
 
 		return traceKeyValue->arrayValue;
+		
 
-	/*}
+	}
 	else {
 
 		struct KeyValue* tempKeyValue;
@@ -469,8 +488,9 @@ struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
 
 		return tempKeyValue->arrayValue;
 
-	}*/
+	}
 }
+*/
 
 int popKeyValueTrail() {
 	if (currentKeyValueTrail->prev == NULL) {
@@ -991,10 +1011,19 @@ int stringToInt(char* passedString) {
 }
 
 //////////// helpers for populating json objects
+bool isFloat(string myString) {
+	std::istringstream iss(myString);
+	float f;
+	iss >> noskipws >> f;
+	return iss.eof() && !iss.fail();
+}
 
 struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, struct ArrayOfVertex* targetVertex, struct PropertiesShapeProp* passedPropertiesShapeProp) {
 	struct ValuesVector* baseVector;
 	if (traceArrayValue == NULL) {
+		return 0;
+	}
+	if (traceArrayValue->vector == NULL) {
 		return 0;
 	}
 
@@ -1037,28 +1066,32 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 
 		string xvals(baseVector->child->vector->start->value);
 		float xval = 0;
-		if (xvals.length() < 1) {
-			xval = 0;
-		}
-		else {
-			if (!xvals.empty()) {
-				xval = stof(xvals);
+		if (isFloat(xvals)) {
+			if (xvals.length() < 1) {
+				xval = 0;
 			}
 			else {
-				xval = 0;
+				if (!xvals.empty()) {
+					xval = stof(xvals);
+				}
+				else {
+					xval = 0;
+				}
 			}
 		}
 		string yvals(baseVector->child->vector->start->next->value);
 		float yval = 0;
-		if (yvals.length() < 1) {
-			yval = 0;
-		}
-		else {
-			if (!yvals.empty()) {
-				yval = stof(yvals);
+		if (isFloat(yvals)) {
+			if (yvals.length() < 1) {
+				yval = 0;
 			}
 			else {
-				yval = 0;
+				if (!yvals.empty()) {
+					yval = stof(yvals);
+				}
+				else {
+					yval = 0;
+				}
 			}
 		}
 		float vertex[4] = { xval, yval, 0.0f, 1.0f };
@@ -1099,6 +1132,9 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 
 float populateFloat(char* tempStr) {
 	string xvals(tempStr);
+	if (!isFloat(xvals)) {
+		return 0;
+	}
 
 	float xval = 0;
 	if (xvals.length() < 1) {
@@ -1122,6 +1158,9 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 	int tempCount = 0;
 	tempFloatArray = new FloatArrayReturn;
 	if (traceArrayValue == NULL) {
+		return 0;
+	}
+	if (traceArrayValue->vector == NULL) {
 		return 0;
 	}
 
@@ -1152,15 +1191,17 @@ struct FloatArrayReturn* populateFloatArray(struct ArrayOfString* traceArrayValu
 
 		string xvals(baseVector->value);
 		float xval = 0;
-		if (xvals.length() < 1) {
-			xval = 0;
-		}
-		else {
-			if (!xvals.empty()) {
-				xval = stof(xvals);
+		if (isFloat(xvals)) {
+			if (xvals.length() < 1) {
+				xval = 0;
 			}
 			else {
-				xval = 0;
+				if (!xvals.empty()) {
+					xval = stof(xvals);
+				}
+				else {
+					xval = 0;
+				}
 			}
 		}
 		/*string yvals(baseVector->child->vector->start->next->value);

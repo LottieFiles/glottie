@@ -569,6 +569,9 @@ int checkCharacter(char currentChar) {
 		cout << "closing 1 \n";
 #endif
 #endif
+#ifdef DEBUGREADARRAY
+		cout << theScope->scope << " - ";
+#endif
 		associateKeyValues();
 #ifdef DEBUG
 #ifdef EMT
@@ -652,7 +655,9 @@ int checkCharacter(char currentChar) {
 			cout << "\nlast: " << theScope->currentKeyValueTrail->keyValue->arrayValue->vector->value;
 		}
 #endif
-		theScope->currentKeyValueTrail->keyValue->arrayValue = gotoParentArray(theScope->currentKeyValueTrail->keyValue);
+		//if (theScope->currentKeyValueTrail->keyValue->arrayValue->vector != NULL) {
+			theScope->currentKeyValueTrail->keyValue->arrayValue = gotoParentArray(theScope->currentKeyValueTrail->keyValue->arrayValue);
+		//}
 		theState->reservedKeySet = false;
 		theState->reservedKey[0] = '\0';
 
@@ -664,11 +669,14 @@ int checkCharacter(char currentChar) {
 #endif
 		}
 		else {
-			theScope->currentKeyValueTrail->keyValue->arrayValue->closed = false;
+			//theScope->currentKeyValueTrail->keyValue->arrayValue->closed = false;
 #ifdef DEBUGNESTEDARRAY
-			theScope->currentKeyValueTrail->keyValue->arrayValue = theScope->currentKeyValueTrail->keyValue->arrayValue->root;
-			cout << "nested key: " << theScope->currentKeyValueTrail->keyValue->key << " ==> ";
-			debugNestedArray(theScope->currentKeyValueTrail->keyValue->arrayValue->vector, 0);
+			if (theScope->currentKeyValueTrail->keyValue != NULL && theScope->currentKeyValueTrail->keyValue->arrayValue != NULL && theScope->currentKeyValueTrail->keyValue->arrayValue->vector != NULL) {
+				theScope->currentKeyValueTrail->keyValue->arrayValue = theScope->currentKeyValueTrail->keyValue->arrayValue->root;
+				cout << "nested key: " << theScope->currentKeyValueTrail->keyValue->key << " ==> ";
+				debugNestedArray(theScope->currentKeyValueTrail->keyValue->arrayValue->vector->start, 0);
+				cout << "\n-------\n";
+			}
 #endif
 		}
 		previousScopeClosure = false;

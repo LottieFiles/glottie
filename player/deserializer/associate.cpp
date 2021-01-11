@@ -119,7 +119,7 @@ int associateKeyValues() {
 	}
 	*/
 	//popKeyValueTrail();
-
+	cout << "entering association\n";
 #ifdef EMT
 #else
 #ifdef DEBUG2
@@ -295,6 +295,9 @@ int associateKeyValues() {
 		}
 	}
 	else if (theScope->scope == _s) {
+#ifdef DEBUGASSOC
+		cout << "_s found\n";
+#endif
 		if (strcmp(theScope->prev->currentTy, "el") == 0) {
 			fillPropertiesMultiDimensional(currentShapesItem->s);
 		}
@@ -401,6 +404,9 @@ int associateKeyValues() {
 		}
 	}
 	else if (theScope->scope == _o) {
+#ifdef DEBUGASSOC
+	cout << "_o found\n";
+#endif
 
 
 		if (theScope->prev->scope == _k && theScope->prev->prev->scope == _a && strcmp(theScope->prev->prev->prev->currentTy, "tr") == 0 && theScope->prev->prev->prev->prev->scope != _layers) {
@@ -500,6 +506,8 @@ int associateKeyValues() {
 			fillPropertiesMultiDimensional(currentShapesItem->c);
 		}
 	}
+
+	cout << "exiting\n";
 
 	return 1;
 }
@@ -943,7 +951,6 @@ int prepareContainer(bool arrayOfObjects) {
 			//EM_ASM({console.log("-----------------> TRANSFORM p in LAYER");});
 			currentLayers->ks->o = newPropertiesValue();
 			//EM_ASM_({console.log("-----------------> p found " + String.fromCharCode($0) + String.fromCharCode($1));}, theScope->prev->currentTy[0], theScope->prev->currentTy[1]);
-
 
 			/*
 			} else if (theScope->prev->scope == _ks && theScope->prev->prev->scope == _layers) {

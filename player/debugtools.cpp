@@ -31,13 +31,7 @@ void debugNestedArray(struct ValuesVector* passedArray, int nestLevel) {
 
 	while (! exhausted) {
 		
-		if (passedArray->child != NULL) {
-			cout << "(child)";
-		}
 		if (passedArray->child != NULL && passedArray->child->vector != NULL) {
-#ifdef DEBUGNESTEDARRAY
-			cout << "(found)";
-#endif
 			nestLevel++;
 			debugNestedArray(passedArray->child->vector, (nestLevel));
 		}
