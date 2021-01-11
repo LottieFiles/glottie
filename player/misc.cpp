@@ -74,7 +74,197 @@ bool keyFound(struct KeyValue* tempKeyValue, string key) {
 
 //}
 
+
+
+struct correspondingKeyValueReturn {
+	struct KeyValue* keyNode = NULL;
+	struct KeyValue* endNode = NULL;
+};
+
+struct correspondingKeyValueReturn* findCorrespondingKeyValue(struct KeyValue* traceKeyValue, char* key) {
+	struct correspondingKeyValueReturn* ckvr = new correspondingKeyValueReturn;
+	struct KeyValue* keyNode = NULL;
+	struct KeyValue* endNode = NULL;
+
+	bool exhausted = false;
+
+	struct KeyValue* tempKeyValue = traceKeyValue->start;
+	/*
+	if (keyFound(traceKeyValue, key)) {
+
+		keyNode = traceKeyValue;
+	}
+	else {
+	*/
+
+	while (!exhausted) {
+
+		if (keyFound(tempKeyValue, key)) {
+			keyNode = tempKeyValue;
+		}
+
+		if (tempKeyValue->next == NULL) {
+			endNode = tempKeyValue;
+			exhausted = true;
+		}
+		else {
+			tempKeyValue = tempKeyValue->next;
+		}
+	}
+	//}
+
+	ckvr->endNode = endNode;
+	ckvr->keyNode = keyNode;
+
+	return ckvr;
+}
+
+struct ValuesVector* findLastValuesVector(struct ValuesVector* passedValuesVector) {
+	if (passedValuesVector == NULL) {
+		return NULL;
+	}
+	if (passedValuesVector->next == NULL) {
+		return passedValuesVector;
+	}
+	bool exhausted = false;
+	while (!exhausted) {
+		if (passedValuesVector->next == NULL) {
+			exhausted = true;
+		}
+		else {
+			passedValuesVector = passedValuesVector->next;
+		}
+	}
+	return passedValuesVector;
+}
+
+
+struct ArrayOfString* leafArrayValue(struct ArrayOfString* traceArrayValue) {
+	bool exhausted = false;
+
+	if (traceArrayValue->vector == NULL) {
+		return traceArrayValue;
+	}
+
+	while (!exhausted) {
+
+		if (traceArrayValue->vector != NULL) {
+			traceArrayValue->vector = findLastValuesVector(traceArrayValue->vector);
+		}
+
+		if (traceArrayValue->vector->child != NULL) {
+			traceArrayValue = traceArrayValue->vector->child;
+		}
+		else {
+			exhausted = true;
+			if (traceArrayValue->vector != NULL) {
+				traceArrayValue->vector = findLastValuesVector(traceArrayValue->vector);
+			}
+		}
+	}
+
+	return traceArrayValue;
+}
+
+
+
 struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
+
+	if (traceKeyValue == NULL) {
+		traceKeyValue = new KeyValue;
+		traceKeyValue->start = traceKeyValue;
+		traceKeyValue->arrayValue = new ArrayOfString;
+		traceKeyValue->arrayValue->root = traceKeyValue->arrayValue;
+		strcpy(traceKeyValue->key, input->currentReadKey);
+
+		//traceKeyValue->arrayValue->vector = new ValuesVector;
+		//traceKeyValue->arrayValue->vector->start = traceKeyValue->arrayValue->vector;
+		
+		cout << "<add child - traceKeyValue is NULL";
+
+	}
+	else {
+		struct correspondingKeyValueReturn* ckvr = findCorrespondingKeyValue(traceKeyValue, input->currentReadKey);
+		if (ckvr->keyNode != NULL) {
+			traceKeyValue = ckvr->keyNode;
+		}
+		else {
+			ckvr->endNode->next = new KeyValue;
+			ckvr->endNode->next->start = traceKeyValue->start;
+			ckvr->endNode->next->prev = ckvr->endNode;
+			traceKeyValue = ckvr->endNode->next;
+
+			strcpy(traceKeyValue->key, input->currentReadKey);
+		}
+
+		if (traceKeyValue->arrayValue == NULL) {
+
+			traceKeyValue->arrayValue = new ArrayOfString;
+			traceKeyValue->arrayValue->root = traceKeyValue->arrayValue;
+			//traceKeyValue->arrayValue->vector = new ValuesVector;
+			//traceKeyValue->arrayValue->vector->start = traceKeyValue->arrayValue->vector;
+
+			cout << "<add child - traceKeyValue->arrayValue is NULL";
+		}
+		else {
+
+			if (traceKeyValue->arrayValue->vector == NULL) {
+
+				traceKeyValue->arrayValue->vector = new ValuesVector;
+				traceKeyValue->arrayValue->vector->start = traceKeyValue->arrayValue->vector;
+
+				cout << "<add child - traceKeyValue->arrayValue->vector is NULL";
+
+			}
+			else {
+
+				/*if (traceKeyValue->arrayValue->closed) {
+
+					traceKeyValue->arrayValue->vector->next = new ValuesVector;
+					traceKeyValue->arrayValue->vector->next->start = traceKeyValue->arrayValue->vector->start;
+					traceKeyValue->arrayValue->vector->next->prev = traceKeyValue->arrayValue->vector;
+					traceKeyValue->arrayValue->vector = traceKeyValue->arrayValue->vector->next;
+
+					cout << "add child - traceKeyValue->arrayValue->closed \n";
+					return traceKeyValue;
+
+				} else {*/
+
+					//if (traceKeyValue->arrayValue->vector->child == NULL || strlen(traceKeyValue->arrayValue->vector->value) > 0) {
+
+						traceKeyValue->arrayValue->vector = findLastValuesVector(traceKeyValue->arrayValue->vector);
+						traceKeyValue->arrayValue->vector->next = new ValuesVector;
+						traceKeyValue->arrayValue->vector->next->start = traceKeyValue->arrayValue->vector->start;
+						traceKeyValue->arrayValue->vector->next->prev = traceKeyValue->arrayValue->vector;
+						traceKeyValue->arrayValue->vector = traceKeyValue->arrayValue->vector->next;
+					//}
+
+
+					cout << "<add child - ! traceKeyValue->arrayValue->closed";
+
+				//}
+
+			}
+
+			traceKeyValue->arrayValue->vector->child = new ArrayOfString;
+			traceKeyValue->arrayValue->vector->child->root = traceKeyValue->arrayValue->root;
+			traceKeyValue->arrayValue->vector->child->parent = traceKeyValue->arrayValue->vector;
+			//traceKeyValue->arrayValue->vector->child->vector = new ValuesVector;
+			//traceKeyValue->arrayValue->vector->child->vector->start = traceKeyValue->arrayValue->vector->child->vector;
+			traceKeyValue->arrayValue = traceKeyValue->arrayValue->vector->child;
+
+
+		}
+
+	}
+
+	cout << " - child added \n";
+
+	return traceKeyValue;
+
+}
+
+struct KeyValue* addChildArray_old(struct KeyValue* traceKeyValue) {
 	struct ArrayOfString* tempArrayOfString;
 	tempArrayOfString = new ArrayOfString;
 #ifdef DEBUGREADARRAY
@@ -193,90 +383,6 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 }
 
 
-
-struct correspondingKeyValueReturn {
-	struct KeyValue* keyNode = NULL;
-	struct KeyValue* endNode = NULL;
-};
-
-struct correspondingKeyValueReturn* findCorrespondingKeyValue(struct KeyValue* traceKeyValue, char* key) {
-	struct correspondingKeyValueReturn* ckvr = new correspondingKeyValueReturn;
-	struct KeyValue* keyNode = NULL;
-	struct KeyValue* endNode = NULL;
-
-	bool exhausted = false;
-
-	struct KeyValue* tempKeyValue = traceKeyValue->start;
-	/*
-	if (keyFound(traceKeyValue, key)) {
-
-		keyNode = traceKeyValue;
-	}
-	else {
-	*/
-
-		while (!exhausted) {
-
-			if (keyFound(tempKeyValue, key)) {
-				keyNode = tempKeyValue;
-			}
-
-			if (tempKeyValue->next == NULL) {
-				endNode = tempKeyValue;
-				exhausted = true;
-			}
-			else {
-				tempKeyValue = tempKeyValue->next;
-			}
-		}
-	//}
-
-	ckvr->endNode = endNode;
-	ckvr->keyNode = keyNode;
-
-	return ckvr;
-}
-
-struct ValuesVector* findLastValuesVector(struct ValuesVector* passedValuesVector) {
-	if (passedValuesVector == NULL) {
-		return NULL;
-	}
-	bool exhausted = false;
-	while (!exhausted) {
-		if (passedValuesVector->next == NULL) {
-			exhausted = true;
-		}
-		else {
-			passedValuesVector = passedValuesVector->next;
-		}
-	}
-	return passedValuesVector;
-}
-
-
-struct ArrayOfString* leafArrayValue(struct ArrayOfString* traceArrayValue) {
-	bool exhausted = false;
-
-	while (!exhausted) {
-
-		if (traceArrayValue->vector != NULL) {
-			traceArrayValue->vector = findLastValuesVector(traceArrayValue->vector);
-		}
-
-		if (traceArrayValue->vector->child != NULL) {
-			traceArrayValue = traceArrayValue->vector->child;
-		}
-		else {
-			exhausted = true;
-			if (traceArrayValue->vector != NULL) {
-				traceArrayValue->vector = findLastValuesVector(traceArrayValue->vector);
-			}
-		}
-	}
-
-	return traceArrayValue;
-}
-
 struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
 	if (traceKeyValue == NULL) {
 		return NULL;
@@ -286,12 +392,12 @@ struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
 	cout << " << going to parent";
 #endif
 
-	if (theState->stateNow != ArrayOpen) {
+	//if (theState->stateNow != ArrayOpen) {
 
 		if (traceKeyValue->arrayValue != NULL) {
 			if (traceKeyValue->arrayValue->parent != NULL) {
 				//EM_ASM_({console.log("toparent current " + $0 + " has parent " + $1);}, traceKeyValue->arrayValue, traceKeyValue->arrayValue->parent->start);
-				if (traceKeyValue->arrayValue->parent->start->parent != NULL) {
+				if (traceKeyValue->arrayValue->parent->parent != NULL) {
 					//EM_ASM_({console.log("toparent done " + $0 + " to " + $1);}, traceKeyValue->arrayValue, traceKeyValue->arrayValue->parent->parent);
 					traceKeyValue->arrayValue = traceKeyValue->arrayValue->parent->parent;
 					currentArrayOfString = traceKeyValue->arrayValue;
@@ -314,7 +420,7 @@ struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
 
 		return traceKeyValue->arrayValue;
 
-	}
+	/*}
 	else {
 
 		struct KeyValue* tempKeyValue;
@@ -349,8 +455,9 @@ struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
 			}
 			else {
 				cout << " - 1.2 ";
-				//EM_ASM_({console.log("toparent closed " + $0);}, traceKeyValue->arrayValue);
-				tempKeyValue->arrayValue->closed = true;
+				//tempKeyValue->arrayValue->closed = true;
+				//tempKeyValue->arrayValue->vector->next = new ValuesVector;
+				//tempKeyValue->arrayValue->vector->next->prev = tempKeyValue->arrayValue->vector;
 #ifdef DEBUGREADARRAY
 				cout << " - root>>";
 #endif
@@ -362,7 +469,7 @@ struct ArrayOfString* gotoParentArray(struct KeyValue* traceKeyValue) {
 
 		return tempKeyValue->arrayValue;
 
-	}
+	}*/
 }
 
 int popKeyValueTrail() {
@@ -893,6 +1000,17 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 
 	baseVector = traceArrayValue->vector->start;
 
+	bool exhausted = false;
+	/*
+	while (!exhausted) {
+		if (traceArrayValue->vector->parent == NULL) {
+			exhausted = true;
+		} else {
+			traceArrayValue = traceArrayValue->vector->parent;
+		}
+	}
+	*/
+
 #ifdef DEBUGPOPULATEVERTICES
 	if (baseVector->child == NULL) {
 		cout << "No vertex data for sure\n";
@@ -902,7 +1020,7 @@ struct ArrayOfVertex* populateVertices(struct ArrayOfString* traceArrayValue, st
 	}
 #endif
 
-	bool exhausted = false;
+	exhausted = false;
 	currentUniversalCount = 0;
 
 	while (!exhausted) {

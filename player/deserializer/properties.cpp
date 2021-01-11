@@ -147,21 +147,27 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			//EM_ASM({console.log("========================> fill 80.1.1");});
 		}
 		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "i") == 0) {
-			//EM_ASM({console.log("========================> fill 80.2 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
+#ifdef DEBUGREADARRAY
+			cout << "key: i - ";
+#endif
 			passedPropertiesShapeProp->i =
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->i, passedPropertiesShapeProp);
 			passedPropertiesShapeProp->i_count = currentUniversalCount;
 
 		}
 		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "o") == 0) {
-			//EM_ASM({console.log("========================> fill 80.3 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
+#ifdef DEBUGREADARRAY
+			cout << "key: o - ";
+#endif
 			passedPropertiesShapeProp->o =
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->o, passedPropertiesShapeProp);
 			passedPropertiesShapeProp->o_count = currentUniversalCount;
 
 		}
 		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "v") == 0) {
-			//EM_ASM({console.log("========================> fill 80.4 " + String.fromCharCode($0));}, tempKeyValue->key[0]);
+#ifdef DEBUGREADARRAY
+			cout << "key: v - ";
+#endif
 			passedPropertiesShapeProp->v =
 				populateVertices(tempKeyValue->arrayValue, passedPropertiesShapeProp->v, passedPropertiesShapeProp);
 			passedPropertiesShapeProp->v_count = currentUniversalCount;
@@ -174,42 +180,11 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 			}
 #endif
 
-
-
-
 			bool subExhausted = false;
 			if (passedPropertiesShapeProp->v != NULL) {
 				passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->start;
 			}
-			/*
-			while (! subExhausted) {
-				//EM_ASM_({console.log("**** associating values " + $0 + " " + $1 + " " + $2 + " " + $3);}, passedPropertiesShapeProp->v->vertex->x, passedPropertiesShapeProp->v->vertex->y, passedPropertiesShapeProp->lowestX, passedPropertiesShapeProp->lowestY);
-				if (passedPropertiesShapeProp->v->next == passedPropertiesShapeProp->v->start) {
-					subExhausted = true;
-				} else {
-					passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
-				}
-			}
-			*/
-			/*
-			bool subExhausted = false;
-			passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->start;
-			while (! subExhausted) {
-				if (passedPropertiesShapeProp->v->vertex->x < passedPropertiesShapeProp->lowestX) {
-					passedPropertiesShapeProp->lowestX = passedPropertiesShapeProp->v->vertex->x;
-				}
-				if (passedPropertiesShapeProp->v->vertex->y < passedPropertiesShapeProp->lowestY) {
-					passedPropertiesShapeProp->lowestY = passedPropertiesShapeProp->v->vertex->y;
-				}
-				//EM_ASM_({console.log("**** associating values " + $0 + " " + $1 + " " + $2 + " " + $3);}, passedPropertiesShapeProp->v->vertex->x, passedPropertiesShapeProp->v->vertex->y, passedPropertiesShapeProp->lowestX, passedPropertiesShapeProp->lowestY);
-				if (passedPropertiesShapeProp->v->next == passedPropertiesShapeProp->v->start) {
-					subExhausted = true;
-				} else {
-					passedPropertiesShapeProp->v = passedPropertiesShapeProp->v->next;
-				}
-			}
-			*/
-			//passedPropertiesShapeProp->gl_v = vertexToGLfloat(passedPropertiesShapeProp->v, passedPropertiesShapeProp->count);
+
 		}
 
 
@@ -222,14 +197,10 @@ int fillPropertiesShapeProp(struct PropertiesShapeProp* passedPropertiesShapePro
 		}
 	}
 
-	//	return 1;
 	if (passedPropertiesShapeProp->i == NULL || passedPropertiesShapeProp->o == NULL || passedPropertiesShapeProp->v == NULL) {
 		return 1;
 	}
 
-	//void bezierSegment(struct ArrayOfVertex* v, struct ArrayOfVertex* i, struct ArrayOfVertex* o, int* v_count, int* bezier_count, float* segSizePassed, bool fillNulls, bool isGeometry, bool autoSegSize) {
-				//passedPropertiesShapeProp->v_count++;
-				//passedPropertiesShapeProp->bezier_count++;
 	float segSize = 0.1;
 	bezierSegment(passedPropertiesShapeProp->v, passedPropertiesShapeProp->i, passedPropertiesShapeProp->o, &(passedPropertiesShapeProp->v_count), &(passedPropertiesShapeProp->bezier_count), &segSize, false, true, true, 3, false);
 	return 1;
@@ -460,23 +431,30 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 		}
 
 		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "k") == 0) {
-			//EM_ASM({console.log("========================> found k in c");});
+#ifdef DEBUGREADARRAY
+			cout << "key: k - ";
+#endif
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesMultiDimensional->k = tempFloatArray->floatArray;
 				passedPropertiesMultiDimensional->k_count = tempFloatArray->count;
-				//EM_ASM_({console.log("========================> found k " + $0 + " " + $1);}, passedPropertiesMultiDimensional->k[0], passedPropertiesMultiDimensional->k[1]);
 			}
 		}
 		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "ti") == 0) {
-			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, false);
+#ifdef DEBUGREADARRAY
+			cout << "key: ti - ";
+#endif
+				tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, false);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesMultiDimensional->ti = tempFloatArray->floatArray;
 				passedPropertiesMultiDimensional->ti_count = tempFloatArray->count;
 			}
 		}
 		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "to") == 0) {
-			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, false);
+#ifdef DEBUGREADARRAY
+			cout << "key: to - ";
+#endif
+				tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, false);
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesMultiDimensional->to = tempFloatArray->floatArray;
 				passedPropertiesMultiDimensional->to_count = tempFloatArray->count;

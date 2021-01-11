@@ -666,6 +666,7 @@ int checkCharacter(char currentChar) {
 		else {
 			theScope->currentKeyValueTrail->keyValue->arrayValue->closed = false;
 #ifdef DEBUGNESTEDARRAY
+			theScope->currentKeyValueTrail->keyValue->arrayValue = theScope->currentKeyValueTrail->keyValue->arrayValue->root;
 			cout << "nested key: " << theScope->currentKeyValueTrail->keyValue->key << " ==> ";
 			debugNestedArray(theScope->currentKeyValueTrail->keyValue->arrayValue->vector, 0);
 #endif
