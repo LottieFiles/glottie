@@ -20,4 +20,4 @@
 
 #!/bin/sh
 
-clang++ main.cpp -include linuxtarget.h -std=c++17 -w -g -o lottieplayer -lglfw -lGLEW -lGL -lglut -I/usr/include/SDL2 -lSDL2
+clang++ main.cpp -include linuxtarget.h -std=c++17 -w -g -o examples/linux/lottieplayer -lglfw -lGLEW -lGL -lglut -I/usr/include/SDL2 -lSDL2
