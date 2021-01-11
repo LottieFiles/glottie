@@ -2,13 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "Debug/libglottie.dll"
+			"path" : "Debug/glottie.exe"
 		},
 		{
-			"path" : "Debug/libglottie.lib"
-		},
-		{
-			"path" : "Debug/libglottie.pdb"
+			"path" : "Debug/glottie.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -16,9 +13,10 @@
 	{
 		"commands" : 
 		[
-			"add_library",
+			"add_executable",
 			"link_directories",
 			"target_link_libraries",
+			"add_compile_definitions",
 			"include_directories"
 		],
 		"files" : 
@@ -33,25 +31,31 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 49,
+				"line" : 52,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 47,
+				"line" : 49,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 57,
+				"line" : 60,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
 				"line" : 46,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 48,
 				"parent" : 0
 			}
 		]
@@ -71,17 +75,18 @@
 			"defines" : 
 			[
 				{
-					"define" : "libglottie_EXPORTS"
+					"backtrace" : 4,
+					"define" : "FOR_WINDOWS"
 				}
 			],
 			"includes" : 
 			[
 				{
-					"backtrace" : 4,
+					"backtrace" : 5,
 					"path" : "C:/lottie/git/glottie/player/winclude/sdl"
 				},
 				{
-					"backtrace" : 4,
+					"backtrace" : 5,
 					"path" : "C:/lottie/git/glottie/player/winclude"
 				}
 			],
@@ -98,13 +103,17 @@
 			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "libglottie::@6890427a1f51a3e7e1df",
+	"id" : "glottie::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "/machine:X86 /debug /INCREMENTAL",
+				"fragment" : "-g /MDd /Zi /Ob0 /Od /RTC1",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "/machine:X86 /debug /INCREMENTAL /subsystem:console",
 				"role" : "flags"
 			},
 			{
@@ -144,8 +153,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "libglottie",
-	"nameOnDisk" : "libglottie.dll",
+	"name" : "glottie",
+	"nameOnDisk" : "glottie.exe",
 	"paths" : 
 	{
 		"build" : ".",
@@ -170,5 +179,5 @@
 			"sourceGroupIndex" : 0
 		}
 	],
-	"type" : "SHARED_LIBRARY"
+	"type" : "EXECUTABLE"
 }

@@ -26,6 +26,10 @@
 
 #endif
 
+#ifdef FOR_WINDOWS
+	#include "configure.h"
+#endif
+
 
 //#define ISDLL 1
 
@@ -45,7 +49,6 @@
 
 //#include <functional>
 
-#include "configure.h"
 
 #ifdef ISDLL
 	#include "dllrelated.h"

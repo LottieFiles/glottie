@@ -43,6 +43,8 @@ IF (BUILD_SHARED_LIBS)
   SET (LIB_TYPE SHARED)
 ENDIF (BUILD_SHARED_LIBS)
 
+add_compile_definitions(FOR_WINDOWS)
+
 include_directories("${PROJECT_SOURCE_DIR}/winclude/sdl" "${PROJECT_SOURCE_DIR}/winclude")
 link_directories("${PROJECT_SOURCE_DIR}/winlib/angle" "${PROJECT_SOURCE_DIR}/winlib/sdl/lib/x86")
 
