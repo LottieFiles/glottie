@@ -26,12 +26,12 @@ jobs:
     # Runs a set of commands using the runners shell
     - name: Copy the js files
       run: |
-        cp ./player.js ./www/
-        cp ./player.wasm ./www/
+        cp ./player.js ./examples/wasm/
+        cp ./player.wasm ./examples/wasm/
         
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         BRANCH: gh-pages
-        FOLDER: www/ # Deploy the player preview
+        FOLDER: examples/wasm/ # Deploy the player preview
