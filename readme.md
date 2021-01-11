@@ -56,13 +56,9 @@ Compilation to MacOS is accomplished by running the script [macos_build](macos_b
 
 For all platforms other than WASM, Glottie presently reads a JSON file from stdin. Hence, to run Glottie, simply pipe in a JSON file.
 
-#### Linux
+#### Linux and MacOS
 
-cat <JSONfile> | examples/linux/glottie
-
-#### MacOS
-
-cat <JSONfile> | examples/macos/glottie
+cat <JSONfile> | glottie
 
 #### Windows
 
