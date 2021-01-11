@@ -284,7 +284,12 @@ void loadJson(char* buffer, int theLength, float bgRed, float bgGreen, float bgB
 	#else
 	cout << "GL init... \n";
 	#endif
+
+#ifdef WINDOWS
 	glInit(NULL);
+#else
+	glInit();
+#endif
 
 	#ifdef EMT
 	#else

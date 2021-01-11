@@ -306,7 +306,11 @@ int initAngleEGL(SDL_Window* win, EGLVariables* swap)
 }
 #endif
 
-void glInit(HWND passedWindow) {   
+#ifdef WINDOWS
+void glInit(HWND passedWindow) {
+#else
+void glInit() {
+#endif
 	//EM_ASM_({console.log("glinit 1.0 " + $0 + " " + $1 + " " + $2);}, theAnimation->w, theAnimation->h, theAnimation->scaleFactor);
 	//SDL_Init(SDL_INIT_VIDEO);
 
