@@ -361,7 +361,11 @@ int doMain(char someChar[]) {
 	identityMatrix = glm::mat4(1.0f);
 
 	deserialize();
+#ifdef WINDOWS
 	glInit(NULL);
+#else
+	glInit();
+#endif
 
 	glInitShaders(0);
 	prepShapes();
