@@ -1526,10 +1526,10 @@ var tempDouble;
 var tempI64;
 
 var ASM_CONSTS = {
- 24825: function() {
+ 24569: function() {
   console.log("Starting display");
  },
- 70828: function($0, $1, $2) {
+ 70396: function($0, $1, $2) {
   var w = $0;
   var h = $1;
   var pixels = $2;
@@ -1600,7 +1600,7 @@ var ASM_CONSTS = {
   SDL2.ctx.putImageData(SDL2.image, 0, 0);
   return 0;
  },
- 72307: function($0, $1, $2, $3, $4) {
+ 71875: function($0, $1, $2, $3, $4) {
   var w = $0;
   var h = $1;
   var hot_x = $2;
@@ -1637,36 +1637,36 @@ var ASM_CONSTS = {
   stringToUTF8(url, urlBuf, url.length + 1);
   return urlBuf;
  },
- 73296: function($0) {
+ 72864: function($0) {
   if (Module["canvas"]) {
    Module["canvas"].style["cursor"] = UTF8ToString($0);
   }
   return 0;
  },
- 73389: function() {
+ 72957: function() {
   if (Module["canvas"]) {
    Module["canvas"].style["cursor"] = "none";
   }
  },
- 74614: function() {
+ 74182: function() {
   return screen.width;
  },
- 74641: function() {
+ 74209: function() {
   return screen.height;
  },
- 74669: function() {
+ 74237: function() {
   return window.innerWidth;
  },
- 74701: function() {
+ 74269: function() {
   return window.innerHeight;
  },
- 74779: function($0) {
+ 74347: function($0) {
   if (typeof setWindowTitle !== "undefined") {
    setWindowTitle(UTF8ToString($0));
   }
   return 0;
  },
- 74913: function() {
+ 74481: function() {
   if (typeof AudioContext !== "undefined") {
    return 1;
   } else if (typeof webkitAudioContext !== "undefined") {
@@ -1674,7 +1674,7 @@ var ASM_CONSTS = {
   }
   return 0;
  },
- 75079: function() {
+ 74647: function() {
   if (typeof navigator.mediaDevices !== "undefined" && typeof navigator.mediaDevices.getUserMedia !== "undefined") {
    return 1;
   } else if (typeof navigator.webkitGetUserMedia !== "undefined") {
@@ -1682,7 +1682,7 @@ var ASM_CONSTS = {
   }
   return 0;
  },
- 75305: function($0) {
+ 74873: function($0) {
   if (typeof Module["SDL2"] === "undefined") {
    Module["SDL2"] = {};
   }
@@ -1704,11 +1704,11 @@ var ASM_CONSTS = {
   }
   return SDL2.audioContext === undefined ? -1 : 0;
  },
- 75858: function() {
+ 75426: function() {
   var SDL2 = Module["SDL2"];
   return SDL2.audioContext.sampleRate;
  },
- 75928: function($0, $1, $2, $3) {
+ 75496: function($0, $1, $2, $3) {
   var SDL2 = Module["SDL2"];
   var have_microphone = function(stream) {
    if (SDL2.capture.silenceTimer !== undefined) {
@@ -1749,7 +1749,7 @@ var ASM_CONSTS = {
    }, have_microphone, no_microphone);
   }
  },
- 77580: function($0, $1, $2, $3) {
+ 77148: function($0, $1, $2, $3) {
   var SDL2 = Module["SDL2"];
   SDL2.audio.scriptProcessorNode = SDL2.audioContext["createScriptProcessor"]($1, 0, $0);
   SDL2.audio.scriptProcessorNode["onaudioprocess"] = function(e) {
@@ -1761,7 +1761,7 @@ var ASM_CONSTS = {
   };
   SDL2.audio.scriptProcessorNode["connect"](SDL2.audioContext["destination"]);
  },
- 77990: function($0, $1) {
+ 77558: function($0, $1) {
   var SDL2 = Module["SDL2"];
   var numChannels = SDL2.capture.currentCaptureBuffer.numberOfChannels;
   for (var c = 0; c < numChannels; ++c) {
@@ -1780,7 +1780,7 @@ var ASM_CONSTS = {
    }
   }
  },
- 78595: function($0, $1) {
+ 78163: function($0, $1) {
   var SDL2 = Module["SDL2"];
   var numChannels = SDL2.audio.currentOutputBuffer["numberOfChannels"];
   for (var c = 0; c < numChannels; ++c) {
@@ -1793,7 +1793,7 @@ var ASM_CONSTS = {
    }
   }
  },
- 79075: function($0) {
+ 78643: function($0) {
   var SDL2 = Module["SDL2"];
   if ($0) {
    if (SDL2.capture.silenceTimer !== undefined) {
@@ -1831,12 +1831,12 @@ var ASM_CONSTS = {
    SDL2.audioContext = undefined;
   }
  },
- 98424: function() {
+ 96984: function() {
   return withBuiltinMalloc(function() {
    return allocateUTF8(Module["UBSAN_OPTIONS"] || 0);
   });
  },
- 119308: function() {
+ 117868: function() {
   var setting = Module["printWithColors"];
   if (setting != null) {
    return setting;
@@ -10164,9 +10164,9 @@ var dynCall_iiiiijj = Module["dynCall_iiiiijj"] = createExportWrapper("dynCall_i
 
 var dynCall_iiiiiijj = Module["dynCall_iiiiiijj"] = createExportWrapper("dynCall_iiiiiijj");
 
-var _currentFrame = Module["_currentFrame"] = 431812;
+var _currentFrame = Module["_currentFrame"] = 429252;
 
-var ___heap_base = Module["___heap_base"] = 6124592;
+var ___heap_base = Module["___heap_base"] = 6119920;
 
 var ___global_base = Module["___global_base"] = 1024;
 
