@@ -1,0 +1,22 @@
+﻿{
+  "configurations": [
+    {
+      "name": "x86-Release",
+      "generator": "Visual Studio 16 2019",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64" ],
+      "variables": [
+        {
+          "name": "CMAKE_INSTALL_PREFIX",
+          "value": "C:/lottie/git/glottie/out/install/x86-Release",
+          "type": "PATH"
+        }
+      ]
+    }
+  ]
+}
