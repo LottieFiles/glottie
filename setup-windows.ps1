@@ -15,5 +15,5 @@ gclient sync
 git checkout master
 
 #Build ANGLE
-gn gen out/Debug
+gn gen out/Debug --args='target_cpu=\"x86\"'
 autoninja -C out/Debug

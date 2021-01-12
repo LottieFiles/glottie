@@ -1,0 +1,8 @@
+
+#Windows Build
+build/
+angle/
+SDL2*/
+SDL2.zip
+
+#
