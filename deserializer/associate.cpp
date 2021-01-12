@@ -119,7 +119,6 @@ int associateKeyValues() {
 	}
 	*/
 	//popKeyValueTrail();
-	cout << "entering association\n";
 #ifdef EMT
 #else
 #ifdef DEBUG2
@@ -507,7 +506,6 @@ int associateKeyValues() {
 		}
 	}
 
-	cout << "exiting\n";
 
 	return 1;
 }

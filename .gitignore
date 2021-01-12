@@ -5,3 +5,26 @@ libANGLE.lib
 .gitignore
 .git
 
+out/
+
+*dSYM
+
+cmake_install.cmake
+
+CMakeSettings.json
+
+.*
+
+dll/
+
+Makefile
+
+player.js
+player.wasm
+
+standalone.pl
+
+lib/
+winlib/
+emscripten/
+

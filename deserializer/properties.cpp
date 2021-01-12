@@ -435,7 +435,6 @@ int fillPropertiesMultiDimensional(struct PropertiesMultiDimensional* passedProp
 			cout << "key: k - ";
 #endif
 			tempFloatArray = populateFloatArray(tempKeyValue->arrayValue, true);
-			cout << "done";
 			if (tempFloatArray != NULL && tempFloatArray->floatArray != NULL) {
 				passedPropertiesMultiDimensional->k = tempFloatArray->floatArray;
 				passedPropertiesMultiDimensional->k_count = tempFloatArray->count;
@@ -533,9 +532,7 @@ int fillPropertiesValue(struct PropertiesValue* passedPropertiesValue) {
 		if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "k") == 0) {
 			//EM_ASM({console.log("========================> found k in c");});
 			if (strlen(tempKeyValue->value) > 0) {
-				cout << "pre ";
 				passedPropertiesValue->k = populateFloat(tempKeyValue->value);
-				cout << "post \n";
 			}
 		}
 		else if (strlen(tempKeyValue->key) > 0 && strcmp(tempKeyValue->key, "x") == 0) {

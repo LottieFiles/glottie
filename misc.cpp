@@ -180,8 +180,6 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 		//traceKeyValue->arrayValue->vector = new ValuesVector;
 		//traceKeyValue->arrayValue->vector->start = traceKeyValue->arrayValue->vector;
 		
-		cout << "<add child - traceKeyValue is NULL";
-
 	}
 	else {
 		struct correspondingKeyValueReturn* ckvr = findCorrespondingKeyValue(traceKeyValue, input->currentReadKey);
@@ -204,7 +202,6 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 			//traceKeyValue->arrayValue->vector = new ValuesVector;
 			//traceKeyValue->arrayValue->vector->start = traceKeyValue->arrayValue->vector;
 
-			cout << "<add child - traceKeyValue->arrayValue is NULL";
 		}
 		else {
 
@@ -213,8 +210,6 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 				traceKeyValue->arrayValue->vector = new ValuesVector;
 				traceKeyValue->arrayValue->vector->start = traceKeyValue->arrayValue->vector;
 				traceKeyValue->arrayValue->vector->parent = traceKeyValue->arrayValue;
-
-				cout << "<add child - traceKeyValue->arrayValue->vector is NULL";
 
 			}
 			else {
@@ -241,8 +236,6 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 					//}
 
 
-					cout << "<add child - ! traceKeyValue->arrayValue->closed";
-
 				//}
 
 			}
@@ -258,8 +251,6 @@ struct KeyValue* addChildArray(struct KeyValue* traceKeyValue) {
 		}
 
 	}
-
-	cout << " - child added \n";
 
 	return traceKeyValue;
 

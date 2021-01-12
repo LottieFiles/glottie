@@ -87,7 +87,12 @@
 		#ifdef WINDOWS
 
 		#include <GLES2/gl2.h>
+#ifdef EGLWINDOWS
+#include "EGL/egl.h"
+#include "SDL_egl.h"
+#else
 		#include <GLES2/gl2ext.h>
+#endif
 
 		#endif
 
