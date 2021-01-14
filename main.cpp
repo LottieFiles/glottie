@@ -60,22 +60,6 @@
 #endif
 
 
-#ifdef EMT
-#define GL_GLEXT_PROTOTYPES
-#include <SDL2/SDL.h> // emscripten
-#include <SDL_opengles2.h> // empscripten
-#else
-#ifdef WINDOWS
-#include <Windows.h>
-#include <sdl/SDL.h>
-#include <sdl/SDL_syswm.h>
-#endif
-
-#ifdef LINUX
-#include <SDL2/SDL.h> // emscripten
-#include <SDL2/SDL_opengl.h>
-#endif
-#endif
 
 
 #ifdef EMT
@@ -86,19 +70,49 @@
 
 		#ifdef WINDOWS
 
-		#include <GLES2/gl2.h>
-#ifdef EGLWINDOWS
-#include "EGL/egl.h"
-#include "SDL_egl.h"
+#ifdef GLES2
+	#include <GLES2/gl2.h>
+	#include <angle_gl.h>
+	#ifdef EGLWINDOWS
+	#include "EGL/egl.h"
+	#include "SDL_egl.h"
+	#else
+	#include <GLES2/gl2ext.h>
+	#endif
 #else
-		#include <GLES2/gl2ext.h>
+//#include <GLES3/gl3.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+//#include <GL/freeglut.h>
+//#include <GL/freeglut_ext.h>
+//#include <SDL_opengles2.h>
+#include <sdl/SDL_opengl.h>
 #endif
+
 
 		#endif
 
 	#endif
 #endif
 
+
+#ifdef EMT
+#define GL_GLEXT_PROTOTYPES
+#include <SDL2/SDL.h> // emscripten
+#include <SDL_opengles2.h> // empscripten
+#else
+#ifdef WINDOWS
+#include <Windows.h>
+#include <sdl/SDL.h>
+#include <sdl/SDL_syswm.h>
+//#include <SDL_opengles2.h> // empscripten
+#endif
+
+#ifdef LINUX
+#include <SDL2/SDL.h> // emscripten
+#include <SDL2/SDL_opengl.h>
+#endif
+#endif
 
 #ifdef EMT
 //#include <SDL2/SDL.h>
@@ -118,7 +132,8 @@
 #include <cmath>
 
 #ifdef WINDOWS
-#pragma comment(lib,"user32.lib") 
+//#pragma comment(lib,"user32.lib") 
+//#pragma comment(lib,"opengl32.lib") 
 #endif
 
 #ifdef WINRT
@@ -254,7 +269,7 @@ void standaloneLoop() {
 			glDraw(NULL, NULL, currentFrame);
        			//SDL_RenderPresent(rdr);
 			#ifdef EGLWINDOWS
-			eglSwapBuffers(eglVars->display, eglVars->surface);
+				eglSwapBuffers(eglVars->display, eglVars->surface);
 			#else
 				SDL_GL_SwapWindow(wnd);
 			#endif

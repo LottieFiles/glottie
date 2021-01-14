@@ -51,8 +51,11 @@ void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 			glBindVertexArrayAPPLE(tvao);
 		#else
 			#ifdef WINDOWS
-				//glGenVertexArraysOES(1, &tvao);
-				//glBindVertexArrayOES(tvao);
+#ifdef GLES2
+#else
+				glGenVertexArrays(1, &tvao);
+				glBindVertexArray(tvao);
+#endif
 			#else
 				glGenVertexArrays(1, &tvao);
 				glBindVertexArray(tvao);
@@ -96,10 +99,18 @@ void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 	passedBuffers->posAttrib = &tempPosAttrib;
 	passedBuffers->colAttrib = &tempColAttrib;
 
+
+
+
 #ifdef WINDOWS
+	#ifdef GLES2
+	#else
+		passedBuffers->vao = new GLuint;
+	#endif
 #else
 	passedBuffers->vao = new GLuint;
 #endif
+
 	passedBuffers->vbo = new GLuint;
 	passedBuffers->ibo = new GLuint;
 	passedBuffers->cbo = new GLuint;
@@ -107,10 +118,10 @@ void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 	*(passedBuffers->vbo) = tvbo;
 	*(passedBuffers->ibo) = tibo;
 	*(passedBuffers->cbo) = tcbo;
-#ifdef DEBUG2
-#endif
+
 #ifdef WINDOWS
 	//cout << "Created VAO\n";
+	#ifdef GLES2
 	passedBuffers->vao = new struct CVAO;
 	passedBuffers->vao->posAttrib = &tempPosAttrib;
 	passedBuffers->vao->colAttrib = &tempColAttrib;
@@ -120,6 +131,7 @@ void prepVAO(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices,
 	*(passedBuffers->vao->vbo) = tvbo;
 	*(passedBuffers->vao->ibo) = tibo;
 	*(passedBuffers->vao->cbo) = tcbo;
+	#endif
 #else
 	*(passedBuffers->vao) = tvao;
 #endif

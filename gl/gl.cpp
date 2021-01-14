@@ -55,7 +55,9 @@ void glInitShaders(int refIndex) {
 			#endif
 		#endif
 	#endif
+				cout << "pre\n";
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	cout << "post\n";
 	#ifdef EMT
 	#else
 		cout << "Ready to get source \n";
@@ -308,14 +310,39 @@ void glInit() {
 	//EGLSurface* eglSurface;
 		EGLint configAttribList[] =
 		{
+					EGL_BUFFER_SIZE, 0,
+		EGL_RED_SIZE, 5,
+		EGL_GREEN_SIZE, 6,
+		EGL_BLUE_SIZE, 5,
+		EGL_ALPHA_SIZE, 0,
+		EGL_COLOR_BUFFER_TYPE, EGL_RGB_BUFFER,
+		EGL_DEPTH_SIZE, 24,
+		EGL_LEVEL, 0,
+		EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+		EGL_SAMPLE_BUFFERS, 0,
+		EGL_SAMPLES, 0,
+		EGL_STENCIL_SIZE, 0,
+		EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+		EGL_TRANSPARENT_TYPE, EGL_NONE,
+		EGL_TRANSPARENT_RED_VALUE, EGL_DONT_CARE,
+		EGL_TRANSPARENT_GREEN_VALUE, EGL_DONT_CARE,
+		EGL_TRANSPARENT_BLUE_VALUE, EGL_DONT_CARE,
+		EGL_CONFIG_CAVEAT, EGL_DONT_CARE,
+		EGL_CONFIG_ID, EGL_DONT_CARE,
+		EGL_MAX_SWAP_INTERVAL, EGL_DONT_CARE,
+		EGL_MIN_SWAP_INTERVAL, EGL_DONT_CARE,
+		EGL_NATIVE_RENDERABLE, EGL_DONT_CARE,
+		EGL_NATIVE_VISUAL_TYPE, EGL_DONT_CARE,
+		EGL_NONE
+		/*
 			EGL_RED_SIZE,       8,
 			EGL_GREEN_SIZE,     8,
 			EGL_BLUE_SIZE,      8,
-			EGL_ALPHA_SIZE,     8 /*: EGL_DONT_CARE*/,
+			EGL_ALPHA_SIZE,     8,
 			EGL_DEPTH_SIZE,     EGL_DONT_CARE,
 			EGL_STENCIL_SIZE,   EGL_DONT_CARE,
 			EGL_SAMPLE_BUFFERS, 0,
-			EGL_NONE
+			EGL_NONE*/
 		};
 		EGLint surfaceAttribList[] =
 		{
@@ -331,8 +358,8 @@ void glInit() {
 		//EGLDisplay eglDisplay;
 		//EGLSurface eglSurface;
 		EGLConfig config;
-		//EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
-		EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 3, EGL_NONE, EGL_NONE };
+		EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
+		//EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 3, EGL_NONE, EGL_NONE };
 
 		SDL_SysWMinfo info;
 		SDL_VERSION(&info.version); // initialize info structure with SDL version info 
@@ -367,6 +394,8 @@ void glInit() {
 #endif
 			return EGL_FALSE;
 		}
+		
+		eglBindAPI(EGL_OPENGL_ES_API);
 
 		// Choose config 
 		if (!eglChooseConfig(eglVars->display, configAttribList, &config, 1, &numConfigs))
@@ -416,13 +445,14 @@ void glInit() {
 		glViewport(0, 0, scaledWidth, scaledHeight);
 #else
 			glc = SDL_GL_CreateContext(wnd);
-			cout << "Created GLC \n";
 
 				//rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED);
 				//SDL_SetWindowSize(wnd, theAnimation->w, theAnimation->h);
 				//SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
 			SDL_GL_MakeCurrent(wnd, glc);
 
+#ifdef WINDOWS
+#ifdef GLES2
 			PFNGLGETSTRINGPROC glGetString = (PFNGLGETSTRINGPROC)SDL_GL_GetProcAddress("glGetString");
 			PFNGLCLEARCOLORPROC glClearColor = (PFNGLCLEARCOLORPROC)SDL_GL_GetProcAddress("glClearColor");
 			PFNGLCLEARPROC glClear = (PFNGLCLEARPROC)SDL_GL_GetProcAddress("glClear");
@@ -431,9 +461,12 @@ void glInit() {
 			printf("GL_VENDOR = %s\n", glGetString(GL_VENDOR));
 			printf("GL_RENDERER = %s\n", glGetString(GL_RENDERER));
 #endif
-
-
 #endif
+
+#endif // EGLWINDOWS undefined
+
+
+#endif // APPLE undefined
 
 		/*SDL_Surface *window_surface = SDL_GetWindowSurface(wnd);
 		if (!window_surface) {
@@ -444,7 +477,7 @@ void glInit() {
 			exit(1);
 		}
 		SDL_UpdateWindowSurface(wnd);*/
-	#endif
+#endif // EMT undefined
 /*	
 		glDrawSurface = SDL_SetVideoMode(scaledWidth, scaledHeight, NULL);
 		glViewport(0, 0, scaledWidth, scaledHeight);
@@ -713,13 +746,13 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		firstPass = true;
 	}
 
-	glClearColor(
+/*	glClearColor(
 			globalBackground.red, 
 			globalBackground.green,
 			globalBackground.blue, 
 			globalBackground.alpha
-		);
-	glClear(GL_COLOR_BUFFER_BIT);
+		);*/
+	//glClear(GL_COLOR_BUFFER_BIT);
 
 
 		//struct Buffers* tempBuffers = lastBuffersCreated->start;
@@ -803,14 +836,18 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						glBindVertexArrayAPPLE(*(tempBuffers->vao));
 					#else
 						#ifdef WINDOWS
-							#ifdef EGLWINDOWS
-								glEnableVertexAttribArray(*(tempBuffers->vao->posAttrib));
+							#ifdef GLES2
 								glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vao->vbo));
 								glVertexAttribPointer(*(tempBuffers->vao->posAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
-								glEnableVertexAttribArray(*(tempBuffers->vao->colAttrib));
-								glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vao->cbo));
+								glEnableVertexAttribArray(*(tempBuffers->vao->posAttrib));
+
 								glVertexAttribPointer(*(tempBuffers->vao->colAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
+								//glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vao->cbo));
+								glEnableVertexAttribArray(*(tempBuffers->vao->colAttrib));
+
 								glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(tempBuffers->vao->ibo));
+
+
 								//cout << tempBuffers->vao << "\n";
 							#else
 								glBindVertexArray(*(tempBuffers->vao));
@@ -830,9 +867,9 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						glBindVertexArrayAPPLE(0);
 					#else
 						#ifdef WINDOWS
-							#ifdef EGLWINDOWS
-								glDisableVertexAttribArray(*(tempBuffers->vao->posAttrib));
-								glDisableVertexAttribArray(*(tempBuffers->vao->colAttrib));
+							#ifdef GLES2
+								//glDisableVertexAttribArray(*(tempBuffers->vao->posAttrib));
+								//glDisableVertexAttribArray(*(tempBuffers->vao->colAttrib));
 								glBindBuffer(GL_ARRAY_BUFFER, 0);
 								glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 							#else
@@ -920,13 +957,15 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							glBindVertexArrayAPPLE(*(currentVAOL->vao));
 						#else
 							#ifdef WINDOWS
-								#ifdef EGLWINDOWS
-									glEnableVertexAttribArray(*(currentVAOL->vao->posAttrib));
+								#ifdef GLES2
 									glBindBuffer(GL_ARRAY_BUFFER, *(currentVAOL->vao->vbo));
 									glVertexAttribPointer(*(currentVAOL->vao->posAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
-									glEnableVertexAttribArray(*(currentVAOL->vao->colAttrib));
-									glBindBuffer(GL_ARRAY_BUFFER, *(currentVAOL->vao->cbo));
+									glEnableVertexAttribArray(*(currentVAOL->vao->posAttrib));
+
 									glVertexAttribPointer(*(currentVAOL->vao->colAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
+									//glBindBuffer(GL_ARRAY_BUFFER, *(currentVAOL->vao->cbo));
+									glEnableVertexAttribArray(*(currentVAOL->vao->colAttrib));
+
 									glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(currentVAOL->vao->ibo));
 									//cout << currentVAOL->vao << "\n";
 								#else
@@ -947,9 +986,9 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							glBindVertexArrayAPPLE(0);
 						#else
 							#ifdef WINDOWS
-								#ifdef EGLWINDOWS
-									glDisableVertexAttribArray(*(currentVAOL->vao->posAttrib));
-									glDisableVertexAttribArray(*(currentVAOL->vao->colAttrib));
+								#ifdef GLES2
+									//glDisableVertexAttribArray(*(currentVAOL->vao->posAttrib));
+									//glDisableVertexAttribArray(*(currentVAOL->vao->colAttrib));
 									glBindBuffer(GL_ARRAY_BUFFER, 0);
 									glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 								#else		

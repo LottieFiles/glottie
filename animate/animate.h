@@ -74,7 +74,11 @@ struct VAOList {
 	struct VAOChildren* children = NULL;
 
 #ifdef WINDOWS
-	struct CVAO* vao = NULL;
+	#ifdef GLES2
+		struct CVAO* vao = NULL;
+	#else
+		GLuint* vao = NULL;
+	#endif
 #else
 	GLuint *vao = NULL;
 #endif

@@ -47,10 +47,15 @@ include_directories("${PROJECT_SOURCE_DIR}/winclude/sdl" "${PROJECT_SOURCE_DIR}/
 link_directories("${PROJECT_SOURCE_DIR}/winlib/angle" "${PROJECT_SOURCE_DIR}/winlib/sdl/lib/x86")
 #################################################################################################
 
+#link_directories("${PROJECT_SOURCE_DIR}/winlib/glew" "${PROJECT_SOURCE_DIR}/winlib/glfw" "${PROJECT_SOURCE_DIR}/winlib/sdl/lib/x86" "${PROJECT_SOURCE_DIR}/winlib/freeglut")
+
 add_library(libglottie SHARED main.cpp)
 add_executable(glottie main.cpp)
 
 target_link_libraries(libglottie libEGL libGLESv2 SDL2main SDL2)
 target_link_libraries(glottie libEGL libGLESv2 SDL2main SDL2)
+
+#target_link_libraries(libglottie glew32 glfw3 opengl32 freeglut SDL2main SDL2)
+#target_link_libraries(glottie glew32 glfw3 opengl32 freeglut SDL2main SDL2)
 
 configure_file(configure.h.in configure.h)

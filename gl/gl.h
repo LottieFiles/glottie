@@ -109,7 +109,11 @@ struct Buffers {
 	GLint* colAttrib = NULL;
 
 #ifdef WINDOWS
+	#ifdef GLES2
 	struct CVAO* vao = NULL;
+	#else
+	GLuint* vao = NULL;
+	#endif
 #else
 	GLuint* vao = NULL;
 #endif

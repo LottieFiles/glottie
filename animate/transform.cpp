@@ -426,7 +426,11 @@ struct CompositeArray* newCompositeArray(struct CompositeArray* passedCompositeA
 }
 
 #ifdef WINDOWS
+	#ifdef GLES2
 	struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, struct CVAO* passedVAO, int idxSize, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int passedFrame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem, glm::mat4& passedP) {
+	#else
+	struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint * passedVAO, int idxSize, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int passedFrame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem, glm::mat4 & passedP) {
+	#endif
 #else
 	struct VAOList* addCompositeVAO(struct VAOList* passedVAOL, GLuint* passedVAO, int idxSize, struct CompositeArray* passedComposite, struct FrameCompositionRef* passedSequence, int passedFrame, bool isLayer, struct Layers* passedLayers, struct Layers* parentLayers, struct ShapesItem* passedShapesItem, glm::mat4& passedP) {
 #endif
