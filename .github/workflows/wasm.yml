@@ -34,4 +34,4 @@ jobs:
       with:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         BRANCH: gh-pages
-        FOLDER: examples/wasm/ # Deploy the player preview
+        FOLDER: / # Deploy the player preview
