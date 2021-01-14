@@ -7,9 +7,9 @@ name: Github Pages
 on:
   push:
     branches: [ master ]
-      paths:
-      - 'examples/wasm/player.js'
-      - 'examples/wasm/player.wasm'
+#      paths:
+#      - 'examples/wasm/player.js'
+#      - 'examples/wasm/player.wasm'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
