@@ -310,31 +310,31 @@ void glInit() {
 	//EGLSurface* eglSurface;
 		EGLint configAttribList[] =
 		{
-					EGL_BUFFER_SIZE, 0,
-		EGL_RED_SIZE, 5,
-		EGL_GREEN_SIZE, 6,
-		EGL_BLUE_SIZE, 5,
-		EGL_ALPHA_SIZE, 0,
-		EGL_COLOR_BUFFER_TYPE, EGL_RGB_BUFFER,
-		EGL_DEPTH_SIZE, 24,
-		EGL_LEVEL, 0,
-		EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-		EGL_SAMPLE_BUFFERS, 0,
-		EGL_SAMPLES, 0,
-		EGL_STENCIL_SIZE, 0,
-		EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-		EGL_TRANSPARENT_TYPE, EGL_NONE,
-		EGL_TRANSPARENT_RED_VALUE, EGL_DONT_CARE,
-		EGL_TRANSPARENT_GREEN_VALUE, EGL_DONT_CARE,
-		EGL_TRANSPARENT_BLUE_VALUE, EGL_DONT_CARE,
-		EGL_CONFIG_CAVEAT, EGL_DONT_CARE,
-		EGL_CONFIG_ID, EGL_DONT_CARE,
-		EGL_MAX_SWAP_INTERVAL, EGL_DONT_CARE,
-		EGL_MIN_SWAP_INTERVAL, EGL_DONT_CARE,
-		EGL_NATIVE_RENDERABLE, EGL_DONT_CARE,
-		EGL_NATIVE_VISUAL_TYPE, EGL_DONT_CARE,
-		EGL_NONE
-		/*
+			EGL_BUFFER_SIZE, 0,
+			EGL_RED_SIZE, 5,
+			EGL_GREEN_SIZE, 6,
+			EGL_BLUE_SIZE, 5,
+			EGL_ALPHA_SIZE, 0,
+			EGL_COLOR_BUFFER_TYPE, EGL_RGB_BUFFER,
+			EGL_DEPTH_SIZE, 24,
+			EGL_LEVEL, 0,
+			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+			EGL_SAMPLE_BUFFERS, 0,
+			EGL_SAMPLES, 0,
+			EGL_STENCIL_SIZE, 0,
+			EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+			EGL_TRANSPARENT_TYPE, EGL_NONE,
+			EGL_TRANSPARENT_RED_VALUE, EGL_DONT_CARE,
+			EGL_TRANSPARENT_GREEN_VALUE, EGL_DONT_CARE,
+			EGL_TRANSPARENT_BLUE_VALUE, EGL_DONT_CARE,
+			EGL_CONFIG_CAVEAT, EGL_DONT_CARE,
+			EGL_CONFIG_ID, EGL_DONT_CARE,
+			EGL_MAX_SWAP_INTERVAL, EGL_DONT_CARE,
+			EGL_MIN_SWAP_INTERVAL, EGL_DONT_CARE,
+			EGL_NATIVE_RENDERABLE, EGL_DONT_CARE,
+			EGL_NATIVE_VISUAL_TYPE, EGL_DONT_CARE,
+			EGL_NONE
+			/*
 			EGL_RED_SIZE,       8,
 			EGL_GREEN_SIZE,     8,
 			EGL_BLUE_SIZE,      8,
@@ -342,7 +342,8 @@ void glInit() {
 			EGL_DEPTH_SIZE,     EGL_DONT_CARE,
 			EGL_STENCIL_SIZE,   EGL_DONT_CARE,
 			EGL_SAMPLE_BUFFERS, 0,
-			EGL_NONE*/
+			EGL_NONE
+			*/
 		};
 		EGLint surfaceAttribList[] =
 		{
@@ -870,8 +871,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							#ifdef GLES2
 								//glDisableVertexAttribArray(*(tempBuffers->vao->posAttrib));
 								//glDisableVertexAttribArray(*(tempBuffers->vao->colAttrib));
-								glBindBuffer(GL_ARRAY_BUFFER, 0);
-								glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+								//glBindBuffer(GL_ARRAY_BUFFER, 0);
+								//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 							#else
 								glBindVertexArray(0);
 							#endif
@@ -989,8 +990,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 								#ifdef GLES2
 									//glDisableVertexAttribArray(*(currentVAOL->vao->posAttrib));
 									//glDisableVertexAttribArray(*(currentVAOL->vao->colAttrib));
-									glBindBuffer(GL_ARRAY_BUFFER, 0);
-									glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+									//glBindBuffer(GL_ARRAY_BUFFER, 0);
+									//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 								#else		
 									glBindVertexArray(0);
 								#endif
