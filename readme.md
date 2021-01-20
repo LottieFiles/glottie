@@ -58,11 +58,11 @@ For all platforms other than WASM, Glottie presently reads a JSON file from stdi
 
 #### Linux and MacOS
 
-cat <JSONfile> | glottie
+cat &lt;JSONfile&gt; | glottie
 
 #### Windows
 
-type <JSONfile> | <CMAKE_INSTALL_PREFIX>/glottie.exe
+type &lt;JSONfile&gt; | &lt;CMAKE_INSTALL_PREFIX&gt;/glottie.exe
 
 #### WASM
 
