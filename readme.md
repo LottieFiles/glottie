@@ -8,7 +8,7 @@
 
 ## Current state of project
 
-Glottie is currently still under development and does not support all the features of the lottie format, as has been documented in at https://github.com/airbnb/lottie-web/tree/master/docs/json.
+Glottie is currently still under development and does not support all the features of the lottie format, as has been documented at https://github.com/airbnb/lottie-web/tree/master/docs/json.
 
 This player can play lotties, but with the following limitations:
 - Borders are currently not supported.
