@@ -1,6 +1,6 @@
 ## Naming conventions in Glottie
 
-The naming conventions in the [lottie_json_map.pdf](lottie_json_map.pdf) has been followed throughout the source code. For instance, the *properties/offsetKeyframe.json* leaf object in the top-right corner of the schema map is named `PropertiesOffsetKeyframe` in Glottie code. This is shown in the following snippet from [properties.h](../deserializer/properties.h) [line 60]):
+The naming conventions in the [lottie_json_map.pdf](doc/lottie_json_map.pdf) has been followed throughout the source code. For instance, the *properties/offsetKeyframe.json* leaf object in the top-right corner of the schema map is named `PropertiesOffsetKeyframe` in Glottie code. This is shown in the following snippet from [properties.h](../deserializer/properties.h) [line 60]):
 
 ```c++
 #ifdef EMT
