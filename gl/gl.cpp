@@ -494,6 +494,8 @@ void glInit() {
 	//SDL_RenderSetScale(rdr, theAnimation->scaleFactorX, theAnimation->scaleFactorY);
 	//EM_ASM({console.log("glinit 1.8");});
 #ifdef WINDOWS
+			//glEnable(GL_DEPTH_TEST);
+			//glEnable(GL_CULL_FACE);
 #else
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -839,15 +841,14 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 						#ifdef WINDOWS
 							#ifdef GLES2
 								glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vao->vbo));
-								glVertexAttribPointer(*(tempBuffers->vao->posAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
-								glEnableVertexAttribArray(*(tempBuffers->vao->posAttrib));
-
-								glVertexAttribPointer(*(tempBuffers->vao->colAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
-								//glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vao->cbo));
-								glEnableVertexAttribArray(*(tempBuffers->vao->colAttrib));
-
 								glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(tempBuffers->vao->ibo));
 
+								glEnableVertexAttribArray(*(tempBuffers->vao->posAttrib));
+								glVertexAttribPointer(*(tempBuffers->vao->posAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+								//glBindBuffer(GL_ARRAY_BUFFER, *(tempBuffers->vao->cbo));
+								glEnableVertexAttribArray(*(tempBuffers->vao->colAttrib));
+								glVertexAttribPointer(*(tempBuffers->vao->colAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 								//cout << tempBuffers->vao << "\n";
 							#else
@@ -960,6 +961,8 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 							#ifdef WINDOWS
 								#ifdef GLES2
 									glBindBuffer(GL_ARRAY_BUFFER, *(currentVAOL->vao->vbo));
+									glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(currentVAOL->vao->ibo));
+
 									glVertexAttribPointer(*(currentVAOL->vao->posAttrib), 4, GL_FLOAT, GL_FALSE, 0, 0);
 									glEnableVertexAttribArray(*(currentVAOL->vao->posAttrib));
 
@@ -967,7 +970,6 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 									//glBindBuffer(GL_ARRAY_BUFFER, *(currentVAOL->vao->cbo));
 									glEnableVertexAttribArray(*(currentVAOL->vao->colAttrib));
 
-									glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(currentVAOL->vao->ibo));
 									//cout << currentVAOL->vao << "\n";
 								#else
 									glBindVertexArray(*(tempBuffers->vao));

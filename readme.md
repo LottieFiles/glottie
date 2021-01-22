@@ -18,7 +18,7 @@ This player can play lotties, but with the following limitations:
 - The only effects currently supported are color and fill.
 - No external sources are currently supported.
 
-### Contributing
+## Contributing
 
 Learn how you can [contribute to this project](doc/contributing.md).
 
