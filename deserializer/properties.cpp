@@ -78,7 +78,6 @@ struct PropertiesValue* newPropertiesValue() {
 }
 
 struct PropertiesOffsetKeyframe* newPropertiesOffsetKeyframe() {
-	//struct PropertiesOffsetKeyframe* tempPropertiesOffsetKeyframe;
 	if (currentPropertiesOffsetKeyframe == NULL) {
 		currentPropertiesOffsetKeyframe = new PropertiesOffsetKeyframe;
 		currentPropertiesOffsetKeyframe->start = currentPropertiesOffsetKeyframe;
