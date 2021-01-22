@@ -8,7 +8,7 @@ There are no hard rules for contributions, except that code should be easily rea
 
 A visual map of the JSON schema for lottie animations can be found in [lottie_json_map.pdf](lottie_json_map.pdf). This schema has been created based on the JSON schema found at https://github.com/airbnb/lottie-web/tree/master/docs/json.
 
-Naming conventions used in Glottie, that conform to this schema, are [detailed here](naming_convention.md)).
+Naming conventions used in Glottie, that conform to this schema, are [detailed here](naming_convention.md).
 
 #### Glottie innards
 
