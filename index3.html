@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@0.4.0/dist/lottie-player.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://static7.lottiefiles.com/css/app.b195bb.css"
+    />
+  </head>
+
+  <body class="h-screen">
+    <script type="text/javascript">
+      function loadJson() {
+        let url;
+        //if (typeof passedURL !== 'undefined' || passedURL.length <= 0) {
+        url = document.getElementById("theurl").value;
+        // document.getElementById("lottie_old").setAttribute("src", url);
+        //} else {
+        //	url = passedURL
+        //}
+        http = new XMLHttpRequest();
+        //if(params!=null) {
+        //	http.open("POST", url, true);
+        //	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        //} else {
+        http.open("GET", url, true);
+        //}
+        http.onreadystatechange = function () {
+          if (http.readyState == 4 && http.status == 200) {
+            jsonLoaded(http.responseText);
+          }
+        };
+        http.send();
+      }
+
+      function loadRawJson() {
+        var thejson = document.getElementById("thejson").value;
+        jsonLoaded(thejson);
+      }
+
+      function jsonLoaded(thejson) {
+        //const thejson = Array.from(document.getElementById('thejson').value);
+        var thecolor = document.getElementById("thecolor").value;
+        var red = parseInt(thecolor.slice(0, 2), 16) / 255;
+        var green = parseInt(thecolor.slice(2, 4), 16) / 255;
+        //alert(green)
+        var blue = parseInt(thecolor.slice(4, 6), 16) / 255;
+        var alpha = parseInt(thecolor.slice(6, 8), 16) / 255;
+        let buffer;
+        let error;
+        let result;
+        try {
+          const typedArray = new Uint8Array(thejson.length);
+          for (let i = 0; i < thejson.length; i++) {
+            typedArray[i] = thejson.charCodeAt(i);
+            //console.log(typedArray[i])
+          }
+          buffer = Module._malloc(
+            typedArray.length * typedArray.BYTES_PER_ELEMENT
+          );
+          Module.HEAP8.set(typedArray, buffer);
+          result = Module.ccall(
+            "loadJson",
+            null,
+            ["number", "number", "number", "number", "number", "number"],
+            [buffer, thejson.length, red, green, blue, alpha]
+          );
+          //result = Module.ccall("loadJson", null, ["number", "number", "number", "number", "number", "number"], [buffer, thejson.length, 0.0, 0.0, 0.0, 0.0])
+        } catch (e) {
+          error = e;
+        } finally {
+          Module._free(buffer);
+        }
+        if (error) throw error;
+      }
+
+      //window.onLoad="loadJson('https://assets4.lottiefiles.com/packages/lf20_KO70yq.json')"
+    </script>
+
+    <style>
+      @media (min-width: 780px) {
+        .large-margin {
+          padding: 100px;
+        }
+      }
+      @media (max-width: 780px) {
+        .large-margin {
+          padding: 50px;
+        }
+      }
+    </style>
+    <div class="mx-auto h-screen w-full large-margin">
+      <div class="w-full">
+        <div class="font-normal font-lf-bold text-grey-darkest text-5xl pb-6">
+          GLottie
+        </div>
+        <div
+          class="font-normal font-lf-regular text-grey text-4xl pb-8 md:w-1/2 w-full"
+        >
+          OpenGL/WebGL based Lottie animation player. (WIP)
+        </div>
+      </div>
+      <div>
+        <div class="md:flex">
+          <div class="md:w-1/2 w-full md:mb-0 mb-10">
+            <canvas
+              id="canvas"
+              class="bg-grey-light w-full mb-6"
+              oncontextmenu="event.preventDefault()"
+            ></canvas>
+            <div class="flex justify-between">
+              <div
+                class="font-normal font-lf-bold text-grey-dark text-xl w-1/2"
+              >
+                BG COLOR
+              </div>
+              <div class="w-1/2 flex flex-row-reverse">
+                <button
+                  class="bg-grey-light text-grey-darker px-3 py-2 rounded w-24"
+                >
+                  Set
+                </button>
+                <input
+                  id="thecolor"
+                  class="bg-grey-lighter px-3 py-2 mr-2 rounded w-32"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="md:ml-6">
+            <div class="pb-8">
+              <div class="font-normal font-lf-bold text-grey-dark text-xl pb-4">
+                Lottie JSON URL
+              </div>
+              <div class="flex">
+                <input
+                  id="theurl"
+                  class="bg-grey-lighter px-3 py-2 mr-2 rounded md:w-64 w-full"
+                />
+                <button
+                  onClick="loadJson()"
+                  class="bg-grey-light px-3 py-2 rounded w-24 text-grey-darker"
+                >
+                  Load
+                </button>
+              </div>
+            </div>
+            <div>
+              <div class="font-normal font-lf-bold text-grey-dark text-xl pb-4">
+                Raw JSON
+              </div>
+              <div class="flex">
+                <textarea
+                  id="thejson"
+                  rows="10"
+                  class="bg-grey-lighter px-3 py-2 mr-2 rounded md:w-64 w-full"
+                >
+                </textarea>
+                <div>
+                  <button
+                    onClick="loadRawJson()"
+                    class="bg-grey-light px-3 py-2 rounded w-24 text-grey-darker"
+                  >
+                    Load
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      var canv = document.getElementById("canvas");
+      var Module = {
+        canvas: canv,
+      };
+      var passedString = new String();
+      //var urlToFetch = 'http://example.com/movies.json';
+    </script>
+
+    <!-- Call the javascript glue code (index.js) as generated by Emscripten -->
+    <script src="https://github.com/LottieFiles/glottie/blob/gh-pages/player.js"></script>
+
+    <!-- Allow the javascript to call C++ functions -->
+    <script type="text/javascript">
+      canv.addEventListener("click", _toggle_background_color, false);
+      canv.addEventListener("touchend", _toggle_background_color, false);
+    </script>
+  </body>
+</html>
