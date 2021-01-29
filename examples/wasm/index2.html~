@@ -7,7 +7,7 @@
 	<script src="https://unpkg.com/@lottiefiles/lottie-player@0.4.0/dist/lottie-player.js"></script>
 </head>
 
-<body style="background-image: linear-gradient(red, yellow);">
+<body>
     
     <script type='text/javascript'>
 	function customLoad() {

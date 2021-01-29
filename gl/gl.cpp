@@ -830,13 +830,14 @@ void glDraw(struct ShaderProgram* passedShaderProgram, struct Buffers* buffersTo
 		firstPass = true;
 	}
 
-	glClearColor(
+	/*glClearColor(
 			globalBackground.red, 
 			globalBackground.green,
 			globalBackground.blue, 
 			globalBackground.alpha
-		);
-	glClear(GL_COLOR_BUFFER_BIT);
+		);*/
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	//glClear(GL_COLOR_BUFFER_BIT);
 
 
 		//struct Buffers* tempBuffers = lastBuffersCreated->start;

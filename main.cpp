@@ -216,6 +216,10 @@ struct EGLVariables {
 #ifdef EMT
 extern "C" {
 EMSCRIPTEN_KEEPALIVE
+
+#ifdef TEST_SDL_LOCK_OPTS
+EM_ASM("SDL.defaults.copyOnLock = false; SDL.defaults.discardOnLock = true; SDL.defaults.opaqueFrontBuffer = false;");
+#endif
 #endif
 
 int currentFrame = 0;
