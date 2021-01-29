@@ -1526,10 +1526,10 @@ var tempDouble;
 var tempI64;
 
 var ASM_CONSTS = {
- 24569: function() {
+ 24793: function() {
   console.log("Starting display");
  },
- 70572: function($0, $1, $2) {
+ 73500: function($0, $1, $2) {
   var w = $0;
   var h = $1;
   var pixels = $2;
@@ -1600,7 +1600,7 @@ var ASM_CONSTS = {
   SDL2.ctx.putImageData(SDL2.image, 0, 0);
   return 0;
  },
- 72051: function($0, $1, $2, $3, $4) {
+ 74979: function($0, $1, $2, $3, $4) {
   var w = $0;
   var h = $1;
   var hot_x = $2;
@@ -1637,36 +1637,36 @@ var ASM_CONSTS = {
   stringToUTF8(url, urlBuf, url.length + 1);
   return urlBuf;
  },
- 73040: function($0) {
+ 75968: function($0) {
   if (Module["canvas"]) {
    Module["canvas"].style["cursor"] = UTF8ToString($0);
   }
   return 0;
  },
- 73133: function() {
+ 76061: function() {
   if (Module["canvas"]) {
    Module["canvas"].style["cursor"] = "none";
   }
  },
- 74358: function() {
+ 77286: function() {
   return screen.width;
  },
- 74385: function() {
+ 77313: function() {
   return screen.height;
  },
- 74413: function() {
+ 77341: function() {
   return window.innerWidth;
  },
- 74445: function() {
+ 77373: function() {
   return window.innerHeight;
  },
- 74523: function($0) {
+ 77451: function($0) {
   if (typeof setWindowTitle !== "undefined") {
    setWindowTitle(UTF8ToString($0));
   }
   return 0;
  },
- 74657: function() {
+ 77585: function() {
   if (typeof AudioContext !== "undefined") {
    return 1;
   } else if (typeof webkitAudioContext !== "undefined") {
@@ -1674,7 +1674,7 @@ var ASM_CONSTS = {
   }
   return 0;
  },
- 74823: function() {
+ 77751: function() {
   if (typeof navigator.mediaDevices !== "undefined" && typeof navigator.mediaDevices.getUserMedia !== "undefined") {
    return 1;
   } else if (typeof navigator.webkitGetUserMedia !== "undefined") {
@@ -1682,7 +1682,7 @@ var ASM_CONSTS = {
   }
   return 0;
  },
- 75049: function($0) {
+ 77977: function($0) {
   if (typeof Module["SDL2"] === "undefined") {
    Module["SDL2"] = {};
   }
@@ -1704,11 +1704,11 @@ var ASM_CONSTS = {
   }
   return SDL2.audioContext === undefined ? -1 : 0;
  },
- 75602: function() {
+ 78530: function() {
   var SDL2 = Module["SDL2"];
   return SDL2.audioContext.sampleRate;
  },
- 75672: function($0, $1, $2, $3) {
+ 78600: function($0, $1, $2, $3) {
   var SDL2 = Module["SDL2"];
   var have_microphone = function(stream) {
    if (SDL2.capture.silenceTimer !== undefined) {
@@ -1749,7 +1749,7 @@ var ASM_CONSTS = {
    }, have_microphone, no_microphone);
   }
  },
- 77324: function($0, $1, $2, $3) {
+ 80252: function($0, $1, $2, $3) {
   var SDL2 = Module["SDL2"];
   SDL2.audio.scriptProcessorNode = SDL2.audioContext["createScriptProcessor"]($1, 0, $0);
   SDL2.audio.scriptProcessorNode["onaudioprocess"] = function(e) {
@@ -1761,7 +1761,7 @@ var ASM_CONSTS = {
   };
   SDL2.audio.scriptProcessorNode["connect"](SDL2.audioContext["destination"]);
  },
- 77734: function($0, $1) {
+ 80662: function($0, $1) {
   var SDL2 = Module["SDL2"];
   var numChannels = SDL2.capture.currentCaptureBuffer.numberOfChannels;
   for (var c = 0; c < numChannels; ++c) {
@@ -1780,7 +1780,7 @@ var ASM_CONSTS = {
    }
   }
  },
- 78339: function($0, $1) {
+ 81267: function($0, $1) {
   var SDL2 = Module["SDL2"];
   var numChannels = SDL2.audio.currentOutputBuffer["numberOfChannels"];
   for (var c = 0; c < numChannels; ++c) {
@@ -1793,7 +1793,7 @@ var ASM_CONSTS = {
    }
   }
  },
- 78819: function($0) {
+ 81747: function($0) {
   var SDL2 = Module["SDL2"];
   if ($0) {
    if (SDL2.capture.silenceTimer !== undefined) {
@@ -1831,12 +1831,12 @@ var ASM_CONSTS = {
    SDL2.audioContext = undefined;
   }
  },
- 98168: function() {
+ 101352: function() {
   return withBuiltinMalloc(function() {
    return allocateUTF8(Module["UBSAN_OPTIONS"] || 0);
   });
  },
- 119052: function() {
+ 122236: function() {
   var setting = Module["printWithColors"];
   if (setting != null) {
    return setting;
@@ -8781,6 +8781,31 @@ function _emscripten_set_visibilitychange_callback_on_thread(userData, useCaptur
  return 0;
 }
 
+function __registerWebGlEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) {
+ var webGlEventHandlerFunc = function(ev) {
+  var e = ev || event;
+  if (wasmTable.get(callbackfunc)(eventTypeId, 0, userData)) e.preventDefault();
+ };
+ var eventHandler = {
+  target: findEventTarget(target),
+  eventTypeString: eventTypeString,
+  callbackfunc: callbackfunc,
+  handlerFunc: webGlEventHandlerFunc,
+  useCapture: useCapture
+ };
+ JSEvents.registerOrRemoveHandler(eventHandler);
+}
+
+function _emscripten_set_webglcontextlost_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
+ __registerWebGlEventCallback(target, userData, useCapture, callbackfunc, 31, "webglcontextlost", targetThread);
+ return 0;
+}
+
+function _emscripten_set_webglcontextrestored_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
+ __registerWebGlEventCallback(target, userData, useCapture, callbackfunc, 32, "webglcontextrestored", targetThread);
+ return 0;
+}
+
 function registerWheelEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) {
  if (!JSEvents.wheelEvent) JSEvents.wheelEvent = _malloc(96);
  var wheelHandlerFunc = function(ev) {
@@ -8851,6 +8876,77 @@ function _emscripten_stack_unwind_buffer(addr, buffer, count) {
 function _emscripten_thread_sleep(msecs) {
  var start = _emscripten_get_now();
  while (_emscripten_get_now() - start < msecs) {}
+}
+
+var __emscripten_webgl_power_preferences = [ "default", "low-power", "high-performance" ];
+
+function _emscripten_webgl_do_create_context(target, attributes) {
+ assert(attributes);
+ var a = attributes >> 2;
+ var powerPreference = SAFE_HEAP_LOAD((a + (24 >> 2)) * 4, 4, 0);
+ var contextAttributes = {
+  "alpha": !!SAFE_HEAP_LOAD((a + (0 >> 2)) * 4, 4, 0),
+  "depth": !!SAFE_HEAP_LOAD((a + (4 >> 2)) * 4, 4, 0),
+  "stencil": !!SAFE_HEAP_LOAD((a + (8 >> 2)) * 4, 4, 0),
+  "antialias": !!SAFE_HEAP_LOAD((a + (12 >> 2)) * 4, 4, 0),
+  "premultipliedAlpha": !!SAFE_HEAP_LOAD((a + (16 >> 2)) * 4, 4, 0),
+  "preserveDrawingBuffer": !!SAFE_HEAP_LOAD((a + (20 >> 2)) * 4, 4, 0),
+  "powerPreference": __emscripten_webgl_power_preferences[powerPreference],
+  "failIfMajorPerformanceCaveat": !!SAFE_HEAP_LOAD((a + (28 >> 2)) * 4, 4, 0),
+  majorVersion: SAFE_HEAP_LOAD((a + (32 >> 2)) * 4, 4, 0),
+  minorVersion: SAFE_HEAP_LOAD((a + (36 >> 2)) * 4, 4, 0),
+  enableExtensionsByDefault: SAFE_HEAP_LOAD((a + (40 >> 2)) * 4, 4, 0),
+  explicitSwapControl: SAFE_HEAP_LOAD((a + (44 >> 2)) * 4, 4, 0),
+  proxyContextToMainThread: SAFE_HEAP_LOAD((a + (48 >> 2)) * 4, 4, 0),
+  renderViaOffscreenBackBuffer: SAFE_HEAP_LOAD((a + (52 >> 2)) * 4, 4, 0)
+ };
+ var canvas = findCanvasEventTarget(target);
+ if (!canvas) {
+  return 0;
+ }
+ if (contextAttributes.explicitSwapControl) {
+  return 0;
+ }
+ var contextHandle = GL.createContext(canvas, contextAttributes);
+ return contextHandle;
+}
+
+function _emscripten_webgl_create_context(a0, a1) {
+ return _emscripten_webgl_do_create_context(a0, a1);
+}
+
+function _emscripten_webgl_enable_extension(contextHandle, extension) {
+ var context = GL.getContext(contextHandle);
+ var extString = UTF8ToString(extension);
+ if (extString.indexOf("GL_") == 0) extString = extString.substr(3);
+ if (extString == "ANGLE_instanced_arrays") __webgl_enable_ANGLE_instanced_arrays(GLctx);
+ if (extString == "OES_vertex_array_object") __webgl_enable_OES_vertex_array_object(GLctx);
+ if (extString == "WEBGL_draw_buffers") __webgl_enable_WEBGL_draw_buffers(GLctx);
+ if (extString == "WEBGL_multi_draw") __webgl_enable_WEBGL_multi_draw(GLctx);
+ var ext = context.GLctx.getExtension(extString);
+ return !!ext;
+}
+
+function _emscripten_webgl_do_get_current_context() {
+ return GL.currentContext ? GL.currentContext.handle : 0;
+}
+
+function _emscripten_webgl_get_current_context() {
+ return _emscripten_webgl_do_get_current_context();
+}
+
+function _emscripten_webgl_init_context_attributes(attributes) {
+ assert(attributes);
+ var a = attributes >> 2;
+ for (var i = 0; i < 56 >> 2; ++i) {
+  SAFE_HEAP_STORE((a + i) * 4, 0, 4);
+ }
+ SAFE_HEAP_STORE((a + (0 >> 2)) * 4, SAFE_HEAP_STORE((a + (4 >> 2)) * 4, SAFE_HEAP_STORE((a + (12 >> 2)) * 4, SAFE_HEAP_STORE((a + (16 >> 2)) * 4, SAFE_HEAP_STORE((a + (32 >> 2)) * 4, SAFE_HEAP_STORE((a + (40 >> 2)) * 4, 1, 4), 4), 4), 4), 4), 4);
+}
+
+function _emscripten_webgl_make_context_current(contextHandle) {
+ var success = GL.makeContextCurrent(contextHandle);
+ return success ? 0 : -5;
 }
 
 var ENV = {};
@@ -9001,10 +9097,6 @@ function _glBufferData(target, size, data, usage) {
  GLctx.bufferData(target, data ? HEAPU8.subarray(data, data + size) : size, usage);
 }
 
-function _glClear(x0) {
- GLctx["clear"](x0);
-}
-
 function _glClearColor(x0, x1, x2, x3) {
  GLctx["clearColor"](x0, x1, x2, x3);
 }
@@ -9068,6 +9160,56 @@ function _glGetShaderiv(shader, pname, p) {
  } else {
   SAFE_HEAP_STORE(p | 0, GLctx.getShaderParameter(GL.shaders[shader], pname) | 0, 4);
  }
+}
+
+function _glGetString(name_) {
+ if (GL.stringCache[name_]) return GL.stringCache[name_];
+ var ret;
+ switch (name_) {
+ case 7939:
+  var exts = GLctx.getSupportedExtensions() || [];
+  exts = exts.concat(exts.map(function(e) {
+   return "GL_" + e;
+  }));
+  ret = stringToNewUTF8(exts.join(" "));
+  break;
+
+ case 7936:
+ case 7937:
+ case 37445:
+ case 37446:
+  var s = GLctx.getParameter(name_);
+  if (!s) {
+   GL.recordError(1280);
+  }
+  ret = stringToNewUTF8(s);
+  break;
+
+ case 7938:
+  var glVersion = GLctx.getParameter(7938);
+  {
+   glVersion = "OpenGL ES 2.0 (" + glVersion + ")";
+  }
+  ret = stringToNewUTF8(glVersion);
+  break;
+
+ case 35724:
+  var glslVersion = GLctx.getParameter(35724);
+  var ver_re = /^WebGL GLSL ES ([0-9]\.[0-9][0-9]?)(?:$| .*)/;
+  var ver_num = glslVersion.match(ver_re);
+  if (ver_num !== null) {
+   if (ver_num[1].length == 3) ver_num[1] = ver_num[1] + "0";
+   glslVersion = "OpenGL ES GLSL ES " + ver_num[1] + " (" + glslVersion + ")";
+  }
+  ret = stringToNewUTF8(glslVersion);
+  break;
+
+ default:
+  GL.recordError(1280);
+  return 0;
+ }
+ GL.stringCache[name_] = ret;
+ return ret;
 }
 
 function _glGetUniformLocation(program, name) {
@@ -10046,10 +10188,17 @@ var asmLibraryArg = {
  "emscripten_set_touchmove_callback_on_thread": _emscripten_set_touchmove_callback_on_thread,
  "emscripten_set_touchstart_callback_on_thread": _emscripten_set_touchstart_callback_on_thread,
  "emscripten_set_visibilitychange_callback_on_thread": _emscripten_set_visibilitychange_callback_on_thread,
+ "emscripten_set_webglcontextlost_callback_on_thread": _emscripten_set_webglcontextlost_callback_on_thread,
+ "emscripten_set_webglcontextrestored_callback_on_thread": _emscripten_set_webglcontextrestored_callback_on_thread,
  "emscripten_set_wheel_callback_on_thread": _emscripten_set_wheel_callback_on_thread,
  "emscripten_sleep": _emscripten_sleep,
  "emscripten_stack_unwind_buffer": _emscripten_stack_unwind_buffer,
  "emscripten_thread_sleep": _emscripten_thread_sleep,
+ "emscripten_webgl_create_context": _emscripten_webgl_create_context,
+ "emscripten_webgl_enable_extension": _emscripten_webgl_enable_extension,
+ "emscripten_webgl_get_current_context": _emscripten_webgl_get_current_context,
+ "emscripten_webgl_init_context_attributes": _emscripten_webgl_init_context_attributes,
+ "emscripten_webgl_make_context_current": _emscripten_webgl_make_context_current,
  "environ_get": _environ_get,
  "environ_sizes_get": _environ_sizes_get,
  "exit": _exit,
@@ -10063,7 +10212,6 @@ var asmLibraryArg = {
  "glBindVertexArray": _glBindVertexArray,
  "glBlendFunc": _glBlendFunc,
  "glBufferData": _glBufferData,
- "glClear": _glClear,
  "glClearColor": _glClearColor,
  "glCompileShader": _glCompileShader,
  "glCreateProgram": _glCreateProgram,
@@ -10075,6 +10223,7 @@ var asmLibraryArg = {
  "glGenVertexArrays": _glGenVertexArrays,
  "glGetAttribLocation": _glGetAttribLocation,
  "glGetShaderiv": _glGetShaderiv,
+ "glGetString": _glGetString,
  "glGetUniformLocation": _glGetUniformLocation,
  "glLinkProgram": _glLinkProgram,
  "glShaderSource": _glShaderSource,
@@ -10164,9 +10313,9 @@ var dynCall_iiiiijj = Module["dynCall_iiiiijj"] = createExportWrapper("dynCall_i
 
 var dynCall_iiiiiijj = Module["dynCall_iiiiiijj"] = createExportWrapper("dynCall_iiiiiijj");
 
-var _currentFrame = Module["_currentFrame"] = 431556;
+var _currentFrame = Module["_currentFrame"] = 438980;
 
-var ___heap_base = Module["___heap_base"] = 6124336;
+var ___heap_base = Module["___heap_base"] = 6131760;
 
 var ___global_base = Module["___global_base"] = 1024;
 
