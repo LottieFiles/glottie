@@ -59,7 +59,7 @@ EMSCRIPTEN_WEBGL_CONTEXT_HANDLE createContext(const char* canvasId)
 	attributes.alpha = true;
 	attributes.depth = true;
 	attributes.stencil = false;
-	attributes.antialias = false;
+	attributes.antialias = true;
 	attributes.premultipliedAlpha = true;
 	attributes.preserveDrawingBuffer = false;
 	attributes.failIfMajorPerformanceCaveat = false;
