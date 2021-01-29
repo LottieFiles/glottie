@@ -56,18 +56,16 @@ EMSCRIPTEN_WEBGL_CONTEXT_HANDLE createContext(const char* canvasId)
 
 	//attributes.preferLowPowerToHighPerformance = false;
 
-#if 0
 	attributes.alpha = true;
 	attributes.depth = true;
 	attributes.stencil = false;
-	attributes.antialias = true;
+	attributes.antialias = false;
 	attributes.premultipliedAlpha = true;
 	attributes.preserveDrawingBuffer = false;
 	attributes.failIfMajorPerformanceCaveat = false;
-	attributes.majorVersion = 1;
-	attributes.minorVersion = 0;
+//	attributes.majorVersion = 1;
+//	attributes.minorVersion = 0;
 	attributes.enableExtensionsByDefault = true;
-#endif
 
 	EMSCRIPTEN_WEBGL_CONTEXT_HANDLE context = emscripten_webgl_create_context(canvasId, &attributes);
 	cout << "create context " << context << endl;
