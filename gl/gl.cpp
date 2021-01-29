@@ -31,6 +31,86 @@ const GLchar* fragmentSource =
     "} \n";
 
 
+#ifdef EMT
+std::vector<std::string>& split(const std::string& s, char delim, std::vector<std::string>& elems) {
+	std::stringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
+	return elems;
+}
+
+std::vector<std::string> split(const std::string& s, char delim) {
+	std::vector<std::string> elems;
+	split(s, delim, elems);
+	return elems;
+}
+
+EMSCRIPTEN_WEBGL_CONTEXT_HANDLE createContext(const char* canvasId)
+{
+
+	EmscriptenWebGLContextAttributes attributes;
+
+	emscripten_webgl_init_context_attributes(&attributes); // Pupulate with default attributes
+
+	//attributes.preferLowPowerToHighPerformance = false;
+
+#if 0
+	attributes.alpha = true;
+	attributes.depth = true;
+	attributes.stencil = false;
+	attributes.antialias = true;
+	attributes.premultipliedAlpha = true;
+	attributes.preserveDrawingBuffer = false;
+	attributes.failIfMajorPerformanceCaveat = false;
+	attributes.majorVersion = 1;
+	attributes.minorVersion = 0;
+	attributes.enableExtensionsByDefault = true;
+#endif
+
+	EMSCRIPTEN_WEBGL_CONTEXT_HANDLE context = emscripten_webgl_create_context(canvasId, &attributes);
+	cout << "create context " << context << endl;
+
+	EMSCRIPTEN_RESULT res = emscripten_webgl_make_context_current(context);
+	cout << "make current context " << (res == EMSCRIPTEN_RESULT_SUCCESS) << endl;
+
+	EMSCRIPTEN_WEBGL_CONTEXT_HANDLE current = emscripten_webgl_get_current_context();
+	cout << "get current context " << current << endl;
+
+	const char* extensions = (const char*)glGetString(GL_EXTENSIONS);
+	std::vector<std::string> exts = split(extensions, ' ');
+	for (size_t i = 0; i < exts.size(); ++i)
+	{
+		EM_BOOL supported = emscripten_webgl_enable_extension(context, exts[i].c_str());
+		//    cout << "extention " << exts[i] << " " << supported << endl;
+	}
+
+	void* data = nullptr;
+	bool capture = true;
+	auto callback = [](int eventType, const void* reserved, void* userData) -> EM_BOOL
+	{
+		switch (eventType) {
+		case EMSCRIPTEN_EVENT_WEBGLCONTEXTLOST:
+			cout << "context lost";
+			break;
+		case EMSCRIPTEN_EVENT_WEBGLCONTEXTRESTORED:
+			cout << "context restored";
+			break;
+		default:
+			cout << "unexpected this is";
+			break;
+		};
+		return true;
+	};
+
+	emscripten_set_webglcontextlost_callback(canvasId, data, capture, callback);
+	emscripten_set_webglcontextrestored_callback(canvasId, data, capture, callback);
+
+	return context;
+}
+#endif
+
 
 void glInitShaders(int refIndex) {
 	GLuint tempShaderProgram;
@@ -282,10 +362,13 @@ void glInit() {
 #//endif
 
 	#ifdef EMT
-		glc = SDL_GL_CreateContext(wnd);
-		rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED);
-		SDL_SetWindowSize(wnd, theAnimation->w, theAnimation->h);
-		SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
+		emtContext = createContext("#canvas");
+		glc = SDL_GL_GetCurrentContext();
+
+		//glc = SDL_GL_CreateContext(wnd);
+		//rdr = SDL_CreateRenderer(wnd, -1, SDL_RENDERER_ACCELERATED);
+		//SDL_SetWindowSize(wnd, theAnimation->w, theAnimation->h);
+		//SDL_RenderSetLogicalSize(rdr, theAnimation->w, theAnimation->h);
 	#else
 		#ifdef APPLE
 			SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");

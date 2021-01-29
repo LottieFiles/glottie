@@ -9001,6 +9001,14 @@ function _glBufferData(target, size, data, usage) {
  GLctx.bufferData(target, data ? HEAPU8.subarray(data, data + size) : size, usage);
 }
 
+function _glClear(x0) {
+ GLctx["clear"](x0);
+}
+
+function _glClearColor(x0, x1, x2, x3) {
+ GLctx["clearColor"](x0, x1, x2, x3);
+}
+
 function _glCompileShader(shader) {
  GLctx.compileShader(GL.shaders[shader]);
 }
@@ -10055,6 +10063,8 @@ var asmLibraryArg = {
  "glBindVertexArray": _glBindVertexArray,
  "glBlendFunc": _glBlendFunc,
  "glBufferData": _glBufferData,
+ "glClear": _glClear,
+ "glClearColor": _glClearColor,
  "glCompileShader": _glCompileShader,
  "glCreateProgram": _glCreateProgram,
  "glCreateShader": _glCreateShader,

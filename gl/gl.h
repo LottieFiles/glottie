@@ -26,6 +26,10 @@ SDL_GLContext glc;
 int lastRefIndex = 0;
 GLuint mainShader;
 
+#ifdef EMT
+EMSCRIPTEN_WEBGL_CONTEXT_HANDLE emtContext;
+#endif
+
 bool redrawRequired = false;
 //GLuint* shaderProgram;
 
