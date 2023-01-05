@@ -109,6 +109,7 @@
 #endif
 
 #ifdef LINUX
+#include <GL/glew.h>
 #include <SDL2/SDL.h> // emscripten
 #include <SDL2/SDL_opengl.h>
 #endif

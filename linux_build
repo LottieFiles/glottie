@@ -1,3 +1,4 @@
+#!/bin/sh
 #/////////////////////////////////////////////////////////
 #/////////                                       /////////
 #/////////  ******            *****************  /////////
@@ -18,6 +19,18 @@
 #///////      Copyright 2020, lottiefiles.com      ///////
 #/////////////////////////////////////////////////////////
 
-#!/bin/sh
+wanted_pkgs="gl glfw3 glew sdl2"
+found_pkgs=""
+for pkg in $wanted_pkgs; do
+    version=$(pkg-config --modversion $pkg 2>/dev/null || echo "missing")
+    if [ "$version" = "missing" ]; then
+        echo "WARNING: missing package '$pkg'"
+    else
+        echo "Found Package '$pkg' version $version"
+        found_pkgs="$found_pkgs $pkg"
+    fi
+done
+pkg_flags=$(pkg-config --cflags --libs $found_pkgs)
 
-clang++ main.cpp -include linuxtarget.h -std=c++17 -w -g -o examples/linux/lottieplayer -lglfw -lGLEW -lGL -lglut -I/usr/include/SDL2 -lSDL2
+set -x
+clang++ main.cpp -include linuxtarget.h -std=c++17 -w -g -o examples/linux/lottieplayer $pkg_flags
